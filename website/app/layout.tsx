@@ -1,11 +1,16 @@
+
 import type { Metadata } from "next";
 import "leaflet/dist/leaflet.css";
 import "./globals.css";
 
 import { Toaster } from "react-hot-toast";
 
+import TopBar from "@/app/Components/TopBar";
 import Navbar from "@/app/Components/Navbar";
 import Footer from "@/app/Components/Footer";
+import LimitedOffer from "@/app/Components/Home/LimitedOffer";
+import BottomBar from "@/app/Components/BottomBar";
+import ChatBox from "@/app/Components/ChatBox";
 
 export const metadata: Metadata = {
   title: "SBS TAXI - Safe. Reliable. Anytime.",
@@ -21,13 +26,28 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
+        {/* ================= TOP BAR ================= */}
+        <TopBar />
+
+        {/* ================= NAVBAR ================= */}
         <Navbar />
 
+        {/* ================= PAGE CONTENT ================= */}
         <main>{children}</main>
 
+        {/* ================= LIMITED OFFER ================= */}
+        <LimitedOffer />
+
+        {/* ================= CHAT BOX ================= */}
+        <ChatBox />
+
+        {/* ================= BOTTOM BAR ================= */}
+        <BottomBar />
+
+        {/* ================= FOOTER ================= */}
         <Footer />
 
-        {/* Toast Notifications */}
+        {/* ================= TOAST ================= */}
         <Toaster
           position="top-right"
           reverseOrder={false}

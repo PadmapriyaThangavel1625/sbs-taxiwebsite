@@ -1,21 +1,23 @@
-import OffersHero from '@/app/Components/Offers/OffersHero';
-import ExclusiveOffers from '@/app/Components/Offers/ExclusiveOffers';
-import AppDownload from '@/app/Components/Offers/AppDownload';
-import FeaturesBar from '@/app/Components/Offers/FeaturesBar';
-import BottomCTA from '@/app/Components/Offers/BottomCTA';
-import { User, ChevronDown } from 'lucide-react';
-import { FaFacebookF, FaInstagram, FaLinkedinIn } from 'react-icons/fa';
+import OffersHero from "@/app/Components/Offers/OffersHero";
+import ExclusiveOffers from "@/app/Components/Offers/ExclusiveOffers";
+import AppDownload from "@/app/Components/Offers/AppDownload";
+import FeaturesBar from "@/app/Components/Offers/FeaturesBar";
+import BottomCTA from "@/app/Components/Offers/BottomCTA";
 
 export default function OffersPage() {
   return (
-    <div className="min-h-screen bg-[#f8f9fa] text-[#333] font-['Poppins',sans-serif]">
-     
-      {/* Page Content */}
+    <main className="bg-gray-50">
       <OffersHero />
-      <ExclusiveOffers />
-      <AppDownload />
-      <FeaturesBar />
+
+      <section className="container-custom py-8 sm:py-10 lg:py-12">
+        <ExclusiveOffers />
+
+        <AppDownload />
+
+        <FeaturesBar />
+      </section>
+
       <BottomCTA />
-    </div>
+    </main>
   );
 }

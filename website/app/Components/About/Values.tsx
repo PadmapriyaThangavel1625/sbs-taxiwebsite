@@ -1,4 +1,11 @@
-import { Users, ShieldCheck, UserCheck, Star, Lightbulb } from "lucide-react";
+
+import {
+  Users,
+  ShieldCheck,
+  UserCheck,
+  Star,
+  Lightbulb,
+} from "lucide-react";
 
 const values = [
   {
@@ -30,24 +37,91 @@ const values = [
 
 export default function Values() {
   return (
-    <section className="bg-slate-50/50 border-y border-slate-100 py-16 my-8">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+    <section
+      className="
+        bg-[var(--background)]
+        border-y border-[var(--border)]
+        py-16
+        my-8
+      "
+    >
+      <div
+        className="
+          max-w-7xl
+          mx-auto
+          px-4 sm:px-6 lg:px-8
+          space-y-12
+        "
+      >
+        {/* Heading */}
         <div className="text-center">
-          <h2 className="text-2xl sm:text-3xl font-bold text-slate-900">Our Values</h2>
+          <h2
+            className="
+              text-2xl sm:text-3xl
+              font-bold
+              text-[var(--text)]
+            "
+          >
+            Our Values
+          </h2>
         </div>
+
+        {/* Values Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
           {values.map((val, idx) => {
             const Icon = val.icon;
+
             return (
               <div
                 key={idx}
-                className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm flex flex-col items-center text-center space-y-4 hover:shadow-md transition-shadow"
+                className="
+                  bg-white
+                  p-6
+                  rounded-2xl
+                  border border-[var(--border)]
+                  shadow-sm
+                  flex flex-col
+                  items-center
+                  text-center
+                  space-y-4
+                  hover:shadow-md
+                  transition-shadow
+                "
               >
-                <div className="w-12 h-12 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center">
+                {/* Icon */}
+                <div
+                  className="
+                    w-12 h-12
+                    rounded-full
+                    bg-[var(--primary-light)]
+                    text-[var(--primary)]
+                    flex items-center justify-center
+                  "
+                >
                   <Icon className="w-6 h-6" />
                 </div>
-                <h3 className="font-bold text-slate-900 text-base">{val.title}</h3>
-                <p className="text-slate-500 text-xs leading-relaxed">{val.description}</p>
+
+                {/* Title */}
+                <h3
+                  className="
+                    font-bold
+                    text-[var(--text)]
+                    text-base
+                  "
+                >
+                  {val.title}
+                </h3>
+
+                {/* Description */}
+                <p
+                  className="
+                    text-[var(--text-light)]
+                    text-xs
+                    leading-relaxed
+                  "
+                >
+                  {val.description}
+                </p>
               </div>
             );
           })}

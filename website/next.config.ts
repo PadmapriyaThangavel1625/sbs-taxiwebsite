@@ -7,14 +7,17 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "images.unsplash.com",
       },
+      {
+        protocol: "https",
+        hostname: "media.istockphoto.com",
+      },
     ],
   },
 
-  // Allow access from your local network during development
   allowedDevOrigins: [
-    "192.168.29.193",
     "localhost",
     "127.0.0.1",
+    "192.168.29.193",
   ],
 };
 

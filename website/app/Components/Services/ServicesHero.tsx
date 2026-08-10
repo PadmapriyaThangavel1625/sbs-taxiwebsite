@@ -1,3 +1,4 @@
+
 "use client";
 
 import Image from "next/image";
@@ -6,6 +7,7 @@ import { motion, Variants } from "framer-motion";
 
 const container: Variants = {
   hidden: {},
+
   show: {
     transition: {
       staggerChildren: 0.2,
@@ -18,6 +20,7 @@ const fadeUp: Variants = {
     opacity: 0,
     y: 40,
   },
+
   show: {
     opacity: 1,
     y: 0,
@@ -30,19 +33,24 @@ const fadeUp: Variants = {
 
 export default function ServicesHero() {
   return (
-    <section className="relative h-[380px] overflow-hidden">
+    <section className="relative min-h-[500px] overflow-hidden">
+
       {/* Background Image */}
       <motion.div
         initial={{ scale: 1.12 }}
         animate={{ scale: 1 }}
-        transition={{ duration: 8, ease: "easeOut" }}
+        transition={{
+          duration: 8,
+          ease: "easeOut",
+        }}
         className="absolute inset-0"
       >
         <Image
           src="/images/car2.png"
-          alt="Services Hero"
+          alt="Taxi services"
           fill
           priority
+          sizes="100vw"
           className="object-cover"
         />
       </motion.div>
@@ -55,12 +63,27 @@ export default function ServicesHero() {
         variants={container}
         initial="hidden"
         animate="show"
-        className="relative z-10 mx-auto max-w-7xl px-6 pt-12 text-white"
+        className="
+          container-custom
+          relative
+          z-10
+          flex
+          min-h-[420px]
+          flex-col
+          justify-center
+          py-12
+          text-white
+        "
       >
         {/* Heading */}
         <motion.h1
           variants={fadeUp}
-          className="text-5xl font-bold"
+          className="
+            text-3xl
+            font-bold
+            sm:text-4xl
+            lg:text-5xl
+          "
         >
           Our Services
         </motion.h1>
@@ -69,14 +92,24 @@ export default function ServicesHero() {
         <motion.div
           initial={{ width: 0 }}
           animate={{ width: 64 }}
-          transition={{ delay: 0.4, duration: 0.6 }}
-          className="mt-4 h-1 bg-yellow-400"
+          transition={{
+            delay: 0.4,
+            duration: 0.6,
+          }}
+          className="mt-4 h-1 bg-secondary"
         />
 
         {/* Description */}
         <motion.p
           variants={fadeUp}
-          className="mt-5 max-w-xl text-lg"
+          className="
+            mt-5
+            max-w-xl
+            text-sm
+            leading-6
+            sm:text-base
+            lg:text-lg
+          "
         >
           From local rides to outstation trips, airport transfers
           to corporate travel – we provide safe, comfortable and
@@ -86,15 +119,24 @@ export default function ServicesHero() {
         {/* Breadcrumb */}
         <motion.div
           variants={fadeUp}
-          className="mt-5 flex items-center gap-2 text-sm"
+          className="
+            mt-5
+            flex
+            items-center
+            gap-2
+            text-sm
+          "
         >
-          <Link href="/" className="transition hover:text-yellow-400">
+          <Link
+            href="/"
+            className="transition-colors hover:text-secondary"
+          >
             Home
           </Link>
 
           <span>›</span>
 
-          <span className="text-yellow-400">
+          <span className="text-secondary">
             Services
           </span>
         </motion.div>

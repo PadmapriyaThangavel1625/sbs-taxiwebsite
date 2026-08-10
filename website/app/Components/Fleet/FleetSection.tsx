@@ -1,9 +1,10 @@
+
 "use client";
 
 import { useState } from "react";
 import { motion, Variants } from "framer-motion";
 import Image from "next/image";
-import FleetCard, { Fleet } from "./FleetCard"; // Correctly imported from FleetCard
+import FleetCard, { Fleet } from "./FleetCard";
 
 const cars: Fleet[] = [
   {
@@ -64,6 +65,7 @@ const cars: Fleet[] = [
 
 const containerVariants: Variants = {
   hidden: {},
+
   show: {
     transition: {
       staggerChildren: 0.12,
@@ -72,11 +74,18 @@ const containerVariants: Variants = {
 };
 
 const cardVariants: Variants = {
-  hidden: { opacity: 0, y: 40 },
+  hidden: {
+    opacity: 0,
+    y: 40,
+  },
+
   show: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.6, ease: "easeOut" },
+    transition: {
+      duration: 0.6,
+      ease: "easeOut",
+    },
   },
 };
 
@@ -84,107 +93,263 @@ export default function FleetSection() {
   const [selectedCar, setSelectedCar] = useState<Fleet>(cars[0]);
 
   return (
-    <section className="bg-gray-50 py-20">
+    <section className="section-bg py-10 sm:py-12 lg:py-16">
       <div className="container-custom">
+
         {/* Heading */}
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.7 }}
-          className="mb-14 text-center"
+          initial={{
+            opacity: 0,
+            y: 30,
+          }}
+          whileInView={{
+            opacity: 1,
+            y: 0,
+          }}
+          viewport={{
+            once: true,
+          }}
+          transition={{
+            duration: 0.7,
+          }}
+          className="mb-10 text-center sm:mb-12 lg:mb-14"
         >
-          <h2 className="text-4xl font-bold text-gray-900">
+          <h2 className="text-2xl font-bold text-heading sm:text-3xl lg:text-4xl">
             Choose Your Perfect Ride
           </h2>
-          <p className="mx-auto mt-4 max-w-2xl text-gray-600">
+
+          <p className="mx-auto mt-3 max-w-2xl text-sm leading-6 text-muted sm:text-base">
             Choose from our well-maintained fleet of hatchbacks, sedans,
             SUVs, vans and premium vehicles for every journey.
           </p>
         </motion.div>
 
-        {/* Fleet Cards Grid */}
+        {/* Fleet Cards */}
         <motion.div
           variants={containerVariants}
           initial="hidden"
           whileInView="show"
-          viewport={{ once: true, amount: 0.15 }}
-          className="grid gap-8 md:grid-cols-2 xl:grid-cols-6"
+          viewport={{
+            once: true,
+            amount: 0.15,
+          }}
+          className="
+            grid
+            grid-cols-1
+            items-stretch
+            gap-5
+            sm:grid-cols-2
+            lg:grid-cols-3
+            lg:gap-8
+          "
         >
           {cars.map((car) => (
             <motion.div
               key={car.name}
               variants={cardVariants}
-              whileHover={{ y: -10, transition: { duration: 0.25 } }}
+              className="h-full"
+              whileHover={{
+                y: -10,
+                transition: {
+                  duration: 0.25,
+                },
+              }}
             >
               <FleetCard
                 {...car}
                 onSelect={() => setSelectedCar(car)}
-                isSelected={selectedCar?.name === car.name}
+                isSelected={selectedCar.name === car.name}
               />
             </motion.div>
           ))}
         </motion.div>
 
-        {/* Information Section Displayed Down on the Page */}
+        {/* Selected Vehicle Details */}
         {selectedCar && (
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="mt-16 bg-white border rounded-2xl p-6 md:p-8 shadow-md"
+            initial={{
+              opacity: 0,
+              y: 30,
+            }}
+            animate={{
+              opacity: 1,
+              y: 0,
+            }}
+            transition={{
+              duration: 0.5,
+            }}
+            className="
+              mt-10
+              overflow-hidden
+              rounded-2xl
+              border
+              bg-white
+              p-5
+              shadow-md
+              sm:mt-12
+              sm:p-6
+              lg:mt-16
+              lg:p-8
+            "
           >
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-              <div className="relative h-64 w-full bg-gray-50 rounded-xl border p-4">
+            <div className="grid grid-cols-1 items-center gap-8 lg:grid-cols-2">
+
+              {/* Vehicle Image */}
+              <div
+                className="
+                  relative
+                  h-56
+                  w-full
+                  overflow-hidden
+                  rounded-xl
+                  border
+                  bg-primary-light
+                  p-4
+                  sm:h-64
+                "
+              >
                 <Image
                   src={selectedCar.image}
                   alt={selectedCar.name}
                   fill
+                  sizes="(max-width: 1024px) 100vw, 50vw"
                   className="object-contain"
                 />
               </div>
 
+              {/* Vehicle Details */}
               <div>
-                <span className="bg-blue-900 text-white px-3 py-1 rounded text-xs font-semibold">
+
+                {/* Label */}
+                <span
+                  className="
+                    inline-flex
+                    rounded
+                    bg-primary
+                    px-3
+                    py-1
+                    text-xs
+                    font-semibold
+                    text-white
+                  "
+                >
                   {selectedCar.name} Details
                 </span>
-                <h3 className="text-3xl font-bold mt-2 text-gray-900">
+
+                {/* Type */}
+                <h3 className="mt-2 text-2xl font-bold text-heading sm:text-3xl">
                   {selectedCar.type}
                 </h3>
-                <p className="text-gray-600 mt-2">
-                  <strong className="text-gray-800">Fleet Models:</strong>{" "}
+
+                {/* Models */}
+                <p className="mt-2 text-sm leading-6 text-muted sm:text-base">
+                  <strong className="text-heading">
+                    Fleet Models:
+                  </strong>{" "}
                   {selectedCar.vehicles}
                 </p>
 
-                <div className="grid grid-cols-3 gap-4 my-6 bg-blue-50 p-4 rounded-xl text-center text-sm font-semibold text-blue-900 border border-blue-100">
+                {/* Features */}
+                <div
+                  className="
+                    my-5
+                    grid
+                    grid-cols-1
+                    gap-3
+                    rounded-xl
+                    border
+                    border-primary-light
+                    bg-primary-light
+                    p-4
+                    text-center
+                    text-sm
+                    font-semibold
+                    text-primary
+                    sm:grid-cols-3
+                    sm:gap-4
+                    sm:my-6
+                  "
+                >
+                  {/* Capacity */}
                   <div>
-                    <p className="text-xs text-gray-500 font-normal">Capacity</p>
-                    <p className="mt-1">👤 {selectedCar.seat}</p>
+                    <p className="text-xs font-normal text-muted">
+                      Capacity
+                    </p>
+
+                    <p className="mt-1">
+                      👤 {selectedCar.seat}
+                    </p>
                   </div>
+
+                  {/* Luggage */}
                   <div>
-                    <p className="text-xs text-gray-500 font-normal">Luggage</p>
-                    <p className="mt-1">🧳 {selectedCar.bags}</p>
+                    <p className="text-xs font-normal text-muted">
+                      Luggage
+                    </p>
+
+                    <p className="mt-1">
+                      🧳 {selectedCar.bags}
+                    </p>
                   </div>
+
+                  {/* Climate */}
                   <div>
-                    <p className="text-xs text-gray-500 font-normal">Climate</p>
-                    <p className="mt-1">❄ AC Included</p>
+                    <p className="text-xs font-normal text-muted">
+                      Climate
+                    </p>
+
+                    <p className="mt-1">
+                      ❄ AC Included
+                    </p>
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between border-t pt-4">
+                {/* Fare + Button */}
+                <div
+                  className="
+                    flex
+                    flex-col
+                    gap-4
+                    border-t
+                    pt-4
+                    sm:flex-row
+                    sm:items-center
+                    sm:justify-between
+                  "
+                >
+                  {/* Fare */}
                   <div>
-                    <p className="text-xs text-gray-500">Fare Rate</p>
-                    <h2 className="text-blue-900 font-bold text-2xl">
+                    <p className="text-xs text-muted">
+                      Fare Rate
+                    </p>
+
+                    <h2 className="mt-1 text-2xl font-bold text-primary">
                       ₹{selectedCar.price}{" "}
-                      <span className="text-sm font-normal text-gray-600">
+                      <span className="text-sm font-normal text-muted">
                         / km
                       </span>
                     </h2>
                   </div>
 
+                  {/* Book Button */}
                   <a
                     href="/book"
-                    className="bg-blue-900 text-white px-6 py-3 rounded-xl font-semibold hover:bg-blue-800 transition shadow-md"
+                    className="
+                      inline-flex
+                      w-full
+                      items-center
+                      justify-center
+                      rounded-xl
+                      bg-primary
+                      px-6
+                      py-3
+                      font-semibold
+                      text-white
+                      shadow-md
+                      transition
+                      hover:bg-primary-dark
+                      sm:w-auto
+                    "
                   >
                     Book This Ride
                   </a>
@@ -193,6 +358,7 @@ export default function FleetSection() {
             </div>
           </motion.div>
         )}
+
       </div>
     </section>
   );

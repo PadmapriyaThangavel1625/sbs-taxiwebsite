@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useEffect, useState } from "react";
@@ -12,6 +13,7 @@ import {
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 
+// Fix Leaflet default marker icons
 delete (L.Icon.Default.prototype as any)._getIconUrl;
 
 L.Icon.Default.mergeOptions({
@@ -23,21 +25,25 @@ L.Icon.Default.mergeOptions({
     "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
 });
 
-// Chennai Office
+// SBS Taxi Office - Chennai
 const office: [number, number] = [13.0827, 80.2707];
 
+// Refresh map size after rendering
 function ResizeMap() {
   const map = useMap();
 
   useEffect(() => {
-    setTimeout(() => {
+    const timer = setTimeout(() => {
       map.invalidateSize();
     }, 100);
+
+    return () => clearTimeout(timer);
   }, [map]);
 
   return null;
 }
 
+// Move map when location changes
 function FlyToLocation({
   position,
 }: {
@@ -59,7 +65,9 @@ export default function LeafletMap() {
     useState<[number, number]>(office);
 
   useEffect(() => {
-    if (!navigator.geolocation) return;
+    if (!navigator.geolocation) {
+      return;
+    }
 
     navigator.geolocation.getCurrentPosition(
       (pos) => {
@@ -69,7 +77,7 @@ export default function LeafletMap() {
         ]);
       },
       () => {
-        console.log("Using office location.");
+        console.log("Using SBS office location.");
       }
     );
   }, []);
@@ -84,10 +92,13 @@ export default function LeafletMap() {
         width: "100%",
       }}
     >
+      {/* Fix map rendering size */}
       <ResizeMap />
 
+      {/* Fly to user location */}
       <FlyToLocation position={userLocation} />
 
+      {/* OpenStreetMap */}
       <TileLayer
         attribution="© OpenStreetMap contributors"
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -98,7 +109,7 @@ export default function LeafletMap() {
         <Popup>Your Current Location</Popup>
       </Marker>
 
-      {/* SBS Office */}
+      {/* SBS Taxi Office */}
       <Marker position={office}>
         <Popup>
           <strong>SBS Taxi Office</strong>

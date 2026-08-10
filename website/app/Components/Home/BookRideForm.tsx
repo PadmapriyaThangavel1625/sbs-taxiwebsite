@@ -1,10 +1,10 @@
+
 "use client";
 
 import { useState } from "react";
 import toast from "react-hot-toast";
 import {
   CalendarDays,
-  CarFront,
   ChevronDown,
   Clock3,
   MapPin,
@@ -34,119 +34,395 @@ export default function BookRideForm() {
   };
 
   return (
-    <div className="w-full rounded-xl bg-white p-6 shadow-xl">
-      {/* Heading */}
-      <div className="mb-5 flex items-center gap-3">
-        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-yellow-100">
-          <CarFront className="h-5 w-5 text-yellow-600" />
-        </div>
+    <div
+      className="
+        w-full
+        rounded-xl
+        border
+        border-gray-200
+        bg-white
+        p-4
+        shadow-lg
 
-        <h2 className="text-[18px] font-bold text-gray-900">
+        sm:p-5
+        md:p-6
+      "
+    >
+      {/* ================= HEADING ================= */}
+      <div className="mb-5">
+        <h2
+          className="
+            text-[18px]
+            font-bold
+            text-[var(--heading)]
+
+            sm:text-[20px]
+          "
+        >
           Book Your Ride
         </h2>
+
+        <p className="mt-1 text-[12px] text-[var(--muted)]">
+          Enter your trip details to book a taxi.
+        </p>
       </div>
 
-      {/* Pickup */}
-      <label className="mb-1 block text-[12px] text-gray-700">
-        Pickup Location
-      </label>
+      {/* ================= PICKUP ================= */}
+      <div className="mb-3">
+        <label
+          htmlFor="pickup"
+          className="
+            mb-1
+            block
+            text-[12px]
+            font-medium
+            text-[var(--text)]
+          "
+        >
+          Pickup Location
+        </label>
 
-      <div className="mb-3 flex h-[38px] items-center rounded-md border border-gray-200 px-3">
-        <MapPin size={18} className="mr-2 text-green-500" />
+        <div
+          className="
+            flex
+            h-[42px]
+            w-full
+            items-center
+            rounded-md
+            border
+            border-gray-200
+            bg-white
+            px-3
+            transition
 
-        <input
-          type="text"
-          placeholder="Enter pickup location"
-          value={pickup}
-          onChange={(e) => setPickup(e.target.value)}
-          className="w-full text-[12px] outline-none"
-        />
+            focus-within:border-[var(--primary)]
+            focus-within:ring-1
+            focus-within:ring-[var(--primary)]
+          "
+        >
+          <MapPin
+            size={18}
+            className="mr-2 shrink-0 text-green-500"
+          />
+
+          <input
+            id="pickup"
+            type="text"
+            placeholder="Enter pickup location"
+            value={pickup}
+            onChange={(e) => setPickup(e.target.value)}
+            className="
+              w-full
+              min-w-0
+              bg-transparent
+              text-[12px]
+              text-[var(--text)]
+              outline-none
+              placeholder:text-gray-400
+
+              sm:text-[13px]
+            "
+          />
+        </div>
       </div>
 
-      {/* Drop */}
-      <label className="mb-1 block text-[12px] text-gray-700">
-        Drop Location
-      </label>
+      {/* ================= DROP ================= */}
+      <div className="mb-3">
+        <label
+          htmlFor="drop"
+          className="
+            mb-1
+            block
+            text-[12px]
+            font-medium
+            text-[var(--text)]
+          "
+        >
+          Drop Location
+        </label>
 
-      <div className="mb-3 flex h-[38px] items-center rounded-md border border-gray-200 px-3">
-        <MapPin size={18} className="mr-2 text-red-500" />
+        <div
+          className="
+            flex
+            h-[42px]
+            w-full
+            items-center
+            rounded-md
+            border
+            border-gray-200
+            bg-white
+            px-3
+            transition
 
-        <input
-          type="text"
-          placeholder="Enter drop location"
-          value={drop}
-          onChange={(e) => setDrop(e.target.value)}
-          className="w-full text-[12px] outline-none"
-        />
+            focus-within:border-[var(--primary)]
+            focus-within:ring-1
+            focus-within:ring-[var(--primary)]
+          "
+        >
+          <MapPin
+            size={18}
+            className="mr-2 shrink-0 text-red-500"
+          />
+
+          <input
+            id="drop"
+            type="text"
+            placeholder="Enter drop location"
+            value={drop}
+            onChange={(e) => setDrop(e.target.value)}
+            className="
+              w-full
+              min-w-0
+              bg-transparent
+              text-[12px]
+              text-[var(--text)]
+              outline-none
+              placeholder:text-gray-400
+
+              sm:text-[13px]
+            "
+          />
+        </div>
       </div>
 
-      {/* Date / Time */}
-      <div className="mb-3 grid grid-cols-2 gap-4">
+      {/* ================= DATE / TIME ================= */}
+      <div
+        className="
+          mb-3
+          grid
+          grid-cols-1
+          gap-3
+
+          sm:grid-cols-2
+          sm:gap-4
+        "
+      >
+        {/* Date */}
         <div>
-          <label className="mb-1 block text-[12px] text-gray-700">
+          <label
+            htmlFor="date"
+            className="
+              mb-1
+              block
+              text-[12px]
+              font-medium
+              text-[var(--text)]
+            "
+          >
             Date
           </label>
 
-          <div className="flex h-[38px] items-center rounded-md border border-gray-200 px-3">
+          <div
+            className="
+              flex
+              h-[42px]
+              w-full
+              items-center
+              rounded-md
+              border
+              border-gray-200
+              bg-white
+              px-3
+              transition
+
+              focus-within:border-[var(--primary)]
+              focus-within:ring-1
+              focus-within:ring-[var(--primary)]
+            "
+          >
             <input
+              id="date"
               type="date"
               value={date}
               onChange={(e) => setDate(e.target.value)}
-              className="w-full text-[12px] outline-none"
+              className="
+                min-w-0
+                w-full
+                bg-transparent
+                text-[12px]
+                text-[var(--text)]
+                outline-none
+
+                sm:text-[13px]
+              "
             />
 
-            <CalendarDays size={16} className="text-gray-500" />
+            <CalendarDays
+              size={16}
+              className="ml-2 shrink-0 text-[var(--muted)]"
+            />
           </div>
         </div>
 
+        {/* Time */}
         <div>
-          <label className="mb-1 block text-[12px] text-gray-700">
+          <label
+            htmlFor="time"
+            className="
+              mb-1
+              block
+              text-[12px]
+              font-medium
+              text-[var(--text)]
+            "
+          >
             Time
           </label>
 
-          <div className="flex h-[38px] items-center rounded-md border border-gray-200 px-3">
+          <div
+            className="
+              flex
+              h-[42px]
+              w-full
+              items-center
+              rounded-md
+              border
+              border-gray-200
+              bg-white
+              px-3
+              transition
+
+              focus-within:border-[var(--primary)]
+              focus-within:ring-1
+              focus-within:ring-[var(--primary)]
+            "
+          >
             <input
+              id="time"
               type="time"
               value={time}
               onChange={(e) => setTime(e.target.value)}
-              className="w-full text-[12px] outline-none"
+              className="
+                min-w-0
+                w-full
+                bg-transparent
+                text-[12px]
+                text-[var(--text)]
+                outline-none
+
+                sm:text-[13px]
+              "
             />
 
-            <Clock3 size={16} className="text-gray-500" />
+            <Clock3
+              size={16}
+              className="ml-2 shrink-0 text-[var(--muted)]"
+            />
           </div>
         </div>
       </div>
 
-      {/* Vehicle */}
-      <label className="mb-1 block text-[12px] text-gray-700">
-        Select Vehicle
-      </label>
-
-      <div className="mb-4 flex h-[40px] items-center rounded-md border border-gray-200 px-3">
-        <select
-          value={vehicle}
-          onChange={(e) => setVehicle(e.target.value)}
-          className="w-full appearance-none bg-transparent text-[12px] outline-none"
+      {/* ================= VEHICLE ================= */}
+      <div className="mb-4">
+        <label
+          htmlFor="vehicle"
+          className="
+            mb-1
+            block
+            text-[12px]
+            font-medium
+            text-[var(--text)]
+          "
         >
-          <option value="">Choose your vehicle</option>
-          <option>SBS Mini</option>
-          <option>SBS Sedan</option>
-          <option>SBS Van</option>
-          <option>SBS SUV</option>
-          <option>SBS MUV</option>
-          <option>SBS MUV+</option>
-        </select>
+          Select Vehicle
+        </label>
 
-        <ChevronDown size={16} />
+        <div
+          className="
+            flex
+            h-[42px]
+            w-full
+            items-center
+            rounded-md
+            border
+            border-gray-200
+            bg-white
+            px-3
+            transition
+
+            focus-within:border-[var(--primary)]
+            focus-within:ring-1
+            focus-within:ring-[var(--primary)]
+          "
+        >
+          <select
+            id="vehicle"
+            value={vehicle}
+            onChange={(e) => setVehicle(e.target.value)}
+            className="
+              w-full
+              min-w-0
+              appearance-none
+              bg-transparent
+              text-[12px]
+              text-[var(--text)]
+              outline-none
+
+              sm:text-[13px]
+            "
+          >
+            <option value="">
+              Choose your vehicle
+            </option>
+
+            <option value="SBS Mini">
+              SBS Mini
+            </option>
+
+            <option value="SBS Sedan">
+              SBS Sedan
+            </option>
+
+            <option value="SBS Van">
+              SBS Van
+            </option>
+
+            <option value="SBS SUV">
+              SBS SUV
+            </option>
+
+            <option value="SBS MUV">
+              SBS MUV
+            </option>
+
+            <option value="SBS MUV+">
+              SBS MUV+
+            </option>
+          </select>
+
+          <ChevronDown
+            size={16}
+            className="ml-2 shrink-0 text-[var(--muted)]"
+          />
+        </div>
       </div>
 
-      {/* Button */}
+      {/* ================= BOOK BUTTON ================= */}
       <button
+        type="button"
         onClick={handleBookRide}
-        className="h-[39px] w-full rounded-md bg-[#ffc107] text-[14px] font-bold text-black transition hover:bg-[#e9ae00]"
+        className="
+          h-[43px]
+          w-full
+          rounded-md
+          bg-[var(--secondary)]
+          px-4
+          text-[13px]
+          font-bold
+          text-black
+          shadow-sm
+          transition
+
+          hover:bg-[var(--secondary-dark)]
+
+          active:scale-[0.98]
+
+          sm:text-[14px]
+        "
       >
         Book Ride Now
       </button>
     </div>
   );
 }
+

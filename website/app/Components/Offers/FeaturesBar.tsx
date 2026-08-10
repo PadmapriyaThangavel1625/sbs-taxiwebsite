@@ -1,36 +1,113 @@
-import { ShieldCheck, Headset, MapPin, Wallet } from 'lucide-react';
+
+import {
+  ShieldCheck,
+  Headset,
+  MapPin,
+  Wallet,
+} from "lucide-react";
+
+const features = [
+  {
+    icon: ShieldCheck,
+    title: "Safe & Secure Rides",
+    description: "Verified drivers & well maintained cars",
+  },
+  {
+    icon: Headset,
+    title: "24/7 Customer Support",
+    description: "We're always here to help you",
+  },
+  {
+    icon: MapPin,
+    title: "Live Tracking",
+    description: "Track your ride in real time",
+  },
+  {
+    icon: Wallet,
+    title: "Multiple Payment Options",
+    description: "UPI, Cards, Net Banking & more",
+  },
+];
 
 export default function FeaturesBar() {
   return (
-    <div className="bg-white mx-[5%] mb-10 p-6 rounded-xl grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 shadow-sm">
-      <div className="flex gap-4 items-start">
-        <ShieldCheck className="text-[#0056b3] bg-[#eef4f8] p-3 rounded-lg shrink-0" size={48} />
-        <div>
-          <h4 className="text-xs md:text-sm font-semibold text-[#0d1b2a] mb-1">Safe & Secure Rides</h4>
-          <p className="text-[11px] text-gray-600">Verified drivers & well maintained cars</p>
-        </div>
+    <section className="mb-8 sm:mb-10">
+      <div
+        className="
+          container-custom
+          grid
+          grid-cols-1
+          gap-5
+          rounded-xl
+          bg-white
+          p-5
+          shadow-sm
+          sm:grid-cols-2
+          sm:gap-6
+          sm:p-6
+          lg:grid-cols-4
+        "
+      >
+        {features.map((feature) => {
+          const Icon = feature.icon;
+
+          return (
+            <div
+              key={feature.title}
+              className="
+                flex
+                items-start
+                gap-4
+              "
+            >
+              {/* Icon */}
+              <div
+                className="
+                  flex
+                  h-12
+                  w-12
+                  shrink-0
+                  items-center
+                  justify-center
+                  rounded-lg
+                  bg-primary-light
+                "
+              >
+                <Icon
+                  size={24}
+                  className="text-primary"
+                />
+              </div>
+
+              {/* Content */}
+              <div>
+                <h4
+                  className="
+                    mb-1
+                    text-xs
+                    font-semibold
+                    text-heading
+                    sm:text-sm
+                  "
+                >
+                  {feature.title}
+                </h4>
+
+                <p
+                  className="
+                    text-[11px]
+                    leading-5
+                    text-muted
+                    sm:text-xs
+                  "
+                >
+                  {feature.description}
+                </p>
+              </div>
+            </div>
+          );
+        })}
       </div>
-      <div className="flex gap-4 items-start">
-        <Headset className="text-[#0056b3] bg-[#eef4f8] p-3 rounded-lg shrink-0" size={48} />
-        <div>
-          <h4 className="text-xs md:text-sm font-semibold text-[#0d1b2a] mb-1">24/7 Customer Support</h4>
-          <p className="text-[11px] text-gray-600">We're always here to help you</p>
-        </div>
-      </div>
-      <div className="flex gap-4 items-start">
-        <MapPin className="text-[#0056b3] bg-[#eef4f8] p-3 rounded-lg shrink-0" size={48} />
-        <div>
-          <h4 className="text-xs md:text-sm font-semibold text-[#0d1b2a] mb-1">Live Tracking</h4>
-          <p className="text-[11px] text-gray-600">Track your ride in real time</p>
-        </div>
-      </div>
-      <div className="flex gap-4 items-start">
-        <Wallet className="text-[#0056b3] bg-[#eef4f8] p-3 rounded-lg shrink-0" size={48} />
-        <div>
-          <h4 className="text-xs md:text-sm font-semibold text-[#0d1b2a] mb-1">Multiple Payment Options</h4>
-          <p className="text-[11px] text-gray-600">UPI, Cards, Net Banking & more</p>
-        </div>
-      </div>
-    </div>
+    </section>
   );
 }

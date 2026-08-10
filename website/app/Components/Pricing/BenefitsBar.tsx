@@ -1,36 +1,102 @@
+
 // components/pricing/BenefitsBar.tsx
+
 import React from "react";
 
 export default function BenefitsBar() {
   const benefits = [
-    { icon: "₹", title: "No", subtitle: "Hidden Charges" },
-    { icon: "👤", title: "No Driver", subtitle: "Bata Charges" },
-    { icon: "◷", title: "No Waiting", subtitle: "Charges" },
-    { icon: "▣", title: "No Extra Charge", subtitle: "for Online Payments" },
-    { icon: "🛣", title: "Toll Free for", subtitle: "the First 200 KM" },
+    {
+      icon: "₹",
+      title: "No",
+      subtitle: "Hidden Charges",
+    },
+    {
+      icon: "👤",
+      title: "No Driver",
+      subtitle: "Bata Charges",
+    },
+    {
+      icon: "◷",
+      title: "No Waiting",
+      subtitle: "Charges",
+    },
+    {
+      icon: "▣",
+      title: "No Extra Charge",
+      subtitle: "for Online Payments",
+    },
+    {
+      icon: "🛣",
+      title: "Toll Free for",
+      subtitle: "the First 200 KM",
+    },
   ];
 
   return (
-    <section className="w-full py-8">
-      <div className="grid grid-cols-1 lg:grid-cols-[70%_30%] gap-5 w-full">
-
-        {/* Customer Benefits 70% */}
-        <div className="bg-white border rounded-xl p-6 shadow-sm w-full flex flex-col justify-between">
-          <h3 className="font-bold text-gray-900 text-base mb-5">
+    <section className="section-bg py-6 sm:py-8">
+      <div
+        className="
+          container-custom
+          grid
+          grid-cols-1
+          gap-5
+          lg:grid-cols-[7fr_3fr]
+          lg:gap-6
+        "
+      >
+        {/* Customer Benefits - 70% */}
+        <div
+          className="
+            flex
+            w-full
+            flex-col
+            justify-between
+            rounded-xl
+            border
+            bg-white
+            p-5
+            shadow-sm
+            sm:p-6
+          "
+        >
+          <h3 className="mb-5 text-base font-bold text-heading">
             Customer Benefits
           </h3>
 
-          <div className="grid grid-cols-2 sm:grid-cols-5 text-center gap-y-6 sm:divide-x divide-gray-200">
-            {benefits.map((item, i) => (
+          <div
+            className="
+              grid
+              grid-cols-2
+              gap-y-6
+              text-center
+              sm:grid-cols-5
+              sm:divide-x
+              sm:divide-gray-200
+            "
+          >
+            {benefits.map((item, index) => (
               <div
-                key={i}
-                className="px-2 flex flex-col items-center justify-center"
+                key={index}
+                className="
+                  flex
+                  flex-col
+                  items-center
+                  justify-center
+                  px-2
+                "
               >
-                <span className="text-blue-600 text-2xl mb-2">
+                <span className="mb-2 text-2xl text-primary">
                   {item.icon}
                 </span>
 
-                <p className="text-xs text-gray-700 font-medium leading-tight">
+                <p
+                  className="
+                    text-xs
+                    font-medium
+                    leading-tight
+                    text-muted
+                  "
+                >
                   {item.title}
                   <br />
                   {item.subtitle}
@@ -40,27 +106,64 @@ export default function BenefitsBar() {
           </div>
         </div>
 
-        {/* Important Note 30% */}
-        <div className="bg-[#fffdf5] border border-yellow-200 rounded-xl p-6 shadow-sm w-full flex flex-col justify-between">
+        {/* Important Note - 30% */}
+        <div
+          className="
+            flex
+            w-full
+            flex-col
+            justify-between
+            rounded-xl
+            border
+            border-secondary
+            bg-secondary-light
+            p-5
+            shadow-sm
+            sm:p-6
+          "
+        >
           <div>
-            <div className="flex items-center justify-between mb-3">
-              <h3 className="font-bold text-gray-900 text-base">
+            {/* Heading */}
+            <div className="mb-3 flex items-center justify-between">
+              <h3 className="text-base font-bold text-heading">
                 Important Note
               </h3>
 
-              <span className="text-yellow-600 bg-yellow-100 rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold flex-shrink-0">
+              <span
+                className="
+                  flex
+                  h-6
+                  w-6
+                  shrink-0
+                  items-center
+                  justify-center
+                  rounded-full
+                  bg-secondary
+                  text-sm
+                  font-bold
+                  text-heading
+                "
+              >
                 i
               </span>
             </div>
 
-            <p className="text-xs text-gray-600 leading-relaxed">
+            {/* Description */}
+            <p
+              className="
+                text-xs
+                leading-relaxed
+                text-muted
+                sm:text-sm
+              "
+            >
               Prices may vary for long distance, hill stations,
               night travel and special requests. Please check
-              fare calculator or contact our support for exact pricing.
+              fare calculator or contact our support for exact
+              pricing.
             </p>
           </div>
         </div>
-
       </div>
     </section>
   );

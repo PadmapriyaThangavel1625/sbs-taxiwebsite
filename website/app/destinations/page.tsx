@@ -4,42 +4,24 @@ import WhyTravel from "@/app/Components/Destinations/WhyTravel";
 import BenefitsBar from "@/app/Components/Destinations/BenefitsBar";
 import BottomCTA from "@/app/Components/Destinations/BottomCTA";
 
+export default function Page() {
+  return (
+    <>
+      <DestinationHero />
 
-export default function Page(){
+      <div className="mx-auto grid max-w-7xl gap-5 md:grid-cols-4">
+        <div className="md:col-span-3">
+          <DestinationCards />
+        </div>
 
-return(
+        <div className="mt-6">
+          <WhyTravel />
+        </div>
+      </div>
 
-<>
+      <BenefitsBar />
 
-<DestinationHero/>
-
-
-<div className="grid md:grid-cols-4 gap-5 max-w-7xl mx-auto">
-
-<div className="md:col-span-3">
-
-<DestinationCards/>
-
-</div>
-
-
-<div className="mt-6">
-
-<WhyTravel/>
-
-</div>
-
-
-</div>
-
-
-<BenefitsBar/>
-
-<BottomCTA/>
-
-
-</>
-
-)
-
+      <BottomCTA />
+    </>
+  );
 }

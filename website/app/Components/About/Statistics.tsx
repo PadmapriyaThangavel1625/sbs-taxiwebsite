@@ -1,4 +1,10 @@
-import { Users, Car, MapPin, Award } from "lucide-react";
+
+import {
+  Users,
+  Car,
+  MapPin,
+  Award,
+} from "lucide-react";
 
 const stats = [
   {
@@ -25,40 +31,51 @@ const stats = [
 
 export default function Statistics() {
   return (
-    <div className="h-full bg-slate-50 border border-slate-100 rounded-3xl p-6 sm:p-8 shadow-sm flex flex-col">
-      {/* Heading */}
-      <h3 className="text-2xl font-bold text-slate-900 border-b border-slate-200 pb-4">
-        SBS Taxi in Numbers
-      </h3>
+    <section className="w-full py-10 sm:py-12 lg:py-16">
+      <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
 
-      {/* Statistics Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 flex-1 content-center py-6">
-        {stats.map((stat, idx) => {
-          const Icon = stat.icon;
+        {/* Heading */}
+        <div className="mb-8 text-center sm:mb-10 lg:mb-12">
+          <h2 className="text-2xl font-bold text-slate-900 sm:text-3xl lg:text-4xl">
+            SBS Taxi in Numbers
+          </h2>
 
-          return (
-            <div
-              key={idx}
-              className="flex flex-col justify-center space-y-3"
-            >
-              {/* Icon */}
-              <div className="w-12 h-12 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center">
-                <Icon className="w-6 h-6" />
+          <p className="mx-auto mt-2 max-w-2xl text-sm leading-6 text-slate-600 sm:text-base">
+            Trusted by thousands of customers with a growing fleet
+            and expanding service coverage across India.
+          </p>
+        </div>
+
+        {/* Statistics Grid */}
+        <div className="grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-4 lg:gap-8">
+          {stats.map((stat, idx) => {
+            const Icon = stat.icon;
+
+            return (
+              <div
+                key={idx}
+                className="flex min-w-0 flex-col items-center rounded-xl border border-slate-100 bg-white p-4 text-center shadow-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-md sm:p-6 lg:p-7"
+              >
+                {/* Icon */}
+                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-100 text-[#1A365D] sm:h-12 sm:w-12">
+                  <Icon className="h-5 w-5 sm:h-6 sm:w-6" />
+                </div>
+
+                {/* Number */}
+                <h4 className="mt-4 text-2xl font-extrabold text-slate-900 sm:mt-5 sm:text-3xl lg:text-4xl">
+                  {stat.value}
+                </h4>
+
+                {/* Label */}
+                <p className="mt-2 text-xs leading-5 text-slate-600 sm:text-sm sm:leading-6">
+                  {stat.label}
+                </p>
               </div>
+            );
+          })}
+        </div>
 
-              {/* Number */}
-              <h4 className="text-3xl sm:text-4xl font-extrabold text-slate-900">
-                {stat.value}
-              </h4>
-
-              {/* Label */}
-              <p className="text-slate-600 text-sm leading-relaxed">
-                {stat.label}
-              </p>
-            </div>
-          );
-        })}
       </div>
-    </div>
+    </section>
   );
 }

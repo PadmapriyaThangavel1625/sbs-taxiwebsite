@@ -1,3 +1,4 @@
+
 import Image from "next/image";
 import { Users, Briefcase } from "lucide-react";
 
@@ -19,49 +20,167 @@ export default function VehicleCard({
   price,
 }: VehicleCardProps) {
   return (
-    <div className="group overflow-hidden rounded-lg border border-gray-200 bg-white transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
+    <div
+      className="
+        group
+        w-full
+        overflow-hidden
+        rounded-xl
+        border
+        border-gray-200
+        bg-white
+        shadow-sm
+        transition-all
+        duration-300
 
-      {/* Vehicle Image */}
-      <div className="relative flex h-[145px] items-center justify-center bg-white px-3">
+        hover:border-[var(--primary)]
+        hover:shadow-lg
+      "
+    >
+      {/* ================= VEHICLE IMAGE ================= */}
+      <div
+        className="
+          relative
+          flex
+          h-[135px]
+          w-full
+          items-center
+          justify-center
+          overflow-hidden
+          bg-white
+          px-3
+
+          sm:h-[145px]
+          md:h-[150px]
+          lg:h-[145px]
+          xl:h-[140px]
+          2xl:h-[155px]
+        "
+      >
         <Image
           src={image}
           alt={name}
           width={300}
           height={160}
-          className="h-auto w-full object-contain transition-transform duration-300 group-hover:scale-105"
+          sizes="
+            (max-width: 640px) 90vw,
+            (max-width: 768px) 45vw,
+            (max-width: 1024px) 30vw,
+            17vw
+          "
+          className="
+            h-auto
+            max-h-full
+            w-full
+            object-contain
+            transition-transform
+            duration-300
+            group-hover:scale-105
+          "
         />
       </div>
 
-      {/* Details */}
-      <div className="px-3 pb-4">
-        <h3 className="text-[16px] font-semibold text-gray-900">
+      {/* ================= DETAILS ================= */}
+      <div
+        className="
+          px-3
+          pb-4
+          pt-1
+
+          sm:px-4
+          sm:pb-5
+        "
+      >
+        {/* Vehicle Name */}
+        <h3
+          className="
+            truncate
+            text-[15px]
+            font-semibold
+            text-[var(--heading)]
+
+            sm:text-[16px]
+          "
+        >
           {name}
         </h3>
 
-        <p className="mt-0.5 text-[12px] text-gray-500">
+        {/* Vehicle Type */}
+        <p
+          className="
+            mt-0.5
+            text-[11px]
+            text-[var(--muted)]
+
+            sm:text-[12px]
+          "
+        >
           {type}
         </p>
 
-        {/* Seats / Luggage */}
-        <div className="mt-4 flex items-center gap-5 text-[12px] text-gray-600">
-          <div className="flex items-center gap-1.5">
-            <Users size={15} strokeWidth={1.7} />
+        {/* ================= SEATS / LUGGAGE ================= */}
+        <div
+          className="
+            mt-3
+            flex
+            flex-wrap
+            items-center
+            gap-x-4
+            gap-y-2
+            text-[10px]
+            text-[var(--muted)]
+
+            sm:mt-4
+            sm:gap-x-5
+            sm:text-[12px]
+          "
+        >
+          {/* Seats */}
+          <div className="flex items-center gap-1.5 whitespace-nowrap">
+            <Users
+              size={15}
+              strokeWidth={1.7}
+              className="shrink-0 text-[var(--primary)]"
+            />
+
             <span>{seats} Seater</span>
           </div>
 
-          <div className="flex items-center gap-1.5">
-            <Briefcase size={15} strokeWidth={1.7} />
+          {/* Luggage */}
+          <div className="flex items-center gap-1.5 whitespace-nowrap">
+            <Briefcase
+              size={15}
+              strokeWidth={1.7}
+              className="shrink-0 text-[var(--primary)]"
+            />
+
             <span>{luggage} Luggage</span>
           </div>
         </div>
 
-        {/* Price */}
-        <div className="mt-3">
-          <span className="text-[16px] font-bold text-blue-700">
+        {/* ================= PRICE ================= */}
+        <div className="mt-3 flex items-baseline">
+          <span
+            className="
+              text-[16px]
+              font-bold
+              text-[var(--primary)]
+
+              sm:text-[17px]
+            "
+          >
             ₹{price}
           </span>
 
-          <span className="ml-1 text-[12px] text-gray-500">
+          <span
+            className="
+              ml-1
+              text-[11px]
+              text-[var(--muted)]
+
+              sm:text-[12px]
+            "
+          >
             / km
           </span>
         </div>

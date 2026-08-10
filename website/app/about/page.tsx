@@ -7,20 +7,25 @@ import BottomCTA from "@/app/Components/About/BottomCTA";
 
 export default function AboutPage() {
   return (
-    <main className="min-h-screen bg-white text-slate-800 font-sans">
+    <main className="about-page">
       <HeroSection />
+
       <Features />
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
-          <div className="lg:col-span-7">
+
+      <section className="about-main-section">
+        <div className="about-main-grid">
+          <div className="about-story-column">
             <StorySection />
           </div>
-          <div className="lg:col-span-5">
+
+          <div className="about-statistics-column">
             <Statistics />
           </div>
         </div>
       </section>
+
       <Values />
+
       <BottomCTA />
     </main>
   );
