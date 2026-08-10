@@ -1,6 +1,6 @@
 "use client";
-import Link from "next/link";
 
+import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
 import {
@@ -9,62 +9,72 @@ import {
   MapPin,
   IndianRupee,
 } from "lucide-react";
-const destinations = [
+
+type TouristSpot = {
+  name: string;
+  description: string;
+  img: string;
+};
+
+type Destination = {
+  name: string;
+  km: string;
+  price: string;
+  img: string;
+  spots: TouristSpot[];
+};
+
+const destinations: Destination[] = [
   {
-  name: "Madurai",
-  km: "220 km",
-  price: "2499",
+    name: "Madurai",
+    km: "220 km",
+    price: "2499",
+    img: "https://images.unsplash.com/photo-1572146462570-2129a547e6dd?q=80&w=735&auto=format&fit=crop",
+    spots: [
+      {
+        name: "Meenakshi Amman Temple",
+        description:
+          "A historic Hindu temple dedicated to Meenakshi and Sundareshwarar, famous for its colorful gopurams, detailed sculptures, and magnificent architecture.",
+        img: "https://images.unsplash.com/photo-1692173248120-59547c3d4653?w=800&auto=format&fit=crop&q=80",
+      },
+      {
+        name: "Thirumalai Nayakkar Palace",
+        description:
+          "A magnificent 17th-century palace known for its huge pillars, grand courtyard, beautiful arches, and impressive Indo-Saracenic architecture.",
+        img: "https://media.istockphoto.com/id/1366764347/photo/madurai-tamil-nadu-india-wide-view-of-an-ancient-thirumalai-nayak-palace-sculptures-and.webp?a=1&b=1&s=800&w=0&k=20&c=MS1hZYiaIpUJtpMzLl7BP06bDTPShZAu-IU3PM92ILc=",
+      },
+      {
+        name: "Gandhi Memorial Museum",
+        description:
+          "A historic museum in Madurai that preserves photographs, documents, and important artifacts connected with Mahatma Gandhi and India's freedom movement.",
+        img: "https://media.istockphoto.com/id/1407795903/photo/thirumalai-naicker-palace-in-the-state-of-tamil-nadu-in-india.webp?a=1&b=1&s=800&w=0&k=20&c=rbdggBWNMrxJafYJfCchd6Lm6UNsFWIyfnf7K363WBM=",
+      },
+      {
+        name: "Alagar Koyil",
+        description:
+          "A beautiful Vishnu temple located in the scenic Alagar Hills, surrounded by green forests and peaceful natural scenery.",
+        img: "https://media.istockphoto.com/id/1645978111/photo/a-scene-of-a-very-famous-temple-tower-view-of-adi-kumbeswarar-temple-and-one-among-travel.webp?a=1&b=1&s=800&w=0&k=20&c=8rIVNYvXs3Yb-LBrSJxYwQd7UCPepI6H7HrL2PdP3v4=",
+      },
+      {
+        name: "Thirupparankundram Temple",
+        description:
+          "An ancient rock-cut temple dedicated to Lord Murugan and one of the important Arupadai Veedu pilgrimage sites in Tamil Nadu.",
+        img: "https://media.istockphoto.com/id/1393587939/photo/temples-of-tamil-nadu.webp?a=1&b=1&s=800&w=0&k=20&c=0mw5AKdaMu3AM3CNrAjKPtQmjkBjHWNDTHvcfiTGpxQ=",
+      },
+    ],
+  },
 
-  img: "https://images.unsplash.com/photo-1572146462570-2129a547e6dd?q=80&w=735&auto=format&fit=crop",
-
-  spots: [
-    {
-      name: "Meenakshi Amman Temple",
-      description:
-        "A historic Hindu temple dedicated to Meenakshi and Sundareshwarar, famous for its colorful gopurams, detailed sculptures, and magnificent architecture.",
-      img: "https://images.unsplash.com/photo-1692173248120-59547c3d4653?w=800&auto=format&fit=crop&q=80",
-    },
-
-    {
-      name: "Thirumalai Nayakkar Palace",
-      description:
-        "A magnificent 17th-century palace known for its huge pillars, grand courtyard, beautiful arches, and impressive Indo-Saracenic architecture.",
-      img: "https://media.istockphoto.com/id/1366764347/photo/madurai-tamil-nadu-india-wide-view-of-an-ancient-thirumalai-nayak-palace-sculptures-and.webp?a=1&b=1&s=800&w=0&k=20&c=MS1hZYiaIpUJtpMzLl7BP06bDTPShZAu-IU3PM92ILc=",
-    },
-
-    {
-      name: "Gandhi Memorial Museum",
-      description:
-        "A historic museum in Madurai that preserves photographs, documents, and important artifacts connected with Mahatma Gandhi and India's freedom movement.",
-      img: "https://media.istockphoto.com/id/1407795903/photo/thirumalai-naicker-palace-in-the-state-of-tamil-nadu-in-india.webp?a=1&b=1&s=800&w=0&k=20&c=rbdggBWNMrxJafYJfCchd6Lm6UNsFWIyfnf7K363WBM=",
-    },
-
-    {
-      name: "Alagar Koyil",
-      description:
-        "A beautiful Vishnu temple located in the scenic Alagar Hills, surrounded by green forests and peaceful natural scenery.",
-      img: "https://media.istockphoto.com/id/1645978111/photo/a-scene-of-a-very-famous-temple-tower-view-of-adi-kumbeswarar-temple-and-one-among-travel.webp?a=1&b=1&s=800&w=0&k=20&c=8rIVNYvXs3Yb-LBrSJxYwQd7UCPepI6H7HrL2PdP3v4=",
-    },
-
-    {
-      name: "Thirupparankundram Temple",
-      description:
-        "An ancient rock-cut temple dedicated to Lord Murugan and one of the important Arupadai Veedu pilgrimage sites in Tamil Nadu.",
-      img: "https://media.istockphoto.com/id/1393587939/photo/temples-of-tamil-nadu.webp?a=1&b=1&s=800&w=0&k=20&c=0mw5AKdaMu3AM3CNrAjKPtQmjkBjHWNDTHvcfiTGpxQ=",
-    },
-  ],
-},
   {
     name: "Kanyakumari",
     km: "310 km",
     price: "3499",
-    img: "https://images.unsplash.com/photo-1610902552120-c577dbde88a8?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8a2FueWFrdW1hcml8ZW58MHx8MHx8fDA%3D",
+    img: "https://images.unsplash.com/photo-1610902552120-c577dbde88a8?w=600&auto=format&fit=crop&q=60",
     spots: [
-        {
+      {
         name: "Thiruvalluvar Statue",
         description:
           "A massive statue dedicated to Tamil poet and philosopher Thiruvalluvar, standing on a rocky island near the Vivekananda Rock Memorial.",
-        img: "https://images.unsplash.com/photo-1736319286940-5379b582256b?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8a2Fubml5YWt1bWFyaXxlbnwwfHwwfHx8MA%3D%3D",
+        img: "https://images.unsplash.com/photo-1736319286940-5379b582256b?w=600&auto=format&fit=crop&q=60",
       },
       {
         name: "Vivekananda Rock Memorial",
@@ -72,24 +82,23 @@ const destinations = [
           "A famous memorial located on a rocky island off the coast of Kanyakumari, associated with Swami Vivekananda and offering beautiful sea views.",
         img: "https://media.istockphoto.com/id/1301792905/photo/basava-statue-under-baldachin-at-sri-sangameshwar-temple-bagalkot-karnataka-india.webp?a=1&b=1&s=612x612&w=0&k=20&c=ffXm57peqpFdkBcjPGPpzlh3bW0IL4kolY9DRmUwqIA=",
       },
-    
       {
         name: "Kanyakumari Beach",
         description:
           "A popular coastal destination famous for spectacular sunrise and sunset views and the meeting of three major bodies of water.",
-        img: "https://images.unsplash.com/photo-1728439910260-fab99499117a?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OXx8a2Fubml5YWt1bWFyaXxlbnwwfHwwfHx8MA%3D%3D",
+        img: "https://images.unsplash.com/photo-1728439910260-fab99499117a?w=600&auto=format&fit=crop&q=60",
       },
       {
         name: "Bhagavathi Amman Temple",
         description:
           "An important coastal temple dedicated to Goddess Bhagavathi Amman and one of the major spiritual attractions of Kanyakumari.",
-        img: "https://images.unsplash.com/photo-1573352763925-82bd5dfc31d1?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8YmhhZ2F2YXRoaSUyMGFtbWFuJTIwdGVtcGxlfGVufDB8fDB8fHww",
+        img: "https://images.unsplash.com/photo-1573352763925-82bd5dfc31d1?w=600&auto=format&fit=crop&q=60",
       },
       {
         name: "Sunset Point",
         description:
           "A popular location for watching the sun set over the sea, creating beautiful evening views along the Kanyakumari coastline.",
-        img: "https://images.unsplash.com/photo-1589564974428-5766540caa67?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8a2Fubml5YWt1bWFyaXxlbnwwfHwwfHx8MA%3D%3D",
+        img: "https://images.unsplash.com/photo-1589564974428-5766540caa67?w=600&auto=format&fit=crop&q=60",
       },
     ],
   },
@@ -254,13 +263,13 @@ const destinations = [
     name: "Thanjavur",
     km: "300 km",
     price: "3199",
-    img: "https://images.unsplash.com/photo-1675677044118-3fd84f9deaf0?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8dGhhbmphdnVyfGVufDB8fDB8fHww",
+    img: "https://images.unsplash.com/photo-1675677044118-3fd84f9deaf0?w=600&auto=format&fit=crop&q=60",
     spots: [
       {
         name: "Brihadeeswarar Temple",
         description:
           "A UNESCO World Heritage monument built during the Chola period and famous for its enormous vimana and magnificent stone architecture.",
-        img: "https://images.unsplash.com/photo-1582510003544-4d00b7f74220?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8dGhhbmphdnVyfGVufDB8fDB8fHww",
+        img: "https://images.unsplash.com/photo-1582510003544-4d00b7f74220?w=600&auto=format&fit=crop&q=60",
       },
       {
         name: "Thanjavur Palace",
@@ -293,19 +302,19 @@ const destinations = [
     name: "Rameswaram",
     km: "350 km",
     price: "3999",
-    img: "https://images.unsplash.com/photo-1706932642959-97cdde19ef0b?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8cmFtZXNod2FyYW18ZW58MHx8MHx8fDA%3D",
+    img: "https://images.unsplash.com/photo-1706932642959-97cdde19ef0b?w=600&auto=format&fit=crop&q=60",
     spots: [
       {
         name: "Ramanathaswamy Temple",
         description:
           "A famous pilgrimage temple known for its exceptionally long corridors, detailed stone pillars, and sacred water wells.",
-        img: "https://images.unsplash.com/photo-1741798037832-6c0c86a6262a?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8cmFtZXNod2FyYW18ZW58MHx8MHx8fDA%3D",
+        img: "https://images.unsplash.com/photo-1741798037832-6c0c86a6262a?w=600&auto=format&fit=crop&q=60",
       },
       {
         name: "Pamban Bridge",
         description:
           "A famous bridge connecting mainland India with Rameswaram Island and offering spectacular views of the sea.",
-        img: "https://images.unsplash.com/photo-1706932642959-97cdde19ef0b?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8cmFtZXNod2FyYW18ZW58MHx8MHx8fDA%3D",
+        img: "https://images.unsplash.com/photo-1706932642959-97cdde19ef0b?w=600&auto=format&fit=crop&q=60",
       },
       {
         name: "Dhanushkodi",
@@ -317,7 +326,7 @@ const destinations = [
         name: "Ariyaman Beach",
         description:
           "A peaceful beach destination with clear coastal scenery, suitable for relaxing away from busy tourist areas.",
-        img: "https://images.unsplash.com/photo-1692700827093-f526f0b32923?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8cmFtZXNod2FyYW18ZW58MHx8MHx8fDA%3D",
+        img: "https://images.unsplash.com/photo-1692700827093-f526f0b32923?w=600&auto=format&fit=crop&q=60",
       },
       {
         name: "APJ Abdul Kalam Memorial",
@@ -332,25 +341,25 @@ const destinations = [
     name: "Ooty",
     km: "270 km",
     price: "2899",
-    img: "https://images.unsplash.com/photo-1660918738010-295b09857f93?q=80&w=702&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    img: "https://images.unsplash.com/photo-1660918738010-295b09857f93?q=80&w=702&auto=format&fit=crop",
     spots: [
       {
         name: "Ooty Lake",
         description:
           "A scenic artificial lake surrounded by greenery and eucalyptus trees, popular for boating and relaxing walks.",
-        img: "https://images.unsplash.com/photo-1711553186754-0cfbdfe38b8d?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8b290eSUyMGxha2V8ZW58MHx8MHx8fDA%3D",
+        img: "https://images.unsplash.com/photo-1711553186754-0cfbdfe38b8d?w=600&auto=format&fit=crop&q=60",
       },
       {
         name: "Doddabetta Peak",
         description:
           "The highest peak in the Nilgiri Hills, offering panoramic views of Ooty and the surrounding mountain landscape.",
-        img: "https://images.unsplash.com/photo-1711553186754-0cfbdfe38b8d?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8b290eSUyMGxha2V8ZW58MHx8MHx8fDA%3D",
+        img: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=800&q=75",
       },
       {
         name: "Botanical Garden",
         description:
           "A large landscaped garden containing a wide variety of plants, flowers, trees, and beautiful walking areas.",
-        img: "https://images.unsplash.com/photo-1711553186754-0cfbdfe38b8d?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8b290eSUyMGxha2V8ZW58MHx8MHx8fDA%3D",
+        img: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=800&q=75",
       },
       {
         name: "Rose Garden",
@@ -377,13 +386,13 @@ const destinations = [
     name: "Tirupati",
     km: "450 km",
     price: "4799",
-    img: "https://images.unsplash.com/photo-1733805569204-41768c7d8c0f?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8dGhpcnVwYXRoaXxlbnwwfHwwfHx8MA%3D%3D",
+    img: "https://images.unsplash.com/photo-1733805569204-41768c7d8c0f?w=600&auto=format&fit=crop&q=60",
     spots: [
       {
         name: "Tirumala Venkateswara Temple",
         description:
           "One of India's most important pilgrimage destinations, dedicated to Lord Venkateswara and located on the Tirumala Hills.",
-        img: "https://images.unsplash.com/photo-1733805569204-41768c7d8c0f?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8dGhpcnVwYXRoaXxlbnwwfHwwfHx8MA%3D%3D",
+        img: "https://images.unsplash.com/photo-1733805569204-41768c7d8c0f?w=600&auto=format&fit=crop&q=60",
       },
       {
         name: "Kapila Theertham",
@@ -416,13 +425,13 @@ const destinations = [
     name: "Munnar",
     km: "260 km",
     price: "2799",
-    img: "https://images.unsplash.com/photo-1637066742971-726bee8d9f56?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8bXVubmFyfGVufDB8fDB8fHww",
+    img: "https://images.unsplash.com/photo-1637066742971-726bee8d9f56?w=600&auto=format&fit=crop&q=60",
     spots: [
       {
         name: "Munnar Tea Gardens",
         description:
           "Beautiful rolling hills covered with green tea plantations, creating one of the most recognizable landscapes around Munnar.",
-        img: "https://plus.unsplash.com/premium_photo-1697730334419-fba83fe143b7?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8bXVubmFyfGVufDB8fDB8fHww",
+        img: "https://plus.unsplash.com/premium_photo-1697730334419-fba83fe143b7?w=600&auto=format&fit=crop&q=60",
       },
       {
         name: "Eravikulam National Park",
@@ -455,19 +464,19 @@ const destinations = [
     name: "Kodaikanal",
     km: "240 km",
     price: "2699",
-    img: "https://images.unsplash.com/photo-1593692716621-1e228b0a9224?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8a29kYWlrYW5hbHxlbnwwfHwwfHx8MA%3D%3D",
+    img: "https://images.unsplash.com/photo-1593692716621-1e228b0a9224?w=600&auto=format&fit=crop&q=60",
     spots: [
       {
         name: "Kodaikanal Lake",
         description:
           "A star-shaped artificial lake surrounded by green hills and one of the most popular attractions in Kodaikanal.",
-        img: "https://images.unsplash.com/photo-1619020933389-e96f49742bce?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8a29kYWlrYW5hbHxlbnwwfHwwfHx8MA%3D%3D",
+        img: "https://images.unsplash.com/photo-1619020933389-e96f49742bce?w=600&auto=format&fit=crop&q=60",
       },
       {
         name: "Coaker's Walk",
         description:
           "A scenic walking path along the mountain edge offering beautiful views of valleys, hills, and clouds.",
-        img: "https://images.unsplash.com/photo-1692792284356-f80113facd09?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8a29kYWlrYW5hbHxlbnwwfHwwfHx8MA%3D%3D",
+        img: "https://images.unsplash.com/photo-1692792284356-f80113facd09?w=600&auto=format&fit=crop&q=60",
       },
       {
         name: "Bryant Park",
@@ -492,20 +501,18 @@ const destinations = [
 ];
 
 export default function DestinationCards() {
-  const [selectedCity, setSelectedCity] = useState<
-    (typeof destinations)[number] | null
-  >(null);
-
+  const [selectedCity, setSelectedCity] = useState<Destination | null>(null);
   const [slideIndex, setSlideIndex] = useState(0);
 
-  const handleCityClick = (city: (typeof destinations)[number]) => {
+  const handleCityClick = (city: Destination) => {
     setSelectedCity(city);
     setSlideIndex(0);
 
     setTimeout(() => {
-      document
-        .getElementById("city-spots")
-        ?.scrollIntoView({ behavior: "smooth", block: "start" });
+      document.getElementById("city-spots")?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
     }, 100);
   };
 
@@ -521,53 +528,68 @@ export default function DestinationCards() {
     if (!selectedCity) return;
 
     setSlideIndex((current) =>
-      current - 1 < 0 ? selectedCity.spots.length - 1 : current - 1
+      current - 1 < 0
+        ? selectedCity.spots.length - 1
+        : current - 1
     );
   };
 
   return (
-    <section className="bg-gray-50 py-16">
-      <div className="mx-auto max-w-7xl px-4">
+    <section className="w-full bg-gray-50 px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
+      <div className="mx-auto max-w-7xl">
         {/* Heading */}
-        <div className="mb-10 text-center">
-          <p className="mb-2 text-sm font-semibold uppercase tracking-wider text-blue-700">
+        <div className="mb-8 text-center sm:mb-10 md:mb-12">
+          <p className="text-sm font-semibold uppercase tracking-widest text-blue-700">
             Popular Destinations
           </p>
 
-          <h2 className="text-3xl font-bold text-gray-900 md:text-4xl">
+          <h2 className="mt-2 text-2xl font-bold text-gray-900 sm:text-3xl md:text-4xl">
             Popular Taxi Destinations
           </h2>
 
-          <p className="mx-auto mt-3 max-w-2xl text-gray-600">
+          <p className="mx-auto mt-3 max-w-2xl text-sm leading-6 text-gray-600 sm:text-base">
             Choose your destination to view popular tourist places and cab
             fare details.
           </p>
         </div>
 
         {/* Destination Cards */}
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3 xl:grid-cols-4">
           {destinations.map((d) => (
             <div
               key={d.name}
-              className="overflow-hidden rounded-2xl bg-white shadow-md transition duration-300 hover:-translate-y-1 hover:shadow-xl"
+              className="group overflow-hidden rounded-2xl bg-white shadow-md transition duration-300 hover:-translate-y-1 hover:shadow-xl"
             >
-              <div className="relative h-52 w-full">
+              {/* Destination Image */}
+              <div className="relative h-48 w-full overflow-hidden sm:h-52">
                 <Image
                   src={d.img}
                   alt={`${d.name} taxi`}
                   fill
-                  className="object-cover"
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+                  className="object-cover transition duration-500 group-hover:scale-105"
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw"
                 />
+
+                <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+
+                <div className="absolute bottom-3 left-4">
+                  <span className="rounded-full bg-white/95 px-3 py-1 text-xs font-semibold text-gray-800 shadow">
+                    {d.km}
+                  </span>
+                </div>
               </div>
 
-              <div className="p-5">
+              {/* Card Content */}
+              <div className="p-4 sm:p-5">
                 <h3 className="text-xl font-bold text-gray-900">
                   {d.name}
                 </h3>
 
-                <div className="mt-3 flex items-center justify-between">
-                  <span className="text-gray-500">{d.km}</span>
+                <div className="mt-3 flex items-center justify-between gap-3">
+                  <span className="flex items-center gap-1 text-sm text-gray-500">
+                    <MapPin size={16} />
+                    {d.km}
+                  </span>
 
                   <span className="text-lg font-bold text-blue-700">
                     ₹{d.price}
@@ -575,8 +597,9 @@ export default function DestinationCards() {
                 </div>
 
                 <button
+                  type="button"
                   onClick={() => handleCityClick(d)}
-                  className="mt-5 w-full rounded-lg bg-blue-700 py-3 font-semibold text-white transition hover:bg-blue-800"
+                  className="mt-5 w-full rounded-lg bg-blue-700 px-4 py-3 text-sm font-semibold text-white transition hover:bg-blue-800 active:scale-[0.98]"
                 >
                   View Tourist Spots
                 </button>
@@ -589,27 +612,27 @@ export default function DestinationCards() {
         {selectedCity && (
           <div
             id="city-spots"
-            className="mt-14 overflow-hidden rounded-2xl bg-white shadow-xl"
+            className="mt-10 overflow-hidden rounded-2xl bg-white shadow-xl sm:mt-12 md:mt-14"
           >
             {/* Header */}
-            <div className="bg-blue-700 px-6 py-8 text-white md:px-10">
-              <p className="flex items-center gap-2 text-sm font-medium uppercase tracking-wider text-blue-100">
+            <div className="bg-blue-700 px-5 py-7 text-white sm:px-8 sm:py-8 md:px-10">
+              <p className="flex items-center gap-2 text-xs font-medium uppercase tracking-wider text-blue-100 sm:text-sm">
                 <MapPin size={17} />
                 Erode → {selectedCity.name}
               </p>
 
-              <h2 className="mt-2 text-3xl font-bold md:text-4xl">
+              <h2 className="mt-2 text-2xl font-bold sm:text-3xl md:text-4xl">
                 Tourist Places in {selectedCity.name}
               </h2>
 
-              <p className="mt-2 text-blue-100">
+              <p className="mt-2 text-sm text-blue-100 sm:text-base">
                 Explore popular tourist attractions with SBS Taxi.
               </p>
             </div>
 
-            <div className="p-6 md:p-10">
+            <div className="p-5 sm:p-7 md:p-10">
               {/* Fare Information */}
-              <div className="mb-8 grid gap-4 sm:grid-cols-3">
+              <div className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-3">
                 <div className="rounded-xl bg-gray-50 p-5">
                   <div className="mb-2 flex items-center gap-2 text-gray-500">
                     <MapPin size={18} />
@@ -641,10 +664,10 @@ export default function DestinationCards() {
                 </div>
               </div>
 
-              {/* Tourist Spots */}
-              <div className="mb-5 flex items-center justify-between">
+              {/* Tourist Spots Header */}
+              <div className="mb-5 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div>
-                  <h3 className="text-2xl font-bold text-gray-900">
+                  <h3 className="text-xl font-bold text-gray-900 sm:text-2xl">
                     Popular Tourist Spots
                   </h3>
 
@@ -653,9 +676,10 @@ export default function DestinationCards() {
                   </p>
                 </div>
 
-                {/* Slider Buttons */}
+                {/* Desktop Slider Buttons */}
                 <div className="hidden gap-2 sm:flex">
                   <button
+                    type="button"
                     onClick={previousSlide}
                     aria-label="Previous tourist spot"
                     className="flex h-10 w-10 items-center justify-center rounded-full border border-gray-300 bg-white text-gray-700 transition hover:border-blue-600 hover:bg-blue-600 hover:text-white"
@@ -664,6 +688,7 @@ export default function DestinationCards() {
                   </button>
 
                   <button
+                    type="button"
                     onClick={nextSlide}
                     aria-label="Next tourist spot"
                     className="flex h-10 w-10 items-center justify-center rounded-full border border-gray-300 bg-white text-gray-700 transition hover:border-blue-600 hover:bg-blue-600 hover:text-white"
@@ -684,38 +709,43 @@ export default function DestinationCards() {
                   {selectedCity.spots.map((spot) => (
                     <div
                       key={spot.name}
-                      className="w-full shrink-0 px-1"
+                      className="w-full min-w-full shrink-0 px-0.5"
                     >
                       <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
-                        <div className="relative h-64 w-full">
+                        {/* Spot Image */}
+                        <div className="relative h-56 w-full sm:h-64 md:h-72">
                           <Image
                             src={spot.img}
                             alt={spot.name}
                             fill
                             className="object-cover"
-                            sizes="(max-width: 768px) 100vw, 700px"
+                            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 1000px"
                           />
 
-                          <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent p-5 pt-16">
-                            <h4 className="text-xl font-bold text-white">
+                          <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent p-5 pt-20">
+                            <h4 className="text-xl font-bold text-white sm:text-2xl">
                               {spot.name}
                             </h4>
                           </div>
                         </div>
 
-                        <div className="p-5">
+                        {/* Spot Content */}
+                        <div className="p-5 sm:p-6">
                           <div className="flex items-center gap-2 text-sm text-gray-500">
-                            <MapPin size={16} className="text-blue-600" />
+                            <MapPin
+                              size={16}
+                              className="text-blue-600"
+                            />
                             {selectedCity.name}
                           </div>
 
-                          <p className="mt-3 text-sm leading-relaxed text-gray-600">
+                          <p className="mt-3 text-sm leading-6 text-gray-600 sm:text-base">
                             {spot.description}
                           </p>
 
                           <Link
                             href="/booking"
-                            className="mt-5 block w-full rounded-lg bg-blue-700 py-3 text-center font-semibold text-white transition hover:bg-blue-800"
+                            className="mt-5 block w-full rounded-lg bg-blue-700 py-3 text-center text-sm font-semibold text-white transition hover:bg-blue-800 active:scale-[0.98]"
                           >
                             Book Cab
                           </Link>
@@ -727,28 +757,31 @@ export default function DestinationCards() {
               </div>
 
               {/* Mobile Slider Buttons */}
-              <div className="mt-4 flex justify-center gap-2 sm:hidden">
+              <div className="mt-4 flex justify-center gap-3 sm:hidden">
                 <button
+                  type="button"
                   onClick={previousSlide}
                   aria-label="Previous tourist spot"
-                  className="flex h-10 w-10 items-center justify-center rounded-full border border-gray-300 bg-white"
+                  className="flex h-11 w-11 items-center justify-center rounded-full border border-gray-300 bg-white text-gray-700 shadow-sm transition active:scale-95"
                 >
                   <ChevronLeft size={20} />
                 </button>
 
                 <button
+                  type="button"
                   onClick={nextSlide}
                   aria-label="Next tourist spot"
-                  className="flex h-10 w-10 items-center justify-center rounded-full border border-gray-300 bg-white"
+                  className="flex h-11 w-11 items-center justify-center rounded-full border border-gray-300 bg-white text-gray-700 shadow-sm transition active:scale-95"
                 >
                   <ChevronRight size={20} />
                 </button>
               </div>
 
               {/* Slide Indicators */}
-              <div className="mt-5 flex justify-center gap-2">
+              <div className="mt-5 flex flex-wrap justify-center gap-2">
                 {selectedCity.spots.map((spot, index) => (
                   <button
+                    type="button"
                     key={spot.name}
                     onClick={() => setSlideIndex(index)}
                     aria-label={`Go to ${spot.name}`}
@@ -761,21 +794,24 @@ export default function DestinationCards() {
                 ))}
               </div>
 
-              {/* Booking */}
-              <div className="mt-8 flex flex-col items-center justify-between gap-4 rounded-xl bg-gray-50 p-6 md:flex-row">
+              {/* Booking CTA */}
+              <div className="mt-8 flex flex-col gap-5 rounded-xl bg-gray-50 p-5 sm:p-6 md:flex-row md:items-center md:justify-between">
                 <div>
-                  <h4 className="text-xl font-bold text-gray-900">
+                  <h4 className="text-lg font-bold text-gray-900 sm:text-xl">
                     Book a Cab to {selectedCity.name}
                   </h4>
 
-                  <p className="mt-1 text-gray-600">
+                  <p className="mt-1 text-sm text-gray-600 sm:text-base">
                     Comfortable and reliable travel with SBS Taxi.
                   </p>
                 </div>
 
-                <button className="rounded-lg bg-blue-700 px-8 py-3 font-semibold text-white transition hover:bg-blue-800">
+                <Link
+                  href="/booking"
+                  className="w-full rounded-lg bg-blue-700 px-8 py-3 text-center text-sm font-semibold text-white transition hover:bg-blue-800 active:scale-[0.98] sm:w-auto"
+                >
                   Book Now
-                </button>
+                </Link>
               </div>
             </div>
           </div>

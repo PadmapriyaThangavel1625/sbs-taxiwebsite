@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from "react";
@@ -10,58 +11,46 @@ export default function LimitedOffer() {
   if (!open) return null;
 
   return (
-    <div
-      className="
-        fixed
-        bottom-4
-        left-4
-        z-[80]
-        w-[calc(100%-2rem)]
-        max-w-md
-        sm:bottom-5
-        sm:left-5
-        md:bottom-6
-        md:left-6
-      "
-    >
-      <div className="overflow-hidden rounded-3xl bg-[#1A365D] shadow-2xl ring-1 ring-black/10">
+    <div className="fixed bottom-4 left-4 z-50">
+      {/* SMALL PROMOTIONAL WIDGET */}
+      <div className="relative w-[300px] max-w-[calc(100vw-32px)] overflow-hidden rounded-2xl bg-white shadow-2xl">
 
         {/* HEADER */}
-        <div className="relative p-5 sm:p-6">
+        <div className="relative bg-[#1A365D] p-4">
           <button
             type="button"
             onClick={() => setOpen(false)}
             aria-label="Close offer"
             className="
               absolute
-              right-4
-              top-4
+              right-3
+              top-3
               flex
-              h-10
-              w-10
+              h-8
+              w-8
               items-center
               justify-center
-              rounded-xl
+              rounded-lg
               bg-white/10
               text-white
               transition
               hover:bg-white/20
             "
           >
-            <X className="h-5 w-5" />
+            <X className="h-4 w-4" />
           </button>
 
-          <div className="flex items-center gap-4 pr-10">
-            <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-[#FFC107] text-[#1A365D] shadow-lg">
-              <Tag className="h-7 w-7" />
+          <div className="flex items-center gap-3 pr-8">
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#FFC107] text-[#1A365D] shadow-md">
+              <Tag className="h-5 w-5" />
             </div>
 
             <div>
-              <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#FFC107]">
+              <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#FFC107]">
                 Limited Time
               </p>
 
-              <h2 className="mt-1 text-xl font-bold text-white sm:text-2xl">
+              <h2 className="mt-0.5 text-lg font-bold text-white">
                 Special Promotion
               </h2>
             </div>
@@ -69,26 +58,26 @@ export default function LimitedOffer() {
         </div>
 
         {/* CONTENT */}
-        <div className="space-y-3 bg-[#fffdf4] p-5 sm:p-6">
+        <div className="space-y-2.5 bg-[#fffdf4] p-4">
 
           {/* OFFER */}
-          <div className="rounded-2xl border border-[#e8d9a7] bg-[#fff8df] p-4">
-            <div className="flex gap-3">
-              <Sparkles className="mt-0.5 h-5 w-5 shrink-0 text-[#d89200]" />
+          <div className="rounded-xl border border-[#e8d9a7] bg-[#fff8df] p-3">
+            <div className="flex gap-2.5">
+              <Sparkles className="mt-0.5 h-4 w-4 shrink-0 text-[#d89200]" />
 
               <div>
-                <h3 className="font-bold text-[#c17b00]">
+                <h3 className="text-sm font-bold text-[#c17b00]">
                   Special Taxi Offers
                 </h3>
 
-                <p className="mt-1 text-sm leading-6 text-slate-600">
+                <p className="mt-0.5 text-xs leading-5 text-slate-600">
                   Book your ride today and enjoy our{" "}
                   <strong className="text-slate-800">
                     limited-time special rates.
                   </strong>
                 </p>
 
-                <p className="mt-1 text-xs font-semibold text-slate-500">
+                <p className="mt-0.5 text-[10px] font-semibold text-slate-500">
                   Limited availability remaining
                 </p>
               </div>
@@ -96,22 +85,22 @@ export default function LimitedOffer() {
           </div>
 
           {/* CONTACT */}
-          <div className="rounded-2xl border border-slate-200 bg-white p-4">
-            <div className="flex gap-3">
-              <Phone className="mt-0.5 h-5 w-5 shrink-0 text-[#1A365D]" />
+          <div className="rounded-xl border border-slate-200 bg-white p-3">
+            <div className="flex gap-2.5">
+              <Phone className="mt-0.5 h-4 w-4 shrink-0 text-[#1A365D]" />
 
               <div>
-                <h3 className="font-bold text-[#1A365D]">
+                <h3 className="text-sm font-bold text-[#1A365D]">
                   Contact Us Today
                 </h3>
 
-                <p className="mt-1 text-sm leading-6 text-slate-600">
-                  Call us now for full details on current offers.
+                <p className="mt-0.5 text-xs leading-5 text-slate-600">
+                  Call us for details on current offers.
                 </p>
 
                 <a
                   href="tel:+918144065688"
-                  className="mt-1 inline-block text-sm font-bold text-[#1A365D] hover:text-[#FFC107]"
+                  className="mt-0.5 inline-block text-xs font-bold text-[#1A365D] hover:text-[#FFC107]"
                 >
                   +91 81440 65688
                 </a>
@@ -129,34 +118,34 @@ export default function LimitedOffer() {
               items-center
               justify-center
               gap-2
-              rounded-2xl
+              rounded-xl
               bg-[#1A365D]
-              px-5
-              py-4
-              text-base
+              px-4
+              py-3
+              text-sm
               font-bold
               text-white
-              shadow-lg
+              shadow-md
               transition
               hover:bg-[#0753b8]
-              hover:shadow-xl
+              hover:shadow-lg
             "
           >
             <span>Book Your Ride</span>
-            <ArrowRight className="h-5 w-5" />
+            <ArrowRight className="h-4 w-4" />
           </Link>
 
           {/* PHONE */}
           <div className="text-center">
-            <span className="text-xs text-slate-400">
+            <span className="text-[10px] text-slate-400">
               Call us:{" "}
             </span>
 
             <a
               href="tel:+918144065688"
-              className="text-xs font-semibold text-slate-500 hover:text-[#1A365D]"
+              className="text-[10px] font-semibold text-slate-500 hover:text-[#1A365D]"
             >
-              +91 81440 65688
+              +91 9843544844
             </a>
           </div>
 

@@ -1,0 +1,23 @@
+{
+  "name": "SBS Taxi Driver",
+  "short_name": "SBS Driver",
+  "icons": [
+    {
+      "src": "/favicon-for-app/web-app-manifest-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/favicon-for-app/web-app-manifest-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "theme_color": "#FFC107",
+  "background_color": "#0A0D14",
+  "display": "standalone",
+  "start_url": "/",
+  "scope": "/"
+}

@@ -24,15 +24,15 @@ export default function HelpBanner() {
       <div className="flex flex-col sm:flex-row gap-3 mt-4 md:mt-0 w-full md:w-auto">
         
         <a
-          href="tel:8144065688"
+          href="tel:9843544844"
           className="bg-white text-primary px-8 py-3 rounded-lg font-bold flex gap-2 items-center justify-center hover:bg-primary-light transition"
         >
           <Phone size={20} />
-          81440 65688
+          9843544844
         </a>
 
         <a
-          href="https://wa.me/918144065688"
+          href="https://wa.me/9843544844"
           target="_blank"
           rel="noopener noreferrer"
           className="bg-white text-green-600 px-8 py-3 rounded-lg font-bold flex items-center justify-center hover:bg-green-50 transition"

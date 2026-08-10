@@ -89,7 +89,7 @@ export default function BottomCTA() {
 
           <div>
             <a
-              href="tel:8144065688"
+              href="tel:9843544844"
               className="
                 font-bold
                 text-white
@@ -108,7 +108,7 @@ export default function BottomCTA() {
 
         {/* Item 3 */}
         <a
-          href="https://wa.me/918144065688"
+          href="https://wa.me/919843544844"
           target="_blank"
           rel="noreferrer"
           className="

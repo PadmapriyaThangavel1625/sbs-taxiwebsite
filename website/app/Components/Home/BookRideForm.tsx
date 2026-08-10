@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState } from "react";
@@ -16,21 +15,60 @@ export default function BookRideForm() {
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
   const [vehicle, setVehicle] = useState("");
+  const [sending, setSending] = useState(false);
 
-  const handleBookRide = () => {
+  const handleBookRide = async () => {
+    // Validate fields
     if (!pickup || !drop || !date || !time || !vehicle) {
       toast.error("Please fill all the fields!");
       return;
     }
 
-    toast.success("🎉 Ride booked successfully!");
+    try {
+      setSending(true);
 
-    // Reset form
-    setPickup("");
-    setDrop("");
-    setDate("");
-    setTime("");
-    setVehicle("");
+      const response = await fetch("/api/email", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          pickup,
+          drop,
+          date,
+          time,
+          vehicle,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(
+          data?.error || "Unable to send booking request."
+        );
+      }
+
+      // Success
+      toast.success("🎉 Booking request sent successfully!");
+
+      // Reset form
+      setPickup("");
+      setDrop("");
+      setDate("");
+      setTime("");
+      setVehicle("");
+    } catch (error) {
+      console.error("Booking error:", error);
+
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : "Unable to send booking request."
+      );
+    } finally {
+      setSending(false);
+    }
   };
 
   return (
@@ -43,7 +81,6 @@ export default function BookRideForm() {
         bg-white
         p-4
         shadow-lg
-
         sm:p-5
         md:p-6
       "
@@ -55,7 +92,6 @@ export default function BookRideForm() {
             text-[18px]
             font-bold
             text-[var(--heading)]
-
             sm:text-[20px]
           "
         >
@@ -94,7 +130,6 @@ export default function BookRideForm() {
             bg-white
             px-3
             transition
-
             focus-within:border-[var(--primary)]
             focus-within:ring-1
             focus-within:ring-[var(--primary)]
@@ -107,10 +142,12 @@ export default function BookRideForm() {
 
           <input
             id="pickup"
+            name="pickup"
             type="text"
             placeholder="Enter pickup location"
             value={pickup}
             onChange={(e) => setPickup(e.target.value)}
+            autoComplete="street-address"
             className="
               w-full
               min-w-0
@@ -119,7 +156,6 @@ export default function BookRideForm() {
               text-[var(--text)]
               outline-none
               placeholder:text-gray-400
-
               sm:text-[13px]
             "
           />
@@ -153,7 +189,6 @@ export default function BookRideForm() {
             bg-white
             px-3
             transition
-
             focus-within:border-[var(--primary)]
             focus-within:ring-1
             focus-within:ring-[var(--primary)]
@@ -166,10 +201,12 @@ export default function BookRideForm() {
 
           <input
             id="drop"
+            name="drop"
             type="text"
             placeholder="Enter drop location"
             value={drop}
             onChange={(e) => setDrop(e.target.value)}
+            autoComplete="street-address"
             className="
               w-full
               min-w-0
@@ -178,7 +215,6 @@ export default function BookRideForm() {
               text-[var(--text)]
               outline-none
               placeholder:text-gray-400
-
               sm:text-[13px]
             "
           />
@@ -192,7 +228,6 @@ export default function BookRideForm() {
           grid
           grid-cols-1
           gap-3
-
           sm:grid-cols-2
           sm:gap-4
         "
@@ -224,7 +259,6 @@ export default function BookRideForm() {
               bg-white
               px-3
               transition
-
               focus-within:border-[var(--primary)]
               focus-within:ring-1
               focus-within:ring-[var(--primary)]
@@ -232,6 +266,7 @@ export default function BookRideForm() {
           >
             <input
               id="date"
+              name="date"
               type="date"
               value={date}
               onChange={(e) => setDate(e.target.value)}
@@ -242,7 +277,6 @@ export default function BookRideForm() {
                 text-[12px]
                 text-[var(--text)]
                 outline-none
-
                 sm:text-[13px]
               "
             />
@@ -281,7 +315,6 @@ export default function BookRideForm() {
               bg-white
               px-3
               transition
-
               focus-within:border-[var(--primary)]
               focus-within:ring-1
               focus-within:ring-[var(--primary)]
@@ -289,6 +322,7 @@ export default function BookRideForm() {
           >
             <input
               id="time"
+              name="time"
               type="time"
               value={time}
               onChange={(e) => setTime(e.target.value)}
@@ -299,7 +333,6 @@ export default function BookRideForm() {
                 text-[12px]
                 text-[var(--text)]
                 outline-none
-
                 sm:text-[13px]
               "
             />
@@ -339,7 +372,6 @@ export default function BookRideForm() {
             bg-white
             px-3
             transition
-
             focus-within:border-[var(--primary)]
             focus-within:ring-1
             focus-within:ring-[var(--primary)]
@@ -347,6 +379,7 @@ export default function BookRideForm() {
         >
           <select
             id="vehicle"
+            name="vehicle"
             value={vehicle}
             onChange={(e) => setVehicle(e.target.value)}
             className="
@@ -357,7 +390,6 @@ export default function BookRideForm() {
               text-[12px]
               text-[var(--text)]
               outline-none
-
               sm:text-[13px]
             "
           >
@@ -401,6 +433,7 @@ export default function BookRideForm() {
       <button
         type="button"
         onClick={handleBookRide}
+        disabled={sending}
         className="
           h-[43px]
           w-full
@@ -412,17 +445,15 @@ export default function BookRideForm() {
           text-black
           shadow-sm
           transition
-
           hover:bg-[var(--secondary-dark)]
-
           active:scale-[0.98]
-
+          disabled:cursor-not-allowed
+          disabled:opacity-60
           sm:text-[14px]
         "
       >
-        Book Ride Now
+        {sending ? "Sending Booking..." : "Book Ride Now"}
       </button>
     </div>
   );
 }
-

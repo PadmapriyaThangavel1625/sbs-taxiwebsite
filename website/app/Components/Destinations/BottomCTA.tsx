@@ -1,38 +1,46 @@
-export default function BottomCTA(){
 
-return(
+import { Headphones, Phone } from "lucide-react";
 
-<div className="max-w-7xl mx-auto px-6 mt-5 mb-8">
+export default function HelpBanner() {
+  return (
+    <div className="mt-5 rounded-xl bg-primary p-5 text-white flex flex-col md:flex-row justify-between items-center gap-5">
+      
+      {/* Left Content */}
+      <div className="flex gap-4 items-center">
+        <Headphones size={45} />
 
-<div className="bg-blue-800 text-white rounded-xl p-5 flex justify-between items-center">
+        <div>
+          <h3 className="text-xl font-bold">
+            Need Help Choosing the Right Service?
+          </h3>
 
-<div>
+          <p className="mt-1">
+            Our team is available 24/7 to assist you.
+          </p>
+        </div>
+      </div>
 
-<h2 className="text-xl font-bold">
-☎ Ready to Explore?
-</h2>
+      {/* Buttons */}
+      <div className="flex flex-col sm:flex-row gap-3 mt-4 md:mt-0 w-full md:w-auto">
+        
+        <a
+          href="tel:9843544844"
+          className="bg-white text-primary px-8 py-3 rounded-lg font-bold flex gap-2 items-center justify-center hover:bg-primary-light transition"
+        >
+          <Phone size={20} />
+          9843544844
+        </a>
 
-<p>
-Book your outstation ride with SBS Taxi now!
-</p>
+        <a
+          href="https://wa.me/9843544844"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="bg-white text-green-600 px-8 py-3 rounded-lg font-bold flex items-center justify-center hover:bg-green-50 transition"
+        >
+          Chat on WhatsApp
+        </a>
 
-</div>
-
-
-<div className="bg-white text-blue-700 px-8 py-3 rounded font-bold">
-81440 65688
-</div>
-
-
-<div className="bg-white text-green-600 px-5 py-3 rounded font-bold">
-Chat on WhatsApp
-</div>
-
-
-</div>
-
-</div>
-
-)
-
+      </div>
+    </div>
+  );
 }

@@ -6,7 +6,7 @@ import {
   Car,
   MapPin,
   Phone,
-  Menu,
+  IndianRupee,
 } from "lucide-react";
 
 export default function BottomBar() {
@@ -17,7 +17,8 @@ export default function BottomBar() {
         bottom-0
         left-0
         right-0
-        z-[100]
+        z-[9997]
+        block
         border-t
         border-gray-200
         bg-white
@@ -25,8 +26,16 @@ export default function BottomBar() {
         md:hidden
       "
     >
-      <div className="mx-auto grid h-16 max-w-lg grid-cols-5">
-
+      <div
+        className="
+          mx-auto
+          grid
+          h-16
+          max-w-md
+          grid-cols-5
+          items-center
+        "
+      >
         {/* HOME */}
         <Link
           href="/"
@@ -67,9 +76,9 @@ export default function BottomBar() {
           <span>Book</span>
         </Link>
 
-        {/* TRACK */}
+        {/* DESTINATIONS */}
         <Link
-          href="/tracking"
+          href="/destinations"
           className="
             flex
             flex-col
@@ -84,7 +93,27 @@ export default function BottomBar() {
           "
         >
           <MapPin className="h-5 w-5" />
-          <span>Track</span>
+          <span>Destinations</span>
+        </Link>
+
+        {/* PRICING */}
+        <Link
+          href="/pricing"
+          className="
+            flex
+            flex-col
+            items-center
+            justify-center
+            gap-1
+            text-xs
+            font-medium
+            text-gray-600
+            transition
+            hover:text-[#1A365D]
+          "
+        >
+          <IndianRupee className="h-5 w-5" />
+          <span>Pricing</span>
         </Link>
 
         {/* CALL */}
@@ -106,27 +135,6 @@ export default function BottomBar() {
           <Phone className="h-5 w-5" />
           <span>Call</span>
         </a>
-
-        {/* MENU */}
-        <Link
-          href="/menu"
-          className="
-            flex
-            flex-col
-            items-center
-            justify-center
-            gap-1
-            text-xs
-            font-medium
-            text-gray-600
-            transition
-            hover:text-[#1A365D]
-          "
-        >
-          <Menu className="h-5 w-5" />
-          <span>Menu</span>
-        </Link>
-
       </div>
     </nav>
   );

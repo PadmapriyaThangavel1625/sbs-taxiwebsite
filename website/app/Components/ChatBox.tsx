@@ -2,6 +2,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import {
   MessageCircle,
@@ -37,7 +38,7 @@ export default function ChatBox() {
     },
   ]);
 
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
   /* =====================================================
      AUTO SCROLL
@@ -135,38 +136,32 @@ export default function ChatBox() {
         <div
           className="
             fixed
-            bottom-4
-            right-4
+            bottom-24
+            right-3
             z-[9999]
-            w-[calc(100vw-32px)]
+            w-[calc(100vw-24px)]
             max-w-[390px]
             overflow-hidden
             rounded-2xl
             bg-white
-            shadow-[0_12px_40px_rgba(0,0,0,0.25)]
-            ring-1
-            ring-black/5
-            sm:bottom-5
+            shadow-[0_20px_60px_rgba(0,0,0,0.25)]
             sm:right-5
+            sm:w-[390px]
+            md:bottom-24
+            md:right-6
           "
         >
+          {/* CLOSE / CANCEL BUTTON */} 
+    
           {/* =================================================
               HEADER
           ================================================= */}
-          <div
-            className="
-              relative
-              bg-[#1A365D]
-              px-5
-              py-4
-              text-white
-            "
-          >
-            {/* CLOSE */}
+          <div className="relative bg-[#1A365D] px-5 py-5 text-white">
+            {/* CLOSE BUTTON */}
             <button
               type="button"
               onClick={closeChat}
-              aria-label="Close chat"
+              aria-label="Close SBS Taxi chat"
               className="
                 absolute
                 right-4
@@ -177,14 +172,16 @@ export default function ChatBox() {
                 items-center
                 justify-center
                 rounded-full
-                bg-white/10
+                text-white/80
                 transition
-                hover:bg-white/20
+                hover:bg-white/10
+                hover:text-white
               "
             >
               <X className="h-5 w-5" />
             </button>
 
+            {/* HEADER CONTENT */}
             <div className="flex items-center gap-3 pr-10">
               {/* LOGO */}
               <div
@@ -203,7 +200,7 @@ export default function ChatBox() {
                 "
               >
                 <img
-                  src="/images/logo.png"
+                  src="/sbsai.png"
                   alt="SBS Taxi"
                   className="h-full w-full object-contain p-1"
                 />
@@ -399,6 +396,7 @@ export default function ChatBox() {
                 {/* CALL */}
                 <a
                   href="tel:+918144065688"
+                  onClick={closeChat}
                   className="
                     flex
                     items-center
@@ -486,11 +484,17 @@ export default function ChatBox() {
               </div>
 
               {/* FOOTER */}
-              <div className="border-t bg-gray-50 px-5 py-3 text-center">
-                <p className="text-xs text-gray-400">
-                  SBS Taxi • Safe. Reliable. Anytime.
-                </p>
-              </div>
+             
+
+              <Link
+                href="https://sbstechnologies.in/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-1 inline-block text-xs font-medium text-gray-500 transition hover:text-[#1A365D] hover:underline"
+              >
+                Powered by SBS Technologies
+              </Link>
+
             </>
           )}
 
@@ -498,7 +502,7 @@ export default function ChatBox() {
               AI CHAT SCREEN
           ================================================= */}
           {screen === "chat" && (
-            <div className="flex h-[500px] flex-col">
+            <div className="flex h-[420px] flex-col">
               {/* CHAT TOP */}
               <div className="flex shrink-0 items-center gap-3 border-b bg-white px-4 py-3">
                 <button
@@ -642,7 +646,10 @@ export default function ChatBox() {
                     disabled={loading}
                     onChange={(e) => setMessage(e.target.value)}
                     onKeyDown={(e) => {
-                      if (e.key === "Enter" && !e.shiftKey) {
+                      if (
+                        e.key === "Enter" &&
+                        !e.shiftKey
+                      ) {
                         e.preventDefault();
                         sendMessage();
                       }
@@ -675,7 +682,9 @@ export default function ChatBox() {
                   <button
                     type="button"
                     onClick={sendMessage}
-                    disabled={loading || !message.trim()}
+                    disabled={
+                      loading || !message.trim()
+                    }
                     aria-label="Send message"
                     className="
                       flex
@@ -713,42 +722,39 @@ export default function ChatBox() {
           className="
             fixed
             bottom-20
-            right-4
+            right-3
             z-[9998]
-            flex
-            h-16
-            w-16
-            items-center
-            justify-center
+            h-28
+            w-28
+            overflow-visible
             rounded-full
-            bg-[#1A365D]
-            text-white
-            shadow-[0_8px_25px_rgba(0,0,0,0.25)]
-            ring-4
-            ring-white
             transition
             hover:scale-105
-            hover:bg-[#0f2747]
             sm:bottom-24
-            sm:right-5
+            sm:right-4
+            sm:h-32
+            sm:w-32
             md:bottom-6
             md:right-6
+            md:h-36
+            md:w-36
           "
         >
-          <MessageCircle className="h-7 w-7" />
-
-          {/* ONLINE DOT */}
-          <span
+          <Image
+            src="/sbsai.png"
+            alt="Open SBS Taxi chat"
+            width={160}
+            height={160}
+            priority
             className="
-              absolute
-              right-0
-              top-0
-              h-4
-              w-4
-              rounded-full
-              border-2
-              border-white
-              bg-green-500
+              h-24
+              w-24
+              object-contain
+              drop-shadow-[0_8px_18px_rgba(0,0,0,0.3)]
+              sm:h-28
+              sm:w-28
+              md:h-32
+              md:w-32
             "
           />
         </button>

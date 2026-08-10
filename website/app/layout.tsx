@@ -1,11 +1,10 @@
-
 import type { Metadata } from "next";
 import "leaflet/dist/leaflet.css";
 import "./globals.css";
 
 import { Toaster } from "react-hot-toast";
 
-import TopBar from "@/app/Components/TopBar";
+import PromotionalTopBar from "@/app/Components/Home/PromotionalTopBar";
 import Navbar from "@/app/Components/Navbar";
 import Footer from "@/app/Components/Footer";
 import LimitedOffer from "@/app/Components/Home/LimitedOffer";
@@ -26,11 +25,17 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        {/* ================= TOP BAR ================= */}
-        <TopBar />
+        {/* =====================================================
+            STICKY HEADER
+            Promotional Top Bar + Navbar
+        ====================================================== */}
+        <div className="sticky top-0 z-[100] w-full">
+          {/* Promotional Top Bar */}
+          <PromotionalTopBar />
 
-        {/* ================= NAVBAR ================= */}
-        <Navbar />
+          {/* Navbar */}
+          <Navbar />
+        </div>
 
         {/* ================= PAGE CONTENT ================= */}
         <main>{children}</main>

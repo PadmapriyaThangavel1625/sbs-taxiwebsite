@@ -1,107 +1,46 @@
 
-import { Phone } from "lucide-react";
-import { FaWhatsapp } from "react-icons/fa";
+import { Headphones, Phone } from "lucide-react";
 
-export default function BottomCTA() {
+export default function HelpBanner() {
   return (
-    <section className="bg-[#0d1b2a] py-5 text-white">
-      <div
-        className="
-          container-custom
-          flex
-          flex-col
-          items-center
-          justify-between
-          gap-4
-          md:flex-row
-        "
-      >
-        {/* Content */}
-        <div className="text-center md:text-left">
-          <h3
-            className="
-              mb-1
-              text-base
-              font-semibold
-              sm:text-lg
-            "
-          >
-            Ready to Save More?
+    <div className="mt-5 rounded-xl bg-primary p-5 text-white flex flex-col md:flex-row justify-between items-center gap-5">
+      
+      {/* Left Content */}
+      <div className="flex gap-4 items-center">
+        <Headphones size={45} />
+
+        <div>
+          <h3 className="text-xl font-bold">
+            Need Help Choosing the Right Service?
           </h3>
 
-          <p className="text-xs text-gray-400 sm:text-sm">
-            Book your ride now and enjoy the best offers!
+          <p className="mt-1">
+            Our team is available 24/7 to assist you.
           </p>
         </div>
-
-        {/* Buttons */}
-        <div
-          className="
-            flex
-            w-full
-            flex-col
-            gap-3
-            sm:w-auto
-            sm:flex-row
-            sm:flex-wrap
-            sm:justify-center
-          "
-        >
-          {/* Phone */}
-          <a
-            href="tel:8144065688"
-            className="
-              flex
-              w-full
-              items-center
-              justify-center
-              gap-2.5
-              rounded-full
-              bg-white
-              px-5
-              py-2.5
-              text-xs
-              font-semibold
-              text-[#0d1b2a]
-              transition
-              hover:bg-gray-100
-              sm:w-auto
-              sm:text-sm
-            "
-          >
-            <Phone size={16} />
-            81440 65688
-          </a>
-
-          {/* WhatsApp */}
-          <a
-            href="https://wa.me/918144065688"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="
-              flex
-              w-full
-              items-center
-              justify-center
-              gap-2.5
-              rounded-full
-              bg-[#25d366]
-              px-5
-              py-2.5
-              text-xs
-              font-semibold
-              text-white
-              transition
-              hover:bg-[#20ba5a]
-              sm:w-auto
-              sm:text-sm
-            "
-          >
-            <FaWhatsapp size={16} />
-            Chat on WhatsApp
-          </a>
-        </div>
       </div>
-    </section>
+
+      {/* Buttons */}
+      <div className="flex flex-col sm:flex-row gap-3 mt-4 md:mt-0 w-full md:w-auto">
+        
+        <a
+          href="tel:9843544844"
+          className="bg-white text-primary px-8 py-3 rounded-lg font-bold flex gap-2 items-center justify-center hover:bg-primary-light transition"
+        >
+          <Phone size={20} />
+          9843544844
+        </a>
+
+        <a
+          href="https://wa.me/9843544844"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="bg-white text-green-600 px-8 py-3 rounded-lg font-bold flex items-center justify-center hover:bg-green-50 transition"
+        >
+          Chat on WhatsApp
+        </a>
+
+      </div>
+    </div>
   );
 }

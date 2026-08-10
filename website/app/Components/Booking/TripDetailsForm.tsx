@@ -1,4 +1,3 @@
-
 "use client";
 
 import React from "react";
@@ -35,12 +34,12 @@ export default function TripDetailsForm({
   updateField,
 }: TripDetailsFormProps) {
   const togglePreference = (preference: string) => {
-    const exists = details.preferences.includes(preference);
-
-    if (exists) {
+    if (details.preferences.includes(preference)) {
       updateField(
         "preferences",
-        details.preferences.filter((item) => item !== preference)
+        details.preferences.filter(
+          (item) => item !== preference
+        )
       );
     } else {
       updateField("preferences", [
@@ -51,17 +50,23 @@ export default function TripDetailsForm({
   };
 
   return (
-    <div className="space-y-5">
-      {/* Heading */}
-      <h2 className="text-lg font-bold text-slate-900">
-        Trip Details
-      </h2>
+    <div className="space-y-6">
+      {/* HEADING */}
+      <div>
+        <h2 className="text-lg font-bold text-slate-900">
+          Trip Details
+        </h2>
 
-      {/* Locations */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {/* Pickup */}
+        <p className="mt-1 text-xs text-slate-500">
+          Enter your pickup, destination and trip preferences.
+        </p>
+      </div>
+
+      {/* LOCATIONS */}
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+        {/* PICKUP */}
         <div>
-          <label className="block text-xs font-semibold text-slate-700 mb-1">
+          <label className="mb-1 block text-xs font-semibold text-slate-700">
             Pickup Location{" "}
             <span className="text-red-500">*</span>
           </label>
@@ -74,16 +79,22 @@ export default function TripDetailsForm({
                 updateField("pickup", e.target.value)
               }
               placeholder="Enter pickup location"
-              className="w-full pl-4 pr-10 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#1A365D]"
+              className="
+                w-full rounded-lg border border-slate-200
+                bg-slate-50 px-4 py-2.5 pr-10
+                text-sm text-slate-900
+                focus:outline-none focus:ring-2
+                focus:ring-[#1A365D]
+              "
             />
 
-            <Crosshair className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 cursor-pointer" />
+            <Crosshair className="absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
           </div>
         </div>
 
-        {/* Drop */}
+        {/* DROP */}
         <div>
-          <label className="block text-xs font-semibold text-slate-700 mb-1">
+          <label className="mb-1 block text-xs font-semibold text-slate-700">
             Drop Location{" "}
             <span className="text-red-500">*</span>
           </label>
@@ -96,19 +107,25 @@ export default function TripDetailsForm({
                 updateField("drop", e.target.value)
               }
               placeholder="Enter drop location"
-              className="w-full pl-4 pr-10 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#1A365D]"
+              className="
+                w-full rounded-lg border border-slate-200
+                bg-slate-50 px-4 py-2.5 pr-10
+                text-sm text-slate-900
+                focus:outline-none focus:ring-2
+                focus:ring-[#1A365D]
+              "
             />
 
-            <Crosshair className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 cursor-pointer" />
+            <Crosshair className="absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
           </div>
         </div>
       </div>
 
-      {/* Trip Type / Date / Time */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {/* Trip Type */}
+      {/* TRIP TYPE / DATE / TIME */}
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+        {/* TRIP TYPE */}
         <div>
-          <label className="block text-xs font-semibold text-slate-700 mb-1">
+          <label className="mb-1 block text-xs font-semibold text-slate-700">
             Trip Type{" "}
             <span className="text-red-500">*</span>
           </label>
@@ -118,21 +135,25 @@ export default function TripDetailsForm({
             onChange={(e) =>
               updateField("tripType", e.target.value)
             }
-            className="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#1A365D]"
+            className="
+              w-full rounded-lg border border-slate-200
+              bg-slate-50 px-3 py-2.5 text-sm
+              focus:outline-none focus:ring-2
+              focus:ring-[#1A365D]
+            "
           >
             <option value="Outstation">Outstation</option>
-            <option value="Local Rental">
-              Local Rental
-            </option>
+            <option value="Local Rental">Local Rental</option>
             <option value="Airport Transfer">
               Airport Transfer
             </option>
+            <option value="Temple Tour">Temple Tour</option>
           </select>
         </div>
 
-        {/* Date */}
+        {/* DATE */}
         <div>
-          <label className="block text-xs font-semibold text-slate-700 mb-1">
+          <label className="mb-1 block text-xs font-semibold text-slate-700">
             Date <span className="text-red-500">*</span>
           </label>
 
@@ -143,16 +164,21 @@ export default function TripDetailsForm({
               onChange={(e) =>
                 updateField("date", e.target.value)
               }
-              className="w-full px-3 py-2.5 pr-10 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#1A365D]"
+              className="
+                w-full rounded-lg border border-slate-200
+                bg-slate-50 px-3 py-2.5 pr-10 text-sm
+                focus:outline-none focus:ring-2
+                focus:ring-[#1A365D]
+              "
             />
 
-            <Calendar className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+            <Calendar className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
           </div>
         </div>
 
-        {/* Time */}
+        {/* TIME */}
         <div>
-          <label className="block text-xs font-semibold text-slate-700 mb-1">
+          <label className="mb-1 block text-xs font-semibold text-slate-700">
             Time <span className="text-red-500">*</span>
           </label>
 
@@ -163,16 +189,21 @@ export default function TripDetailsForm({
               onChange={(e) =>
                 updateField("time", e.target.value)
               }
-              className="w-full px-3 py-2.5 pr-10 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#1A365D]"
+              className="
+                w-full rounded-lg border border-slate-200
+                bg-slate-50 px-3 py-2.5 pr-10 text-sm
+                focus:outline-none focus:ring-2
+                focus:ring-[#1A365D]
+              "
             />
 
-            <Clock className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+            <Clock className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
           </div>
         </div>
       </div>
 
-      {/* Round Trip */}
-      <div className="bg-slate-50 border border-slate-200 rounded-lg p-3 flex items-center justify-between">
+      {/* ROUND TRIP */}
+      <div className="flex items-center justify-between rounded-lg border border-slate-200 bg-slate-50 p-3">
         <div>
           <p className="text-sm font-semibold text-slate-800">
             Round Trip?
@@ -191,14 +222,14 @@ export default function TripDetailsForm({
               !details.isRoundTrip
             )
           }
-          className={`w-11 h-6 flex items-center rounded-full p-1 transition-colors ${
+          className={`flex h-6 w-11 items-center rounded-full p-1 transition ${
             details.isRoundTrip
               ? "bg-[#1A365D]"
               : "bg-slate-300"
           }`}
         >
           <div
-            className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-transform ${
+            className={`h-4 w-4 rounded-full bg-white shadow-md transition-transform ${
               details.isRoundTrip
                 ? "translate-x-5"
                 : "translate-x-0"
@@ -207,68 +238,68 @@ export default function TripDetailsForm({
         </button>
       </div>
 
-      {/* Preferences */}
+      {/* PREFERENCES */}
       <div>
-        <label className="block text-xs font-semibold text-slate-700 mb-2">
+        <label className="mb-2 block text-xs font-semibold text-slate-700">
           Additional Preferences (Optional)
         </label>
 
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-          {/* Extra Luggage */}
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+          {/* EXTRA LUGGAGE */}
           <button
             type="button"
             onClick={() =>
               togglePreference("Extra Luggage")
             }
-            className={`flex items-center gap-2 border p-2.5 rounded-lg text-xs font-medium text-left transition ${
+            className={`flex items-center gap-2 rounded-lg border p-2.5 text-left text-xs font-medium transition ${
               details.preferences.includes("Extra Luggage")
                 ? "border-[#1A365D] bg-blue-50"
                 : "border-slate-200 hover:border-[#1A365D]"
             }`}
           >
-            <Briefcase className="w-4 h-4 text-slate-500" />
-            <span>Extra Luggage</span>
+            <Briefcase className="h-4 w-4 text-slate-500" />
+            Extra Luggage
           </button>
 
-          {/* Child Seat */}
+          {/* CHILD SEAT */}
           <button
             type="button"
             onClick={() =>
               togglePreference("Child Seat")
             }
-            className={`flex items-center gap-2 border p-2.5 rounded-lg text-xs font-medium text-left transition ${
+            className={`flex items-center gap-2 rounded-lg border p-2.5 text-left text-xs font-medium transition ${
               details.preferences.includes("Child Seat")
                 ? "border-[#1A365D] bg-blue-50"
                 : "border-slate-200 hover:border-[#1A365D]"
             }`}
           >
-            <Baby className="w-4 h-4 text-slate-500" />
-            <span>Child Seat</span>
+            <Baby className="h-4 w-4 text-slate-500" />
+            Child Seat
           </button>
 
-          {/* Pet Friendly */}
+          {/* PET */}
           <button
             type="button"
             onClick={() =>
               togglePreference("Pet Friendly")
             }
-            className={`flex items-center gap-2 border p-2.5 rounded-lg text-xs font-medium text-left transition ${
+            className={`flex items-center gap-2 rounded-lg border p-2.5 text-left text-xs font-medium transition ${
               details.preferences.includes("Pet Friendly")
                 ? "border-[#1A365D] bg-blue-50"
                 : "border-slate-200 hover:border-[#1A365D]"
             }`}
           >
-            <Dog className="w-4 h-4 text-slate-500" />
-            <span>Pet Friendly</span>
+            <Dog className="h-4 w-4 text-slate-500" />
+            Pet Friendly
           </button>
 
-          {/* Senior Citizen */}
+          {/* SENIOR */}
           <button
             type="button"
             onClick={() =>
               togglePreference("Senior Citizen")
             }
-            className={`flex items-center gap-2 border p-2.5 rounded-lg text-xs font-medium text-left transition ${
+            className={`flex items-center gap-2 rounded-lg border p-2.5 text-left text-xs font-medium transition ${
               details.preferences.includes(
                 "Senior Citizen"
               )
@@ -276,8 +307,8 @@ export default function TripDetailsForm({
                 : "border-slate-200 hover:border-[#1A365D]"
             }`}
           >
-            <UserCheck className="w-4 h-4 text-slate-500" />
-            <span>Senior Citizen</span>
+            <UserCheck className="h-4 w-4 text-slate-500" />
+            Senior Citizen
           </button>
         </div>
       </div>

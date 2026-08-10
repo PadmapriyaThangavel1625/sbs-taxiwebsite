@@ -47,7 +47,7 @@ export default function HelpBanner() {
       <div className="flex flex-wrap items-center justify-center gap-3 w-full lg:w-auto">
         {/* Call Button */}
         <a
-          href="tel:8144065688"
+          href="tel:9843544844"
           className="
             px-5 py-2.5
             bg-[var(--primary)]
@@ -61,12 +61,12 @@ export default function HelpBanner() {
             transition-colors
           "
         >
-          <span>📞 Call 81440 65688</span>
+          <span>📞 Call 9843544844</span>
         </a>
 
         {/* WhatsApp Button */}
         <a
-          href="https://wa.me/918144065688"
+          href="https://wa.me/919843544844"
           target="_blank"
           rel="noreferrer"
           className="

@@ -333,7 +333,7 @@ export default function FleetSection() {
 
                   {/* Book Button */}
                   <a
-                    href="/book"
+                    href="/booking"
                     className="
                       inline-flex
                       w-full

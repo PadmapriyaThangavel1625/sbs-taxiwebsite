@@ -1,41 +1,58 @@
-
-
 export default function HeroSection() {
-  return (
-    <div className="max-w-2xl">
-      <h1
-        className="
-          text-4xl md:text-5xl
-          font-bold
-          text-[var(--text)]
-          tracking-tight
-        "
-      >
-        Contact Us
-      </h1>
+return ( <section className="w-full bg-white">
+{/* Full Banner Image */} <div className="w-full"> <img
+       src="/home_banner.webp"
+       alt="Contact Us Banner"
+       className="
+         block
+         w-full
+         h-auto
+         object-contain
+       "
+     /> </div>
 
-      <h2
-        className="
-          text-2xl md:text-3xl
-          font-semibold
-          text-[var(--primary-dark)]
-          mt-2
-        "
-      >
-        We're Here to Help You!
-      </h2>
+  {/* Contact Content Below Banner */}
+  <div className="px-4 py-8 text-center sm:py-10 md:py-12">
+    <p
+      className="
+        text-sm
+        sm:text-base
+        font-semibold
+        uppercase
+        tracking-wide
+        text-[var(--primary)]
+      "
+    >
+      Contact Us
+    </p>
 
-      <p
-        className="
-          text-[var(--text-light)]
-          mt-4
-          text-base
-          leading-relaxed
-        "
-      >
-        Have questions, feedback, or need support? Get in touch with us.
-        Our team is available 24/7 to assist you.
-      </p>
-    </div>
-  );
+    <h2
+      className="
+        mt-2
+        text-2xl
+        md:text-3xl
+        font-semibold
+        text-[var(--primary-dark)]
+      "
+    >
+      We're Here to Help You!
+    </h2>
+
+    <p
+      className="
+        mx-auto
+        mt-4
+        max-w-2xl
+        text-base
+        leading-relaxed
+        text-[var(--text-light)]
+      "
+    >
+      Have questions, feedback, or need support? Get in touch with us.
+      Our team is available 24/7 to assist you.
+    </p>
+  </div>
+</section>
+
+);
 }
