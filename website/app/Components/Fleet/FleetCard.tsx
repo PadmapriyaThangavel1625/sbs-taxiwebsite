@@ -2,6 +2,12 @@
 "use client";
 
 import Image from "next/image";
+import {
+  Users,
+  Luggage,
+  Snowflake,
+  CheckCircle2,
+} from "lucide-react";
 
 // Export the interface so it can be imported elsewhere
 export interface Fleet {
@@ -44,22 +50,32 @@ export default function FleetCard({
         bg-white
         p-4
         shadow-sm
-        transition
+        transition-all
         duration-200
+        hover:-translate-y-1
         hover:shadow-lg
         ${
           isSelected
-            ? "ring-2 ring-primary"
-            : ""
+            ? "border-primary ring-2 ring-primary/30"
+            : "border-gray-200"
         }
       `}
     >
       {/* Top Section */}
       <div>
         {/* Fleet Name */}
-        <h2 className="text-base font-bold text-heading">
-          {name}
-        </h2>
+        <div className="flex items-center justify-between gap-2">
+          <h2 className="text-base font-bold text-heading">
+            {name}
+          </h2>
+
+          {isSelected && (
+            <CheckCircle2
+              size={20}
+              className="shrink-0 text-primary"
+            />
+          )}
+        </div>
 
         {/* Vehicle Image */}
         <div className="relative mt-4 h-32 w-full sm:h-36">
@@ -67,7 +83,11 @@ export default function FleetCard({
             src={image}
             alt={name}
             fill
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            sizes="
+              (max-width: 640px) 100vw,
+              (max-width: 1024px) 50vw,
+              33vw
+            "
             className="object-contain"
           />
         </div>
@@ -98,9 +118,23 @@ export default function FleetCard({
             sm:text-sm
           "
         >
-          <span>👤 {seat}</span>
-          <span>🧳 {bags}</span>
-          <span>❄ AC</span>
+          {/* Seats */}
+          <div className="flex flex-col items-center gap-1">
+            <Users size={18} className="text-primary" />
+            <span>{seat}</span>
+          </div>
+
+          {/* Bags */}
+          <div className="flex flex-col items-center gap-1">
+            <Luggage size={18} className="text-primary" />
+            <span>{bags}</span>
+          </div>
+
+          {/* AC */}
+          <div className="flex flex-col items-center gap-1">
+            <Snowflake size={18} className="text-primary" />
+            <span>AC</span>
+          </div>
         </div>
 
         {/* Price */}
@@ -112,22 +146,29 @@ export default function FleetCard({
         <button
           type="button"
           onClick={onSelect}
-          className="
+          className={`
             mt-3
+            flex
             w-full
+            items-center
+            justify-center
+            gap-2
             rounded-lg
             border
-            border-primary
             px-4
             py-2
             font-semibold
-            text-primary
-            transition
+            transition-all
             duration-200
-            hover:bg-primary
-            hover:text-white
-          "
+            ${
+              isSelected
+                ? "border-primary bg-primary text-white"
+                : "border-primary text-primary hover:bg-primary hover:text-white"
+            }
+          `}
         >
+          {isSelected && <CheckCircle2 size={18} />}
+
           {isSelected ? "Selected Details" : "View Details"}
         </button>
       </div>

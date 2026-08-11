@@ -82,10 +82,10 @@ export default function BenefitsBar() {
         border
         bg-white
         shadow-sm
-        sm:grid-cols-2
-        lg:grid-cols-5
         divide-y
+        sm:grid-cols-2
         sm:divide-y-0
+        lg:grid-cols-5
         lg:divide-x
       "
     >

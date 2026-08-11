@@ -1,4 +1,3 @@
-
 "use client";
 
 import Link from "next/link";
@@ -13,6 +12,10 @@ import {
 
 import HeroSlider from "./HeroSlider";
 import BookRideForm from "./BookRideForm";
+
+/* =====================================================
+   ANIMATIONS
+===================================================== */
 
 const container: Variants = {
   hidden: {},
@@ -53,23 +56,49 @@ const fadeLeft: Variants = {
   },
 };
 
+/* =====================================================
+   HERO SECTION
+===================================================== */
+
 export default function HeroSection() {
   return (
     <section className="relative w-full overflow-hidden">
-      {/* Hero Background */}
+      {/* =================================================
+          HERO BACKGROUND
+      ================================================== */}
       <div className="absolute inset-0 z-0">
         <HeroSlider />
       </div>
 
-      {/* Light Overlay */}
+      {/* =================================================
+          LIGHT OVERLAY
+      ================================================== */}
       <div className="absolute inset-0 z-10 bg-white/20" />
 
-      {/* Main Container */}
-      <div className="container-custom relative z-20">
+      {/* =================================================
+          HERO CONTAINER
+
+          Same max width + horizontal padding as Navbar
+          so content lines up with:
+          Logo        → left
+          Book a Ride → right
+      ================================================== */}
+      <div
+        className="
+          relative
+          z-20
+          mx-auto
+          w-full
+          max-w-7xl
+          px-4
+          sm:px-6
+          lg:px-8
+        "
+      >
         <div
           className="
             grid
-            min-h-[calc(100vh-80px)]
+            min-h-[calc(100vh-72px)]
             grid-cols-1
             items-center
             gap-8
@@ -83,20 +112,20 @@ export default function HeroSection() {
 
             lg:min-h-[600px]
             lg:grid-cols-[minmax(0,1fr)_380px]
-            lg:gap-10
+            lg:gap-8
             lg:py-10
 
             xl:grid-cols-[minmax(0,1fr)_400px]
-            xl:gap-14
+            xl:gap-10
 
             2xl:min-h-[680px]
             2xl:grid-cols-[minmax(0,1fr)_420px]
-            2xl:gap-16
+            2xl:gap-12
           "
         >
-          {/* =====================================
+          {/* =================================================
               LEFT CONTENT
-          ====================================== */}
+          ================================================== */}
           <motion.div
             variants={container}
             initial="hidden"
@@ -113,23 +142,26 @@ export default function HeroSection() {
               lg:text-left
             "
           >
-            {/* Heading */}
+            {/* =================================================
+                HEADING
+            ================================================== */}
             <motion.h1
               variants={fadeUp}
               className="
                 w-full
-                max-w-[650px]
-                text-[30px]
+                max-w-[680px]
+                text-[28px]
                 font-extrabold
-                leading-[1.15]
-                tracking-tight
+                leading-[1.12]
+                tracking-[-0.02em]
                 text-[var(--heading)]
 
-                sm:text-[36px]
+                sm:text-[34px]
 
-                md:text-[42px]
+                md:text-[40px]
 
                 lg:text-[46px]
+                lg:leading-[1.1]
 
                 xl:text-[52px]
 
@@ -148,39 +180,43 @@ export default function HeroSection() {
               One Trusted Service.
             </motion.h1>
 
-            {/* Description */}
+            {/* =================================================
+                DESCRIPTION
+            ================================================== */}
             <motion.p
               variants={fadeUp}
               className="
                 mt-4
                 w-full
-                max-w-[550px]
+                max-w-[560px]
                 text-[13px]
+                font-normal
                 leading-6
                 text-[var(--muted)]
 
                 sm:text-sm
 
-                md:text-base
+                md:text-[15px]
                 md:leading-7
 
                 lg:mt-5
+                lg:text-base
               "
             >
               Book your ride anytime, anywhere with SBS Taxi.
               Safe rides, affordable fares and happy journeys!
             </motion.p>
 
-            {/* =====================================
+            {/* =================================================
                 TRUST CARDS
-            ====================================== */}
+            ================================================== */}
             <motion.div
               variants={fadeUp}
               className="
                 mt-6
                 grid
                 w-full
-                max-w-[560px]
+                max-w-[580px]
                 overflow-hidden
                 rounded-xl
                 bg-white
@@ -189,7 +225,9 @@ export default function HeroSection() {
                 sm:grid-cols-3
               "
             >
-              {/* 24/7 */}
+              {/* =================================================
+                  24/7
+              ================================================== */}
               <motion.div
                 whileHover={{
                   y: -3,
@@ -238,7 +276,7 @@ export default function HeroSection() {
                     24/7
                   </p>
 
-                  <p className="text-[12px] text-[var(--muted)]">
+                  <p className="text-[12px] leading-4 text-[var(--muted)]">
                     Taxi Service
                   </p>
                 </div>
@@ -250,7 +288,9 @@ export default function HeroSection() {
               {/* Desktop Divider */}
               <div className="my-3 hidden w-px bg-gray-200 sm:block" />
 
-              {/* No Hidden Charges */}
+              {/* =================================================
+                  NO HIDDEN CHARGES
+              ================================================== */}
               <motion.div
                 whileHover={{
                   y: -3,
@@ -287,7 +327,7 @@ export default function HeroSection() {
                     No Hidden
                   </p>
 
-                  <p className="text-[12px] text-[var(--muted)]">
+                  <p className="text-[12px] leading-4 text-[var(--muted)]">
                     Charges
                   </p>
                 </div>
@@ -296,7 +336,9 @@ export default function HeroSection() {
               {/* Mobile Divider */}
               <div className="h-px w-full bg-gray-200 sm:hidden" />
 
-              {/* Verified Drivers */}
+              {/* =================================================
+                  VERIFIED DRIVERS
+              ================================================== */}
               <motion.div
                 whileHover={{
                   y: -3,
@@ -333,16 +375,16 @@ export default function HeroSection() {
                     Verified
                   </p>
 
-                  <p className="text-[12px] text-[var(--muted)]">
+                  <p className="text-[12px] leading-4 text-[var(--muted)]">
                     Drivers
                   </p>
                 </div>
               </motion.div>
             </motion.div>
 
-            {/* =====================================
+            {/* =================================================
                 BUTTONS
-            ====================================== */}
+            ================================================== */}
             <motion.div
               variants={fadeUp}
               className="
@@ -361,7 +403,9 @@ export default function HeroSection() {
                 lg:justify-start
               "
             >
-              {/* Book Now */}
+              {/* =================================================
+                  BOOK NOW
+              ================================================== */}
               <motion.div
                 whileHover={{
                   scale: 1.03,
@@ -388,12 +432,15 @@ export default function HeroSection() {
                     text-white
                     shadow-md
                     transition
+
                     hover:bg-[var(--primary-dark)]
 
                     sm:w-auto
                   "
                 >
-                  Book Now
+                  <span className="text-white">
+                    Book Now
+                  </span>
 
                   <motion.div
                     animate={{
@@ -409,7 +456,9 @@ export default function HeroSection() {
                 </Link>
               </motion.div>
 
-              {/* WhatsApp */}
+              {/* =================================================
+                  WHATSAPP
+              ================================================== */}
               <motion.a
                 whileHover={{
                   scale: 1.03,
@@ -437,6 +486,7 @@ export default function HeroSection() {
                   text-[var(--heading)]
                   shadow-sm
                   transition
+
                   hover:bg-gray-50
 
                   sm:w-auto
@@ -462,9 +512,12 @@ export default function HeroSection() {
             </motion.div>
           </motion.div>
 
-          {/* =====================================
+          {/* =================================================
               BOOKING FORM
-          ====================================== */}
+              
+              Right edge now matches the Navbar
+              "Book a Ride" button area.
+          ================================================== */}
           <motion.div
             variants={fadeLeft}
             initial="hidden"
@@ -480,11 +533,11 @@ export default function HeroSection() {
             <div
               className="
                 w-full
-                max-w-[420px]
+                max-w-[400px]
 
-                sm:max-w-[440px]
+                sm:max-w-[420px]
 
-                md:max-w-[460px]
+                md:max-w-[440px]
 
                 lg:max-w-[380px]
 

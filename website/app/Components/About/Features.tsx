@@ -1,10 +1,13 @@
 
+"use client";
+
 import {
   ShieldCheck,
   Clock,
   BadgePercent,
   Headphones,
 } from "lucide-react";
+import { motion } from "framer-motion";
 
 const features = [
   {
@@ -31,65 +34,114 @@ const features = [
 
 export default function Features() {
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-8 relative z-10">
-      <div
-        className="
-          bg-white
-          rounded-2xl
-          shadow-xl
-          border border-[var(--border)]
-          grid
-          grid-cols-1
-          sm:grid-cols-2
-          lg:grid-cols-4
-          divide-y
-          sm:divide-y-0
-          sm:divide-x
-          divide-[var(--border)]
-          p-6
-        "
-      >
-        {features.map((feature, idx) => {
-          const Icon = feature.icon;
+    <section className="w-full">
+      <div className="mx-auto w-full max-w-7xl px-4 pt-8 sm:px-6 lg:px-8 lg:pt-10">
+        <motion.div
+          initial={{ opacity: 0, y: 35, scale: 0.98 }}
+          whileInView={{ opacity: 1, y: 0, scale: 1 }}
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{
+            duration: 0.7,
+            ease: [0.22, 1, 0.36, 1],
+          }}
+          className="
+            grid
+            grid-cols-1
+            overflow-hidden
+            rounded-2xl
+            border
+            border-[var(--border)]
+            bg-white
+            shadow-xl
+            sm:grid-cols-2
+            lg:grid-cols-4
+          "
+        >
+          {features.map((feature, idx) => {
+            const Icon = feature.icon;
 
-          return (
-            <div
-              key={idx}
-              className="
-                flex items-start
-                space-x-4
-                p-4
-                first:pl-0
-                last:pr-0
-              "
-            >
-              {/* Icon */}
-              <div
+            return (
+              <motion.div
+                key={feature.title}
+                initial={{ opacity: 0, y: 25 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.3 }}
+                transition={{
+                  duration: 0.55,
+                  delay: idx * 0.12,
+                  ease: [0.22, 1, 0.36, 1],
+                }}
+                whileHover={{ y: -4 }}
                 className="
-                  p-3
-                  bg-[var(--primary-light)]
-                  text-[var(--primary)]
-                  rounded-xl
-                  shrink-0
+                  flex
+                  items-start
+                  gap-4
+                  border-b
+                  border-[var(--border)]
+                  p-5
+
+                  sm:[&:nth-child(odd)]:border-r
+                  sm:[&:nth-child(3)]:border-b-0
+                  sm:[&:nth-child(4)]:border-b-0
+
+                  lg:border-b-0
+                  lg:border-r
+                  lg:last:border-r-0
                 "
               >
-                <Icon className="w-6 h-6" />
-              </div>
+                {/* Icon */}
+                <motion.div
+                  whileHover={{ scale: 1.08, rotate: 3 }}
+                  transition={{
+                    type: "spring",
+                    stiffness: 300,
+                    damping: 15,
+                  }}
+                  className="
+                    flex
+                    h-12
+                    w-12
+                    shrink-0
+                    items-center
+                    justify-center
+                    rounded-xl
+                    bg-[var(--primary-light)]
+                    text-[var(--primary)]
+                  "
+                >
+                  <Icon className="h-6 w-6" />
+                </motion.div>
 
-              {/* Content */}
-              <div>
-                <h3 className="font-bold text-[var(--text)] text-sm">
-                  {feature.title}
-                </h3>
+                {/* Content */}
+                <div className="min-w-0 pt-0.5">
+                  <h3
+                    className="
+                      font-[family-name:var(--font-instrument)]
+                      text-sm
+                      font-bold
+                      text-[var(--text)]
+                    "
+                  >
+                    {feature.title}
+                  </h3>
 
-                <p className="text-[var(--text-light)] text-xs mt-1">
-                  {feature.description}
-                </p>
-              </div>
-            </div>
-          );
-        })}
+                  <p
+                    className="
+                      mt-1
+                      font-[family-name:var(--font-jakarta)]
+                      text-xs
+                      leading-5
+                      text-[var(--muted)]
+                    "
+                  >
+                    {feature.description}
+                  </p>
+                </div>
+              </motion.div>
+            );
+          })}
+        </motion.div>
       </div>
-    </div>
+    </section>
   );
 }

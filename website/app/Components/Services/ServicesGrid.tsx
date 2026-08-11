@@ -1,4 +1,3 @@
-
 "use client";
 
 import { motion, Variants } from "framer-motion";
@@ -35,7 +34,6 @@ const services: Service[] = [
       "https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?auto=format&fit=crop&w=700&q=80",
     icon: <MapPin size={28} />,
   },
-
   {
     title: "Airport Pickup & Drop",
     description:
@@ -46,7 +44,6 @@ const services: Service[] = [
       "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&w=700&q=80",
     icon: <Plane size={28} />,
   },
-
   {
     title: "Outstation Trips",
     description:
@@ -57,7 +54,6 @@ const services: Service[] = [
       "https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=700&q=80",
     icon: <Car size={28} />,
   },
-
   {
     title: "One-Way Trips",
     description:
@@ -68,7 +64,6 @@ const services: Service[] = [
       "https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&w=700&q=80",
     icon: <ArrowRightLeft size={28} />,
   },
-
   {
     title: "Round Trips",
     description:
@@ -79,7 +74,6 @@ const services: Service[] = [
       "https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?auto=format&fit=crop&w=700&q=80",
     icon: <CircleDot size={28} />,
   },
-
   {
     title: "Hourly Rental Packages",
     description:
@@ -90,7 +84,6 @@ const services: Service[] = [
       "https://images.unsplash.com/photo-1542362567-b07e54358753?auto=format&fit=crop&w=700&q=80",
     icon: <Clock size={28} />,
   },
-
   {
     title: "Corporate Travel",
     description:
@@ -101,7 +94,6 @@ const services: Service[] = [
       "https://images.unsplash.com/photo-1497366811353-6870744d04b2?auto=format&fit=crop&w=700&q=80",
     icon: <Building2 size={28} />,
   },
-
   {
     title: "Self Drive Cars",
     description:
@@ -112,7 +104,6 @@ const services: Service[] = [
       "https://images.unsplash.com/photo-1493238792000-8113da705763?auto=format&fit=crop&w=700&q=80",
     icon: <Car size={28} />,
   },
-
   {
     title: "Group & Event Travel",
     description:
@@ -164,6 +155,7 @@ export default function ServicesGrid() {
         grid-cols-1
         items-stretch
         gap-5
+        font-[var(--font-jakarta)]
         sm:grid-cols-2
         lg:grid-cols-3
         lg:gap-8
@@ -173,9 +165,20 @@ export default function ServicesGrid() {
         <motion.div
           key={service.title}
           variants={cardVariants}
-          className="h-full flex flex-col"
+          className="
+            h-full
+            overflow-hidden
+            rounded-2xl
+            border
+            border-white
+            bg-white
+            shadow-sm
+            transition-shadow
+            duration-300
+            hover:shadow-lg
+          "
           whileHover={{
-            y: -10,
+            y: -8,
             transition: {
               duration: 0.25,
             },

@@ -38,7 +38,7 @@ const perks = [
 
 export default function PricingHero() {
   return (
-    <section className="relative min-h-[500px] overflow-hidden">
+    <section className="relative min-h-[500px] overflow-hidden font-[var(--font-jakarta)]">
       {/* Background Image */}
       <div className="absolute inset-0">
         <Image

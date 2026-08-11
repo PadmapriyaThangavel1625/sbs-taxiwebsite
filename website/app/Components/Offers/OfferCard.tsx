@@ -77,6 +77,7 @@ export default function OfferCard({
               text-3xl
               font-extrabold
               tracking-tight
+              font-[var(--font-jakarta)]
             "
           >
             {title}
@@ -91,6 +92,7 @@ export default function OfferCard({
               font-medium
               leading-relaxed
               opacity-90
+              font-[var(--font-jakarta)]
             "
           >
             {description}
@@ -250,13 +252,14 @@ export default function OfferCard({
               leading-snug
               text-muted
               whitespace-pre-line
+              font-[var(--font-jakarta)]
             "
           >
             {customBody}
           </p>
         ) : (
           <div className="flex w-full items-center gap-2">
-            <span className="text-[11px] font-medium text-muted">
+            <span className="text-[11px] font-medium text-muted font-[var(--font-jakarta)]">
               Use Code
             </span>
 
@@ -273,6 +276,7 @@ export default function OfferCard({
                 font-bold
                 tracking-wider
                 text-primary
+                font-[var(--font-jakarta)]
               "
             >
               {code}
@@ -303,6 +307,7 @@ export default function OfferCard({
             text-primary
             transition-all
             hover:gap-2.5
+            font-[var(--font-jakarta)]
           "
         >
           {actionText}

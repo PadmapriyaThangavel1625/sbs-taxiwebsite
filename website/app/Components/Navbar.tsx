@@ -1,3 +1,4 @@
+
 "use client";
 
 import Link from "next/link";
@@ -8,13 +9,13 @@ import Logo from "@/app/Components/Logo";
 
 const navLinks = [
   { name: "Home", href: "/" },
+  { name: "About Us", href: "/about" },
   { name: "Services", href: "/services" },
   { name: "Fleet", href: "/fleet" },
   { name: "Pricing", href: "/pricing" },
   { name: "Destinations", href: "/destinations" },
   { name: "Offers", href: "/offers" },
-  { name: "About Us", href: "/about" },
-  { name: "Contact", href: "/contacts" },
+  { name: "Contact Us", href: "/contacts" },
 ];
 
 export default function Navbar() {
@@ -37,6 +38,7 @@ export default function Navbar() {
       {/* =================================================
           NAVBAR INNER
       ================================================== */}
+
       <div
         className="
           mx-auto
@@ -53,18 +55,20 @@ export default function Navbar() {
         {/* =================================================
             LOGO
         ================================================== */}
+
         <Link
           href="/"
           className="flex shrink-0 items-center"
           onClick={() => setOpen(false)}
         >
-          <Logo />
+          <Logo variant="navbar" />
         </Link>
 
         {/* =================================================
             DESKTOP NAVIGATION
         ================================================== */}
-        <nav className="hidden items-center gap-7 lg:flex xl:gap-9">
+
+        <nav className="hidden items-center gap-6 lg:flex xl:gap-8">
           {navLinks.map((link) => {
             const isActive =
               pathname === link.href ||
@@ -78,6 +82,7 @@ export default function Navbar() {
                 className={`
                   group
                   relative
+                  whitespace-nowrap
                   py-2
                   text-[15px]
                   font-medium
@@ -89,6 +94,9 @@ export default function Navbar() {
                       : "text-gray-700 hover:text-[#0753b8]"
                   }
                 `}
+                style={{
+                  fontFamily: "var(--font-jakarta)",
+                }}
               >
                 {link.name}
 
@@ -119,6 +127,7 @@ export default function Navbar() {
           {/* =================================================
               BOOK A RIDE
           ================================================== */}
+
           <Link
             href="/booking"
             className="
@@ -137,6 +146,9 @@ export default function Navbar() {
               hover:bg-[#eeb200]
               hover:shadow-md
             "
+            style={{
+              fontFamily: "var(--font-jakarta)",
+            }}
           >
             Book a Ride
           </Link>
@@ -145,6 +157,7 @@ export default function Navbar() {
         {/* =================================================
             MOBILE MENU BUTTON
         ================================================== */}
+
         <button
           type="button"
           onClick={() => setOpen((prev) => !prev)}
@@ -176,6 +189,7 @@ export default function Navbar() {
       {/* =================================================
           MOBILE MENU
       ================================================== */}
+
       <div
         className={`
           absolute
@@ -199,6 +213,7 @@ export default function Navbar() {
       >
         <div className="mx-auto max-w-7xl px-4 py-3 sm:px-6">
           {/* Navigation Links */}
+
           <div className="flex flex-col">
             {navLinks.map((link) => {
               const isActive =
@@ -224,6 +239,9 @@ export default function Navbar() {
                         : "font-medium text-gray-700 hover:text-[#0753b8]"
                     }
                   `}
+                  style={{
+                    fontFamily: "var(--font-jakarta)",
+                  }}
                 >
                   {link.name}
                 </Link>
@@ -232,6 +250,7 @@ export default function Navbar() {
           </div>
 
           {/* Mobile Book Button */}
+
           <Link
             href="/booking"
             onClick={() => setOpen(false)}
@@ -252,6 +271,9 @@ export default function Navbar() {
               duration-200
               hover:bg-[#eeb200]
             "
+            style={{
+              fontFamily: "var(--font-jakarta)",
+            }}
           >
             Book a Ride
           </Link>

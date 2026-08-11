@@ -1,4 +1,3 @@
-
 "use client";
 
 import Link from "next/link";
@@ -57,6 +56,10 @@ const vehicles = [
   },
 ];
 
+/* =====================================================
+   CONTAINER ANIMATION
+===================================================== */
+
 const container: Variants = {
   hidden: {},
   show: {
@@ -65,6 +68,10 @@ const container: Variants = {
     },
   },
 };
+
+/* =====================================================
+   CARD ANIMATION
+===================================================== */
 
 const item: Variants = {
   hidden: {
@@ -82,39 +89,84 @@ const item: Variants = {
   },
 };
 
+/* =====================================================
+   FLEET SECTION
+===================================================== */
+
 export default function FleetSection() {
   return (
-    <section className="w-full bg-[var(--background)] py-10 sm:py-12 md:py-14 lg:py-16">
-      <div className="container-custom">
-        {/* ================= HEADER ================= */}
+    <section className="w-full bg-[var(--background)] py-10 sm:py-12 md:py-16 lg:py-20">
+      {/* =================================================
+          SAME CONTAINER AS NAVBAR + HERO + TRUST BADGES
+
+          Left edge:
+          Navbar Logo
+          Hero Content
+          Trust Badges
+          Fleet Content
+
+          Right edge:
+          Navbar Book a Ride
+          Hero Booking Form
+          Trust Badges
+          Fleet Button
+      ================================================== */}
+      <div
+        className="
+          mx-auto
+          w-full
+          max-w-7xl
+          px-4
+          sm:px-6
+          lg:px-8
+        "
+      >
+        {/* =================================================
+            HEADER
+        ================================================== */}
         <motion.div
-          initial={{ opacity: 0, y: -25 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
+          initial={{
+            opacity: 0,
+            y: -25,
+          }}
+          whileInView={{
+            opacity: 1,
+            y: 0,
+          }}
+          viewport={{
+            once: true,
+          }}
+          transition={{
+            duration: 0.5,
+          }}
           className="
-            mb-6
+            mb-8
             flex
             flex-col
-            gap-4
+            gap-5
 
-            sm:mb-7
+            sm:mb-10
             sm:flex-row
             sm:items-end
             sm:justify-between
           "
         >
-          {/* Heading */}
-          <div className="w-full">
-            <div className="mb-1 flex items-center gap-2">
-              <span className="text-base sm:text-lg">🚕</span>
+          {/* =================================================
+              HEADING
+          ================================================== */}
+          <div className="max-w-2xl">
+            {/* Small Label */}
+            <div className="mb-2 flex items-center gap-2">
+              <span className="text-lg sm:text-xl">
+                🚕
+              </span>
 
               <span
                 className="
                   text-[11px]
-                  font-semibold
+                  font-bold
                   uppercase
-                  tracking-wider
+                  tracking-[0.18em]
                   text-[var(--primary)]
 
                   sm:text-xs
@@ -124,6 +176,7 @@ export default function FleetSection() {
               </span>
             </div>
 
+            {/* Main Heading */}
             <h2
               className="
                 text-2xl
@@ -133,17 +186,34 @@ export default function FleetSection() {
 
                 sm:text-3xl
 
-                md:text-[32px]
+                md:text-[34px]
 
-                lg:text-[34px]
+                lg:text-[38px]
               "
             >
               Choose Your Perfect Ride
             </h2>
 
-            <div
+            {/* Description */}
+            <p
               className="
                 mt-2
+                max-w-xl
+                text-sm
+                leading-6
+                text-[var(--muted)]
+
+                sm:text-base
+              "
+            >
+              Comfortable, reliable and well-maintained vehicles
+              for every journey.
+            </p>
+
+            {/* Yellow Line */}
+            <div
+              className="
+                mt-3
                 h-1
                 w-16
                 rounded-full
@@ -154,18 +224,21 @@ export default function FleetSection() {
             />
           </div>
 
-          {/* Desktop / Tablet Button */}
+          {/* =================================================
+              DESKTOP BUTTON
+          ================================================== */}
           <Link
             href="/fleet"
             className="
+              group
               hidden
               shrink-0
               items-center
               justify-center
               gap-2
-              rounded-lg
+              rounded-xl
               border
-              border-gray-300
+              border-gray-200
               bg-white
               px-5
               py-3
@@ -173,10 +246,13 @@ export default function FleetSection() {
               font-semibold
               text-[var(--primary)]
               shadow-sm
-              transition
+              transition-all
+              duration-200
 
+              hover:-translate-y-0.5
               hover:border-[var(--primary)]
               hover:bg-[var(--primary-light)]
+              hover:shadow-md
 
               sm:flex
             "
@@ -185,32 +261,39 @@ export default function FleetSection() {
 
             <ArrowRight
               size={18}
-              className="transition-transform duration-200 group-hover:translate-x-1"
+              className="
+                transition-transform
+                duration-200
+                group-hover:translate-x-1
+              "
             />
           </Link>
         </motion.div>
 
-        {/* ================= FLEET CARDS ================= */}
+        {/* =================================================
+            FLEET CARDS
+        ================================================== */}
         <motion.div
           variants={container}
           initial="hidden"
           whileInView="show"
-          viewport={{ once: true, margin: "-80px" }}
+          viewport={{
+            once: true,
+            margin: "-80px",
+          }}
           className="
             grid
+            w-full
             grid-cols-1
             gap-5
 
             min-[420px]:grid-cols-2
 
-            sm:grid-cols-2
-            sm:gap-5
+            sm:gap-6
 
             md:grid-cols-3
-            md:gap-6
 
-            lg:grid-cols-3
-            lg:gap-6
+            lg:gap-7
 
             xl:grid-cols-6
             xl:gap-4
@@ -223,8 +306,8 @@ export default function FleetSection() {
               key={vehicle.name}
               variants={item}
               whileHover={{
-                y: -10,
-                scale: 1.03,
+                y: -8,
+                scale: 1.02,
                 transition: {
                   duration: 0.25,
                 },
@@ -236,7 +319,9 @@ export default function FleetSection() {
           ))}
         </motion.div>
 
-        {/* ================= MOBILE BUTTON ================= */}
+        {/* =================================================
+            MOBILE BUTTON
+        ================================================== */}
         <motion.div
           initial={{
             opacity: 0,
@@ -246,12 +331,14 @@ export default function FleetSection() {
             opacity: 1,
             y: 0,
           }}
-          viewport={{ once: true }}
+          viewport={{
+            once: true,
+          }}
           transition={{
             delay: 0.4,
           }}
           className="
-            mt-6
+            mt-7
             flex
             justify-center
 
@@ -261,29 +348,39 @@ export default function FleetSection() {
           <Link
             href="/fleet"
             className="
-              flex
+              group
+              inline-flex
               items-center
               justify-center
               gap-2
-              rounded-lg
+              rounded-xl
               border
-              border-gray-300
+              border-gray-200
               bg-white
-              px-5
+              px-6
               py-3
               text-sm
               font-semibold
               text-[var(--primary)]
               shadow-sm
-              transition
+              transition-all
+              duration-200
 
               hover:border-[var(--primary)]
               hover:bg-[var(--primary-light)]
+              hover:shadow-md
             "
           >
             View All Fleet
 
-            <ArrowRight size={16} />
+            <ArrowRight
+              size={16}
+              className="
+                transition-transform
+                duration-200
+                group-hover:translate-x-1
+              "
+            />
           </Link>
         </motion.div>
       </div>

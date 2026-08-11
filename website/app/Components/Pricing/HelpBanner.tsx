@@ -3,8 +3,8 @@ import { Headphones, Phone } from "lucide-react";
 
 export default function HelpBanner() {
   return (
-    <div className="mt-5 rounded-xl bg-primary p-5 text-white flex flex-col md:flex-row justify-between items-center gap-5">
-      
+    <div className="mt-5 rounded-xl bg-primary p-5 text-white flex flex-col md:flex-row justify-between items-center gap-5 font-[var(--font-jakarta)]">
+
       {/* Left Content */}
       <div className="flex gap-4 items-center">
         <Headphones size={45} />
@@ -22,7 +22,7 @@ export default function HelpBanner() {
 
       {/* Buttons */}
       <div className="flex flex-col sm:flex-row gap-3 mt-4 md:mt-0 w-full md:w-auto">
-        
+
         <a
           href="tel:9843544844"
           className="bg-white text-primary px-8 py-3 rounded-lg font-bold flex gap-2 items-center justify-center hover:bg-primary-light transition"

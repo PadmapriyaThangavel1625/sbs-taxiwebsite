@@ -4,6 +4,13 @@
 import { useState } from "react";
 import { motion, Variants } from "framer-motion";
 import Image from "next/image";
+import Link from "next/link";
+import {
+  Users,
+  Luggage,
+  Snowflake,
+} from "lucide-react";
+
 import FleetCard, { Fleet } from "./FleetCard";
 
 const cars: Fleet[] = [
@@ -165,199 +172,218 @@ export default function FleetSection() {
         </motion.div>
 
         {/* Selected Vehicle Details */}
-        {selectedCar && (
-          <motion.div
-            initial={{
-              opacity: 0,
-              y: 30,
-            }}
-            animate={{
-              opacity: 1,
-              y: 0,
-            }}
-            transition={{
-              duration: 0.5,
-            }}
-            className="
-              mt-10
-              overflow-hidden
-              rounded-2xl
-              border
-              bg-white
-              p-5
-              shadow-md
-              sm:mt-12
-              sm:p-6
-              lg:mt-16
-              lg:p-8
-            "
-          >
-            <div className="grid grid-cols-1 items-center gap-8 lg:grid-cols-2">
+        <motion.div
+          key={selectedCar.name}
+          initial={{
+            opacity: 0,
+            y: 30,
+          }}
+          animate={{
+            opacity: 1,
+            y: 0,
+          }}
+          transition={{
+            duration: 0.5,
+          }}
+          className="
+            mt-10
+            overflow-hidden
+            rounded-2xl
+            border
+            border-gray-200
+            bg-white
+            p-5
+            shadow-md
+            sm:mt-12
+            sm:p-6
+            lg:mt-16
+            lg:p-8
+          "
+        >
+          <div className="grid grid-cols-1 items-center gap-8 lg:grid-cols-2">
 
-              {/* Vehicle Image */}
-              <div
+            {/* Vehicle Image */}
+            <div
+              className="
+                relative
+                h-56
+                w-full
+                overflow-hidden
+                rounded-xl
+                border
+                border-primary-light
+                bg-primary-light
+                p-4
+                sm:h-64
+              "
+            >
+              <Image
+                src={selectedCar.image}
+                alt={selectedCar.name}
+                fill
+                sizes="(max-width: 1024px) 100vw, 50vw"
+                className="object-contain"
+              />
+            </div>
+
+            {/* Vehicle Details */}
+            <div>
+
+              {/* Label */}
+              <span
                 className="
-                  relative
-                  h-56
-                  w-full
-                  overflow-hidden
-                  rounded-xl
-                  border
-                  bg-primary-light
-                  p-4
-                  sm:h-64
+                  inline-flex
+                  rounded-full
+                  bg-primary
+                  px-3
+                  py-1
+                  text-xs
+                  font-semibold
+                  text-white
                 "
               >
-                <Image
-                  src={selectedCar.image}
-                  alt={selectedCar.name}
-                  fill
-                  sizes="(max-width: 1024px) 100vw, 50vw"
-                  className="object-contain"
-                />
+                {selectedCar.name} Details
+              </span>
+
+              {/* Type */}
+              <h3 className="mt-3 text-2xl font-bold text-heading sm:text-3xl">
+                {selectedCar.type}
+              </h3>
+
+              {/* Models */}
+              <p className="mt-2 text-sm leading-6 text-muted sm:text-base">
+                <strong className="text-heading">
+                  Fleet Models:
+                </strong>{" "}
+                {selectedCar.vehicles}
+              </p>
+
+              {/* Features */}
+              <div
+                className="
+                  my-5
+                  grid
+                  grid-cols-1
+                  gap-3
+                  rounded-xl
+                  border
+                  border-primary-light
+                  bg-primary-light
+                  p-4
+                  sm:my-6
+                  sm:grid-cols-3
+                  sm:gap-4
+                "
+              >
+
+                {/* Capacity */}
+                <div className="flex flex-col items-center justify-center">
+                  <Users
+                    size={22}
+                    className="text-primary"
+                  />
+
+                  <p className="mt-1 text-xs text-muted">
+                    Capacity
+                  </p>
+
+                  <p className="mt-1 text-sm font-semibold text-primary">
+                    {selectedCar.seat}
+                  </p>
+                </div>
+
+                {/* Luggage */}
+                <div className="flex flex-col items-center justify-center">
+                  <Luggage
+                    size={22}
+                    className="text-primary"
+                  />
+
+                  <p className="mt-1 text-xs text-muted">
+                    Luggage
+                  </p>
+
+                  <p className="mt-1 text-sm font-semibold text-primary">
+                    {selectedCar.bags}
+                  </p>
+                </div>
+
+                {/* Climate */}
+                <div className="flex flex-col items-center justify-center">
+                  <Snowflake
+                    size={22}
+                    className="text-primary"
+                  />
+
+                  <p className="mt-1 text-xs text-muted">
+                    Climate
+                  </p>
+
+                  <p className="mt-1 text-sm font-semibold text-primary">
+                    AC Included
+                  </p>
+                </div>
+
               </div>
 
-              {/* Vehicle Details */}
-              <div>
+              {/* Fare + Button */}
+              <div
+                className="
+                  flex
+                  flex-col
+                  gap-4
+                  border-t
+                  border-gray-200
+                  pt-4
+                  sm:flex-row
+                  sm:items-center
+                  sm:justify-between
+                "
+              >
 
-                {/* Label */}
-                <span
+                {/* Fare */}
+                <div>
+                  <p className="text-xs text-muted">
+                    Fare Rate
+                  </p>
+
+                  <h2 className="mt-1 text-2xl font-bold text-primary">
+                    ₹{selectedCar.price}
+                    <span className="text-sm font-normal text-muted">
+                      {" "}
+                      / km
+                    </span>
+                  </h2>
+                </div>
+
+                {/* Book Button */}
+                <Link
+                  href="/booking"
                   className="
                     inline-flex
-                    rounded
+                    w-full
+                    items-center
+                    justify-center
+                    rounded-xl
                     bg-primary
-                    px-3
-                    py-1
-                    text-xs
+                    px-6
+                    py-3
                     font-semibold
                     text-white
+                    shadow-md
+                    transition
+                    duration-200
+                    hover:bg-primary-dark
+                    sm:w-auto
                   "
                 >
-                  {selectedCar.name} Details
-                </span>
+                  Book This Ride
+                </Link>
 
-                {/* Type */}
-                <h3 className="mt-2 text-2xl font-bold text-heading sm:text-3xl">
-                  {selectedCar.type}
-                </h3>
-
-                {/* Models */}
-                <p className="mt-2 text-sm leading-6 text-muted sm:text-base">
-                  <strong className="text-heading">
-                    Fleet Models:
-                  </strong>{" "}
-                  {selectedCar.vehicles}
-                </p>
-
-                {/* Features */}
-                <div
-                  className="
-                    my-5
-                    grid
-                    grid-cols-1
-                    gap-3
-                    rounded-xl
-                    border
-                    border-primary-light
-                    bg-primary-light
-                    p-4
-                    text-center
-                    text-sm
-                    font-semibold
-                    text-primary
-                    sm:grid-cols-3
-                    sm:gap-4
-                    sm:my-6
-                  "
-                >
-                  {/* Capacity */}
-                  <div>
-                    <p className="text-xs font-normal text-muted">
-                      Capacity
-                    </p>
-
-                    <p className="mt-1">
-                      👤 {selectedCar.seat}
-                    </p>
-                  </div>
-
-                  {/* Luggage */}
-                  <div>
-                    <p className="text-xs font-normal text-muted">
-                      Luggage
-                    </p>
-
-                    <p className="mt-1">
-                      🧳 {selectedCar.bags}
-                    </p>
-                  </div>
-
-                  {/* Climate */}
-                  <div>
-                    <p className="text-xs font-normal text-muted">
-                      Climate
-                    </p>
-
-                    <p className="mt-1">
-                      ❄ AC Included
-                    </p>
-                  </div>
-                </div>
-
-                {/* Fare + Button */}
-                <div
-                  className="
-                    flex
-                    flex-col
-                    gap-4
-                    border-t
-                    pt-4
-                    sm:flex-row
-                    sm:items-center
-                    sm:justify-between
-                  "
-                >
-                  {/* Fare */}
-                  <div>
-                    <p className="text-xs text-muted">
-                      Fare Rate
-                    </p>
-
-                    <h2 className="mt-1 text-2xl font-bold text-primary">
-                      ₹{selectedCar.price}{" "}
-                      <span className="text-sm font-normal text-muted">
-                        / km
-                      </span>
-                    </h2>
-                  </div>
-
-                  {/* Book Button */}
-                  <a
-                    href="/booking"
-                    className="
-                      inline-flex
-                      w-full
-                      items-center
-                      justify-center
-                      rounded-xl
-                      bg-primary
-                      px-6
-                      py-3
-                      font-semibold
-                      text-white
-                      shadow-md
-                      transition
-                      hover:bg-primary-dark
-                      sm:w-auto
-                    "
-                  >
-                    Book This Ride
-                  </a>
-                </div>
               </div>
             </div>
-          </motion.div>
-        )}
+          </div>
+        </motion.div>
 
       </div>
     </section>

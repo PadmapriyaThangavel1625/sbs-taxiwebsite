@@ -12,7 +12,7 @@ import {
 
 export default function ContactInfo() {
   return (
-    <section className="h-full">
+    <section className="h-full font-[family-name:var(--font-jakarta)]">
       {/* =========================
           Heading
       ========================== */}
@@ -38,8 +38,9 @@ export default function ContactInfo() {
         <h2
           className="
             mt-3
+            font-[family-name:var(--font-instrument)]
             text-2xl
-            font-bold
+            font-normal
             tracking-tight
             text-[var(--text)]
             sm:text-3xl
@@ -54,7 +55,7 @@ export default function ContactInfo() {
             max-w-lg
             text-sm
             leading-6
-            text-[var(--text-light)]
+            text-[var(--muted)]
           "
         >
           Have a question or need a ride? Our team is available to help you
@@ -123,7 +124,7 @@ export default function ContactInfo() {
                   font-semibold
                   uppercase
                   tracking-wide
-                  text-[var(--text-light)]
+                  text-[var(--muted)]
                 "
               >
                 Call Us
@@ -134,7 +135,7 @@ export default function ContactInfo() {
                   h-4
                   w-4
                   shrink-0
-                  text-[var(--text-light)]
+                  text-[var(--muted)]
                   opacity-0
                   transition-all
                   duration-300
@@ -162,7 +163,7 @@ export default function ContactInfo() {
               className="
                 mt-1
                 text-xs
-                text-[var(--text-light)]
+                text-[var(--muted)]
               "
             >
               Available 24/7
@@ -222,7 +223,7 @@ export default function ContactInfo() {
                   font-semibold
                   uppercase
                   tracking-wide
-                  text-[var(--text-light)]
+                  text-[var(--muted)]
                 "
               >
                 WhatsApp
@@ -233,7 +234,7 @@ export default function ContactInfo() {
                   h-4
                   w-4
                   shrink-0
-                  text-[var(--text-light)]
+                  text-[var(--muted)]
                   opacity-0
                   transition-all
                   duration-300
@@ -261,7 +262,7 @@ export default function ContactInfo() {
               className="
                 mt-1
                 text-xs
-                text-[var(--text-light)]
+                text-[var(--muted)]
               "
             >
               Chat with us
@@ -321,7 +322,7 @@ export default function ContactInfo() {
                   font-semibold
                   uppercase
                   tracking-wide
-                  text-[var(--text-light)]
+                  text-[var(--muted)]
                 "
               >
                 Email Us
@@ -331,7 +332,7 @@ export default function ContactInfo() {
                 className="
                   h-4
                   w-4
-                  text-[var(--text-light)]
+                  text-[var(--muted)]
                   opacity-0
                   transition-all
                   duration-300
@@ -359,7 +360,7 @@ export default function ContactInfo() {
               className="
                 mt-1
                 text-xs
-                text-[var(--text-light)]
+                text-[var(--muted)]
               "
             >
               Send us your enquiry anytime
@@ -421,7 +422,7 @@ export default function ContactInfo() {
                   font-semibold
                   uppercase
                   tracking-wide
-                  text-[var(--text-light)]
+                  text-[var(--muted)]
                 "
               >
                 Visit Us
@@ -431,7 +432,7 @@ export default function ContactInfo() {
                 className="
                   h-4
                   w-4
-                  text-[var(--text-light)]
+                  text-[var(--muted)]
                   opacity-0
                   transition-all
                   duration-300
@@ -493,7 +494,7 @@ export default function ContactInfo() {
           className="
             text-xs
             font-medium
-            text-[var(--text-light)]
+            text-[var(--muted)]
           "
         >
           Quick access:

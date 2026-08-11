@@ -42,6 +42,7 @@ export default function BenefitsBar() {
           gap-5
           lg:grid-cols-[7fr_3fr]
           lg:gap-6
+          font-[var(--font-jakarta)]
         "
       >
         {/* Customer Benefits - 70% */}

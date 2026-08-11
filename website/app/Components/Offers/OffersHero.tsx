@@ -1,3 +1,4 @@
+
 import Image from "next/image";
 import {
   ShieldCheck,
@@ -24,7 +25,8 @@ export default function OffersHero() {
 
       {/* Content */}
       <div className="container-custom relative z-10 flex min-h-[520px] items-center py-12">
-        <div className="max-w-2xl text-white">
+        <div className="max-w-2xl text-white font-[var(--font-jakarta)]">
+
           {/* Badge */}
           <span className="mb-4 inline-block rounded-full bg-secondary px-3 py-1 text-xs font-bold text-black">
             BEST FARES GUARANTEED
@@ -48,6 +50,7 @@ export default function OffersHero() {
 
           {/* Features */}
           <div className="mt-8 grid grid-cols-1 gap-4 rounded-xl border border-white/20 bg-white/10 p-5 backdrop-blur-md sm:grid-cols-2">
+
             {/* Feature 1 */}
             <div className="flex items-center gap-3">
               <ShieldCheck
@@ -119,6 +122,7 @@ export default function OffersHero() {
                 </p>
               </div>
             </div>
+
           </div>
         </div>
       </div>

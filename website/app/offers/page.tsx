@@ -6,7 +6,10 @@ import BottomCTA from "@/app/Components/Offers/BottomCTA";
 
 export default function OffersPage() {
   return (
-    <main className="bg-gray-50">
+    <main
+      className="bg-gray-50"
+      style={{ fontFamily: "var(--font-jakarta)" }}
+    >
       <OffersHero />
 
       <section className="container-custom py-8 sm:py-10 lg:py-12">

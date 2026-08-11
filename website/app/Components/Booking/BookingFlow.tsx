@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState } from "react";
@@ -19,7 +18,6 @@ import {
   Smartphone,
   WalletCards,
   CheckCircle2,
-  Clock,
 } from "lucide-react";
 
 import TripDetailsForm, {
@@ -108,16 +106,15 @@ export default function BookingFlow() {
      TRIP DETAILS
   ===================================================== */
 
-  const [tripDetails, setTripDetails] =
-    useState<TripDetails>({
-      pickup: "",
-      drop: "",
-      tripType: "Outstation",
-      date: "",
-      time: "",
-      isRoundTrip: false,
-      preferences: [],
-    });
+  const [tripDetails, setTripDetails] = useState<TripDetails>({
+    pickup: "",
+    drop: "",
+    tripType: "Outstation",
+    date: "",
+    time: "",
+    isRoundTrip: false,
+    preferences: [],
+  });
 
   /* =====================================================
      SELECTED VEHICLE
@@ -149,8 +146,7 @@ export default function BookingFlow() {
      CONFIRMATION
   ===================================================== */
 
-  const [isConfirmed, setIsConfirmed] =
-    useState(false);
+  const [isConfirmed, setIsConfirmed] = useState(false);
 
   /* =====================================================
      UPDATE TRIP FIELD
@@ -286,11 +282,7 @@ ${
 }
 `;
 
-    /* Show confirmation */
-
     setIsConfirmed(true);
-
-    /* Dispatch booking event */
 
     if (typeof window !== "undefined") {
       window.dispatchEvent(
@@ -304,8 +296,7 @@ ${
        * with your real SBS Taxi email.
        */
 
-      const emailAddress =
-        "your-email@example.com";
+      const emailAddress = "your-email@example.com";
 
       const subject =
         "SBS Taxi - Booking Confirmation";
@@ -313,9 +304,7 @@ ${
       const mailto =
         `mailto:${emailAddress}` +
         `?subject=${encodeURIComponent(subject)}` +
-        `&body=${encodeURIComponent(
-          bookingDetails
-        )}`;
+        `&body=${encodeURIComponent(bookingDetails)}`;
 
       setTimeout(() => {
         window.location.href = mailto;
@@ -325,14 +314,12 @@ ${
 
   return (
     <div className="w-full">
-
       {/* =================================================
           STEP TRACKER
       ================================================= */}
 
       <div className="mb-6 overflow-x-auto">
         <div className="min-w-[600px] flex items-center justify-between">
-
           {steps.map((step, index) => {
             const Icon = step.icon;
 
@@ -344,9 +331,7 @@ ${
 
             return (
               <React.Fragment key={step.id}>
-
                 <div className="flex flex-col items-center">
-
                   <div
                     className={`
                       w-10
@@ -388,7 +373,6 @@ ${
                   >
                     {step.title}
                   </span>
-
                 </div>
 
                 {index < steps.length - 1 && (
@@ -406,11 +390,9 @@ ${
                     `}
                   />
                 )}
-
               </React.Fragment>
             );
           })}
-
         </div>
       </div>
 
@@ -419,7 +401,6 @@ ${
       ================================================= */}
 
       <div className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
-
         <div className="p-5 md:p-7">
 
           {/* =================================================
@@ -428,14 +409,12 @@ ${
 
           {currentStep === 1 && (
             <div className="animate-[fadeIn_0.25s_ease-out]">
-
               <TripDetailsForm
                 details={tripDetails}
                 updateField={updateTripField}
               />
 
               <div className="mt-7 flex justify-end">
-
                 <button
                   type="button"
                   onClick={nextStep}
@@ -461,9 +440,7 @@ ${
 
                   <ArrowRight className="w-4 h-4" />
                 </button>
-
               </div>
-
             </div>
           )}
 
@@ -473,9 +450,7 @@ ${
 
           {currentStep === 2 && (
             <div className="animate-[fadeIn_0.25s_ease-out]">
-
               <div className="mb-6">
-
                 <h2 className="text-xl font-bold text-slate-900">
                   Choose Your Vehicle
                 </h2>
@@ -483,15 +458,10 @@ ${
                 <p className="mt-1 text-sm text-slate-500">
                   Select the vehicle that best suits your journey.
                 </p>
-
               </div>
 
-              {/* VEHICLE CARDS */}
-
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-
                 {vehicles.map((vehicle) => {
-
                   const selected =
                     selectedVehicle?.id === vehicle.id;
 
@@ -518,11 +488,8 @@ ${
                         }
                       `}
                     >
-
                       <div className="flex items-start justify-between">
-
                         <div className="flex items-center gap-3">
-
                           <div
                             className={`
                               w-12
@@ -543,7 +510,6 @@ ${
                           </div>
 
                           <div>
-
                             <h3 className="font-bold text-slate-900">
                               {vehicle.type}
                             </h3>
@@ -551,45 +517,47 @@ ${
                             <p className="mt-1 text-xs text-slate-500">
                               {vehicle.model}
                             </p>
-
                           </div>
-
                         </div>
 
                         {selected && (
-                          <div className="
-                            w-7
-                            h-7
-                            rounded-full
-                            bg-[#1A365D]
-                            text-white
-                            flex
-                            items-center
-                            justify-center
-                          ">
+                          <div
+                            className="
+                              w-7
+                              h-7
+                              rounded-full
+                              bg-[#1A365D]
+                              text-white
+                              flex
+                              items-center
+                              justify-center
+                            "
+                          >
                             <Check className="w-4 h-4" />
                           </div>
                         )}
-
                       </div>
 
-                      <div className="
-                        mt-5
-                        pt-4
-                        border-t
-                        border-slate-200
-                        flex
-                        items-center
-                        justify-between
-                      ">
-
-                        <div className="
+                      <div
+                        className="
+                          mt-5
+                          pt-4
+                          border-t
+                          border-slate-200
                           flex
                           items-center
-                          gap-1.5
-                          text-sm
-                          text-slate-600
-                        ">
+                          justify-between
+                        "
+                      >
+                        <div
+                          className="
+                            flex
+                            items-center
+                            gap-1.5
+                            text-sm
+                            text-slate-600
+                          "
+                        >
                           <Users className="w-4 h-4" />
 
                           <span>
@@ -597,34 +565,27 @@ ${
                           </span>
                         </div>
 
-                        <span className="
-                          font-bold
-                          text-[#1A365D]
-                        ">
+                        <span className="font-bold text-[#1A365D]">
                           {vehicle.price}
                         </span>
-
                       </div>
-
                     </button>
                   );
                 })}
-
               </div>
 
-              {/* VEHICLE ACTIONS */}
-
-              <div className="
-                mt-7
-                flex
-                flex-col-reverse
-                sm:flex-row
-                items-stretch
-                sm:items-center
-                justify-between
-                gap-3
-              ">
-
+              <div
+                className="
+                  mt-7
+                  flex
+                  flex-col-reverse
+                  sm:flex-row
+                  items-stretch
+                  sm:items-center
+                  justify-between
+                  gap-3
+                "
+              >
                 <button
                   type="button"
                   onClick={previousStep}
@@ -646,7 +607,6 @@ ${
                   "
                 >
                   <ArrowLeft className="w-4 h-4" />
-
                   Back
                 </button>
 
@@ -676,9 +636,7 @@ ${
 
                   <ArrowRight className="w-4 h-4" />
                 </button>
-
               </div>
-
             </div>
           )}
 
@@ -688,9 +646,7 @@ ${
 
           {currentStep === 3 && (
             <div className="animate-[fadeIn_0.25s_ease-out]">
-
               <div className="mb-6">
-
                 <h2 className="text-xl font-bold text-slate-900">
                   Passenger Details
                 </h2>
@@ -698,22 +654,21 @@ ${
                 <p className="mt-1 text-sm text-slate-500">
                   Enter the passenger information for this booking.
                 </p>
-
               </div>
 
               <div className="space-y-5">
-
                 {/* NAME */}
 
                 <div>
-
-                  <label className="
-                    block
-                    text-sm
-                    font-semibold
-                    text-slate-700
-                    mb-2
-                  ">
+                  <label
+                    className="
+                      block
+                      text-sm
+                      font-semibold
+                      text-slate-700
+                      mb-2
+                    "
+                  >
                     Passenger Name
 
                     <span className="text-red-500 ml-1">
@@ -722,7 +677,6 @@ ${
                   </label>
 
                   <div className="relative">
-
                     <User
                       className="
                         absolute
@@ -760,46 +714,48 @@ ${
                         focus:ring-[#1A365D]
                       "
                     />
-
                   </div>
-
                 </div>
 
                 {/* PASSENGER COUNTS */}
 
-                <div className="
-                  grid
-                  grid-cols-1
-                  sm:grid-cols-3
-                  gap-4
-                ">
-
+                <div
+                  className="
+                    grid
+                    grid-cols-1
+                    sm:grid-cols-3
+                    gap-4
+                  "
+                >
                   {/* PEOPLE */}
 
-                  <div className="
-                    border
-                    border-slate-200
-                    rounded-xl
-                    p-4
-                  ">
-
-                    <div className="
-                      flex
-                      items-center
-                      gap-2
-                      mb-3
-                    ">
-
+                  <div
+                    className="
+                      border
+                      border-slate-200
+                      rounded-xl
+                      p-4
+                    "
+                  >
+                    <div
+                      className="
+                        flex
+                        items-center
+                        gap-2
+                        mb-3
+                      "
+                    >
                       <Users className="w-5 h-5 text-[#1A365D]" />
 
-                      <span className="
-                        text-sm
-                        font-semibold
-                        text-slate-800
-                      ">
+                      <span
+                        className="
+                          text-sm
+                          font-semibold
+                          text-slate-800
+                        "
+                      >
                         Total People
                       </span>
-
                     </div>
 
                     <input
@@ -830,35 +786,37 @@ ${
                         focus:ring-[#1A365D]
                       "
                     />
-
                   </div>
 
                   {/* BABIES */}
 
-                  <div className="
-                    border
-                    border-slate-200
-                    rounded-xl
-                    p-4
-                  ">
-
-                    <div className="
-                      flex
-                      items-center
-                      gap-2
-                      mb-3
-                    ">
-
+                  <div
+                    className="
+                      border
+                      border-slate-200
+                      rounded-xl
+                      p-4
+                    "
+                  >
+                    <div
+                      className="
+                        flex
+                        items-center
+                        gap-2
+                        mb-3
+                      "
+                    >
                       <Baby className="w-5 h-5 text-[#1A365D]" />
 
-                      <span className="
-                        text-sm
-                        font-semibold
-                        text-slate-800
-                      ">
+                      <span
+                        className="
+                          text-sm
+                          font-semibold
+                          text-slate-800
+                        "
+                      >
                         Babies
                       </span>
-
                     </div>
 
                     <input
@@ -889,35 +847,37 @@ ${
                         focus:ring-[#1A365D]
                       "
                     />
-
                   </div>
 
                   {/* ELDERLY */}
 
-                  <div className="
-                    border
-                    border-slate-200
-                    rounded-xl
-                    p-4
-                  ">
-
-                    <div className="
-                      flex
-                      items-center
-                      gap-2
-                      mb-3
-                    ">
-
+                  <div
+                    className="
+                      border
+                      border-slate-200
+                      rounded-xl
+                      p-4
+                    "
+                  >
+                    <div
+                      className="
+                        flex
+                        items-center
+                        gap-2
+                        mb-3
+                      "
+                    >
                       <UserRound className="w-5 h-5 text-[#1A365D]" />
 
-                      <span className="
-                        text-sm
-                        font-semibold
-                        text-slate-800
-                      ">
+                      <span
+                        className="
+                          text-sm
+                          font-semibold
+                          text-slate-800
+                        "
+                      >
                         Elderly People
                       </span>
-
                     </div>
 
                     <input
@@ -948,26 +908,24 @@ ${
                         focus:ring-[#1A365D]
                       "
                     />
-
                   </div>
-
                 </div>
-
               </div>
 
               {/* PASSENGER ACTIONS */}
 
-              <div className="
-                mt-7
-                flex
-                flex-col-reverse
-                sm:flex-row
-                items-stretch
-                sm:items-center
-                justify-between
-                gap-3
-              ">
-
+              <div
+                className="
+                  mt-7
+                  flex
+                  flex-col-reverse
+                  sm:flex-row
+                  items-stretch
+                  sm:items-center
+                  justify-between
+                  gap-3
+                "
+              >
                 <button
                   type="button"
                   onClick={previousStep}
@@ -988,7 +946,6 @@ ${
                   "
                 >
                   <ArrowLeft className="w-4 h-4" />
-
                   Back
                 </button>
 
@@ -1017,9 +974,7 @@ ${
 
                   <ArrowRight className="w-4 h-4" />
                 </button>
-
               </div>
-
             </div>
           )}
 
@@ -1029,9 +984,7 @@ ${
 
           {currentStep === 4 && !isConfirmed && (
             <div className="animate-[fadeIn_0.25s_ease-out]">
-
               <div className="mb-6">
-
                 <h2 className="text-xl font-bold text-slate-900">
                   Payment Method
                 </h2>
@@ -1039,18 +992,18 @@ ${
                 <p className="mt-1 text-sm text-slate-500">
                   Choose your preferred payment method.
                 </p>
-
               </div>
 
               {/* PAYMENT OPTIONS */}
 
-              <div className="
-                grid
-                grid-cols-1
-                sm:grid-cols-3
-                gap-4
-              ">
-
+              <div
+                className="
+                  grid
+                  grid-cols-1
+                  sm:grid-cols-3
+                  gap-4
+                "
+              >
                 {/* CASH */}
 
                 <button
@@ -1071,7 +1024,6 @@ ${
                     }
                   `}
                 >
-
                   <Banknote className="w-7 h-7 text-[#1A365D]" />
 
                   <h3 className="mt-3 font-bold text-slate-900">
@@ -1081,7 +1033,6 @@ ${
                   <p className="mt-1 text-xs text-slate-500">
                     Pay directly to the driver.
                   </p>
-
                 </button>
 
                 {/* UPI */}
@@ -1104,7 +1055,6 @@ ${
                     }
                   `}
                 >
-
                   <Smartphone className="w-7 h-7 text-[#1A365D]" />
 
                   <h3 className="mt-3 font-bold text-slate-900">
@@ -1114,7 +1064,6 @@ ${
                   <p className="mt-1 text-xs text-slate-500">
                     Pay using any UPI app.
                   </p>
-
                 </button>
 
                 {/* CARD */}
@@ -1137,7 +1086,6 @@ ${
                     }
                   `}
                 >
-
                   <WalletCards className="w-7 h-7 text-[#1A365D]" />
 
                   <h3 className="mt-3 font-bold text-slate-900">
@@ -1147,189 +1095,194 @@ ${
                   <p className="mt-1 text-xs text-slate-500">
                     Pay using debit or credit card.
                   </p>
-
                 </button>
-
               </div>
 
               {/* SUMMARY */}
 
-              <div className="
-                mt-6
-                bg-slate-50
-                border
-                border-slate-200
-                rounded-xl
-                p-5
-              ">
-
-                <h3 className="
-                  font-bold
-                  text-slate-900
-                  mb-4
-                ">
+              <div
+                className="
+                  mt-6
+                  bg-slate-50
+                  border
+                  border-slate-200
+                  rounded-xl
+                  p-5
+                "
+              >
+                <h3
+                  className="
+                    font-bold
+                    text-slate-900
+                    mb-4
+                  "
+                >
                   Booking Summary
                 </h3>
 
-                <div className="
-                  grid
-                  grid-cols-1
-                  sm:grid-cols-2
-                  gap-4
-                  text-sm
-                ">
-
+                <div
+                  className="
+                    grid
+                    grid-cols-1
+                    sm:grid-cols-2
+                    gap-4
+                    text-sm
+                  "
+                >
                   {/* ROUTE */}
 
                   <div className="flex items-start gap-3">
-
-                    <MapPin className="
-                      w-4
-                      h-4
-                      text-[#1A365D]
-                      mt-0.5
-                    " />
+                    <MapPin
+                      className="
+                        w-4
+                        h-4
+                        text-[#1A365D]
+                        mt-0.5
+                      "
+                    />
 
                     <div>
-
                       <p className="text-xs text-slate-500">
                         Route
                       </p>
 
-                      <p className="
-                        font-semibold
-                        text-slate-800
-                      ">
+                      <p
+                        className="
+                          font-semibold
+                          text-slate-800
+                        "
+                      >
                         {tripDetails.pickup} →{" "}
                         {tripDetails.drop}
                       </p>
-
                     </div>
-
                   </div>
 
                   {/* DATE */}
 
                   <div className="flex items-start gap-3">
-
-                    <Calendar className="
-                      w-4
-                      h-4
-                      text-[#1A365D]
-                      mt-0.5
-                    " />
+                    <Calendar
+                      className="
+                        w-4
+                        h-4
+                        text-[#1A365D]
+                        mt-0.5
+                      "
+                    />
 
                     <div>
-
                       <p className="text-xs text-slate-500">
                         Date & Time
                       </p>
 
-                      <p className="
-                        font-semibold
-                        text-slate-800
-                      ">
+                      <p
+                        className="
+                          font-semibold
+                          text-slate-800
+                        "
+                      >
                         {tripDetails.date}{" "}
                         {tripDetails.time}
                       </p>
-
                     </div>
-
                   </div>
 
                   {/* VEHICLE */}
 
                   <div className="flex items-start gap-3">
-
-                    <Car className="
-                      w-4
-                      h-4
-                      text-[#1A365D]
-                      mt-0.5
-                    " />
+                    <Car
+                      className="
+                        w-4
+                        h-4
+                        text-[#1A365D]
+                        mt-0.5
+                      "
+                    />
 
                     <div>
-
                       <p className="text-xs text-slate-500">
                         Vehicle
                       </p>
 
-                      <p className="
-                        font-semibold
-                        text-slate-800
-                      ">
+                      <p
+                        className="
+                          font-semibold
+                          text-slate-800
+                        "
+                      >
                         {selectedVehicle?.type} ·{" "}
                         {selectedVehicle?.seats} Seats
                       </p>
 
-                      <p className="
-                        text-xs
-                        text-[#1A365D]
-                        mt-1
-                        font-semibold
-                      ">
+                      <p
+                        className="
+                          text-xs
+                          text-[#1A365D]
+                          mt-1
+                          font-semibold
+                        "
+                      >
                         {selectedVehicle?.price}
                       </p>
-
                     </div>
-
                   </div>
 
                   {/* PASSENGERS */}
 
                   <div className="flex items-start gap-3">
-
-                    <Users className="
-                      w-4
-                      h-4
-                      text-[#1A365D]
-                      mt-0.5
-                    " />
+                    <Users
+                      className="
+                        w-4
+                        h-4
+                        text-[#1A365D]
+                        mt-0.5
+                      "
+                    />
 
                     <div>
-
                       <p className="text-xs text-slate-500">
                         Passengers
                       </p>
 
-                      <p className="
-                        font-semibold
-                        text-slate-800
-                      ">
+                      <p
+                        className="
+                          font-semibold
+                          text-slate-800
+                        "
+                      >
                         {passengerDetails.people} People
                       </p>
 
-                      <p className="
-                        text-xs
-                        text-slate-500
-                        mt-1
-                      ">
+                      <p
+                        className="
+                          text-xs
+                          text-slate-500
+                          mt-1
+                        "
+                      >
                         Babies: {passengerDetails.babies} ·
                         Elderly:{" "}
                         {passengerDetails.elderly}
                       </p>
-
                     </div>
-
                   </div>
-
                 </div>
-
               </div>
 
               {/* PAYMENT ACTIONS */}
 
-              <div className="
-                mt-7
-                flex
-                flex-col-reverse
-                sm:flex-row
-                items-stretch
-                sm:items-center
-                justify-between
-                gap-3
-              ">
-
+              <div
+                className="
+                  mt-7
+                  flex
+                  flex-col-reverse
+                  sm:flex-row
+                  items-stretch
+                  sm:items-center
+                  justify-between
+                  gap-3
+                "
+              >
                 <button
                   type="button"
                   onClick={previousStep}
@@ -1350,7 +1303,6 @@ ${
                   "
                 >
                   <ArrowLeft className="w-4 h-4" />
-
                   Back
                 </button>
 
@@ -1379,9 +1331,7 @@ ${
 
                   <CheckCircle2 className="w-4 h-4" />
                 </button>
-
               </div>
-
             </div>
           )}
 
@@ -1391,62 +1341,72 @@ ${
 
           {isConfirmed && (
             <div className="py-10 text-center">
-
-              <div className="
-                mx-auto
-                w-16
-                h-16
-                rounded-full
-                bg-green-100
-                flex
-                items-center
-                justify-center
-              ">
-                <CheckCircle2 className="
-                  w-9
-                  h-9
-                  text-green-600
-                " />
+              <div
+                className="
+                  mx-auto
+                  w-16
+                  h-16
+                  rounded-full
+                  bg-green-100
+                  flex
+                  items-center
+                  justify-center
+                "
+              >
+                <CheckCircle2
+                  className="
+                    w-9
+                    h-9
+                    text-green-600
+                  "
+                />
               </div>
 
-              <h2 className="
-                mt-5
-                text-2xl
-                font-bold
-                text-slate-900
-              ">
+              <h2
+                className="
+                  mt-5
+                  text-2xl
+                  font-bold
+                  text-slate-900
+                "
+              >
                 Booking Confirmed!
               </h2>
 
-              <p className="
-                mt-2
-                text-sm
-                text-slate-500
-                max-w-md
-                mx-auto
-              ">
+              <p
+                className="
+                  mt-2
+                  text-sm
+                  text-slate-500
+                  max-w-md
+                  mx-auto
+                "
+              >
                 Your SBS Taxi booking has been confirmed.
                 Your booking details are ready for email
                 confirmation.
               </p>
 
-              <div className="
-                mt-6
-                bg-slate-50
-                border
-                border-slate-200
-                rounded-xl
-                p-5
-                text-left
-                max-w-md
-                mx-auto
-              ">
-
-                <div className="
-                  flex
-                  justify-between
-                  py-2
-                ">
+              <div
+                className="
+                  mt-6
+                  bg-slate-50
+                  border
+                  border-slate-200
+                  rounded-xl
+                  p-5
+                  text-left
+                  max-w-md
+                  mx-auto
+                "
+              >
+                <div
+                  className="
+                    flex
+                    justify-between
+                    py-2
+                  "
+                >
                   <span className="text-xs text-slate-500">
                     Passenger
                   </span>
@@ -1456,11 +1416,13 @@ ${
                   </span>
                 </div>
 
-                <div className="
-                  flex
-                  justify-between
-                  py-2
-                ">
+                <div
+                  className="
+                    flex
+                    justify-between
+                    py-2
+                  "
+                >
                   <span className="text-xs text-slate-500">
                     Vehicle
                   </span>
@@ -1470,11 +1432,13 @@ ${
                   </span>
                 </div>
 
-                <div className="
-                  flex
-                  justify-between
-                  py-2
-                ">
+                <div
+                  className="
+                    flex
+                    justify-between
+                    py-2
+                  "
+                >
                   <span className="text-xs text-slate-500">
                     Seats
                   </span>
@@ -1484,11 +1448,13 @@ ${
                   </span>
                 </div>
 
-                <div className="
-                  flex
-                  justify-between
-                  py-2
-                ">
+                <div
+                  className="
+                    flex
+                    justify-between
+                    py-2
+                  "
+                >
                   <span className="text-xs text-slate-500">
                     People
                   </span>
@@ -1498,11 +1464,13 @@ ${
                   </span>
                 </div>
 
-                <div className="
-                  flex
-                  justify-between
-                  py-2
-                ">
+                <div
+                  className="
+                    flex
+                    justify-between
+                    py-2
+                  "
+                >
                   <span className="text-xs text-slate-500">
                     Payment
                   </span>
@@ -1511,16 +1479,11 @@ ${
                     {paymentMethod}
                   </span>
                 </div>
-
               </div>
-
             </div>
           )}
-
         </div>
-
       </div>
-
     </div>
   );
 }

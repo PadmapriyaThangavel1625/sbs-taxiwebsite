@@ -9,9 +9,11 @@ import {
 
 export default function TopBar() {
   return (
-    <div className="bg-primary text-white">
+    <div
+      className="bg-primary text-white"
+      style={{ fontFamily: "var(--font-jakarta)" }}
+    >
       <div className="container-custom flex min-h-10 items-center justify-between gap-4 text-xs">
-        
         {/* Left */}
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-1.5">
@@ -28,7 +30,6 @@ export default function TopBar() {
 
         {/* Right */}
         <div className="flex items-center gap-4">
-
           {/* Social Media */}
           <div className="hidden items-center gap-3 sm:flex">
             <span>Follow Us :</span>

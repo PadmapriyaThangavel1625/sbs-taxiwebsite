@@ -1,4 +1,3 @@
-
 import {
   ShieldCheck,
   Headset,
@@ -31,21 +30,27 @@ const features = [
 
 export default function FeaturesBar() {
   return (
-    <section className="mb-8 sm:mb-10">
+    <section className="mb-7 w-full sm:mb-9 lg:mb-10">
       <div
         className="
           container-custom
           grid
+          w-full
           grid-cols-1
-          gap-5
+          gap-4
           rounded-xl
           bg-white
-          p-5
+          p-4
           shadow-sm
+
           sm:grid-cols-2
-          sm:gap-6
-          sm:p-6
+          sm:gap-5
+          sm:p-5
+
+          md:p-6
+
           lg:grid-cols-4
+          lg:gap-5
         "
       >
         {features.map((feature) => {
@@ -56,38 +61,62 @@ export default function FeaturesBar() {
               key={feature.title}
               className="
                 flex
-                items-start
-                gap-4
+                items-center
+                gap-3
+                rounded-lg
+                px-1
+                py-2
+
+                sm:gap-4
+                sm:px-2
+                sm:py-3
               "
             >
               {/* Icon */}
               <div
                 className="
                   flex
-                  h-12
-                  w-12
+                  h-10
+                  w-10
                   shrink-0
                   items-center
                   justify-center
                   rounded-lg
                   bg-primary-light
+
+                  sm:h-11
+                  sm:w-11
+
+                  md:h-12
+                  md:w-12
                 "
               >
                 <Icon
-                  size={24}
-                  className="text-primary"
+                  size={21}
+                  strokeWidth={1.8}
+                  className="
+                    text-primary
+                    sm:h-[22px]
+                    sm:w-[22px]
+                    md:h-6
+                    md:w-6
+                  "
                 />
               </div>
 
               {/* Content */}
-              <div>
+              <div className="min-w-0">
                 <h4
                   className="
-                    mb-1
-                    text-xs
-                    font-semibold
+                    mb-0.5
+                    text-[12px]
+                    font-bold
+                    leading-5
                     text-heading
-                    sm:text-sm
+
+                    sm:text-[13px]
+
+                    md:text-sm
                   "
                 >
                   {feature.title}
@@ -95,10 +124,14 @@ export default function FeaturesBar() {
 
                 <p
                   className="
-                    text-[11px]
-                    leading-5
+                    text-[10px]
+                    leading-4
                     text-muted
-                    sm:text-xs
+
+                    sm:text-[11px]
+                    sm:leading-5
+
+                    md:text-xs
                   "
                 >
                   {feature.description}

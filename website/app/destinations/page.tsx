@@ -6,7 +6,10 @@ import BottomCTA from "@/app/Components/Destinations/BottomCTA";
 
 export default function Page() {
   return (
-    <main className="w-full overflow-x-hidden">
+    <main
+      className="w-full overflow-x-hidden"
+      style={{ fontFamily: "var(--font-jakarta)" }}
+    >
       {/* HERO */}
       <DestinationHero />
 

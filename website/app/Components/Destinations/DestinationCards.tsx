@@ -1,3 +1,4 @@
+
 "use client";
 
 import Link from "next/link";
@@ -501,7 +502,9 @@ const destinations: Destination[] = [
 ];
 
 export default function DestinationCards() {
-  const [selectedCity, setSelectedCity] = useState<Destination | null>(null);
+  const [selectedCity, setSelectedCity] =
+    useState<Destination | null>(null);
+
   const [slideIndex, setSlideIndex] = useState(0);
 
   const handleCityClick = (city: Destination) => {
@@ -535,8 +538,9 @@ export default function DestinationCards() {
   };
 
   return (
-    <section className="w-full bg-gray-50 px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
+    <section className="w-full bg-gray-50 px-4 py-12 font-jakarta sm:px-6 sm:py-16 lg:px-8">
       <div className="mx-auto max-w-7xl">
+
         {/* Heading */}
         <div className="mb-8 text-center sm:mb-10 md:mb-12">
           <p className="text-sm font-semibold uppercase tracking-widest text-blue-700">
@@ -631,8 +635,10 @@ export default function DestinationCards() {
             </div>
 
             <div className="p-5 sm:p-7 md:p-10">
+
               {/* Fare Information */}
               <div className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-3">
+
                 <div className="rounded-xl bg-gray-50 p-5">
                   <div className="mb-2 flex items-center gap-2 text-gray-500">
                     <MapPin size={18} />
@@ -712,6 +718,7 @@ export default function DestinationCards() {
                       className="w-full min-w-full shrink-0 px-0.5"
                     >
                       <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
+
                         {/* Spot Image */}
                         <div className="relative h-56 w-full sm:h-64 md:h-72">
                           <Image
@@ -813,6 +820,7 @@ export default function DestinationCards() {
                   Book Now
                 </Link>
               </div>
+
             </div>
           </div>
         )}

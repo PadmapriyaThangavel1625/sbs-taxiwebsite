@@ -17,10 +17,6 @@ import {
   Route,
 } from "lucide-react";
 
-/* =====================================================
-TYPES
-===================================================== */
-
 type TempleType = "Nearby" | "Outstation";
 
 type Temple = {
@@ -53,10 +49,6 @@ type TripPackage = {
   description: string;
   multiplier: number;
 };
-
-/* =====================================================
-TEMPLE DATA
-===================================================== */
 
 const TEMPLES: Temple[] = [
   {
@@ -173,9 +165,6 @@ const TEMPLES: Temple[] = [
   },
 ];
 
-/* =====================================================
-VEHICLES
-===================================================== */
 const VEHICLES: Vehicle[] = [
   {
     name: "MINI",
@@ -209,10 +198,6 @@ const VEHICLES: Vehicle[] = [
   },
 ];
 
-/* =====================================================
-PACKAGES
-===================================================== */
-
 const PACKAGES: TripPackage[] = [
   {
     name: "One Way",
@@ -231,10 +216,6 @@ const PACKAGES: TripPackage[] = [
   },
 ];
 
-/* =====================================================
-COMPONENT
-===================================================== */
-
 export default function TempleTripBooking() {
   const [category, setCategory] =
     useState<TempleType>("Nearby");
@@ -246,29 +227,17 @@ export default function TempleTripBooking() {
     useState("");
 
   const [pickup, setPickup] = useState("Erode");
-
   const [date, setDate] = useState("");
-
   const [passengers, setPassengers] = useState("1");
-
-  const [tripPackage, setTripPackage] =
-    useState("Round Trip");
-
+  const [tripPackage, setTripPackage] = useState("Round Trip");
   const [days, setDays] = useState("1");
-
-  const [vehicle, setVehicle] = useState("Sedan");
+  const [vehicle, setVehicle] = useState("SEDAN");
 
   const [isSending, setIsSending] = useState(false);
-
   const [message, setMessage] = useState("");
-
   const [messageType, setMessageType] = useState<
     "success" | "error" | ""
   >("");
-
-  /* =====================================================
-  FILTERED TEMPLES
-  ===================================================== */
 
   const filteredTemples = useMemo(() => {
     return TEMPLES.filter(
@@ -276,37 +245,19 @@ export default function TempleTripBooking() {
     );
   }, [category]);
 
-  /* =====================================================
-  SELECTED VEHICLE
-  ===================================================== */
-
   const selectedVehicle = VEHICLES.find(
     (item) => item.name === vehicle
   );
-
-  /* =====================================================
-  SELECTED PACKAGE
-  ===================================================== */
 
   const selectedPackage = PACKAGES.find(
     (item) => item.name === tripPackage
   );
 
-  /* =====================================================
-  SELECTED IDS
-  ===================================================== */
-
   const selectedIds = useMemo(() => {
     return new Set(
-      selectedDestinations.map(
-        (item) => item.id
-      )
+      selectedDestinations.map((item) => item.id)
     );
   }, [selectedDestinations]);
-
-  /* =====================================================
-  BASE FARE
-  ===================================================== */
 
   const baseTempleFare = useMemo(() => {
     return selectedDestinations.reduce(
@@ -316,10 +267,6 @@ export default function TempleTripBooking() {
     );
   }, [selectedDestinations]);
 
-  /* =====================================================
-  DAYS
-  ===================================================== */
-
   const numberOfDays = Math.max(
     1,
     Number(days) || 1
@@ -327,10 +274,6 @@ export default function TempleTripBooking() {
 
   const dayMultiplier =
     1 + (numberOfDays - 1) * 0.65;
-
-  /* =====================================================
-  FINAL FARE
-  ===================================================== */
 
   const calculatedFare = useMemo(() => {
     if (selectedDestinations.length === 0) {
@@ -357,10 +300,6 @@ export default function TempleTripBooking() {
     dayMultiplier,
   ]);
 
-  /* =====================================================
-  ADD LISTED TEMPLE
-  ===================================================== */
-
   const addTemple = (temple: Temple) => {
     if (selectedIds.has(temple.id)) {
       return;
@@ -376,33 +315,20 @@ export default function TempleTripBooking() {
       custom: false,
     };
 
-    setSelectedDestinations(
-      (previous) => [
-        ...previous,
-        newDestination,
-      ]
-    );
+    setSelectedDestinations((previous) => [
+      ...previous,
+      newDestination,
+    ]);
 
     setMessage("");
     setMessageType("");
   };
 
-  /* =====================================================
-  REMOVE TEMPLE
-  ===================================================== */
-
   const removeTemple = (id: string) => {
-    setSelectedDestinations(
-      (previous) =>
-        previous.filter(
-          (item) => item.id !== id
-        )
+    setSelectedDestinations((previous) =>
+      previous.filter((item) => item.id !== id)
     );
   };
-
-  /* =====================================================
-  ADD CUSTOM TEMPLE
-  ===================================================== */
 
   const addCustomTemple = () => {
     const name = customDestination.trim();
@@ -411,17 +337,13 @@ export default function TempleTripBooking() {
       return;
     }
 
-    const alreadyExists =
-      selectedDestinations.some(
-        (item) =>
-          item.name.toLowerCase() ===
-          name.toLowerCase()
-      );
+    const alreadyExists = selectedDestinations.some(
+      (item) =>
+        item.name.toLowerCase() === name.toLowerCase()
+    );
 
     if (alreadyExists) {
-      setMessage(
-        "This temple is already selected."
-      );
+      setMessage("This temple is already selected.");
       setMessageType("error");
       return;
     }
@@ -438,21 +360,15 @@ export default function TempleTripBooking() {
       custom: true,
     };
 
-    setSelectedDestinations(
-      (previous) => [
-        ...previous,
-        newDestination,
-      ]
-    );
+    setSelectedDestinations((previous) => [
+      ...previous,
+      newDestination,
+    ]);
 
     setCustomDestination("");
     setMessage("");
     setMessageType("");
   };
-
-  /* =====================================================
-  ENTER KEY
-  ===================================================== */
 
   const handleCustomKeyDown = (
     event: React.KeyboardEvent<HTMLInputElement>
@@ -463,36 +379,13 @@ export default function TempleTripBooking() {
     }
   };
 
-  /* =====================================================
-  CATEGORY
-  ===================================================== */
-
-  const changeCategory = (
-    value: TempleType
-  ) => {
-    setCategory(value);
-  };
-
-  /* =====================================================
-  PACKAGE
-  ===================================================== */
-
-  const changePackage = (
-    value: string
-  ) => {
+  const changePackage = (value: string) => {
     setTripPackage(value);
 
-    if (
-      value === "Multi Day" &&
-      Number(days) < 2
-    ) {
+    if (value === "Multi Day" && Number(days) < 2) {
       setDays("2");
     }
   };
-
-  /* =====================================================
-  CANCEL
-  ===================================================== */
 
   const cancelBooking = () => {
     setCategory("Nearby");
@@ -503,28 +396,20 @@ export default function TempleTripBooking() {
     setPassengers("1");
     setTripPackage("Round Trip");
     setDays("1");
-    setVehicle("Sedan");
+    setVehicle("SEDAN");
     setMessage("");
     setMessageType("");
     setIsSending(false);
   };
 
-  /* =====================================================
-  VALIDATION
-  ===================================================== */
-
   const validate = () => {
     if (!pickup.trim()) {
-      setMessage(
-        "Please enter pickup location."
-      );
+      setMessage("Please enter pickup location.");
       setMessageType("error");
       return false;
     }
 
-    if (
-      selectedDestinations.length === 0
-    ) {
+    if (selectedDestinations.length === 0) {
       setMessage(
         "Please select at least one temple or destination."
       );
@@ -533,25 +418,19 @@ export default function TempleTripBooking() {
     }
 
     if (!date) {
-      setMessage(
-        "Please select travel date."
-      );
+      setMessage("Please select travel date.");
       setMessageType("error");
       return false;
     }
 
     if (!days) {
-      setMessage(
-        "Please select number of days."
-      );
+      setMessage("Please select number of days.");
       setMessageType("error");
       return false;
     }
 
     if (!vehicle) {
-      setMessage(
-        "Please select a vehicle."
-      );
+      setMessage("Please select a vehicle.");
       setMessageType("error");
       return false;
     }
@@ -559,80 +438,49 @@ export default function TempleTripBooking() {
     return true;
   };
 
-  /* =====================================================
-  BOOKING DATA
-  ===================================================== */
-
   const getBookingData = () => {
     return {
       bookingType: "temple-tour",
-
       pickup,
-
-      destinations:
-        selectedDestinations.map(
-          (destination) => ({
-            id: destination.id,
-            name: destination.name,
-            location:
-              destination.location,
-            fare: destination.fare,
-            distance:
-              destination.distance,
-            type: destination.type,
-            custom:
-              destination.custom,
-          })
-        ),
-
+      destinations: selectedDestinations.map(
+        (destination) => ({
+          id: destination.id,
+          name: destination.name,
+          location: destination.location,
+          fare: destination.fare,
+          distance: destination.distance,
+          type: destination.type,
+          custom: destination.custom,
+        })
+      ),
       date,
-
       days: numberOfDays,
-
       passengers: Number(passengers),
-
-      vehicle:
-        selectedVehicle?.name ||
-        vehicle,
-
-      seats:
-        selectedVehicle?.seats || "",
-
+      vehicle: selectedVehicle?.name || vehicle,
+      seats: selectedVehicle?.seats || "",
       tripPackage,
-
       baseFare: baseTempleFare,
-
       totalFare: calculatedFare,
-
       category,
-
-      totalTemples:
-        selectedDestinations.length,
+      totalTemples: selectedDestinations.length,
     };
   };
 
-  /* =====================================================
-  BOOKING MESSAGE
-  ===================================================== */
-
   const bookingMessage = () => {
-    const templeList =
-      selectedDestinations
-        .map(
-          (destination, index) =>
-            `${index + 1}. ${
-              destination.name
-            } - ${
-              destination.location
-            } - Base Fare ₹${destination.fare.toLocaleString(
-              "en-IN"
-            )}${
-              destination.custom
-                ? " (Custom Destination)"
-                : ""
-            }`
-        )
-        .join("\n");
+    const templeList = selectedDestinations
+      .map(
+        (destination, index) =>
+          `${index + 1}. ${destination.name} - ${
+            destination.location
+          } - Base Fare ₹${destination.fare.toLocaleString(
+            "en-IN"
+          )}${
+            destination.custom
+              ? " (Custom Destination)"
+              : ""
+          }`
+      )
+      .join("\n");
 
     return `SBS TAXI - TEMPLE TOUR BOOKING
 
@@ -664,24 +512,16 @@ Seating:
 ${selectedVehicle?.seats}
 
 Base Temple Fare:
-₹${baseTempleFare.toLocaleString(
-      "en-IN"
-    )}
+₹${baseTempleFare.toLocaleString("en-IN")}
 
 Estimated Total Fare:
-₹${calculatedFare.toLocaleString(
-      "en-IN"
-    )}
+₹${calculatedFare.toLocaleString("en-IN")}
 
 Please confirm route, availability and final fare.
 
 Thank you,
 SBS Taxi`;
   };
-
-  /* =====================================================
-  BOOKING NOW - API EMAIL
-  ===================================================== */
 
   const bookingNow = async () => {
     if (!validate()) {
@@ -693,69 +533,50 @@ SBS Taxi`;
     setMessageType("");
 
     try {
-      const response = await fetch(
-        "/api/email",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type":
-              "application/json",
-          },
-          body: JSON.stringify(
-            getBookingData()
-          ),
-        }
-      );
+      const response = await fetch("/api/email", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(getBookingData()),
+      });
 
-      const result =
-        await response.json();
+      const result = await response.json();
 
       if (!response.ok || !result.success) {
         throw new Error(
-          result.error ||
-            "Unable to send booking."
+          result.error || "Unable to send booking."
         );
       }
 
       setMessage(
         "Booking request sent successfully! We will contact you to confirm the route and final fare."
       );
-
       setMessageType("success");
     } catch (error) {
-      console.error(
-        "Temple booking error:",
-        error
-      );
+      console.error("Temple booking error:", error);
 
       setMessage(
         error instanceof Error
           ? error.message
           : "Unable to send booking. Please try again."
       );
-
       setMessageType("error");
     } finally {
       setIsSending(false);
     }
   };
 
-  /* =====================================================
-  WHATSAPP
-  ===================================================== */
-
   const sendWhatsApp = () => {
     if (!validate()) {
       return;
     }
 
-    const number =
-      "919843544844";
+    const number = "919843544844";
 
-    const messageText =
-      encodeURIComponent(
-        bookingMessage()
-      );
+    const messageText = encodeURIComponent(
+      bookingMessage()
+    );
 
     window.open(
       `https://wa.me/${number}?text=${messageText}`,
@@ -763,70 +584,56 @@ SBS Taxi`;
     );
   };
 
-  /* =====================================================
-  SMS
-  ===================================================== */
-
   const sendSMS = () => {
     if (!validate()) {
       return;
     }
 
-    const number =
-      "+919843544844";
+    const number = "+919843544844";
 
-    const body =
-      encodeURIComponent(
-        bookingMessage()
-      );
+    const body = encodeURIComponent(
+      bookingMessage()
+    );
 
-    window.location.href =
-      `sms:${number}?body=${body}`;
+    window.location.href = `sms:${number}?body=${body}`;
   };
 
-  /* =====================================================
-  TODAY
-  ===================================================== */
-
-  const today =
-    new Date()
-      .toISOString()
-      .split("T")[0];
-
-  /* =====================================================
-  UI
-  ===================================================== */
+  const today = new Date()
+    .toISOString()
+    .split("T")[0];
 
   return (
-    <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-
+    <section
+      className="
+        font-jakarta
+        overflow-hidden
+        rounded-2xl
+        border border-slate-200
+        bg-white
+        shadow-sm
+      "
+    >
       {/* HEADER */}
-
       <div className="bg-gradient-to-r from-orange-500 to-amber-500 px-5 py-5 sm:px-6">
         <div className="flex items-center gap-3">
-
           <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white/20 text-2xl">
             🛕
           </div>
 
           <div>
-            <h2 className="text-lg font-bold text-white sm:text-xl">
+            <h2 className="text-lg font-bold tracking-tight text-white sm:text-xl">
               Temple Tour Booking
             </h2>
 
             <p className="mt-1 text-xs text-orange-50 sm:text-sm">
-              Select multiple temples and create
-              your complete temple tour
+              Select multiple temples and create your complete temple tour
             </p>
           </div>
-
         </div>
       </div>
 
       <div className="p-5 sm:p-6">
-
         {/* MESSAGE */}
-
         {message && (
           <div
             className={`mb-5 rounded-xl border p-4 text-sm font-medium ${
@@ -840,12 +647,9 @@ SBS Taxi`;
         )}
 
         {/* SELECTED DESTINATIONS */}
-
         {selectedDestinations.length > 0 && (
           <div className="mb-6 rounded-2xl border border-orange-200 bg-orange-50 p-4 sm:p-5">
-
             <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-
               <div>
                 <p className="flex items-center gap-2 text-sm font-extrabold text-slate-900">
                   <Route
@@ -856,10 +660,8 @@ SBS Taxi`;
                 </p>
 
                 <p className="mt-1 text-xs text-slate-500">
-                  {selectedDestinations.length}{" "}
-                  temple
-                  {selectedDestinations.length >
-                  1
+                  {selectedDestinations.length} temple
+                  {selectedDestinations.length > 1
                     ? "s"
                     : ""}{" "}
                   selected
@@ -867,70 +669,45 @@ SBS Taxi`;
               </div>
 
               <div className="rounded-xl bg-white px-4 py-2 text-right shadow-sm">
-
                 <p className="text-[10px] text-slate-400">
                   Estimated Total
                 </p>
 
-                <p className="flex items-center text-lg font-extrabold text-orange-600">
-
-                  <IndianRupee
-                    size={17}
-                  />
-
+                <p className="flex items-center justify-end text-lg font-extrabold text-orange-600">
+                  <IndianRupee size={17} />
                   {calculatedFare.toLocaleString(
                     "en-IN"
                   )}
-
                 </p>
-
               </div>
-
             </div>
 
             <div className="mt-4 space-y-2">
-
               {selectedDestinations.map(
-                (
-                  destination,
-                  index
-                ) => (
-
+                (destination, index) => (
                   <div
-                    key={
-                      destination.id
-                    }
+                    key={destination.id}
                     className="flex items-center gap-3 rounded-xl bg-white p-3 shadow-sm"
                   >
-
                     <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-orange-500 text-xs font-bold text-white">
                       {index + 1}
                     </div>
 
                     <div className="min-w-0 flex-1">
-
                       <p className="break-words text-sm font-bold text-slate-900">
-                        {
-                          destination.name
-                        }
+                        {destination.name}
                       </p>
 
                       <p className="mt-0.5 text-xs text-slate-500">
-                        {
-                          destination.location
-                        }
+                        {destination.location}
                         {" • "}
-                        {
-                          destination.custom
-                            ? "Custom destination"
-                            : destination.distance
-                        }
+                        {destination.custom
+                          ? "Custom destination"
+                          : destination.distance}
                       </p>
-
                     </div>
 
                     <div className="shrink-0 text-right">
-
                       <p className="text-xs font-bold text-orange-600">
                         {destination.custom
                           ? `₹${destination.fare.toLocaleString(
@@ -940,7 +717,6 @@ SBS Taxi`;
                               "en-IN"
                             )}`}
                       </p>
-
                     </div>
 
                     <button
@@ -950,109 +726,78 @@ SBS Taxi`;
                           destination.id
                         )
                       }
-                      className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-red-200 bg-white text-red-500 hover:bg-red-50"
+                      className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-red-200 bg-white text-red-500 transition hover:bg-red-50"
                       aria-label={`Remove ${destination.name}`}
                     >
                       <X size={16} />
                     </button>
-
                   </div>
-
                 )
               )}
-
             </div>
-
           </div>
         )}
 
         {/* CATEGORY */}
-
         <div>
           <label className="mb-3 block text-sm font-bold text-slate-900">
             Choose Temple Tour
           </label>
 
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            {(
+              [
+                {
+                  value: "Nearby" as TempleType,
+                  icon: "🙏",
+                  title: "Nearby Temples",
+                  description:
+                    "Erode & nearby destinations",
+                },
+                {
+                  value: "Outstation" as TempleType,
+                  icon: "🚕",
+                  title: "Outstation Tours",
+                  description:
+                    "Long-distance temple trips",
+                },
+              ]
+            ).map((item) => (
+              <button
+                key={item.value}
+                type="button"
+                onClick={() =>
+                  setCategory(item.value)
+                }
+                className={`rounded-xl border p-4 text-left transition ${
+                  category === item.value
+                    ? "border-orange-500 bg-orange-50 ring-2 ring-orange-100"
+                    : "border-slate-200 bg-white hover:border-orange-300"
+                }`}
+              >
+                <div className="flex items-center gap-3">
+                  <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-orange-100 text-xl">
+                    {item.icon}
+                  </div>
 
-            <button
-              type="button"
-              onClick={() =>
-                changeCategory(
-                  "Nearby"
-                )
-              }
-              className={`rounded-xl border p-4 text-left transition ${
-                category === "Nearby"
-                  ? "border-orange-500 bg-orange-50 ring-2 ring-orange-100"
-                  : "border-slate-200 bg-white hover:border-orange-300"
-              }`}
-            >
+                  <div>
+                    <p className="text-sm font-bold text-slate-900">
+                      {item.title}
+                    </p>
 
-              <div className="flex items-center gap-3">
-
-                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-orange-100 text-xl">
-                  🙏
+                    <p className="mt-1 text-xs text-slate-500">
+                      {item.description}
+                    </p>
+                  </div>
                 </div>
-
-                <div>
-                  <p className="text-sm font-bold text-slate-900">
-                    Nearby Temples
-                  </p>
-
-                  <p className="mt-1 text-xs text-slate-500">
-                    Erode & nearby destinations
-                  </p>
-                </div>
-
-              </div>
-
-            </button>
-
-            <button
-              type="button"
-              onClick={() =>
-                changeCategory(
-                  "Outstation"
-                )
-              }
-              className={`rounded-xl border p-4 text-left transition ${
-                category ===
-                "Outstation"
-                  ? "border-orange-500 bg-orange-50 ring-2 ring-orange-100"
-                  : "border-slate-200 bg-white hover:border-orange-300"
-              }`}
-            >
-
-              <div className="flex items-center gap-3">
-
-                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-orange-100 text-xl">
-                  🚕
-                </div>
-
-                <div>
-                  <p className="text-sm font-bold text-slate-900">
-                    Outstation Tours
-                  </p>
-
-                  <p className="mt-1 text-xs text-slate-500">
-                    Long-distance temple trips
-                  </p>
-                </div>
-
-              </div>
-
-            </button>
-
+              </button>
+            ))}
           </div>
         </div>
 
         {/* TEMPLE LIST */}
-
         <div className="mt-6">
-
           <div className="mb-3 flex items-center justify-between">
-
             <label className="text-sm font-bold text-slate-900">
               Add Temples
             </label>
@@ -1060,127 +805,96 @@ SBS Taxi`;
             <span className="text-xs text-slate-400">
               Click to add
             </span>
-
           </div>
 
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            {filteredTemples.map((temple) => {
+              const isSelected =
+                selectedIds.has(temple.id);
 
-            {filteredTemples.map(
-              (temple) => {
-
-                const isSelected =
-                  selectedIds.has(
-                    temple.id
-                  );
-
-                return (
-                  <button
-                    key={temple.id}
-                    type="button"
-                    onClick={() =>
-                      isSelected
-                        ? removeTemple(
-                            temple.id
-                          )
-                        : addTemple(
-                            temple
-                          )
-                    }
-                    className={`rounded-xl border p-4 text-left transition ${
-                      isSelected
-                        ? "border-green-500 bg-green-50"
-                        : "border-slate-200 bg-white hover:border-orange-400 hover:bg-orange-50/50"
-                    }`}
-                  >
-
-                    <div className="flex items-start gap-3">
-
-                      <div
-                        className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full ${
-                          isSelected
-                            ? "bg-green-500 text-white"
-                            : "bg-orange-100 text-orange-600"
-                        }`}
-                      >
-                        {isSelected ? (
-                          <span className="text-sm font-bold">
-                            ✓
-                          </span>
-                        ) : (
-                          <MapPin
-                            size={18}
-                          />
-                        )}
-                      </div>
-
-                      <div className="min-w-0 flex-1">
-
-                        <p className="text-sm font-bold text-slate-900">
-                          {temple.name}
-                        </p>
-
-                        <p className="mt-1 text-xs text-slate-500">
-                          {temple.location}
-                          {" • "}
-                          {temple.distance}
-                        </p>
-
-                      </div>
-
-                      <div className="shrink-0 text-right">
-
-                        <p className="text-[10px] text-slate-400">
-                          Fare
-                        </p>
-
-                        <p className="flex items-center text-sm font-extrabold text-orange-600">
-
-                          <IndianRupee
-                            size={13}
-                          />
-
-                          {temple.fare.toLocaleString(
-                            "en-IN"
-                          )}
-
-                        </p>
-
-                        <p
-                          className={`mt-1 text-[10px] font-bold ${
-                            isSelected
-                              ? "text-green-600"
-                              : "text-orange-500"
-                          }`}
-                        >
-                          {isSelected
-                            ? "Added"
-                            : "Add"}
-                        </p>
-
-                      </div>
-
+              return (
+                <button
+                  key={temple.id}
+                  type="button"
+                  onClick={() =>
+                    isSelected
+                      ? removeTemple(
+                          temple.id
+                        )
+                      : addTemple(temple)
+                  }
+                  className={`rounded-xl border p-4 text-left transition ${
+                    isSelected
+                      ? "border-green-500 bg-green-50"
+                      : "border-slate-200 bg-white hover:border-orange-400 hover:bg-orange-50/50"
+                  }`}
+                >
+                  <div className="flex items-start gap-3">
+                    <div
+                      className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full ${
+                        isSelected
+                          ? "bg-green-500 text-white"
+                          : "bg-orange-100 text-orange-600"
+                      }`}
+                    >
+                      {isSelected ? (
+                        <span className="text-sm font-bold">
+                          ✓
+                        </span>
+                      ) : (
+                        <MapPin size={18} />
+                      )}
                     </div>
 
-                  </button>
-                );
-              }
-            )}
+                    <div className="min-w-0 flex-1">
+                      <p className="text-sm font-bold text-slate-900">
+                        {temple.name}
+                      </p>
 
+                      <p className="mt-1 text-xs text-slate-500">
+                        {temple.location}
+                        {" • "}
+                        {temple.distance}
+                      </p>
+                    </div>
+
+                    <div className="shrink-0 text-right">
+                      <p className="text-[10px] text-slate-400">
+                        Fare
+                      </p>
+
+                      <p className="flex items-center text-sm font-extrabold text-orange-600">
+                        <IndianRupee size={13} />
+                        {temple.fare.toLocaleString(
+                          "en-IN"
+                        )}
+                      </p>
+
+                      <p
+                        className={`mt-1 text-[10px] font-bold ${
+                          isSelected
+                            ? "text-green-600"
+                            : "text-orange-500"
+                        }`}
+                      >
+                        {isSelected ? "Added" : "Add"}
+                      </p>
+                    </div>
+                  </div>
+                </button>
+              );
+            })}
           </div>
         </div>
 
         {/* CUSTOM DESTINATION */}
-
         <div className="mt-6 rounded-2xl border border-blue-100 bg-blue-50/50 p-4">
-
           <label className="mb-2 block text-sm font-bold text-slate-800">
             Add Another Temple / Destination
           </label>
 
           <div className="flex flex-col gap-2 sm:flex-row">
-
             <div className="relative flex-1">
-
               <MapPin
                 size={18}
                 className="absolute left-3 top-1/2 -translate-y-1/2 text-blue-500"
@@ -1188,9 +902,7 @@ SBS Taxi`;
 
               <input
                 type="text"
-                value={
-                  customDestination
-                }
+                value={customDestination}
                 onChange={(event) =>
                   setCustomDestination(
                     event.target.value
@@ -1200,45 +912,33 @@ SBS Taxi`;
                   handleCustomKeyDown
                 }
                 placeholder="Example: Tiruchendur Murugan Temple"
-                className="h-12 w-full rounded-xl border border-slate-300 bg-white pl-10 pr-4 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                className="h-12 w-full rounded-xl border border-slate-300 bg-white pl-10 pr-4 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
               />
-
             </div>
 
             <button
               type="button"
-              onClick={
-                addCustomTemple
-              }
+              onClick={addCustomTemple}
               className="flex h-12 items-center justify-center gap-2 rounded-xl bg-blue-600 px-5 text-sm font-bold text-white transition hover:bg-blue-700"
             >
-
               <Plus size={18} />
-
               Add Temple
-
             </button>
-
           </div>
 
           <p className="mt-2 text-xs text-slate-500">
             Add multiple custom temples one by one.
           </p>
-
         </div>
 
         {/* PICKUP + DATE */}
-
         <div className="mt-6 grid grid-cols-1 gap-5 md:grid-cols-2">
-
           <div>
-
             <label className="mb-2 block text-sm font-bold text-slate-800">
               Pickup Location
             </label>
 
             <div className="relative">
-
               <MapPin
                 size={18}
                 className="absolute left-3 top-1/2 -translate-y-1/2 text-orange-500"
@@ -1248,26 +948,20 @@ SBS Taxi`;
                 type="text"
                 value={pickup}
                 onChange={(event) =>
-                  setPickup(
-                    event.target.value
-                  )
+                  setPickup(event.target.value)
                 }
                 placeholder="Enter pickup location"
-                className="h-12 w-full rounded-xl border border-slate-300 bg-white pl-10 pr-4 text-sm outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-100"
+                className="h-12 w-full rounded-xl border border-slate-300 bg-white pl-10 pr-4 text-sm outline-none transition focus:border-orange-500 focus:ring-2 focus:ring-orange-100"
               />
-
             </div>
-
           </div>
 
           <div>
-
             <label className="mb-2 block text-sm font-bold text-slate-800">
               Travel Date
             </label>
 
             <div className="relative">
-
               <CalendarDays
                 size={18}
                 className="absolute left-3 top-1/2 -translate-y-1/2 text-orange-500"
@@ -1278,90 +972,64 @@ SBS Taxi`;
                 min={today}
                 value={date}
                 onChange={(event) =>
-                  setDate(
-                    event.target.value
-                  )
+                  setDate(event.target.value)
                 }
-                className="h-12 w-full rounded-xl border border-slate-300 bg-white pl-10 pr-4 text-sm outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-100"
+                className="h-12 w-full rounded-xl border border-slate-300 bg-white pl-10 pr-4 text-sm outline-none transition focus:border-orange-500 focus:ring-2 focus:ring-orange-100"
               />
-
             </div>
-
           </div>
-
         </div>
 
         {/* PACKAGE */}
-
         <div className="mt-6">
-
           <label className="mb-3 block text-sm font-bold text-slate-800">
             Trip Package
           </label>
 
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+            {PACKAGES.map((item) => (
+              <button
+                key={item.name}
+                type="button"
+                onClick={() =>
+                  changePackage(item.name)
+                }
+                className={`rounded-xl border p-4 text-left transition ${
+                  tripPackage === item.name
+                    ? "border-orange-500 bg-orange-50 ring-2 ring-orange-100"
+                    : "border-slate-200 bg-white hover:border-orange-300"
+                }`}
+              >
+                <p className="text-sm font-bold text-slate-900">
+                  {item.name}
+                </p>
 
-            {PACKAGES.map(
-              (item) => (
-
-                <button
-                  key={item.name}
-                  type="button"
-                  onClick={() =>
-                    changePackage(
-                      item.name
-                    )
-                  }
-                  className={`rounded-xl border p-4 text-left transition ${
-                    tripPackage ===
-                    item.name
-                      ? "border-orange-500 bg-orange-50 ring-2 ring-orange-100"
-                      : "border-slate-200 bg-white hover:border-orange-300"
-                  }`}
-                >
-
-                  <p className="text-sm font-bold text-slate-900">
-                    {item.name}
-                  </p>
-
-                  <p className="mt-1 text-xs text-slate-500">
-                    {item.description}
-                  </p>
-
-                </button>
-
-              )
-            )}
-
+                <p className="mt-1 text-xs text-slate-500">
+                  {item.description}
+                </p>
+              </button>
+            ))}
           </div>
-
         </div>
 
         {/* DAYS */}
-
         <div className="mt-6">
-
           <label className="mb-2 block text-sm font-bold text-slate-800">
             How Many Days?
           </label>
 
           <div className="relative">
-
             <select
               value={days}
               onChange={(event) =>
-                setDays(
-                  event.target.value
-                )
+                setDays(event.target.value)
               }
-              className="h-12 w-full appearance-none rounded-xl border border-slate-300 bg-white px-4 pr-10 text-sm font-medium outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-100"
+              className="h-12 w-full appearance-none rounded-xl border border-slate-300 bg-white px-4 pr-10 text-sm font-medium outline-none transition focus:border-orange-500 focus:ring-2 focus:ring-orange-100"
             >
-
               {Array.from(
                 { length: 15 },
                 (_, index) => {
-                  const day =
-                    index + 1;
+                  const day = index + 1;
 
                   return (
                     <option
@@ -1376,28 +1044,22 @@ SBS Taxi`;
                   );
                 }
               )}
-
             </select>
 
             <ChevronDown
               size={18}
               className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-slate-400"
             />
-
           </div>
-
         </div>
 
         {/* VEHICLE */}
-
         <div className="mt-6">
-
           <label className="mb-2 block text-sm font-bold text-slate-800">
             Vehicle Type / Seater
           </label>
 
           <div className="relative">
-
             <Car
               size={18}
               className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-orange-500"
@@ -1406,47 +1068,34 @@ SBS Taxi`;
             <select
               value={vehicle}
               onChange={(event) =>
-                setVehicle(
-                  event.target.value
-                )
+                setVehicle(event.target.value)
               }
-              className="h-12 w-full appearance-none rounded-xl border border-slate-300 bg-white pl-10 pr-10 text-sm font-medium outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-100"
+              className="h-12 w-full appearance-none rounded-xl border border-slate-300 bg-white pl-10 pr-10 text-sm font-medium outline-none transition focus:border-orange-500 focus:ring-2 focus:ring-orange-100"
             >
-
-              {VEHICLES.map(
-                (item) => (
-                  <option
-                    key={item.name}
-                    value={item.name}
-                  >
-                    {item.name}
-                    {" — "}
-                    {item.seats}
-                  </option>
-                )
-              )}
-
+              {VEHICLES.map((item) => (
+                <option
+                  key={item.name}
+                  value={item.name}
+                >
+                  {item.name} — {item.seats}
+                </option>
+              ))}
             </select>
 
             <ChevronDown
               size={18}
               className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-slate-400"
             />
-
           </div>
-
         </div>
 
         {/* PASSENGERS */}
-
         <div className="mt-6">
-
           <label className="mb-2 block text-sm font-bold text-slate-800">
             Number of Passengers
           </label>
 
           <div className="relative">
-
             <Users
               size={18}
               className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-orange-500"
@@ -1459,14 +1108,12 @@ SBS Taxi`;
                   event.target.value
                 )
               }
-              className="h-12 w-full appearance-none rounded-xl border border-slate-300 bg-white pl-10 pr-10 text-sm outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-100"
+              className="h-12 w-full appearance-none rounded-xl border border-slate-300 bg-white pl-10 pr-10 text-sm outline-none transition focus:border-orange-500 focus:ring-2 focus:ring-orange-100"
             >
-
               {Array.from(
                 { length: 13 },
                 (_, index) => {
-                  const count =
-                    index + 1;
+                  const count = index + 1;
 
                   return (
                     <option
@@ -1481,35 +1128,26 @@ SBS Taxi`;
                   );
                 }
               )}
-
             </select>
 
             <ChevronDown
               size={18}
               className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-slate-400"
             />
-
           </div>
-
         </div>
 
         {/* FARE BREAKDOWN */}
-
         <div className="mt-6 rounded-2xl border border-slate-200 bg-slate-50 p-5">
-
           <p className="text-sm font-extrabold text-slate-900">
             Fare Calculation
           </p>
 
           <div className="mt-4 space-y-3">
-
             <div className="flex justify-between gap-4 text-sm">
-
               <span className="text-slate-500">
-                {selectedDestinations.length}{" "}
-                temple
-                {selectedDestinations.length >
-                1
+                {selectedDestinations.length} temple
+                {selectedDestinations.length > 1
                   ? "s"
                   : ""}{" "}
                 base fare
@@ -1521,25 +1159,20 @@ SBS Taxi`;
                   "en-IN"
                 )}
               </span>
-
             </div>
 
             <div className="flex justify-between gap-4 text-sm">
-
               <span className="text-slate-500">
                 Vehicle
               </span>
 
               <span className="font-semibold text-slate-800">
-                {selectedVehicle?.name}
-                {" / "}
+                {selectedVehicle?.name} /{" "}
                 {selectedVehicle?.seats}
               </span>
-
             </div>
 
             <div className="flex justify-between gap-4 text-sm">
-
               <span className="text-slate-500">
                 Trip package
               </span>
@@ -1547,11 +1180,9 @@ SBS Taxi`;
               <span className="font-semibold text-slate-800">
                 {tripPackage}
               </span>
-
             </div>
 
             <div className="flex justify-between gap-4 text-sm">
-
               <span className="text-slate-500">
                 Duration
               </span>
@@ -1562,132 +1193,87 @@ SBS Taxi`;
                   ? "Day"
                   : "Days"}
               </span>
-
             </div>
 
             <div className="border-t border-slate-200 pt-3">
-
               <div className="flex items-center justify-between">
-
                 <span className="font-bold text-slate-900">
                   Estimated Total Fare
                 </span>
 
                 <span className="flex items-center text-2xl font-extrabold text-orange-600">
-
-                  <IndianRupee
-                    size={21}
-                  />
-
+                  <IndianRupee size={21} />
                   {calculatedFare.toLocaleString(
                     "en-IN"
                   )}
-
                 </span>
-
               </div>
-
             </div>
-
           </div>
-
         </div>
 
         {/* CANCEL */}
-
         <button
           type="button"
-          onClick={
-            cancelBooking
-          }
+          onClick={cancelBooking}
           disabled={isSending}
           className="mt-6 flex h-12 w-full items-center justify-center gap-2 rounded-xl border border-slate-300 bg-white text-sm font-bold text-slate-600 transition hover:border-red-300 hover:bg-red-50 hover:text-red-600 disabled:cursor-not-allowed disabled:opacity-50"
         >
-
           <X size={18} />
-
           Cancel Booking
-
         </button>
 
         {/* BOOKING NOW */}
-
         <button
           type="button"
           onClick={bookingNow}
           disabled={isSending}
           className="mt-3 flex h-13 w-full items-center justify-center gap-2 rounded-xl bg-orange-500 px-5 text-sm font-extrabold text-white shadow-md transition hover:bg-orange-600 disabled:cursor-not-allowed disabled:opacity-60"
         >
-
           <Mail size={19} />
-
           {isSending
             ? "Sending Booking..."
             : "Booking Now"}
-
         </button>
 
         {/* WHATSAPP + SMS */}
-
         <div className="mt-5">
-
           <p className="mb-3 text-center text-xs text-slate-500">
             Or send your booking through
           </p>
 
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-
             <button
               type="button"
-              onClick={
-                sendWhatsApp
-              }
-              className="flex h-12 items-center justify-center gap-2 rounded-xl bg-green-600 text-sm font-bold text-white hover:bg-green-700"
+              onClick={sendWhatsApp}
+              className="flex h-12 items-center justify-center gap-2 rounded-xl bg-green-600 text-sm font-bold text-white transition hover:bg-green-700"
             >
-
-              <MessageCircle
-                size={19}
-              />
-
+              <MessageCircle size={19} />
               WhatsApp
-
             </button>
 
             <button
               type="button"
-              onClick={
-                sendSMS
-              }
-              className="flex h-12 items-center justify-center gap-2 rounded-xl bg-slate-900 text-sm font-bold text-white hover:bg-black"
+              onClick={sendSMS}
+              className="flex h-12 items-center justify-center gap-2 rounded-xl bg-slate-900 text-sm font-bold text-white transition hover:bg-black"
             >
-
               <Phone size={19} />
-
               SMS
-
             </button>
-
           </div>
-
         </div>
 
         {/* NOTE */}
-
         <div className="mt-5 rounded-xl bg-slate-50 p-4">
-
           <p className="text-center text-xs leading-5 text-slate-500">
-
             Temple fares shown above are estimated
             package fares. Custom destinations use
             an estimated starting fare. Final fare
             will be confirmed after checking the
             complete route, tolls, parking and
             vehicle availability.
-
           </p>
-
         </div>
-
       </div>
     </section>
   );

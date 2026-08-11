@@ -1,4 +1,3 @@
-
 import Image from "next/image";
 import { Users, Briefcase } from "lucide-react";
 
@@ -32,7 +31,6 @@ export default function VehicleCard({
         shadow-sm
         transition-all
         duration-300
-
         hover:border-[var(--primary)]
         hover:shadow-lg
       "
@@ -42,19 +40,18 @@ export default function VehicleCard({
         className="
           relative
           flex
-          h-[135px]
+          h-[130px]
           w-full
           items-center
           justify-center
           overflow-hidden
           bg-white
           px-3
-
-          sm:h-[145px]
-          md:h-[150px]
-          lg:h-[145px]
-          xl:h-[140px]
-          2xl:h-[155px]
+          sm:h-[140px]
+          md:h-[145px]
+          lg:h-[140px]
+          xl:h-[135px]
+          2xl:h-[150px]
         "
       >
         <Image
@@ -84,22 +81,22 @@ export default function VehicleCard({
       <div
         className="
           px-3
-          pb-4
+          pb-3.5
           pt-1
-
           sm:px-4
-          sm:pb-5
+          sm:pb-4
         "
       >
         {/* Vehicle Name */}
         <h3
           className="
             truncate
-            text-[15px]
+            text-[14px]
             font-semibold
+            leading-5
             text-[var(--heading)]
-
-            sm:text-[16px]
+            sm:text-[15px]
+            md:text-[16px]
           "
         >
           {name}
@@ -109,10 +106,11 @@ export default function VehicleCard({
         <p
           className="
             mt-0.5
-            text-[11px]
+            text-[10px]
+            leading-4
             text-[var(--muted)]
-
-            sm:text-[12px]
+            sm:text-[11px]
+            md:text-[12px]
           "
         >
           {type}
@@ -121,24 +119,25 @@ export default function VehicleCard({
         {/* ================= SEATS / LUGGAGE ================= */}
         <div
           className="
-            mt-3
+            mt-2.5
             flex
             flex-wrap
             items-center
-            gap-x-4
-            gap-y-2
-            text-[10px]
+            gap-x-3
+            gap-y-1.5
+            text-[9px]
+            leading-4
             text-[var(--muted)]
-
-            sm:mt-4
-            sm:gap-x-5
-            sm:text-[12px]
+            sm:mt-3
+            sm:gap-x-4
+            sm:text-[10px]
+            md:text-[11px]
           "
         >
           {/* Seats */}
           <div className="flex items-center gap-1.5 whitespace-nowrap">
             <Users
-              size={15}
+              size={14}
               strokeWidth={1.7}
               className="shrink-0 text-[var(--primary)]"
             />
@@ -149,7 +148,7 @@ export default function VehicleCard({
           {/* Luggage */}
           <div className="flex items-center gap-1.5 whitespace-nowrap">
             <Briefcase
-              size={15}
+              size={14}
               strokeWidth={1.7}
               className="shrink-0 text-[var(--primary)]"
             />
@@ -159,14 +158,15 @@ export default function VehicleCard({
         </div>
 
         {/* ================= PRICE ================= */}
-        <div className="mt-3 flex items-baseline">
+        <div className="mt-2.5 flex items-baseline">
           <span
             className="
-              text-[16px]
+              text-[15px]
               font-bold
+              leading-5
               text-[var(--primary)]
-
-              sm:text-[17px]
+              sm:text-[16px]
+              md:text-[17px]
             "
           >
             ₹{price}
@@ -175,10 +175,11 @@ export default function VehicleCard({
           <span
             className="
               ml-1
-              text-[11px]
+              text-[10px]
+              leading-4
               text-[var(--muted)]
-
-              sm:text-[12px]
+              sm:text-[11px]
+              md:text-[12px]
             "
           >
             / km

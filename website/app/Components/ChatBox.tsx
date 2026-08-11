@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useEffect, useRef, useState } from "react";
@@ -82,7 +81,7 @@ const defaultQuestions = [
   {
     question: "📞 How can I contact SBS Taxi?",
     answer:
-      "You can contact SBS Taxi by calling +91 81440 65688.",
+      "You can contact SBS Taxi by calling +91 98435 44844.",
   },
   {
     question: "🎁 Do you have any offers?",
@@ -245,7 +244,9 @@ export default function ChatBox() {
 
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
-  /* AUTO SCROLL */
+  /* =====================================================
+     AUTO SCROLL
+  ===================================================== */
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({
@@ -253,7 +254,9 @@ export default function ChatBox() {
     });
   }, [messages]);
 
-  /* ASK QUESTION */
+  /* =====================================================
+     ASK QUESTION
+  ===================================================== */
 
   const askQuestion = (
     question: string,
@@ -278,7 +281,9 @@ export default function ChatBox() {
     setScreen("chat");
   };
 
-  /* SEND MESSAGE */
+  /* =====================================================
+     SEND MESSAGE
+  ===================================================== */
 
   const sendMessage = () => {
     const text = message.trim();
@@ -305,14 +310,18 @@ export default function ChatBox() {
     setMessage("");
   };
 
-  /* OPEN */
+  /* =====================================================
+     OPEN CHAT
+  ===================================================== */
 
   const openChat = () => {
     setOpen(true);
     setScreen("menu");
   };
 
-  /* CLOSE */
+  /* =====================================================
+     CLOSE CHAT
+  ===================================================== */
 
   const closeChat = () => {
     setOpen(false);
@@ -361,10 +370,10 @@ export default function ChatBox() {
               shrink-0
               bg-[#1A365D]
               px-4
-              py-4
+              py-3
               text-white
               sm:px-5
-              sm:py-5
+              sm:py-4
             "
           >
             {/* CLOSE BUTTON */}
@@ -376,7 +385,7 @@ export default function ChatBox() {
               className="
                 absolute
                 right-3
-                top-3
+                top-2
                 z-10
                 flex
                 h-9
@@ -396,49 +405,56 @@ export default function ChatBox() {
             {/* HEADER CONTENT */}
 
             <div className="flex items-center gap-3 pr-10">
+
               {/* LOGO */}
 
               <div
                 className="
                   flex
-                  h-11
-                  w-11
+                  h-12
+                  w-12
                   shrink-0
                   items-center
                   justify-center
                   overflow-hidden
                   rounded-full
                   border-2
-                  border-white/30
+                  border-white/40
                   bg-white
-                  sm:h-12
-                  sm:w-12
+                  sm:h-14
+                  sm:w-14
                 "
               >
                 <Image
                   src="/sbsai.png"
                   alt="SBS Taxi"
-                  width={60}
-                  height={60}
-                  className="h-full w-full object-contain p-1"
+                  width={100}
+                  height={100}
+                  priority
+                  className="
+                    h-full
+                    w-full
+                    object-cover
+                  "
                 />
               </div>
 
               {/* TITLE */}
 
               <div className="min-w-0">
-                <p className="text-[11px] font-medium uppercase tracking-wider text-green-300">
+                <p className="text-[11px] font-medium uppercase tracking-wide !text-green-300">
                   ● Online
                 </p>
 
-                <h2 className="truncate text-base font-bold sm:text-lg">
+                <h2 className="truncate text-base font-bold !text-white sm:text-lg">
                   SBS Taxi
                 </h2>
 
-                <p className="truncate text-xs text-white/75 sm:text-sm">
+                <p className="truncate text-xs !text-white/75 sm:text-sm">
                   How can we help you?
                 </p>
               </div>
+
             </div>
           </div>
 
@@ -447,7 +463,8 @@ export default function ChatBox() {
           ================================================= */}
 
           {screen === "menu" && (
-            <div className="max-h-[calc(100dvh-180px)] overflow-y-auto">
+            <div className="max-h-[calc(100dvh-170px)] overflow-y-auto">
+
               {/* WELCOME */}
 
               <div className="bg-[#1A365D] px-4 pb-4 sm:px-5 sm:pb-5">
@@ -460,13 +477,13 @@ export default function ChatBox() {
                     p-3
                     text-sm
                     leading-5
-                    text-white/90
+                    !text-white/90
                     sm:p-4
                     sm:leading-6
                   "
                 >
                   Hi 👋{" "}
-                  <strong className="text-white">
+                  <strong className="!text-white">
                     Welcome to SBS Taxi!
                   </strong>
 
@@ -481,6 +498,7 @@ export default function ChatBox() {
               {/* OPTIONS */}
 
               <div className="bg-white">
+
                 {/* BOOK RIDE */}
 
                 <Link
@@ -632,15 +650,13 @@ export default function ChatBox() {
 
                 {/* CALL */}
 
-                <a
-                  href="tel:+918144065688"
+                <Link
+                  href="/contact"
                   onClick={closeChat}
                   className="
                     flex
                     items-center
                     gap-3
-                    border-b
-                    border-gray-200
                     px-4
                     py-3
                     transition
@@ -672,81 +688,13 @@ export default function ChatBox() {
                     </h3>
 
                     <p className="text-xs text-gray-500 sm:text-sm">
-                      +91 81440 65688
+                      98435 44844
                     </p>
                   </div>
 
                   <ChevronRight className="h-5 w-5 shrink-0 text-gray-400" />
-                </a>
+                </Link>
 
-                {/* WHATSAPP */}
-
-                <a
-                  href="https://wa.me/918144065688"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={closeChat}
-                  className="
-                    flex
-                    items-center
-                    gap-3
-                    px-4
-                    py-3
-                    transition
-                    hover:bg-gray-50
-                    sm:gap-4
-                    sm:px-5
-                    sm:py-4
-                  "
-                >
-                  <div
-                    className="
-                      flex
-                      h-10
-                      w-10
-                      shrink-0
-                      items-center
-                      justify-center
-                      rounded-xl
-                      bg-green-100
-                      text-green-600
-                    "
-                  >
-                    <MessageCircle className="h-5 w-5" />
-                  </div>
-
-                  <div className="min-w-0 flex-1">
-                    <h3 className="text-sm font-semibold text-gray-900 sm:text-base">
-                      WhatsApp Us
-                    </h3>
-
-                    <p className="truncate text-xs text-gray-500 sm:text-sm">
-                      Quick support on WhatsApp
-                    </p>
-                  </div>
-
-                  <ChevronRight className="h-5 w-5 shrink-0 text-gray-400" />
-                </a>
-              </div>
-
-              {/* FOOTER */}
-
-              <div className="border-t bg-gray-50 px-4 py-2 text-center">
-                <a
-                  href="https://sbstechnologies.in/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="
-                    text-[10px]
-                    font-medium
-                    text-gray-500
-                    transition
-                    hover:text-[#1A365D]
-                    hover:underline
-                  "
-                >
-                  Powered by SBS Technologies
-                </a>
               </div>
             </div>
           )}
@@ -756,10 +704,31 @@ export default function ChatBox() {
           ================================================= */}
 
           {screen === "chat" && (
-            <div className="flex h-[min(520px,calc(100dvh-150px))] flex-col">
+            <div
+              className="
+                flex
+                h-[min(520px,calc(100dvh-150px))]
+                flex-col
+              "
+            >
+
               {/* CHAT TOP */}
 
-              <div className="flex shrink-0 items-center gap-2 border-b bg-white px-3 py-3 sm:gap-3 sm:px-4">
+              <div
+                className="
+                  flex
+                  shrink-0
+                  items-center
+                  gap-2
+                  border-b
+                  bg-white
+                  px-3
+                  py-2.5
+                  sm:gap-3
+                  sm:px-4
+                  sm:py-3
+                "
+              >
                 <button
                   type="button"
                   onClick={() => setScreen("menu")}
@@ -854,46 +823,64 @@ export default function ChatBox() {
 
               {/* QUICK QUESTIONS */}
 
-              <div className="shrink-0 border-t bg-white px-3 py-2">
-                <p className="mb-2 text-[10px] font-semibold text-gray-500">
+              <div
+                className="
+                  shrink-0
+                  border-t
+                  bg-white
+                  px-3
+                  py-2
+                "
+              >
+                <p className="mb-1.5 text-[10px] font-semibold text-gray-500">
                   Quick Questions
                 </p>
 
-                <div className="flex gap-2 overflow-x-auto pb-1">
-                  {defaultQuestions.slice(0, 4).map((item, index) => (
-                    <button
-                      key={index}
-                      type="button"
-                      onClick={() =>
-                        askQuestion(
-                          item.question,
-                          item.answer
-                        )
-                      }
-                      className="
-                        shrink-0
-                        rounded-full
-                        border
-                        border-gray-200
-                        bg-gray-50
-                        px-3
-                        py-2
-                        text-[11px]
-                        text-gray-700
-                        transition
-                        hover:border-[#FFC107]
-                        hover:bg-yellow-50
-                      "
-                    >
-                      {item.question}
-                    </button>
-                  ))}
+                <div className="flex gap-2 overflow-x-auto pb-0.5">
+                  {defaultQuestions
+                    .slice(0, 4)
+                    .map((item, index) => (
+                      <button
+                        key={index}
+                        type="button"
+                        onClick={() =>
+                          askQuestion(
+                            item.question,
+                            item.answer
+                          )
+                        }
+                        className="
+                          shrink-0
+                          rounded-full
+                          border
+                          border-gray-200
+                          bg-gray-50
+                          px-3
+                          py-1.5
+                          text-[11px]
+                          text-gray-700
+                          transition
+                          hover:border-[#FFC107]
+                          hover:bg-yellow-50
+                        "
+                      >
+                        {item.question}
+                      </button>
+                    ))}
                 </div>
               </div>
 
               {/* BOOK RIDE */}
 
-              <div className="shrink-0 border-t bg-gray-50 px-3 pt-2">
+              <div
+                className="
+                  shrink-0
+                  border-t
+                  bg-white
+                  px-3
+                  py-2
+                "
+              >
                 <Link
                   href="/booking"
                   onClick={closeChat}
@@ -918,8 +905,16 @@ export default function ChatBox() {
 
               {/* MESSAGE INPUT */}
 
-              <div className="shrink-0 border-t bg-white p-3">
+              <div
+                className="
+                  shrink-0
+                  border-t
+                  bg-white
+                  p-2.5
+                "
+              >
                 <div className="flex items-center gap-2">
+
                   <input
                     type="text"
                     value={message}
@@ -983,12 +978,10 @@ export default function ChatBox() {
                   >
                     <Send className="h-4 w-4 sm:h-5 sm:w-5" />
                   </button>
-                </div>
 
-                <p className="mt-1.5 text-center text-[9px] text-gray-400">
-                  Powered by SBS Technologies
-                </p>
+                </div>
               </div>
+
             </div>
           )}
         </div>

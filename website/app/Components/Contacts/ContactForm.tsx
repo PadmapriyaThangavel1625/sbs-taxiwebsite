@@ -16,6 +16,7 @@ import {
 
 export default function ContactForm() {
   const [loading, setLoading] = useState(false);
+
   const [status, setStatus] = useState<{
     type: "success" | "error" | "";
     message: string;
@@ -28,6 +29,7 @@ export default function ContactForm() {
     e.preventDefault();
 
     setLoading(true);
+
     setStatus({
       type: "",
       message: "",
@@ -88,6 +90,7 @@ export default function ContactForm() {
   return (
     <section
       className="
+        font-[family-name:var(--font-jakarta)]
         rounded-3xl
         border
         border-[var(--border)]
@@ -120,8 +123,9 @@ export default function ContactForm() {
         <h2
           className="
             mt-3
+            font-[family-name:var(--font-instrument)]
             text-2xl
-            font-bold
+            font-normal
             tracking-tight
             text-[var(--text)]
             sm:text-3xl
@@ -136,7 +140,7 @@ export default function ContactForm() {
             max-w-xl
             text-sm
             leading-6
-            text-[var(--text-light)]
+            text-[var(--muted)]
           "
         >
           Have a question, booking request, or feedback? Fill out the
@@ -188,7 +192,7 @@ export default function ContactForm() {
                 text-sm
                 text-[var(--text)]
                 outline-none
-                placeholder:text-[var(--text-light)]
+                placeholder:text-[var(--muted)]
                 transition-all
                 focus:border-[var(--primary)]
                 focus:bg-white
@@ -236,7 +240,7 @@ export default function ContactForm() {
                 text-sm
                 text-[var(--text)]
                 outline-none
-                placeholder:text-[var(--text-light)]
+                placeholder:text-[var(--muted)]
                 transition-all
                 focus:border-[var(--primary)]
                 focus:bg-white
@@ -284,7 +288,7 @@ export default function ContactForm() {
               text-sm
               text-[var(--text)]
               outline-none
-              placeholder:text-[var(--text-light)]
+              placeholder:text-[var(--muted)]
               transition-all
               focus:border-[var(--primary)]
               focus:bg-white
@@ -332,7 +336,7 @@ export default function ContactForm() {
                 text-sm
                 text-[var(--text)]
                 outline-none
-                placeholder:text-[var(--text-light)]
+                placeholder:text-[var(--muted)]
                 transition-all
                 focus:border-[var(--primary)]
                 focus:bg-white
@@ -378,7 +382,7 @@ export default function ContactForm() {
                 text-sm
                 text-[var(--text)]
                 outline-none
-                placeholder:text-[var(--text-light)]
+                placeholder:text-[var(--muted)]
                 transition-all
                 focus:border-[var(--primary)]
                 focus:bg-white
@@ -472,7 +476,7 @@ export default function ContactForm() {
                 h-4
                 w-4
                 -translate-y-1/2
-                text-[var(--text-light)]
+                text-[var(--muted)]
               "
             />
           </div>
@@ -516,7 +520,7 @@ export default function ContactForm() {
               leading-6
               text-[var(--text)]
               outline-none
-              placeholder:text-[var(--text-light)]
+              placeholder:text-[var(--muted)]
               transition-all
               focus:border-[var(--primary)]
               focus:bg-white
@@ -608,7 +612,7 @@ export default function ContactForm() {
             text-center
             text-[11px]
             leading-5
-            text-[var(--text-light)]
+            text-[var(--muted)]
           "
         >
           We respect your privacy and will only use your information

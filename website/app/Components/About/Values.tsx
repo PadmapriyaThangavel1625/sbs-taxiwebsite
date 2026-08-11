@@ -57,8 +57,10 @@ export default function Values() {
         <div className="text-center">
           <h2
             className="
-              text-2xl sm:text-3xl
-              font-bold
+              font-[family-name:var(--font-instrument)]
+              text-2xl
+              sm:text-3xl
+              font-normal
               text-[var(--text)]
             "
           >
@@ -104,7 +106,8 @@ export default function Values() {
                 {/* Title */}
                 <h3
                   className="
-                    font-bold
+                    font-[family-name:var(--font-instrument)]
+                    font-normal
                     text-[var(--text)]
                     text-base
                   "
@@ -115,7 +118,8 @@ export default function Values() {
                 {/* Description */}
                 <p
                   className="
-                    text-[var(--text-light)]
+                    font-[family-name:var(--font-jakarta)]
+                    text-[var(--muted)]
                     text-xs
                     leading-relaxed
                   "

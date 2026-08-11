@@ -15,21 +15,25 @@ export async function POST(request: Request) {
   try {
     const body = await request.json();
 
-    /*
-    ============================================================
-    SMTP
-    ============================================================
-    */
+    /* ============================================================
+       SMTP CONFIGURATION
+    ============================================================ */
 
     const smtpHost = process.env.SMTP_HOST;
+
     const smtpPort = Number(
       process.env.SMTP_PORT || 587
     );
+
     const smtpSecure =
       process.env.SMTP_SECURE === "true";
-    const smtpUser = process.env.SMTP_USER;
+
+    const smtpUser =
+      process.env.SMTP_USER;
+
     const smtpPassword =
       process.env.SMTP_PASSWORD;
+
     const contactEmail =
       process.env.CONTACT_EMAIL;
 
@@ -49,6 +53,10 @@ export async function POST(request: Request) {
       );
     }
 
+    /* ============================================================
+       CREATE SMTP TRANSPORTER
+    ============================================================ */
+
     const transporter =
       nodemailer.createTransport({
         host: smtpHost,
@@ -60,11 +68,321 @@ export async function POST(request: Request) {
         },
       });
 
-    /*
-    ============================================================
-    TEMPLE TOUR BOOKING
-    ============================================================
-    */
+    /* ============================================================
+       SIMPLE BOOKING FORM
+       Name + Email + Pickup + Drop + Date + Time + Vehicle
+    ============================================================ */
+
+    if (body?.bookingType === "simple-booking") {
+      const {
+        name,
+        email,
+        pickup,
+        drop,
+        date,
+        time,
+        vehicle,
+      } = body;
+
+      /* ==========================================================
+         VALIDATION
+      ========================================================== */
+
+      if (
+        !name ||
+        !email ||
+        !pickup ||
+        !drop ||
+        !date ||
+        !time ||
+        !vehicle
+      ) {
+        return NextResponse.json(
+          {
+            success: false,
+            error:
+              "Please fill all required booking fields.",
+          },
+          { status: 400 }
+        );
+      }
+
+      /* ==========================================================
+         SEND BOOKING EMAIL
+      ========================================================== */
+
+      await transporter.sendMail({
+        from:
+          `"SBS Taxi Website" <${smtpUser}>`,
+
+        to: contactEmail,
+
+        replyTo: email,
+
+        subject:
+          `New SBS Taxi Booking - ${escapeHtml(name)}`,
+
+        html: `
+          <div
+            style="
+              font-family:Arial,sans-serif;
+              max-width:700px;
+              margin:auto;
+              color:#1e293b;
+            "
+          >
+
+            <!-- HEADER -->
+
+            <div
+              style="
+                background:#1A365D;
+                color:white;
+                padding:22px;
+                border-radius:10px 10px 0 0;
+                text-align:center;
+              "
+            >
+              <h1 style="margin:0;">
+                SBS TAXI
+              </h1>
+
+              <p style="margin:6px 0 0;">
+                New Ride Booking Request
+              </p>
+            </div>
+
+            <!-- CONTENT -->
+
+            <div
+              style="
+                border:1px solid #e2e8f0;
+                border-top:0;
+                padding:24px;
+                border-radius:0 0 10px 10px;
+              "
+            >
+
+              <!-- CUSTOMER DETAILS -->
+
+              <h3 style="color:#1A365D;">
+                Customer Details
+              </h3>
+
+              <table
+                style="
+                  width:100%;
+                  border-collapse:collapse;
+                "
+              >
+
+                <tr>
+                  <td
+                    style="
+                      padding:8px;
+                      color:#64748b;
+                    "
+                  >
+                    Name
+                  </td>
+
+                  <td
+                    style="
+                      padding:8px;
+                      font-weight:bold;
+                    "
+                  >
+                    ${escapeHtml(name)}
+                  </td>
+                </tr>
+
+                <tr>
+                  <td
+                    style="
+                      padding:8px;
+                      color:#64748b;
+                    "
+                  >
+                    Email
+                  </td>
+
+                  <td
+                    style="
+                      padding:8px;
+                      font-weight:bold;
+                    "
+                  >
+                    ${escapeHtml(email)}
+                  </td>
+                </tr>
+
+              </table>
+
+              <!-- TRIP DETAILS -->
+
+              <h3 style="color:#1A365D;">
+                Trip Details
+              </h3>
+
+              <table
+                style="
+                  width:100%;
+                  border-collapse:collapse;
+                "
+              >
+
+                <tr>
+                  <td
+                    style="
+                      padding:8px;
+                      color:#64748b;
+                    "
+                  >
+                    Pickup Location
+                  </td>
+
+                  <td
+                    style="
+                      padding:8px;
+                      font-weight:bold;
+                    "
+                  >
+                    ${escapeHtml(pickup)}
+                  </td>
+                </tr>
+
+                <tr>
+                  <td
+                    style="
+                      padding:8px;
+                      color:#64748b;
+                    "
+                  >
+                    Drop Location
+                  </td>
+
+                  <td
+                    style="
+                      padding:8px;
+                      font-weight:bold;
+                    "
+                  >
+                    ${escapeHtml(drop)}
+                  </td>
+                </tr>
+
+                <tr>
+                  <td
+                    style="
+                      padding:8px;
+                      color:#64748b;
+                    "
+                  >
+                    Date
+                  </td>
+
+                  <td
+                    style="
+                      padding:8px;
+                      font-weight:bold;
+                    "
+                  >
+                    ${escapeHtml(date)}
+                  </td>
+                </tr>
+
+                <tr>
+                  <td
+                    style="
+                      padding:8px;
+                      color:#64748b;
+                    "
+                  >
+                    Time
+                  </td>
+
+                  <td
+                    style="
+                      padding:8px;
+                      font-weight:bold;
+                    "
+                  >
+                    ${escapeHtml(time)}
+                  </td>
+                </tr>
+
+                <tr>
+                  <td
+                    style="
+                      padding:8px;
+                      color:#64748b;
+                    "
+                  >
+                    Vehicle
+                  </td>
+
+                  <td
+                    style="
+                      padding:8px;
+                      font-weight:bold;
+                    "
+                  >
+                    ${escapeHtml(vehicle)}
+                  </td>
+                </tr>
+
+              </table>
+
+              <!-- BOOKING STATUS -->
+
+              <div
+                style="
+                  margin-top:20px;
+                  background:#eff6ff;
+                  border:1px solid #bfdbfe;
+                  padding:14px;
+                  border-radius:8px;
+                  color:#1A365D;
+                  font-weight:bold;
+                "
+              >
+                New booking request received from
+                the SBS Taxi website.
+              </div>
+
+              <hr
+                style="
+                  margin:24px 0;
+                  border:0;
+                  border-top:1px solid #e2e8f0;
+                "
+              />
+
+              <p
+                style="
+                  color:#64748b;
+                  font-size:13px;
+                "
+              >
+                Please contact the customer to
+                confirm the booking.
+              </p>
+
+            </div>
+          </div>
+        `,
+      });
+
+      return NextResponse.json({
+        success: true,
+        message:
+          "Booking request sent successfully.",
+      });
+    }
+
+    /* ============================================================
+       TEMPLE TOUR BOOKING
+    ============================================================ */
 
     if (body?.bookingType === "temple-tour") {
       const {
@@ -98,12 +416,6 @@ export async function POST(request: Request) {
         );
       }
 
-      /*
-      ----------------------------------------------------------
-      MULTIPLE TEMPLES
-      ----------------------------------------------------------
-      */
-
       const templeRows = destinations
         .map(
           (
@@ -116,12 +428,12 @@ export async function POST(request: Request) {
             index: number
           ) => `
             <tr>
-              <td>${index + 1}</td>
+              <td style="padding:8px;border:1px solid #ddd;">
+                ${index + 1}
+              </td>
 
-              <td>
-                ${escapeHtml(
-                  temple.name || ""
-                )}
+              <td style="padding:8px;border:1px solid #ddd;">
+                ${escapeHtml(temple.name || "")}
 
                 ${
                   temple.location
@@ -138,7 +450,7 @@ export async function POST(request: Request) {
                 }
               </td>
 
-              <td>
+              <td style="padding:8px;border:1px solid #ddd;">
                 ₹${Number(
                   temple.fare || 0
                 ).toLocaleString("en-IN")}
@@ -147,12 +459,6 @@ export async function POST(request: Request) {
           `
         )
         .join("");
-
-      /*
-      ----------------------------------------------------------
-      EMAIL
-      ----------------------------------------------------------
-      */
 
       await transporter.sendMail({
         from:
@@ -164,90 +470,116 @@ export async function POST(request: Request) {
           "New Temple Tour Booking",
 
         html: `
-          <h2>New Temple Tour Booking</h2>
+          <div
+            style="
+              font-family:Arial,sans-serif;
+              max-width:700px;
+              margin:auto;
+            "
+          >
 
-          <h3>Trip Details</h3>
+            <h2
+              style="
+                background:#1A365D;
+                color:white;
+                padding:18px;
+                border-radius:8px;
+              "
+            >
+              New Temple Tour Booking
+            </h2>
 
-          <p>
-            <strong>Pickup:</strong>
-            ${escapeHtml(pickup)}
-          </p>
+            <h3>Trip Details</h3>
 
-          <p>
-            <strong>Travel Date:</strong>
-            ${escapeHtml(date)}
-          </p>
+            <p>
+              <strong>Pickup:</strong>
+              ${escapeHtml(pickup)}
+            </p>
 
-          <p>
-            <strong>Number of Days:</strong>
-            ${escapeHtml(days)}
-          </p>
+            <p>
+              <strong>Travel Date:</strong>
+              ${escapeHtml(date)}
+            </p>
 
-          <p>
-            <strong>Passengers:</strong>
-            ${escapeHtml(
-              passengers || 1
-            )}
-          </p>
+            <p>
+              <strong>Number of Days:</strong>
+              ${escapeHtml(days)}
+            </p>
 
-          <p>
-            <strong>Vehicle:</strong>
-            ${escapeHtml(vehicle)}
-          </p>
+            <p>
+              <strong>Passengers:</strong>
+              ${escapeHtml(passengers || 1)}
+            </p>
 
-          <p>
-            <strong>Seater:</strong>
-            ${escapeHtml(
-              seats || "-"
-            )}
-          </p>
+            <p>
+              <strong>Vehicle:</strong>
+              ${escapeHtml(vehicle)}
+            </p>
 
-          <p>
-            <strong>Trip Package:</strong>
-            ${escapeHtml(
-              tripPackage || "-"
-            )}
-          </p>
+            <p>
+              <strong>Seater:</strong>
+              ${escapeHtml(seats || "-")}
+            </p>
 
-          <h3>
-            Selected Temples / Destinations
-          </h3>
+            <p>
+              <strong>Trip Package:</strong>
+              ${escapeHtml(tripPackage || "-")}
+            </p>
 
-          <table border="1" cellpadding="8">
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Temple / Destination</th>
-                <th>Fare</th>
-              </tr>
-            </thead>
+            <h3>
+              Selected Temples / Destinations
+            </h3>
 
-            <tbody>
-              ${templeRows}
-            </tbody>
-          </table>
+            <table
+              style="
+                width:100%;
+                border-collapse:collapse;
+              "
+            >
+              <thead>
+                <tr>
+                  <th style="padding:8px;border:1px solid #ddd;">
+                    #
+                  </th>
 
-          <h3>Fare Details</h3>
+                  <th style="padding:8px;border:1px solid #ddd;">
+                    Temple / Destination
+                  </th>
 
-          <p>
-            <strong>Base Fare:</strong>
-            ₹${Number(
-              baseFare || 0
-            ).toLocaleString("en-IN")}
-          </p>
+                  <th style="padding:8px;border:1px solid #ddd;">
+                    Fare
+                  </th>
+                </tr>
+              </thead>
 
-          <p>
-            <strong>Total Fare:</strong>
-            ₹${Number(
-              totalFare || 0
-            ).toLocaleString("en-IN")}
-          </p>
+              <tbody>
+                ${templeRows}
+              </tbody>
+            </table>
 
-          <hr />
+            <h3>Fare Details</h3>
 
-          <p>
-            SBS Taxi Temple Tour Booking
-          </p>
+            <p>
+              <strong>Base Fare:</strong>
+              ₹${Number(
+                baseFare || 0
+              ).toLocaleString("en-IN")}
+            </p>
+
+            <p>
+              <strong>Total Fare:</strong>
+              ₹${Number(
+                totalFare || 0
+              ).toLocaleString("en-IN")}
+            </p>
+
+            <hr />
+
+            <p>
+              SBS Taxi Temple Tour Booking
+            </p>
+
+          </div>
         `,
       });
 
@@ -258,26 +590,61 @@ export async function POST(request: Request) {
       });
     }
 
-    /*
-    ============================================================
-    NORMAL TAXI BOOKING
-    ============================================================
-    */
+    /* ============================================================
+       NORMAL TAXI BOOKING
+    ============================================================ */
 
-    if (
-      body?.pickup &&
-      body?.drop &&
-      body?.date &&
-      body?.time &&
-      body?.vehicle
-    ) {
+    if (body?.bookingType === "taxi-booking") {
       const {
+        passengerName,
+        people,
+        babies,
+        elderly,
+
         pickup,
         drop,
+        tripType,
         date,
         time,
+        isRoundTrip,
+
         vehicle,
+        model,
+        seats,
+        price,
+
+        paymentMethod,
+        preferences,
       } = body;
+
+      if (
+        !passengerName ||
+        !pickup ||
+        !drop ||
+        !date ||
+        !time ||
+        !vehicle ||
+        !paymentMethod
+      ) {
+        return NextResponse.json(
+          {
+            success: false,
+            error:
+              "Please fill all required booking fields.",
+          },
+          { status: 400 }
+        );
+      }
+
+      const preferenceText =
+        Array.isArray(preferences) &&
+        preferences.length > 0
+          ? preferences
+              .map((item: unknown) =>
+                escapeHtml(item)
+              )
+              .join(", ")
+          : "None";
 
       await transporter.sendMail({
         from:
@@ -286,35 +653,264 @@ export async function POST(request: Request) {
         to: contactEmail,
 
         subject:
-          "New SBS Taxi Booking",
+          `New SBS Taxi Booking - ${escapeHtml(
+            passengerName
+          )}`,
 
         html: `
-          <h2>New SBS Taxi Booking</h2>
+          <div
+            style="
+              font-family:Arial,sans-serif;
+              max-width:700px;
+              margin:auto;
+              color:#1e293b;
+            "
+          >
 
-          <p>
-            <strong>Pickup:</strong>
-            ${escapeHtml(pickup)}
-          </p>
+            <div
+              style="
+                background:#1A365D;
+                color:white;
+                padding:22px;
+                border-radius:10px 10px 0 0;
+                text-align:center;
+              "
+            >
+              <h1 style="margin:0;">
+                SBS TAXI
+              </h1>
 
-          <p>
-            <strong>Drop:</strong>
-            ${escapeHtml(drop)}
-          </p>
+              <p style="margin:6px 0 0;">
+                New Booking Confirmation
+              </p>
+            </div>
 
-          <p>
-            <strong>Date:</strong>
-            ${escapeHtml(date)}
-          </p>
+            <div
+              style="
+                border:1px solid #e2e8f0;
+                border-top:0;
+                padding:24px;
+                border-radius:0 0 10px 10px;
+              "
+            >
 
-          <p>
-            <strong>Time:</strong>
-            ${escapeHtml(time)}
-          </p>
+              <h3 style="color:#1A365D;">
+                Passenger Details
+              </h3>
 
-          <p>
-            <strong>Vehicle:</strong>
-            ${escapeHtml(vehicle)}
-          </p>
+              <table
+                style="
+                  width:100%;
+                  border-collapse:collapse;
+                "
+              >
+
+                <tr>
+                  <td style="padding:8px;color:#64748b;">
+                    Passenger Name
+                  </td>
+
+                  <td style="padding:8px;font-weight:bold;">
+                    ${escapeHtml(passengerName)}
+                  </td>
+                </tr>
+
+                <tr>
+                  <td style="padding:8px;color:#64748b;">
+                    Total People
+                  </td>
+
+                  <td style="padding:8px;font-weight:bold;">
+                    ${escapeHtml(people || 1)}
+                  </td>
+                </tr>
+
+                <tr>
+                  <td style="padding:8px;color:#64748b;">
+                    Babies
+                  </td>
+
+                  <td style="padding:8px;font-weight:bold;">
+                    ${escapeHtml(babies || 0)}
+                  </td>
+                </tr>
+
+                <tr>
+                  <td style="padding:8px;color:#64748b;">
+                    Elderly People
+                  </td>
+
+                  <td style="padding:8px;font-weight:bold;">
+                    ${escapeHtml(elderly || 0)}
+                  </td>
+                </tr>
+
+              </table>
+
+              <h3 style="color:#1A365D;">
+                Trip Details
+              </h3>
+
+              <table
+                style="
+                  width:100%;
+                  border-collapse:collapse;
+                "
+              >
+
+                <tr>
+                  <td style="padding:8px;color:#64748b;">
+                    Pickup
+                  </td>
+
+                  <td style="padding:8px;font-weight:bold;">
+                    ${escapeHtml(pickup)}
+                  </td>
+                </tr>
+
+                <tr>
+                  <td style="padding:8px;color:#64748b;">
+                    Drop
+                  </td>
+
+                  <td style="padding:8px;font-weight:bold;">
+                    ${escapeHtml(drop)}
+                  </td>
+                </tr>
+
+                <tr>
+                  <td style="padding:8px;color:#64748b;">
+                    Trip Type
+                  </td>
+
+                  <td style="padding:8px;font-weight:bold;">
+                    ${escapeHtml(tripType || "-")}
+                  </td>
+                </tr>
+
+                <tr>
+                  <td style="padding:8px;color:#64748b;">
+                    Date
+                  </td>
+
+                  <td style="padding:8px;font-weight:bold;">
+                    ${escapeHtml(date)}
+                  </td>
+                </tr>
+
+                <tr>
+                  <td style="padding:8px;color:#64748b;">
+                    Time
+                  </td>
+
+                  <td style="padding:8px;font-weight:bold;">
+                    ${escapeHtml(time)}
+                  </td>
+                </tr>
+
+                <tr>
+                  <td style="padding:8px;color:#64748b;">
+                    Round Trip
+                  </td>
+
+                  <td style="padding:8px;font-weight:bold;">
+                    ${isRoundTrip ? "Yes" : "No"}
+                  </td>
+                </tr>
+
+              </table>
+
+              <h3 style="color:#1A365D;">
+                Vehicle Details
+              </h3>
+
+              <table
+                style="
+                  width:100%;
+                  border-collapse:collapse;
+                "
+              >
+
+                <tr>
+                  <td style="padding:8px;color:#64748b;">
+                    Vehicle
+                  </td>
+
+                  <td style="padding:8px;font-weight:bold;">
+                    ${escapeHtml(vehicle)}
+                  </td>
+                </tr>
+
+                <tr>
+                  <td style="padding:8px;color:#64748b;">
+                    Model
+                  </td>
+
+                  <td style="padding:8px;font-weight:bold;">
+                    ${escapeHtml(model || "-")}
+                  </td>
+                </tr>
+
+                <tr>
+                  <td style="padding:8px;color:#64748b;">
+                    Seats
+                  </td>
+
+                  <td style="padding:8px;font-weight:bold;">
+                    ${escapeHtml(seats || "-")}
+                  </td>
+                </tr>
+
+                <tr>
+                  <td style="padding:8px;color:#64748b;">
+                    Price
+                  </td>
+
+                  <td style="padding:8px;font-weight:bold;">
+                    ${escapeHtml(price || "-")}
+                  </td>
+                </tr>
+
+              </table>
+
+              <h3 style="color:#1A365D;">
+                Payment Method
+              </h3>
+
+              <div
+                style="
+                  background:#eff6ff;
+                  border:1px solid #bfdbfe;
+                  padding:14px;
+                  border-radius:8px;
+                  font-weight:bold;
+                "
+              >
+                ${escapeHtml(paymentMethod)}
+              </div>
+
+              <h3 style="color:#1A365D;">
+                Additional Preferences
+              </h3>
+
+              <p>
+                ${preferenceText}
+              </p>
+
+              <hr />
+
+              <p
+                style="
+                  color:#64748b;
+                  font-size:13px;
+                "
+              >
+                This booking was submitted from
+                the SBS Taxi website.
+              </p>
+
+            </div>
+          </div>
         `,
       });
 
@@ -325,11 +921,9 @@ export async function POST(request: Request) {
       });
     }
 
-    /*
-    ============================================================
-    CONTACT FORM
-    ============================================================
-    */
+    /* ============================================================
+       CONTACT FORM
+    ============================================================ */
 
     const {
       name,
@@ -369,7 +963,7 @@ export async function POST(request: Request) {
       replyTo: email,
 
       subject:
-        `New Contact Enquiry - ${subject}`,
+        `New Contact Enquiry - ${escapeHtml(subject)}`,
 
       html: `
         <h2>New SBS Taxi Enquiry</h2>
@@ -421,7 +1015,6 @@ export async function POST(request: Request) {
       message:
         "Your enquiry has been sent successfully.",
     });
-
   } catch (error) {
     console.error(
       "SBS TAXI EMAIL API ERROR:",

@@ -1,20 +1,48 @@
 
+"use client";
+
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight } from "lucide-react";
+import { motion } from "framer-motion";
 
 export default function StorySection() {
   return (
-    <section className="py-12">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+    <section className="w-full py-12 sm:py-16 lg:py-20">
+      <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-2 lg:gap-16">
           {/* Left Content */}
-          <div className="space-y-6">
-            <h2 className="text-3xl md:text-4xl font-bold text-[var(--text)]">
+          <motion.div
+            initial={{ opacity: 0, x: -40 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{
+              duration: 0.7,
+              ease: [0.22, 1, 0.36, 1],
+            }}
+            className="space-y-6"
+          >
+            <h2
+              className="
+                font-[family-name:var(--font-instrument)]
+                text-3xl
+                font-normal
+                text-[var(--text)]
+                md:text-4xl
+              "
+            >
               Our Story
             </h2>
 
-            <div className="space-y-4 text-[var(--text-light)] text-base leading-relaxed">
+            <div
+              className="
+                space-y-4
+                font-[family-name:var(--font-jakarta)]
+                text-base
+                leading-relaxed
+                text-[var(--muted)]
+              "
+            >
               <p>
                 Founded with a vision to transform urban mobility, SBS Taxi has
                 grown to become one of the most reliable taxi services trusted
@@ -35,16 +63,19 @@ export default function StorySection() {
             <Link
               href="/booking"
               className="
+                group
                 inline-flex
                 items-center
+                rounded-xl
                 bg-[var(--primary)]
-                hover:bg-[var(--primary-dark)]
-                text-white
                 px-6
                 py-3
-                rounded-xl
-                transition-colors
-                group
+                font-[family-name:var(--font-jakarta)]
+                !text-white
+                transition-all
+                duration-300
+                hover:bg-[var(--primary-dark)]
+                hover:shadow-lg
               "
             >
               Book a Ride
@@ -52,31 +83,47 @@ export default function StorySection() {
               <ArrowRight
                 className="
                   ml-2
-                  h-4 w-4
-                  group-hover:translate-x-1
+                  h-4
+                  w-4
                   transition-transform
+                  duration-300
+                  group-hover:translate-x-1
                 "
               />
             </Link>
-          </div>
+          </motion.div>
 
           {/* Right Image */}
-          <div
+          <motion.div
+            initial={{ opacity: 0, x: 40, scale: 0.97 }}
+            whileInView={{ opacity: 1, x: 0, scale: 1 }}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{
+              duration: 0.8,
+              ease: [0.22, 1, 0.36, 1],
+            }}
             className="
               relative
-              h-80 lg:h-[450px]
-              rounded-2xl
+              h-80
               overflow-hidden
+              rounded-2xl
               shadow-lg
+              lg:h-[450px]
             "
           >
             <Image
               src="https://images.unsplash.com/photo-1519003722824-194d4455a60c?auto=format&fit=crop&w=1200&q=80"
               alt="SBS Taxi Drivers Team"
               fill
-              className="object-cover"
+              sizes="(max-width: 1024px) 100vw, 50vw"
+              className="
+                object-cover
+                transition-transform
+                duration-700
+                hover:scale-105
+              "
             />
-          </div>
+          </motion.div>
         </div>
       </div>
     </section>

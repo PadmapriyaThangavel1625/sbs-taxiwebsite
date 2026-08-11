@@ -12,10 +12,25 @@ export default function HeroSlider() {
         fill
         priority
         sizes="100vw"
-        className="object-cover object-center"
+        className="
+          object-cover
+          object-center
+
+          sm:object-center
+
+          lg:object-[center_45%]
+
+          xl:object-[center_40%]
+        "
       />
 
-      <div className="absolute inset-0 bg-white/10" />
+      <div
+        className="
+          absolute
+          inset-0
+          bg-white/10
+        "
+      />
     </div>
   );
 }

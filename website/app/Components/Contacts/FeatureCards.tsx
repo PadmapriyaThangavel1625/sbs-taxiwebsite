@@ -48,7 +48,7 @@ export default function FeatureCards() {
   >(null);
 
   return (
-    <section className="py-8">
+    <section className="py-8 font-[family-name:var(--font-jakarta)]">
       {/* Header */}
       <div>
         <p className="text-sm font-semibold text-[var(--primary)]">
@@ -58,11 +58,12 @@ export default function FeatureCards() {
         <h2
           className="
             mt-3
-            text-2xl
-            font-bold
+            font-[family-name:var(--font-instrument)]
+            text-3xl
+            font-normal
             tracking-tight
             text-[var(--text)]
-            sm:text-3xl
+            sm:text-4xl
           "
         >
           We're Here to Help
@@ -74,7 +75,7 @@ export default function FeatureCards() {
             max-w-lg
             text-sm
             leading-6
-            text-[var(--text-light)]
+            text-[var(--muted)]
           "
         >
           From booking assistance to customer support, our team is ready
@@ -150,8 +151,9 @@ export default function FeatureCards() {
               <div className="relative mt-5">
                 <h3
                   className="
-                    text-base
-                    font-bold
+                    font-[family-name:var(--font-instrument)]
+                    text-xl
+                    font-normal
                     text-[var(--text)]
                   "
                 >
@@ -163,7 +165,7 @@ export default function FeatureCards() {
                     mt-1.5
                     text-xs
                     leading-5
-                    text-[var(--text-light)]
+                    text-[var(--muted)]
                   "
                 >
                   {feature.description}
@@ -216,6 +218,7 @@ export default function FeatureCards() {
             justify-center
             bg-black/50
             px-4
+            font-[family-name:var(--font-jakarta)]
             backdrop-blur-sm
           "
           onClick={() => setSelectedFeature(null)}
@@ -275,11 +278,25 @@ export default function FeatureCards() {
 
             {/* Content */}
             <div className="mt-5 pr-8">
-              <h3 className="text-xl font-bold text-[var(--text)]">
+              <h3
+                className="
+                  font-[family-name:var(--font-instrument)]
+                  text-2xl
+                  font-normal
+                  text-[var(--text)]
+                "
+              >
                 {selectedFeature.title}
               </h3>
 
-              <p className="mt-3 text-sm leading-6 text-[var(--text-light)]">
+              <p
+                className="
+                  mt-3
+                  text-sm
+                  leading-6
+                  text-[var(--muted)]
+                "
+              >
                 {selectedFeature.details}
               </p>
             </div>
@@ -299,7 +316,7 @@ export default function FeatureCards() {
                 font-semibold
                 text-white
                 transition
-                hover:opacity-90
+                hover:bg-[var(--primary-dark)]
               "
             >
               Got it

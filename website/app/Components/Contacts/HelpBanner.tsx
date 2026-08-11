@@ -5,6 +5,7 @@ export default function HelpBanner() {
   return (
     <div
       className="
+        font-[family-name:var(--font-jakarta)]
         bg-[var(--primary-light)]
         border border-[var(--border)]
         rounded-2xl
@@ -17,6 +18,7 @@ export default function HelpBanner() {
     >
       {/* Left Content */}
       <div className="flex items-center gap-4 text-center lg:text-left">
+        {/* Icon */}
         <div
           className="
             w-12 h-12
@@ -31,12 +33,27 @@ export default function HelpBanner() {
           <Headphones className="w-6 h-6" />
         </div>
 
+        {/* Content */}
         <div>
-          <h4 className="font-bold text-[var(--text)] text-base">
+          <h4
+            className="
+              font-[family-name:var(--font-instrument)]
+              text-xl
+              font-normal
+              text-[var(--text)]
+            "
+          >
             Need Immediate Assistance?
           </h4>
 
-          <p className="text-xs text-[var(--text-light)] mt-0.5">
+          <p
+            className="
+              text-xs
+              text-[var(--muted)]
+              mt-0.5
+              leading-5
+            "
+          >
             Our team is available 24/7 to help you with bookings,
             cancellations, or any queries.
           </p>
@@ -53,7 +70,7 @@ export default function HelpBanner() {
             bg-[var(--primary)]
             hover:bg-[var(--primary-dark)]
             text-white
-            font-medium
+            font-semibold
             rounded-xl
             text-sm
             flex items-center gap-2
@@ -75,7 +92,7 @@ export default function HelpBanner() {
             border border-[var(--secondary)]
             text-[var(--text)]
             hover:bg-[var(--secondary-light)]
-            font-medium
+            font-semibold
             rounded-xl
             text-sm
             flex items-center gap-2

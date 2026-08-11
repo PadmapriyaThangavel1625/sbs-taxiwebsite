@@ -8,7 +8,7 @@ import HelpBanner from "@/app/Components/Contacts/HelpBanner";
 
 export default function ContactPage() {
   return (
-    <main>
+    <main className="font-[family-name:var(--font-jakarta)]">
       {/* =====================================
           Hero
       ====================================== */}

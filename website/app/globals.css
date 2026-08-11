@@ -1,12 +1,15 @@
 
-@import "tailwindcss";
+@import "tailwindcs
+/* =========================
+   ROOT VARIABLES
+========================= */
 
 :root {
-  --primary: #0b5ed7;
+  --primary: #041e43;
   --primary-dark: #084db4;
   --primary-light: #eaf3ff;
 
-  --secondary: #ffc107;
+  --secondary: #fdb708;
   --secondary-dark: #e6ac00;
   --secondary-light: #fff8e1;
 
@@ -37,7 +40,31 @@ body {
   padding: 0;
   background: var(--background);
   color: var(--text);
-  font-family: Arial, Helvetica, sans-serif;
+
+  /* Plus Jakarta Sans */
+  font-family: var(--font-jakarta), Arial, Helvetica, sans-serif;
+
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* =========================
+   HEADINGS
+========================= */
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0;
+
+  /* Instrument Serif */
+  font-family: var(--font-instrument), Georgia, serif;
+
+  color: var(--heading);
+  font-weight: 400;
 }
 
 /* =========================
@@ -53,6 +80,15 @@ textarea {
 
 button {
   cursor: pointer;
+}
+
+/* =========================
+   LINKS
+========================= */
+
+a {
+  color: inherit;
+  text-decoration: none;
 }
 
 /* =========================
@@ -165,6 +201,7 @@ button {
   padding: 14px 28px;
   border-radius: 8px;
 
+  font-family: var(--font-jakarta), Arial, Helvetica, sans-serif;
   font-size: 14px;
   font-weight: 700;
 
@@ -177,6 +214,7 @@ button {
 
 .btn-primary:hover {
   background: var(--primary-dark);
+  transform: translateY(-1px);
 }
 
 /* =========================
@@ -185,4 +223,34 @@ button {
 
 .section-bg {
   background: var(--section);
+}
+
+/* =========================
+   SELECTION
+========================= */
+
+::selection {
+  background: var(--primary);
+  color: #ffffff;
+}
+
+/* =========================
+   SCROLLBAR
+========================= */
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
 }

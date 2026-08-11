@@ -11,41 +11,43 @@ export default function PromotionalTopBar() {
 
   return (
     <div className="w-full bg-[#1A365D] text-white">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="flex min-h-[52px] items-center justify-between gap-3">
+      <div className="mx-auto w-full max-w-7xl px-3 sm:px-6 lg:px-8">
+        <div className="flex min-h-[48px] items-center justify-between gap-2 sm:min-h-[52px] sm:gap-3">
           
           {/* LEFT */}
-          <div className="flex min-w-0 items-center gap-2 sm:gap-3">
-            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#FFC107] text-[#1A365D]">
-              <Tag className="h-4 w-4" />
+          <div className="flex min-w-0 flex-1 items-center gap-2 sm:gap-3">
+            {/* Icon */}
+            <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-[#FFC107] text-[#1A365D] sm:h-8 sm:w-8 sm:rounded-lg">
+              <Tag className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
             </div>
 
-            <div className="flex min-w-0 items-center gap-2">
-              <span className="hidden text-xs font-bold uppercase tracking-wider text-[#FFC107] sm:inline">
+            {/* Text */}
+            <div className="flex min-w-0 items-center gap-2 sm:gap-3">
+              <span className="hidden shrink-0 text-[10px] font-bold uppercase tracking-[0.12em] text-[#FFC107] sm:inline sm:text-xs">
                 Limited Time
               </span>
 
-              <span className="truncate text-sm font-bold sm:text-base">
+              <span className="truncate text-[12px] font-bold leading-5 sm:text-sm md:text-base">
                 Special Taxi Offers
               </span>
 
-              <span className="hidden text-sm text-white/80 md:inline">
+              <span className="hidden truncate text-xs text-white/80 md:inline lg:text-sm">
                 — Book today and enjoy special rates!
               </span>
             </div>
           </div>
 
           {/* RIGHT */}
-          <div className="flex shrink-0 items-center gap-2">
-            
+          <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
+
             {/* PHONE */}
             <a
-              href="tel:+918144065688"
+              href="tel:98435 44844"
               className="
                 hidden
                 items-center
                 gap-1.5
-                text-xs
+                text-[11px]
                 font-semibold
                 text-white/90
                 transition
@@ -53,8 +55,8 @@ export default function PromotionalTopBar() {
                 lg:flex
               "
             >
-              <Phone className="h-4 w-4" />
-              +91 9843544844
+              <Phone className="h-3.5 w-3.5" />
+               98435 44844
             </a>
 
             {/* BOOK */}
@@ -64,20 +66,24 @@ export default function PromotionalTopBar() {
                 flex
                 items-center
                 gap-1
-                rounded-lg
+                rounded-md
                 bg-[#FFC107]
-                px-3
-                py-2
-                text-xs
+                px-2.5
+                py-1.5
+                text-[11px]
                 font-bold
+                leading-4
                 text-[#1A365D]
                 transition
                 hover:bg-yellow-300
+                sm:rounded-lg
                 sm:px-4
+                sm:py-2
+                sm:text-xs
               "
             >
               Book Now
-              <ArrowRight className="h-3.5 w-3.5" />
+              <ArrowRight className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
             </Link>
 
             {/* CLOSE */}
@@ -87,21 +93,23 @@ export default function PromotionalTopBar() {
               aria-label="Close offer"
               className="
                 flex
-                h-8
-                w-8
+                h-7
+                w-7
                 items-center
                 justify-center
-                rounded-lg
+                rounded-md
                 text-white/80
                 transition
                 hover:bg-white/10
                 hover:text-white
+                sm:h-8
+                sm:w-8
+                sm:rounded-lg
               "
             >
-              <X className="h-4 w-4" />
+              <X className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
             </button>
           </div>
-
         </div>
       </div>
     </div>

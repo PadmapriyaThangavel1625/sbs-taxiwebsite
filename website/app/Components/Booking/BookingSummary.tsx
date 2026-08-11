@@ -1,4 +1,3 @@
-
 "use client";
 
 import React from "react";
@@ -80,7 +79,10 @@ export default function BookingSummary({
       : "Select date & time";
 
   return (
-    <div className="space-y-4">
+    <div
+      className="space-y-4"
+      style={{ fontFamily: "var(--font-jakarta)" }}
+    >
       {/* Heading */}
       <h2 className="booking-card-title">
         Booking Summary
@@ -88,28 +90,27 @@ export default function BookingSummary({
 
       {/* Trip Information */}
       <div className="space-y-3 text-sm">
-
         {/* Trip Type */}
-        <div className="flex justify-between items-center gap-4 text-slate-600">
+        <div className="flex items-center justify-between gap-4 text-slate-600">
           <span className="flex items-center gap-2">
-            <Navigation className="w-4 h-4 text-slate-400" />
+            <Navigation className="h-4 w-4 text-slate-400" />
             <span>Trip Type</span>
           </span>
 
-          <span className="font-semibold text-slate-900 text-right">
+          <span className="text-right font-semibold text-slate-900">
             {trip.tripType || "Outstation"}
           </span>
         </div>
 
         {/* From */}
-        <div className="flex justify-between items-start gap-4 text-slate-600">
-          <span className="flex items-center gap-2 flex-shrink-0">
-            <MapPin className="w-4 h-4 text-emerald-600" />
+        <div className="flex items-start justify-between gap-4 text-slate-600">
+          <span className="flex flex-shrink-0 items-center gap-2">
+            <MapPin className="h-4 w-4 text-emerald-600" />
             <span>From</span>
           </span>
 
           <span
-            className={`font-medium text-right break-words max-w-[65%] ${
+            className={`max-w-[65%] break-words text-right font-medium ${
               trip.pickup
                 ? "text-slate-900"
                 : "text-slate-500"
@@ -120,14 +121,14 @@ export default function BookingSummary({
         </div>
 
         {/* To */}
-        <div className="flex justify-between items-start gap-4 text-slate-600">
-          <span className="flex items-center gap-2 flex-shrink-0">
-            <MapPin className="w-4 h-4 text-rose-600" />
+        <div className="flex items-start justify-between gap-4 text-slate-600">
+          <span className="flex flex-shrink-0 items-center gap-2">
+            <MapPin className="h-4 w-4 text-rose-600" />
             <span>To</span>
           </span>
 
           <span
-            className={`font-medium text-right break-words max-w-[65%] ${
+            className={`max-w-[65%] break-words text-right font-medium ${
               trip.drop
                 ? "text-slate-900"
                 : "text-slate-500"
@@ -138,14 +139,14 @@ export default function BookingSummary({
         </div>
 
         {/* Date & Time */}
-        <div className="flex justify-between items-start gap-4 text-slate-600">
-          <span className="flex items-center gap-2 flex-shrink-0">
-            <Calendar className="w-4 h-4 text-slate-400" />
+        <div className="flex items-start justify-between gap-4 text-slate-600">
+          <span className="flex flex-shrink-0 items-center gap-2">
+            <Calendar className="h-4 w-4 text-slate-400" />
             <span>Date & Time</span>
           </span>
 
           <span
-            className={`font-medium text-right ${
+            className={`text-right font-medium ${
               trip.date && trip.time
                 ? "text-slate-900"
                 : "text-slate-500"
@@ -156,9 +157,9 @@ export default function BookingSummary({
         </div>
 
         {/* Round Trip */}
-        <div className="flex justify-between items-center gap-4 text-slate-600">
+        <div className="flex items-center justify-between gap-4 text-slate-600">
           <span className="flex items-center gap-2">
-            <RotateCcw className="w-4 h-4 text-slate-400" />
+            <RotateCcw className="h-4 w-4 text-slate-400" />
             <span>Round Trip</span>
           </span>
 
@@ -180,7 +181,7 @@ export default function BookingSummary({
           <hr className="border-slate-100" />
 
           <div>
-            <p className="text-xs font-semibold text-slate-700 mb-2">
+            <p className="mb-2 text-xs font-semibold text-slate-700">
               Additional Preferences
             </p>
 
@@ -190,7 +191,7 @@ export default function BookingSummary({
                   key={preference}
                   className="flex items-center gap-2 text-xs text-slate-600"
                 >
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                  <CheckCircle2 className="h-4 w-4 text-emerald-600" />
 
                   <span>{preference}</span>
                 </div>
@@ -207,6 +208,7 @@ export default function BookingSummary({
       <div className="space-y-2 text-sm">
         <div className="flex justify-between text-slate-600">
           <span>Estimated Distance</span>
+
           <span className="font-semibold text-slate-900">
             -
           </span>
@@ -214,6 +216,7 @@ export default function BookingSummary({
 
         <div className="flex justify-between text-slate-600">
           <span>Estimated Time</span>
+
           <span className="font-semibold text-slate-900">
             -
           </span>

@@ -76,7 +76,7 @@ const vehicles = [
 
 export default function VehiclePricing() {
   return (
-    <section className="section-bg py-10 sm:py-12 lg:py-16">
+    <section className="section-bg py-10 sm:py-12 lg:py-16 font-[var(--font-jakarta)]">
       <div className="container-custom">
 
         {/* Vehicle Grid */}

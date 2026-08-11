@@ -1,4 +1,3 @@
-
 import OfferCard from "./OfferCard";
 
 export default function ExclusiveOffers() {
@@ -58,17 +57,29 @@ export default function ExclusiveOffers() {
   ];
 
   return (
-    <section className="section-bg py-8 sm:py-10 lg:py-12">
+    <section
+      className="
+        section-bg
+        w-full
+        py-8
+        sm:py-10
+        md:py-12
+        lg:py-14
+      "
+    >
       <div className="container-custom">
 
         {/* Heading */}
-        <div className="mb-8 text-center">
+        <div className="mb-6 text-center sm:mb-8 md:mb-9">
           <h2
             className="
-              text-2xl
+              text-xl
               font-bold
+              leading-tight
               text-heading
-              sm:text-3xl
+              sm:text-2xl
+              md:text-3xl
+              lg:text-[32px]
             "
           >
             Exclusive Offers
@@ -82,6 +93,8 @@ export default function ExclusiveOffers() {
               w-10
               rounded-full
               bg-secondary
+              sm:mt-3
+              sm:w-12
             "
           />
         </div>
@@ -91,9 +104,12 @@ export default function ExclusiveOffers() {
           className="
             grid
             grid-cols-1
-            gap-5
+            gap-4
             sm:grid-cols-2
+            sm:gap-5
             lg:grid-cols-4
+            lg:gap-5
+            xl:gap-6
           "
         >
           {offers.map((offer, index) => (

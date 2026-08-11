@@ -1,4 +1,3 @@
-
 "use client";
 
 import { motion, Variants } from "framer-motion";
@@ -63,8 +62,20 @@ const itemVariants: Variants = {
 
 export default function TrustBadges() {
   return (
-    <section className="w-full bg-[var(--background)] py-6 sm:py-8 md:py-10">
-      <div className="container-custom">
+    <section className="w-full bg-[var(--background)] py-5 sm:py-7 md:py-9">
+      {/* =================================================
+          SAME CONTAINER AS NAVBAR + HERO
+      ================================================== */}
+      <div
+        className="
+          mx-auto
+          w-full
+          max-w-7xl
+          px-4
+          sm:px-6
+          lg:px-8
+        "
+      >
         <motion.div
           variants={containerVariants}
           initial="hidden"
@@ -107,18 +118,21 @@ export default function TrustBadges() {
                 className={`
                   group
                   flex
-                  min-h-[82px]
+                  min-h-[76px]
                   cursor-pointer
                   items-center
                   gap-3
                   px-4
-                  py-4
+                  py-3.5
                   transition
 
+                  sm:min-h-[82px]
                   sm:px-5
-                  sm:py-5
+                  sm:py-4
 
+                  lg:min-h-[88px]
                   lg:px-4
+
                   xl:px-5
 
                   ${
@@ -143,7 +157,9 @@ export default function TrustBadges() {
                   }
                 `}
               >
-                {/* Icon */}
+                {/* =================================================
+                    ICON
+                ================================================== */}
                 <motion.div
                   whileHover={{
                     rotate: 10,
@@ -155,27 +171,35 @@ export default function TrustBadges() {
                   className="shrink-0"
                 >
                   <Icon
-                    size={32}
+                    size={30}
                     strokeWidth={1.8}
                     className="
                       text-[var(--primary)]
 
-                      sm:h-[34px]
-                      sm:w-[34px]
+                      sm:h-8
+                      sm:w-8
+
+                      lg:h-[30px]
+                      lg:w-[30px]
                     "
                   />
                 </motion.div>
 
-                {/* Content */}
+                {/* =================================================
+                    CONTENT
+                ================================================== */}
                 <div className="min-w-0">
                   <h3
                     className="
-                      text-[12px]
+                      text-[11px]
                       font-bold
-                      leading-5
+                      leading-4
                       text-[var(--primary)]
 
-                      sm:text-[13px]
+                      sm:text-[12px]
+                      sm:leading-5
+
+                      lg:text-[12px]
                     "
                   >
                     {item.title}
@@ -184,11 +208,13 @@ export default function TrustBadges() {
                   <p
                     className="
                       mt-0.5
-                      text-[10px]
+                      text-[9px]
                       leading-4
                       text-[var(--muted)]
 
-                      sm:text-[11px]
+                      sm:text-[10px]
+
+                      lg:text-[10px]
                     "
                   >
                     {item.text}

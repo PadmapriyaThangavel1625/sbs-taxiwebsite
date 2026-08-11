@@ -8,7 +8,7 @@ import { ArrowRight, ChevronDown } from "lucide-react";
 interface ServiceCardProps {
   title: string;
   description: string;
-  details?: string; // New optional prop for expanded content
+  details?: string;
   image: string;
   icon: React.ReactNode;
 }
@@ -23,73 +23,199 @@ export default function ServiceCard({
   const [isExpanded, setIsExpanded] = useState(false);
 
   return (
-    <div className="h-full flex flex-col overflow-hidden rounded-xl border bg-white shadow-sm hover:shadow-md transition-shadow duration-200">
-      
-      {/* Top Section: Card Body & Image */}
-      <div className="flex flex-col sm:flex-row flex-1">
+    <div
+      className="
+        flex
+        h-full
+        flex-col
+        overflow-hidden
+        rounded-2xl
+        border
+        border-white
+        bg-white
+        font-[var(--font-jakarta)]
+        shadow-sm
+        transition-all
+        duration-300
+        hover:shadow-lg
+      "
+    >
+      {/* Top Section */}
+      <div className="flex flex-1 flex-col sm:flex-row">
         {/* Content */}
-        <div className="flex-1 p-5 sm:p-6 flex flex-col justify-between">
+        <div className="flex flex-1 flex-col justify-between p-5 sm:p-6">
           <div>
+            {/* Title + Icon */}
             <div className="flex items-center gap-3">
-              <div className="text-primary text-3xl">{icon}</div>
-              <h3 className="text-lg font-bold text-heading">{title}</h3>
+              <div className="shrink-0 text-primary">
+                {icon}
+              </div>
+
+              <h3
+                className="
+                  font-[family-name:var(--font-instrument)]
+                  text-lg
+                  font-bold
+                  text-heading
+                "
+              >
+                {title}
+              </h3>
             </div>
 
-            <p className="mt-3 text-sm text-muted leading-6">{description}</p>
+            {/* Description */}
+            <p
+              className="
+                mt-3
+                font-[family-name:var(--font-jakarta)]
+                text-sm
+                leading-6
+                text-muted
+              "
+            >
+              {description}
+            </p>
           </div>
 
-          <div className="mt-4">
+          {/* Learn More */}
+          <div className="mt-5">
             <button
+              type="button"
               onClick={() => setIsExpanded(!isExpanded)}
-              className="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:text-primary-dark transition-colors cursor-pointer"
+              className="
+                inline-flex
+                cursor-pointer
+                items-center
+                gap-2
+                font-[family-name:var(--font-jakarta)]
+                text-sm
+                font-semibold
+                text-primary
+                transition-colors
+                hover:text-primary-dark
+              "
               aria-expanded={isExpanded}
             >
               {isExpanded ? "Show Less" : "Learn More"}
+
               <ChevronDown
                 size={16}
-                className={`transform transition-transform duration-200 ${
-                  isExpanded ? "rotate-180" : ""
-                }`}
+                className={`
+                  transition-transform
+                  duration-300
+                  ${isExpanded ? "rotate-180" : ""}
+                `}
               />
             </button>
           </div>
         </div>
 
         {/* Image */}
-        <div className="relative w-full h-48 sm:h-auto sm:w-[45%] min-h-[180px]">
+        <div
+          className="
+            relative
+            min-h-[180px]
+            h-48
+            w-full
+            overflow-hidden
+            sm:h-auto
+            sm:w-[45%]
+          "
+        >
           <Image
             src={image}
             alt={title}
             fill
             sizes="(max-width: 640px) 100vw, 45vw"
-            className="object-cover"
+            className="
+              object-cover
+              transition-transform
+              duration-500
+              hover:scale-105
+            "
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-white via-white/20 to-transparent sm:bg-gradient-to-r" />
+
+          {/* Soft image blend */}
+          <div
+            className="
+              absolute
+              inset-0
+              bg-gradient-to-r
+              from-white
+              via-white/20
+              to-transparent
+              sm:bg-gradient-to-r
+            "
+          />
         </div>
       </div>
 
-      {/* Expandable Box (Down Side) */}
+      {/* Expandable Information */}
       <div
-        className={`grid transition-all duration-300 ease-in-out ${
-          isExpanded ? "grid-rows-[1fr] opacity-100 p-5 sm:p-6 border-t bg-gray-50" : "grid-rows-[0fr] opacity-0 p-0 overflow-hidden"
-        }`}
+        className={`
+          grid
+          transition-all
+          duration-300
+          ease-in-out
+          ${
+            isExpanded
+              ? "grid-rows-[1fr] border-t border-white bg-gray-50 p-5 opacity-100 sm:p-6"
+              : "grid-rows-[0fr] overflow-hidden p-0 opacity-0"
+          }
+        `}
       >
         <div className="overflow-hidden">
-          <h4 className="font-semibold text-sm text-heading mb-2">Additional Information</h4>
-          <p className="text-sm text-muted leading-6">
-            {details || "Here is some more detailed information about this service. You can include specifications, benefits, or next steps here."}
+          <h4
+            className="
+              mb-2
+              font-[family-name:var(--font-jakarta)]
+              text-sm
+              font-semibold
+              text-heading
+            "
+          >
+            Additional Information
+          </h4>
+
+          <p
+            className="
+              font-[family-name:var(--font-jakarta)]
+              text-sm
+              leading-6
+              text-muted
+            "
+          >
+            {details ||
+              "Here is some more detailed information about this service. You can include specifications, benefits, or next steps here."}
           </p>
+
           <div className="mt-4">
             <Link
-              href="#"
-              className="inline-flex items-center gap-2 text-xs font-semibold text-white bg-primary px-4 py-2 rounded-lg hover:bg-primary-dark transition-colors"
+              href="/booking"
+              className="
+                inline-flex
+                items-center
+                gap-2
+                rounded-lg
+                bg-primary
+                px-4
+                py-2
+                font-[family-name:var(--font-jakarta)]
+                text-xs
+                font-semibold
+                text-white
+                transition-all
+                duration-200
+                hover:-translate-y-0.5
+                hover:bg-primary-dark
+              "
             >
-              Get Started <ArrowRight size={14} />
+              Get Started
+              <ArrowRight size={14} />
             </Link>
           </div>
         </div>
       </div>
-
     </div>
   );
 }

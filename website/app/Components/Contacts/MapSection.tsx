@@ -1,18 +1,54 @@
 
 export default function MapSection() {
   return (
-    <section className="h-full">
+    <section
+      className="
+        h-full
+        font-[family-name:var(--font-jakarta)]
+      "
+    >
       {/* Heading */}
       <div className="mb-6">
-        <span className="inline-flex items-center rounded-full bg-[var(--primary-light)] px-3 py-1 text-xs font-bold uppercase tracking-wider text-[var(--primary)]">
+        <span
+          className="
+            inline-flex
+            items-center
+            rounded-full
+            bg-[var(--primary-light)]
+            px-3
+            py-1
+            text-xs
+            font-bold
+            uppercase
+            tracking-wider
+            text-[var(--primary)]
+          "
+        >
           Find Us
         </span>
 
-        <h2 className="mt-3 text-2xl font-bold tracking-tight text-[var(--text)] sm:text-3xl">
+        <h2
+          className="
+            mt-3
+            font-[family-name:var(--font-instrument)]
+            text-3xl
+            font-normal
+            tracking-tight
+            text-[var(--text)]
+            sm:text-4xl
+          "
+        >
           Our Location
         </h2>
 
-        <p className="mt-2 text-sm leading-6 text-[var(--text-light)]">
+        <p
+          className="
+            mt-2
+            text-sm
+            leading-6
+            text-[var(--muted)]
+          "
+        >
           Visit our office in Erode. We’re conveniently located at Municipal
           Colony Main Road.
         </p>
@@ -26,7 +62,8 @@ export default function MapSection() {
           w-full
           overflow-hidden
           rounded-2xl
-          border border-[var(--border)]
+          border
+          border-[var(--border)]
           bg-slate-100
           shadow-lg
         "
@@ -39,7 +76,7 @@ export default function MapSection() {
           referrerPolicy="no-referrer-when-downgrade"
         />
 
-        {/* Location overlay */}
+        {/* Location Overlay */}
         <div
           className="
             pointer-events-none
@@ -48,7 +85,8 @@ export default function MapSection() {
             left-4
             right-4
             rounded-xl
-            border border-white/20
+            border
+            border-white/20
             bg-black/70
             p-4
             text-white
@@ -56,7 +94,19 @@ export default function MapSection() {
           "
         >
           <div className="flex items-start gap-3">
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#FFC107] text-slate-950">
+            <div
+              className="
+                flex
+                h-9
+                w-9
+                shrink-0
+                items-center
+                justify-center
+                rounded-lg
+                bg-[#FFC107]
+                text-slate-950
+              "
+            >
               📍
             </div>
 
