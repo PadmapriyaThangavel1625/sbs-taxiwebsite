@@ -1,3 +1,4 @@
+
 "use client";
 
 import Link from "next/link";
@@ -19,7 +20,7 @@ export default function Footer() {
       {/* =====================================================
           MOBILE FOOTER
       ====================================================== */}
-      <div className="block px-6 py-12 sm:px-8 lg:hidden">
+      <div className="block px-6 py-12 pb-16 sm:px-8 lg:hidden">
         {/* Logo + Brand */}
         <div className="flex items-center gap-3">
           <div className="flex h-11 w-11 items-center justify-center overflow-hidden rounded-lg bg-[#0753b8]">
@@ -116,6 +117,7 @@ export default function Footer() {
 
             <div>
               <p>Mon - Sun: 24/7</p>
+
               <p className="mt-1 text-blue-200/60">
                 Available anytime for your journey
               </p>
@@ -422,7 +424,6 @@ export default function Footer() {
                 "
               >
                 Book Your Ride
-
                 <ArrowUpRight size={16} />
               </Link>
             </div>
@@ -538,6 +539,7 @@ export default function Footer() {
                   size={15}
                   className="text-[#FFC107]"
                 />
+
                 +91 9843544844
               </a>
 
@@ -560,6 +562,7 @@ export default function Footer() {
                   size={16}
                   className="text-[#FFC107]"
                 />
+
                 WhatsApp Support
               </a>
             </div>
@@ -569,8 +572,10 @@ export default function Footer() {
 
       {/* =====================================================
           BOTTOM BAR
+          Extra bottom padding on mobile prevents the fixed
+          BottomBar from covering "Powered by SBS Technologies".
       ====================================================== */}
-      <div className="border-t border-white/10">
+      <div className="border-t border-white/10 pb-20 sm:pb-0">
         <div
           className="
             mx-auto
@@ -579,7 +584,7 @@ export default function Footer() {
             flex-col
             items-center
             justify-between
-            gap-4
+            gap-3
             px-4
             py-5
             text-xs

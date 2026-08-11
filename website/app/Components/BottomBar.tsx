@@ -1,3 +1,4 @@
+
 "use client";
 
 import Link from "next/link";
@@ -5,8 +6,8 @@ import {
   Home,
   Car,
   MapPin,
-  Phone,
   IndianRupee,
+  CarFront,
 } from "lucide-react";
 
 export default function BottomBar() {
@@ -116,9 +117,9 @@ export default function BottomBar() {
           <span>Pricing</span>
         </Link>
 
-        {/* CALL */}
-        <a
-          href="tel:+918144065688"
+        {/* FLEET */}
+        <Link
+          href="/fleet"
           className="
             flex
             flex-col
@@ -132,9 +133,9 @@ export default function BottomBar() {
             hover:text-[#1A365D]
           "
         >
-          <Phone className="h-5 w-5" />
-          <span>Call</span>
-        </a>
+          <CarFront className="h-5 w-5" />
+          <span>Fleet</span>
+        </Link>
       </div>
     </nav>
   );
