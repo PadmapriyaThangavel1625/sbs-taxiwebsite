@@ -1,4 +1,3 @@
-
 "use client";
 
 import Link from "next/link";
@@ -30,14 +29,12 @@ export default function Navbar() {
         z-40
         w-full
         border-b
-        border-gray-100
+        border-white/10
         bg-[var(--primary)]
         shadow-sm
       "
     >
-      {/* =================================================
-          NAVBAR INNER
-      ================================================== */}
+      {/* NAVBAR INNER */}
 
       <div
         className="
@@ -52,9 +49,7 @@ export default function Navbar() {
           lg:px-8
         "
       >
-        {/* =================================================
-            LOGO
-        ================================================== */}
+        {/* LOGO */}
 
         <Link
           href="/"
@@ -64,9 +59,7 @@ export default function Navbar() {
           <Logo variant="footer" />
         </Link>
 
-        {/* =================================================
-            DESKTOP NAVIGATION
-        ================================================== */}
+        {/* DESKTOP NAVIGATION */}
 
         <nav className="hidden items-center gap-6 lg:flex xl:gap-8">
           {navLinks.map((link) => {
@@ -91,8 +84,8 @@ export default function Navbar() {
                   duration-200
                   ${
                     isActive
-                      ? "!text-[#e6ac00;]"
-                      : "text-yellow-700 !hover:text-[#e6ac00;]"
+                      ? "text-[var(--secondary)]"
+                      : "text-white hover:text-[var(--secondary)]"
                   }
                 `}
                 style={{
@@ -101,7 +94,8 @@ export default function Navbar() {
               >
                 {link.name}
 
-                {/* Active / Hover Underline */}
+                {/* UNDERLINE */}
+
                 <span
                   className={`
                     absolute
@@ -111,7 +105,7 @@ export default function Navbar() {
                     w-full
                     origin-left
                     rounded-full
-                    bg-[#0753b8]
+                    bg-[var(--secondary)]
                     transition-transform
                     duration-200
                     ${
@@ -125,16 +119,14 @@ export default function Navbar() {
             );
           })}
 
-          {/* =================================================
-              BOOK A RIDE
-          ================================================== */}
+          {/* BOOK A RIDE */}
 
           <Link
             href="/booking"
             className="
               ml-1
               rounded-lg
-              bg-[#ffc107]
+              bg-[var(--secondary)]
               px-5
               py-3
               text-[14px]
@@ -144,7 +136,7 @@ export default function Navbar() {
               transition-all
               duration-200
               hover:-translate-y-0.5
-              hover:bg-[#eeb200]
+              hover:bg-[var(--secondary-dark)]
               hover:shadow-md
             "
             style={{
@@ -155,9 +147,7 @@ export default function Navbar() {
           </Link>
         </nav>
 
-        {/* =================================================
-            MOBILE MENU BUTTON
-        ================================================== */}
+        {/* MOBILE MENU BUTTON */}
 
         <button
           type="button"
@@ -169,11 +159,11 @@ export default function Navbar() {
             items-center
             justify-center
             rounded-lg
-            text-gray-700
+            text-white
             transition-all
             duration-200
-            hover:bg-gray-100
-            hover:text-[#0753b8]
+            hover:bg-white/10
+            hover:text-[var(--secondary)]
             lg:hidden
           "
           aria-label={open ? "Close menu" : "Open menu"}
@@ -187,9 +177,7 @@ export default function Navbar() {
         </button>
       </div>
 
-      {/* =================================================
-          MOBILE MENU
-      ================================================== */}
+      {/* MOBILE MENU */}
 
       <div
         className={`
@@ -199,8 +187,9 @@ export default function Navbar() {
           top-full
           overflow-hidden
           border-t
-          border-gray-100
-          bg-white
+          border-white/10
+          bg-[var(--primary)]
+          !text-white
           shadow-lg
           transition-all
           duration-200
@@ -213,7 +202,7 @@ export default function Navbar() {
         `}
       >
         <div className="mx-auto max-w-7xl px-4 py-3 sm:px-6">
-          {/* Navigation Links */}
+          {/* MOBILE LINKS */}
 
           <div className="flex flex-col">
             {navLinks.map((link) => {
@@ -229,15 +218,15 @@ export default function Navbar() {
                   onClick={() => setOpen(false)}
                   className={`
                     border-b
-                    border-gray-100
+                    border-white/10
                     py-3.5
                     text-sm
                     transition-colors
                     duration-200
                     ${
                       isActive
-                        ? "font-bold text-[#0753b8]"
-                        : "font-medium text-gray-700 hover:text-[#0753b8]"
+                        ? "font-bold text-[var(--secondary)]"
+                        : "font-medium text-white hover:text-[var(--secondary)]"
                     }
                   `}
                   style={{
@@ -250,7 +239,7 @@ export default function Navbar() {
             })}
           </div>
 
-          {/* Mobile Book Button */}
+          {/* MOBILE BOOK BUTTON */}
 
           <Link
             href="/booking"
@@ -262,7 +251,7 @@ export default function Navbar() {
               items-center
               justify-center
               rounded-lg
-              bg-[#ffc107]
+              bg-[var(--secondary)]
               px-5
               py-3
               text-sm
@@ -270,7 +259,7 @@ export default function Navbar() {
               text-black
               transition-all
               duration-200
-              hover:bg-[#eeb200]
+              hover:bg-[var(--secondary-dark)]
             "
             style={{
               fontFamily: "var(--font-jakarta)",

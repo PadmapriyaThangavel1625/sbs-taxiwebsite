@@ -1,4 +1,3 @@
-
 "use client";
 
 import Link from "next/link";
@@ -21,29 +20,57 @@ export default function BottomBar() {
         z-[9997]
         block
         border-t
-        border-gray-200
-        bg-white
+        border-white/10
+        bg-[var(--primary)]
         md:hidden
         font-[var(--font-jakarta)]
       "
     >
-      <div className="grid h-16 w-full grid-cols-6 bg-white">
-
+      <div
+        className="
+          grid
+          h-16
+          w-full
+          grid-cols-6
+          bg-[var(--primary)]
+        "
+      >
         {/* HOME */}
         <Link
           href="/"
           className="
+            group
             flex
             flex-col
             items-center
             justify-center
             gap-1
-            text-gray-600
-            active:bg-gray-100
+            ! text-white
+            transition-colors
+            duration-200
+            hover:text-[var(--secondary)]
+            active:text-[var(--secondary)]
           "
         >
-          <Home className="h-5 w-5" />
-          <span className="text-[10px] font-medium">
+          <Home
+            className="
+              h-5
+              w-5
+              transition-colors
+              duration-200
+              group-hover:text-[var(--secondary)]
+            "
+          />
+
+          <span
+            className="
+              text-[10px]
+              font-medium
+              transition-colors
+              duration-200
+              group-hover:text-[var(--secondary)]
+            "
+          >
             Home
           </span>
         </Link>
@@ -52,17 +79,38 @@ export default function BottomBar() {
         <Link
           href="/services"
           className="
+            group
             flex
             flex-col
             items-center
             justify-center
             gap-1
-            text-gray-600
-            active:bg-gray-100
+            !text-white
+            transition-colors
+            duration-200
+            hover:text-[var(--secondary)]
+            active:text-[var(--secondary)]
           "
         >
-          <BriefcaseBusiness className="h-5 w-5" />
-          <span className="text-[10px] font-medium">
+          <BriefcaseBusiness
+            className="
+              h-5
+              w-5
+              transition-colors
+              duration-200
+              group-hover:text-[var(--secondary)]
+            "
+          />
+
+          <span
+            className="
+              text-[10px]
+              font-medium
+              transition-colors
+              duration-200
+              group-hover:text-[var(--secondary)]
+            "
+          >
             Services
           </span>
         </Link>
@@ -71,17 +119,38 @@ export default function BottomBar() {
         <Link
           href="/fleet"
           className="
+            group
             flex
             flex-col
             items-center
             justify-center
             gap-1
-            text-gray-600
-            active:bg-gray-100
+            !text-white
+            transition-colors
+            duration-200
+            hover:text-[var(--secondary)]
+            active:text-[var(--secondary)]
           "
         >
-          <CarFront className="h-5 w-5" />
-          <span className="text-[10px] font-medium">
+          <CarFront
+            className="
+              h-5
+              w-5
+              transition-colors
+              duration-200
+              group-hover:text-[var(--secondary)]
+            "
+          />
+
+          <span
+            className="
+              text-[10px]
+              font-medium
+              transition-colors
+              duration-200
+              group-hover:text-[var(--secondary)]
+            "
+          >
             Fleet
           </span>
         </Link>
@@ -90,17 +159,38 @@ export default function BottomBar() {
         <Link
           href="/pricing"
           className="
+            group
             flex
             flex-col
             items-center
             justify-center
             gap-1
-            text-gray-600
-            active:bg-gray-100
+            !text-white
+            transition-colors
+            duration-200
+            hover:text-[var(--secondary)]
+            active:text-[var(--secondary)]
           "
         >
-          <IndianRupee className="h-5 w-5" />
-          <span className="text-[10px] font-medium">
+          <IndianRupee
+            className="
+              h-5
+              w-5
+              transition-colors
+              duration-200
+              group-hover:text-[var(--secondary)]
+            "
+          />
+
+          <span
+            className="
+              text-[10px]
+              font-medium
+              transition-colors
+              duration-200
+              group-hover:text-[var(--secondary)]
+            "
+          >
             Pricing
           </span>
         </Link>
@@ -109,17 +199,38 @@ export default function BottomBar() {
         <Link
           href="/destinations"
           className="
+            group
             flex
             flex-col
             items-center
             justify-center
             gap-1
-            text-gray-600
-            active:bg-gray-100
+            !text-white
+            transition-colors
+            duration-200
+            hover:text-[var(--secondary)]
+            active:text-[var(--secondary)]
           "
         >
-          <MapPin className="h-5 w-5" />
-          <span className="text-[10px] font-medium">
+          <MapPin
+            className="
+              h-5
+              w-5
+              transition-colors
+              duration-200
+              group-hover:text-[var(--secondary)]
+            "
+          />
+
+          <span
+            className="
+              text-[10px]
+              font-medium
+              transition-colors
+              duration-200
+              group-hover:text-[var(--secondary)]
+            "
+          >
             Destinations
           </span>
         </Link>
@@ -128,21 +239,41 @@ export default function BottomBar() {
         <Link
           href="/offers"
           className="
+            group
             flex
             flex-col
             items-center
             justify-center
             gap-1
-            text-gray-600
-            active:bg-gray-100
+            !text-white
+            transition-colors
+            duration-200
+            hover:text-[var(--secondary)]
+            active:text-[var(--secondary)]
           "
         >
-          <Tag className="h-5 w-5" />
-          <span className="text-[10px] font-medium">
+          <Tag
+            className="
+              h-5
+              w-5
+              transition-colors
+              duration-200
+              group-hover:text-[var(--secondary)]
+            "
+          />
+
+          <span
+            className="
+              text-[10px]
+              font-medium
+              transition-colors
+              duration-200
+              group-hover:text-[var(--secondary)]
+            "
+          >
             Offers
           </span>
         </Link>
-
       </div>
     </nav>
   );

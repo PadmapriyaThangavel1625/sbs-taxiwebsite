@@ -38,10 +38,21 @@ const items = [
 ];
 
 const containerVariants: Variants = {
-  hidden: {},
+  hidden: {
+    opacity: 0,
+    scale: 0.95,
+    y: 40,
+  },
+
   show: {
+    opacity: 1,
+    scale: 1,
+    y: 0,
     transition: {
-      staggerChildren: 0.15,
+      duration: 0.6,
+      ease: [0.16, 1, 0.3, 1],
+      staggerChildren: 0.12,
+      delayChildren: 0.2,
     },
   },
 };
@@ -49,31 +60,41 @@ const containerVariants: Variants = {
 const itemVariants: Variants = {
   hidden: {
     opacity: 0,
-    y: 30,
+    y: 20,
   },
+
   show: {
     opacity: 1,
     y: 0,
     transition: {
-      duration: 0.5,
+      duration: 0.4,
+      ease: "easeOut",
     },
   },
 };
 
 export default function TrustBadges() {
   return (
-    <section className="w-full bg-[var(--background)] py-5 sm:py-7 md:py-9">
-      {/* =================================================
-          SAME CONTAINER AS NAVBAR + HERO
-      ================================================== */}
+    <section className="relative w-full bg-transparent py-6 sm:py-8 lg:py-10">
+      {/* =====================================================
+          TRUST BADGES CONTAINER
+          Positioned BELOW the banner/image
+      ===================================================== */}
       <div
         className="
+          relative
+          z-10
           mx-auto
+          flex
           w-full
           max-w-7xl
+          justify-center
           px-4
           sm:px-6
           lg:px-8
+          mt-0
+          sm:mt-2
+          lg:mt-4
         "
       >
         <motion.div
@@ -90,9 +111,9 @@ export default function TrustBadges() {
             overflow-hidden
             rounded-2xl
             border
-            border-gray-200
+            border-gray-200/80
             bg-white
-            shadow-sm
+            shadow-2xl
 
             grid-cols-1
 
@@ -109,10 +130,10 @@ export default function TrustBadges() {
                 key={item.title}
                 variants={itemVariants}
                 whileHover={{
-                  y: -6,
-                  scale: 1.03,
+                  y: -4,
+                  backgroundColor: "rgba(249, 250, 251, 1)",
                   transition: {
-                    duration: 0.25,
+                    duration: 0.2,
                   },
                 }}
                 className={`
@@ -124,7 +145,7 @@ export default function TrustBadges() {
                   gap-3
                   px-4
                   py-3.5
-                  transition
+                  transition-colors
 
                   sm:min-h-[82px]
                   sm:px-5
@@ -139,7 +160,7 @@ export default function TrustBadges() {
                     index !== items.length - 1
                       ? `
                         border-b
-                        border-gray-200
+                        border-gray-100
 
                         sm:border-b
                         ${
@@ -162,11 +183,11 @@ export default function TrustBadges() {
                 ================================================== */}
                 <motion.div
                   whileHover={{
-                    rotate: 10,
+                    rotate: 12,
                     scale: 1.15,
                   }}
                   transition={{
-                    duration: 0.25,
+                    duration: 0.2,
                   }}
                   className="shrink-0"
                 >

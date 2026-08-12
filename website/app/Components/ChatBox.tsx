@@ -13,6 +13,7 @@ import {
   ArrowLeft,
   Send,
 } from "lucide-react";
+import Logo from "@/app/Components/Logo";
 
 type ChatScreen = "menu" | "chat";
 
@@ -20,6 +21,7 @@ type ChatMessage = {
   id: number;
   role: "user" | "assistant";
   content: string;
+  action?: "booking" | "contact";
 };
 
 /* =====================================================
@@ -31,6 +33,7 @@ const defaultQuestions = [
     question: "🚕 How can I book a taxi?",
     answer:
       "You can book an SBS Taxi by entering your pickup and drop location, selecting a vehicle, and confirming your booking.",
+    action: "booking" as const,
   },
   {
     question: "💰 What is the taxi fare?",
@@ -51,6 +54,7 @@ const defaultQuestions = [
     question: "🕐 Can I book for later?",
     answer:
       "Yes. You can schedule a taxi for a future date and time through the booking option.",
+    action: "booking" as const,
   },
   {
     question: "🚗 What vehicles are available?",
@@ -81,6 +85,7 @@ const defaultQuestions = [
     question: "📞 How can I contact SBS Taxi?",
     answer:
       "You can contact SBS Taxi by calling +91 98435 44844.",
+    action: "contact" as const,
   },
   {
     question: "🎁 Do you have any offers?",
@@ -93,7 +98,10 @@ const defaultQuestions = [
    LOCAL AI ANSWER SYSTEM
 ===================================================== */
 
-function getAnswer(message: string) {
+function getAnswer(message: string): {
+  answer: string;
+  action?: "booking" | "contact";
+} {
   const lower = message.toLowerCase().trim();
 
   if (
@@ -102,7 +110,10 @@ function getAnswer(message: string) {
     lower.includes("hey") ||
     lower.includes("hai")
   ) {
-    return "👋 Hi! Welcome to SBS Taxi. How can I help you? You can ask me about booking, fare, airport rides, vehicles, outstation trips, payments or offers.";
+    return {
+      answer:
+        "👋 Hi! Welcome to SBS Taxi. How can I help you? You can ask me about booking, fare, airport rides, vehicles, outstation trips, payments or offers.",
+    };
   }
 
   if (
@@ -111,7 +122,10 @@ function getAnswer(message: string) {
     lower.includes("taxi") ||
     lower.includes("ride")
   ) {
-    return defaultQuestions[0].answer;
+    return {
+      answer: defaultQuestions[0].answer,
+      action: "booking",
+    };
   }
 
   if (
@@ -120,7 +134,9 @@ function getAnswer(message: string) {
     lower.includes("cost") ||
     lower.includes("rate")
   ) {
-    return defaultQuestions[1].answer;
+    return {
+      answer: defaultQuestions[1].answer,
+    };
   }
 
   if (
@@ -129,14 +145,15 @@ function getAnswer(message: string) {
     lower.includes("area") ||
     lower.includes("location")
   ) {
-    return defaultQuestions[2].answer;
+    return {
+      answer: defaultQuestions[2].answer,
+    };
   }
 
-  if (
-    lower.includes("airport") ||
-    lower.includes("flight")
-  ) {
-    return defaultQuestions[3].answer;
+  if (lower.includes("airport") || lower.includes("flight")) {
+    return {
+      answer: defaultQuestions[3].answer,
+    };
   }
 
   if (
@@ -145,7 +162,10 @@ function getAnswer(message: string) {
     lower.includes("future") ||
     lower.includes("tomorrow")
   ) {
-    return defaultQuestions[4].answer;
+    return {
+      answer: defaultQuestions[4].answer,
+      action: "booking",
+    };
   }
 
   if (
@@ -155,7 +175,9 @@ function getAnswer(message: string) {
     lower.includes("suv") ||
     lower.includes("mini")
   ) {
-    return defaultQuestions[5].answer;
+    return {
+      answer: defaultQuestions[5].answer,
+    };
   }
 
   if (
@@ -164,7 +186,9 @@ function getAnswer(message: string) {
     lower.includes("one way") ||
     lower.includes("round trip")
   ) {
-    return defaultQuestions[6].answer;
+    return {
+      answer: defaultQuestions[6].answer,
+    };
   }
 
   if (
@@ -173,7 +197,9 @@ function getAnswer(message: string) {
     lower.includes("sightseeing") ||
     lower.includes("place")
   ) {
-    return defaultQuestions[7].answer;
+    return {
+      answer: defaultQuestions[7].answer,
+    };
   }
 
   if (
@@ -181,14 +207,18 @@ function getAnswer(message: string) {
     lower.includes("upi") ||
     lower.includes("cash")
   ) {
-    return defaultQuestions[8].answer;
+    return {
+      answer: defaultQuestions[8].answer,
+    };
   }
 
   if (
     lower.includes("cancel") ||
     lower.includes("cancellation")
   ) {
-    return defaultQuestions[9].answer;
+    return {
+      answer: defaultQuestions[9].answer,
+    };
   }
 
   if (
@@ -197,7 +227,10 @@ function getAnswer(message: string) {
     lower.includes("support") ||
     lower.includes("call")
   ) {
-    return defaultQuestions[10].answer;
+    return {
+      answer: defaultQuestions[10].answer,
+      action: "contact",
+    };
   }
 
   if (
@@ -205,20 +238,146 @@ function getAnswer(message: string) {
     lower.includes("discount") ||
     lower.includes("coupon")
   ) {
-    return defaultQuestions[11].answer;
+    return {
+      answer: defaultQuestions[11].answer,
+    };
+  }
+
+  return {
+    answer:
+      "Sorry 😔 I can currently help with SBS Taxi questions.\n\n" +
+      "You can ask about:\n" +
+      "🚕 Taxi booking\n" +
+      "💰 Fare\n" +
+      "✈️ Airport rides\n" +
+      "🚗 Vehicles\n" +
+      "🗺️ Outstation trips\n" +
+      "💳 Payments\n" +
+      "❌ Cancellation\n" +
+      "🎁 Offers",
+  };
+}
+
+/* =====================================================
+   ACTION BUTTON
+===================================================== */
+
+function ActionButton({
+  action,
+  onClose,
+}: {
+  action: "booking" | "contact";
+  onClose: () => void;
+}) {
+  if (action === "booking") {
+    return (
+      <Link
+        href="/booking"
+        onClick={onClose}
+        className="
+          mt-3
+          inline-flex
+          w-full
+          items-center
+          justify-center
+          gap-2
+          rounded-xl
+          bg-[var(--secondary)]
+          px-4
+          py-2.5
+          text-xs
+          font-bold
+          text-[var(--primary)]
+          transition
+          hover:bg-[var(--secondary-dark)]
+          sm:text-sm
+        "
+      >
+        <Car className="h-4 w-4" />
+        Book a Ride
+        <ChevronRight className="h-4 w-4" />
+      </Link>
+    );
   }
 
   return (
-    "Sorry 😔 I can currently help with SBS Taxi questions.\n\n" +
-    "You can ask about:\n" +
-    "🚕 Taxi booking\n" +
-    "💰 Fare\n" +
-    "✈️ Airport rides\n" +
-    "🚗 Vehicles\n" +
-    "🗺️ Outstation trips\n" +
-    "💳 Payments\n" +
-    "❌ Cancellation\n" +
-    "🎁 Offers"
+    <Link
+      href="/contacts"
+      onClick={onClose}
+      className="
+        mt-3
+        inline-flex
+        w-full
+        items-center
+        justify-center
+        gap-2
+        rounded-xl
+        bg-[var(--primary)]
+        px-4
+        py-2.5
+        text-xs
+        font-bold
+        !text-white
+        transition
+        hover:bg-[var(--primary-dark)]
+        sm:text-sm
+      "
+    >
+      <Phone className="h-4 w-4" />
+      Contact SBS Taxi
+      <ChevronRight className="h-4 w-4" />
+    </Link>
+  );
+}
+
+/* =====================================================
+   FOOTER
+===================================================== */
+
+function ChatFooter() {
+  return (
+    <div
+      className="
+        shrink-0
+        border-t
+        border-gray-100
+        bg-white
+        px-3
+        py-2.5
+        text-center
+      "
+    >
+      <p className="text-[10px] font-semibold text-gray-500">
+        Powered by{" "}
+        <a
+          href="https://sbstechnologies.in/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="
+            font-bold
+            text-[var(--primary)]
+            transition
+            hover:underline
+          "
+        >
+          SBS Technologies
+        </a>
+      </p>
+
+      <div className="mt-1 flex items-center justify-center gap-1.5">
+        <Image
+          src="/flag.jpg"
+          alt="India"
+          width={18}
+          height={12}
+          className="h-3 w-[18px] rounded-sm object-cover"
+        />
+
+        <p className="text-[9px] text-gray-400">
+          Made in India
+        </p>
+      </div>
+    </div>
   );
 }
 
@@ -228,7 +387,13 @@ function getAnswer(message: string) {
 
 export default function ChatBox() {
   const [open, setOpen] = useState(false);
-  const [screen, setScreen] = useState<ChatScreen>("menu");
+
+  /*
+   * Directly open CHAT screen.
+   * No menu is shown when clicking the floating button.
+   */
+  const [screen, setScreen] = useState<ChatScreen>("chat");
+
   const [message, setMessage] = useState("");
 
   const [messages, setMessages] = useState<ChatMessage[]>([
@@ -258,7 +423,8 @@ export default function ChatBox() {
 
   const askQuestion = (
     question: string,
-    answer: string
+    answer: string,
+    action?: "booking" | "contact"
   ) => {
     const id = Date.now();
 
@@ -273,6 +439,7 @@ export default function ChatBox() {
         id: id + 1,
         role: "assistant",
         content: answer,
+        action,
       },
     ]);
 
@@ -288,7 +455,7 @@ export default function ChatBox() {
 
     if (!text) return;
 
-    const answer = getAnswer(text);
+    const result = getAnswer(text);
     const id = Date.now();
 
     setMessages((prev) => [
@@ -301,7 +468,8 @@ export default function ChatBox() {
       {
         id: id + 1,
         role: "assistant",
-        content: answer,
+        content: result.answer,
+        action: result.action,
       },
     ]);
 
@@ -314,7 +482,11 @@ export default function ChatBox() {
 
   const openChat = () => {
     setOpen(true);
-    setScreen("menu");
+
+    /*
+     * Always open directly to chat.
+     */
+    setScreen("chat");
   };
 
   /* =====================================================
@@ -323,7 +495,6 @@ export default function ChatBox() {
 
   const closeChat = () => {
     setOpen(false);
-    setScreen("menu");
   };
 
   return (
@@ -404,66 +575,389 @@ export default function ChatBox() {
             {/* HEADER CONTENT */}
 
             <div className="flex items-center gap-3 pr-10">
-              {/* LOGO */}
-
-              <div
-                className="
-                  flex
-                  h-12
-                  w-12
-                  shrink-0
-                  items-center
-                  justify-center
-                  overflow-hidden
-                  rounded-full
-                  border-2
-                  border-white/40
-                  bg-white
-                  sm:h-14
-                  sm:w-14
-                "
-              >
-                <Image
-                  src="/sbsai.png"
-                  alt="SBS Taxi"
-                  width={100}
-                  height={100}
-                  priority
-                  className="h-full w-full object-cover"
-                />
-              </div>
-
-              {/* TITLE */}
-
-              <div className="min-w-0">
-                <div className="flex items-center gap-1.5">
-                  <span className="text-[10px] font-bold text-green-300">
-                    ●
-                  </span>
-
-                  <p className="text-[10px] font-bold uppercase tracking-wide text-green-300">
-                    Online
-                  </p>
-                </div>
-
-                <h2 className="mt-0.5 truncate text-base font-bold !text-white sm:text-lg">
-                  SBS Taxi
-                </h2>
-
-                <p className="truncate text-xs text-white/75 sm:text-sm">
-                  How can we help you?
-                </p>
-              </div>
+              <Logo variant="footer" />
             </div>
           </div>
 
           {/* =================================================
-              MAIN MENU
+              CHAT SCREEN
+          ================================================= */}
+
+          {screen === "chat" && (
+            <div className="flex min-h-0 flex-1 flex-col bg-white">
+              {/* CHAT TOP */}
+
+              <div
+                className="
+                  flex
+                  shrink-0
+                  items-center
+                  gap-2
+                  border-b
+                  border-gray-200
+                  bg-white
+                  px-3
+                  py-2.5
+                  sm:gap-3
+                  sm:px-4
+                  sm:py-3
+                "
+              >
+                {/* BACK TO MENU */}
+
+                <button
+                  type="button"
+                  onClick={() => setScreen("menu")}
+                  aria-label="Back"
+                  className="
+                    flex
+                    h-9
+                    w-9
+                    shrink-0
+                    items-center
+                    justify-center
+                    rounded-full
+                    text-gray-700
+                    transition
+                    hover:bg-gray-100
+                  "
+                >
+                  <ArrowLeft className="h-5 w-5" />
+                </button>
+
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-sm font-semibold text-gray-900">
+                    SBS Taxi Support
+                  </p>
+
+                  <p className="text-[11px] font-medium text-green-600">
+                    ● Assistant Online
+                  </p>
+                </div>
+
+                <div
+                  className="
+                    hidden
+                    rounded-full
+                    bg-blue-50
+                    px-2.5
+                    py-1
+                    text-[9px]
+                    font-semibold
+                    text-[var(--primary)]
+                    sm:block
+                  "
+                >
+                  LOCAL ASSISTANT
+                </div>
+              </div>
+
+              {/* =================================================
+                  MESSAGES
+              ================================================= */}
+
+              <div
+                className="
+                  min-h-0
+                  flex-1
+                  space-y-3
+                  overflow-y-auto
+                  bg-gray-50
+                  px-3
+                  py-4
+                  sm:space-y-4
+                  sm:px-4
+                "
+              >
+                {messages.map((msg) => (
+                  <div
+                    key={msg.id}
+                    className={
+                      msg.role === "user"
+                        ? "flex justify-end"
+                        : "flex justify-start"
+                    }
+                  >
+                    <div
+                      className={
+                        msg.role === "user"
+                          ? `
+                            max-w-[82%]
+                            rounded-2xl
+                            rounded-tr-sm
+                            bg-[var(--primary)]
+                            px-3.5
+                            py-2.5
+                            text-white
+                            shadow-sm
+                            sm:px-4
+                            sm:py-3
+                          `
+                          : `
+                            max-w-[85%]
+                            rounded-2xl
+                            rounded-tl-sm
+                            border
+                            border-gray-100
+                            bg-white
+                            px-3.5
+                            py-2.5
+                            text-gray-700
+                            shadow-sm
+                            sm:px-4
+                            sm:py-3
+                          `
+                      }
+                    >
+                      <p
+                        className="
+                          whitespace-pre-wrap
+                          break-words
+                          text-xs
+                          leading-5
+                          sm:text-sm
+                          sm:leading-6
+                        "
+                      >
+                        {msg.content}
+                      </p>
+
+                      {/* =================================================
+                          ACTION LINK INSIDE ASSISTANT MESSAGE
+                      ================================================= */}
+
+                      {msg.role === "assistant" &&
+                        msg.action && (
+                          <ActionButton
+                            action={msg.action}
+                            onClose={closeChat}
+                          />
+                        )}
+                    </div>
+                  </div>
+                ))}
+
+                <div ref={messagesEndRef} />
+              </div>
+
+            {/* =================================================
+    QUICK QUESTIONS
+================================================= */}
+
+<div
+  className="
+    shrink-0
+    border-t
+    border-gray-200
+    bg-white
+    px-3
+    py-2
+  "
+>
+  <p
+    className="
+      mb-1.5
+      text-[10px]
+      font-bold
+      uppercase
+      tracking-wide
+      text-gray-400
+    "
+  >
+    Quick Questions
+  </p>
+
+  <div
+    className="
+      flex
+      gap-2
+      overflow-x-auto
+      overflow-y-hidden
+      pb-2
+
+      /* Firefox */
+      [scrollbar-width:thin]
+      [scrollbar-color:var(--primary)_#e5e7eb]
+
+      /* Chrome / Edge / Safari */
+      [&::-webkit-scrollbar]:h-1.5
+      [&::-webkit-scrollbar-track]:rounded-full
+      [&::-webkit-scrollbar-track]:bg-gray-200
+      [&::-webkit-scrollbar-thumb]:rounded-full
+      [&::-webkit-scrollbar-thumb]:bg-[var(--primary)]
+      [&::-webkit-scrollbar-thumb:hover]:bg-[var(--primary-dark)]
+    "
+  >
+    {defaultQuestions.slice(0, 4).map(
+      (item, index) => (
+        <button
+          key={index}
+          type="button"
+          onClick={() =>
+            askQuestion(
+              item.question,
+              item.answer,
+              item.action
+            )
+          }
+          className="
+            shrink-0
+            rounded-full
+            border
+            border-gray-200
+            bg-gray-50
+            px-3
+            py-1.5
+            text-[10px]
+            font-medium
+            text-gray-700
+            transition
+            hover:border-[var(--secondary)]
+            hover:bg-[var(--secondary-light)]
+          "
+        >
+          {item.question}
+        </button>
+      )
+    )}
+  </div>
+</div>
+
+              {/* =================================================
+                  BOOK RIDE
+              ================================================= */}
+
+              <div
+                className="
+                  shrink-0
+                  border-t
+                  border-gray-200
+                  bg-white
+                  px-3
+                  py-2
+                "
+              >
+                <Link
+                  href="/booking"
+                  onClick={closeChat}
+                  className="
+                    flex
+                    w-full
+                    items-center
+                    justify-center
+                    gap-2
+                    rounded-xl
+                    bg-[var(--secondary)]
+                    px-4
+                    py-2.5
+                    text-sm
+                    font-bold
+                    text-[var(--primary)]
+                    transition
+                    hover:bg-[var(--secondary-dark)]
+                  "
+                >
+                  <Car className="h-4 w-4" />
+                  Book a Ride
+                </Link>
+              </div>
+
+              {/* =================================================
+                  MESSAGE INPUT
+              ================================================= */}
+
+              <div
+                className="
+                  shrink-0
+                  border-t
+                  border-gray-200
+                  bg-white
+                  p-2.5
+                "
+              >
+                <div className="flex items-center gap-2">
+                  <input
+                    type="text"
+                    value={message}
+                    onChange={(e) =>
+                      setMessage(e.target.value)
+                    }
+                    onKeyDown={(e) => {
+                      if (
+                        e.key === "Enter" &&
+                        !e.shiftKey
+                      ) {
+                        e.preventDefault();
+                        sendMessage();
+                      }
+                    }}
+                    placeholder="Ask about SBS Taxi..."
+                    className="
+                      min-w-0
+                      flex-1
+                      rounded-xl
+                      border
+                      border-gray-200
+                      bg-gray-50
+                      px-3
+                      py-2.5
+                      text-xs
+                      text-gray-900
+                      outline-none
+                      transition
+                      placeholder:text-gray-400
+                      focus:border-[var(--primary)]
+                      focus:bg-white
+                      focus:ring-1
+                      focus:ring-[var(--primary)]
+                      sm:px-4
+                      sm:py-3
+                      sm:text-sm
+                    "
+                  />
+
+                  <button
+                    type="button"
+                    onClick={sendMessage}
+                    disabled={!message.trim()}
+                    aria-label="Send message"
+                    className="
+                      flex
+                      h-10
+                      w-10
+                      shrink-0
+                      items-center
+                      justify-center
+                      rounded-xl
+                      bg-[var(--primary)]
+                      text-white
+                      transition
+                      hover:bg-[var(--primary-dark)]
+                      disabled:cursor-not-allowed
+                      disabled:opacity-40
+                      sm:h-11
+                      sm:w-11
+                    "
+                  >
+                    <Send className="h-4 w-4 sm:h-5 sm:w-5" />
+                  </button>
+                </div>
+              </div>
+
+              {/* =================================================
+                  CHAT FOOTER
+              ================================================= */}
+
+              <ChatFooter />
+            </div>
+          )}
+
+          {/* =================================================
+              MENU SCREEN
           ================================================= */}
 
           {screen === "menu" && (
             <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
-
               {/* WELCOME */}
 
               <div
@@ -506,7 +1000,6 @@ export default function ChatBox() {
               {/* OPTIONS */}
 
               <div className="min-h-0 flex-1 overflow-y-auto bg-white">
-
                 {/* BOOK RIDE */}
 
                 <Link
@@ -691,11 +1184,11 @@ export default function ChatBox() {
                   </div>
 
                   <div className="min-w-0 flex-1">
-                    <h3 className="text-sm font-semibold text-gray-900 sm:text-base">
+                    <h3 className="text-sm font-semibold !text-white-900 sm:text-base">
                       Call SBS Taxi
                     </h3>
 
-                    <p className="text-xs text-gray-500 sm:text-sm">
+                    <p className="text-xs text-white-500 sm:text-sm">
                       98435 44844
                     </p>
                   </div>
@@ -704,395 +1197,16 @@ export default function ChatBox() {
                 </Link>
               </div>
 
-              {/* =================================================
-                  MAIN SCREEN FOOTER
-              ================================================= */}
+              {/* FOOTER */}
 
-              <div
-                className="
-                  shrink-0
-                  border-t
-                  border-gray-100
-                  bg-white
-                  px-3
-                  py-2
-                  text-center
-                "
-              >
-                <p className="text-[10px] font-semibold text-gray-500">
-                  Powered by{" "}
-                  <span className="font-bold text-[var(--primary)]">
-                    SBS Technology
-                  </span>
-                </p>
-
-                <div className="mt-1 flex items-center justify-center gap-1.5">
-                  <Image
-                    src="/flag.jpg"
-                    alt="India"
-                    width={18}
-                    height={12}
-                    className="h-3 w-[18px] rounded-sm object-cover"
-                  />
-
-                  <p className="text-[9px] text-gray-500">
-                    Made in India
-                  </p>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* =================================================
-              CHAT SCREEN
-          ================================================= */}
-
-          {screen === "chat" && (
-            <div className="flex min-h-0 flex-1 flex-col bg-white">
-
-              {/* CHAT TOP */}
-
-              <div
-                className="
-                  flex
-                  shrink-0
-                  items-center
-                  gap-2
-                  border-b
-                  border-gray-200
-                  bg-white
-                  px-3
-                  py-2.5
-                  sm:gap-3
-                  sm:px-4
-                  sm:py-3
-                "
-              >
-                <button
-                  type="button"
-                  onClick={() => setScreen("menu")}
-                  aria-label="Back"
-                  className="
-                    flex
-                    h-9
-                    w-9
-                    shrink-0
-                    items-center
-                    justify-center
-                    rounded-full
-                    text-gray-700
-                    transition
-                    hover:bg-gray-100
-                  "
-                >
-                  <ArrowLeft className="h-5 w-5" />
-                </button>
-
-                <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm font-semibold text-gray-900">
-                    SBS Taxi Support
-                  </p>
-
-                  <p className="text-[11px] font-medium text-green-600">
-                    ● Assistant Online
-                  </p>
-                </div>
-
-                <div className="hidden rounded-full bg-blue-50 px-2.5 py-1 text-[9px] font-semibold text-[var(--primary)] sm:block">
-                  LOCAL ASSISTANT
-                </div>
-              </div>
-
-              {/* MESSAGES */}
-
-              <div
-                className="
-                  min-h-0
-                  flex-1
-                  space-y-3
-                  overflow-y-auto
-                  bg-gray-50
-                  px-3
-                  py-4
-                  sm:space-y-4
-                  sm:px-4
-                "
-              >
-                {messages.map((msg) => (
-                  <div
-                    key={msg.id}
-                    className={
-                      msg.role === "user"
-                        ? "flex justify-end"
-                        : "flex justify-start"
-                    }
-                  >
-                    <div
-                      className={
-                        msg.role === "user"
-                          ? `
-                            max-w-[82%]
-                            rounded-2xl
-                            rounded-tr-sm
-                            bg-[var(--primary)]
-                            px-3.5
-                            py-2.5
-                            text-white
-                            shadow-sm
-                            sm:px-4
-                            sm:py-3
-                          `
-                          : `
-                            max-w-[85%]
-                            rounded-2xl
-                            rounded-tl-sm
-                            border
-                            border-gray-100
-                            bg-white
-                            px-3.5
-                            py-2.5
-                            text-gray-700
-                            shadow-sm
-                            sm:px-4
-                            sm:py-3
-                          `
-                      }
-                    >
-                      <p
-                        className="
-                          whitespace-pre-wrap
-                          break-words
-                          text-xs
-                          leading-5
-                          sm:text-sm
-                          sm:leading-6
-                        "
-                      >
-                        {msg.content}
-                      </p>
-                    </div>
-                  </div>
-                ))}
-
-                <div ref={messagesEndRef} />
-              </div>
-
-              {/* QUICK QUESTIONS */}
-
-              <div
-                className="
-                  shrink-0
-                  border-t
-                  border-gray-200
-                  bg-white
-                  px-3
-                  py-2
-                "
-              >
-                <p className="mb-1.5 text-[10px] font-bold uppercase tracking-wide text-gray-400">
-                  Quick Questions
-                </p>
-
-                <div
-                  className="
-                    flex
-                    gap-2
-                    overflow-x-auto
-                    pb-1
-                    [scrollbar-width:none]
-                    [&::-webkit-scrollbar]:hidden
-                  "
-                >
-                  {defaultQuestions
-                    .slice(0, 4)
-                    .map((item, index) => (
-                      <button
-                        key={index}
-                        type="button"
-                        onClick={() =>
-                          askQuestion(
-                            item.question,
-                            item.answer
-                          )
-                        }
-                        className="
-                          shrink-0
-                          rounded-full
-                          border
-                          border-gray-200
-                          bg-gray-50
-                          px-3
-                          py-1.5
-                          text-[10px]
-                          font-medium
-                          text-gray-700
-                          transition
-                          hover:border-[var(--secondary)]
-                          hover:bg-[var(--secondary-light)]
-                        "
-                      >
-                        {item.question}
-                      </button>
-                    ))}
-                </div>
-              </div>
-
-              {/* BOOK RIDE */}
-
-              <div
-                className="
-                  shrink-0
-                  border-t
-                  border-gray-200
-                  bg-white
-                  px-3
-                  py-2
-                "
-              >
-                <Link
-                  href="/booking"
-                  onClick={closeChat}
-                  className="
-                    flex
-                    w-full
-                    items-center
-                    justify-center
-                    rounded-xl
-                    bg-[var(--secondary)]
-                    px-4
-                    py-2.5
-                    text-sm
-                    font-bold
-                    text-[var(--primary)]
-                    transition
-                    hover:bg-[var(--secondary-dark)]
-                  "
-                >
-                  🚕 Book a Ride
-                </Link>
-              </div>
-
-              {/* MESSAGE INPUT */}
-
-              <div
-                className="
-                  shrink-0
-                  border-t
-                  border-gray-200
-                  bg-white
-                  p-2.5
-                "
-              >
-                <div className="flex items-center gap-2">
-                  <input
-                    type="text"
-                    value={message}
-                    onChange={(e) =>
-                      setMessage(e.target.value)
-                    }
-                    onKeyDown={(e) => {
-                      if (
-                        e.key === "Enter" &&
-                        !e.shiftKey
-                      ) {
-                        e.preventDefault();
-                        sendMessage();
-                      }
-                    }}
-                    placeholder="Ask about SBS Taxi..."
-                    className="
-                      min-w-0
-                      flex-1
-                      rounded-xl
-                      border
-                      border-gray-200
-                      bg-gray-50
-                      px-3
-                      py-2.5
-                      text-xs
-                      text-gray-900
-                      outline-none
-                      transition
-                      placeholder:text-gray-400
-                      focus:border-[var(--primary)]
-                      focus:bg-white
-                      focus:ring-1
-                      focus:ring-[var(--primary)]
-                      sm:px-4
-                      sm:py-3
-                      sm:text-sm
-                    "
-                  />
-
-                  <button
-                    type="button"
-                    onClick={sendMessage}
-                    disabled={!message.trim()}
-                    aria-label="Send message"
-                    className="
-                      flex
-                      h-10
-                      w-10
-                      shrink-0
-                      items-center
-                      justify-center
-                      rounded-xl
-                      bg-[var(--primary)]
-                      text-white
-                      transition
-                      hover:bg-[var(--primary-dark)]
-                      disabled:cursor-not-allowed
-                      disabled:opacity-40
-                      sm:h-11
-                      sm:w-11
-                    "
-                  >
-                    <Send className="h-4 w-4 sm:h-5 sm:w-5" />
-                  </button>
-                </div>
-              </div>
-
-              {/* CHAT FOOTER */}
-
-              <div
-                className="
-                  shrink-0
-                  border-t
-                  border-gray-100
-                  bg-white
-                  px-3
-                  py-2.5
-                  text-center
-                "
-              >
-                <p className="text-[10px] font-semibold text-gray-500">
-                  Powered by{" "}
-                  <span className="font-bold text-[var(--primary)]">
-                    SBS Technology
-                  </span>
-                </p>
-
-                <div className="mt-1 flex items-center justify-center gap-1.5">
-                  <Image
-                    src="/flag.jpg"
-                    alt="India"
-                    width={18}
-                    height={12}
-                    className="h-3 w-[18px] rounded-sm object-cover"
-                  />
-
-                  <p className="text-[9px] text-gray-400">
-                    Made in India
-                  </p>
-                </div>
-              </div>
+              <ChatFooter />
             </div>
           )}
         </div>
       )}
 
       {/* =====================================================
-          FLOATING CHAT BUTTON
+          FLOATING MESSAGE BUTTON
       ===================================================== */}
 
       {!open && (
@@ -1106,43 +1220,54 @@ export default function ChatBox() {
             right-3
             z-[9998]
             flex
-            h-20
-            w-20
+            h-14
+            w-14
             items-center
             justify-center
-            overflow-visible
             rounded-full
-            transition
-            hover:scale-105
+            bg-[var(--secondary)]
+            text-[var(--primary)]
+            shadow-[0_8px_25px_rgba(0,0,0,0.25)]
+            transition-all
+            duration-300
+            hover:scale-110
+            hover:bg-[var(--secondary-dark)]
+            active:scale-95
 
             sm:bottom-24
             sm:right-4
-            sm:h-24
-            sm:w-24
+            sm:h-16
+            sm:w-16
 
             md:bottom-6
             md:right-6
-            md:h-28
-            md:w-28
+            md:h-16
+            md:w-16
           "
         >
-          <Image
-            src="/sbsai.png"
-            alt="Open SBS Taxi chat"
-            width={160}
-            height={160}
-            priority
+          <MessageCircle
             className="
-              h-20
-              w-20
-              object-contain
-              drop-shadow-[0_8px_18px_rgba(0,0,0,0.30)]
+              h-7
+              w-7
+              sm:h-8
+              sm:w-8
+            "
+            strokeWidth={2.2}
+          />
 
-              sm:h-24
-              sm:w-24
+          {/* ONLINE DOT */}
 
-              md:h-28
-              md:w-28
+          <span
+            className="
+              absolute
+              right-0.5
+              top-0.5
+              h-3.5
+              w-3.5
+              rounded-full
+              border-2
+              border-white
+              bg-green-500
             "
           />
         </button>
