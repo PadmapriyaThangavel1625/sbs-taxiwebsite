@@ -66,90 +66,92 @@ const itemVariants: Variants = {
 
 export default function BenefitsBar() {
   return (
-    <motion.div
-      variants={containerVariants}
-      initial="hidden"
-      whileInView="show"
-      viewport={{
-        once: true,
-        amount: 0.2,
-      }}
-      className="
-        grid
-        grid-cols-1
-        overflow-hidden
-        rounded-xl
-        border
-        bg-white
-        shadow-sm
-        divide-y
-        sm:grid-cols-2
-        sm:divide-y-0
-        lg:grid-cols-5
-        lg:divide-x
-      "
-    >
-      {benefits.map((item) => {
-        const Icon = item.icon;
+    <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+      <motion.div
+        variants={containerVariants}
+        initial="hidden"
+        whileInView="show"
+        viewport={{
+          once: true,
+          amount: 0.2,
+        }}
+        className="
+          grid
+          grid-cols-1
+          overflow-hidden
+          rounded-xl
+          border
+          bg-white
+          shadow-sm
+          divide-y
+          sm:grid-cols-2
+          sm:divide-y-0
+          lg:grid-cols-5
+          lg:divide-x
+        "
+      >
+        {benefits.map((item) => {
+          const Icon = item.icon;
 
-        return (
-          <motion.div
-            key={item.title}
-            variants={itemVariants}
-            whileHover={{
-              y: -6,
-              transition: {
-                duration: 0.25,
-              },
-            }}
-            className="
-              flex
-              min-h-[100px]
-              cursor-pointer
-              items-center
-              gap-4
-              p-5
-            "
-          >
-            {/* Icon */}
+          return (
             <motion.div
+              key={item.title}
+              variants={itemVariants}
               whileHover={{
-                rotate: 10,
-                scale: 1.15,
-              }}
-              transition={{
-                duration: 0.25,
+                y: -6,
+                transition: {
+                  duration: 0.25,
+                },
               }}
               className="
                 flex
-                h-12
-                w-12
-                shrink-0
+                min-h-[100px]
+                cursor-pointer
                 items-center
-                justify-center
-                rounded-full
-                border
-                border-primary-light
-                bg-primary-light
-                text-primary
+                gap-4
+                p-5
               "
             >
-              <Icon size={26} />
+              {/* Icon */}
+              <motion.div
+                whileHover={{
+                  rotate: 10,
+                  scale: 1.15,
+                }}
+                transition={{
+                  duration: 0.25,
+                }}
+                className="
+                  flex
+                  h-12
+                  w-12
+                  shrink-0
+                  items-center
+                  justify-center
+                  rounded-full
+                  border
+                  border-primary-light
+                  bg-primary-light
+                  text-primary
+                "
+              >
+                <Icon size={26} />
+              </motion.div>
+
+              {/* Text */}
+              <div className="min-w-0">
+                <h3 className="text-sm font-bold text-heading">
+                  {item.title}
+                </h3>
+
+                <p className="mt-1 text-xs leading-5 text-muted">
+                  {item.desc}
+                </p>
+              </div>
             </motion.div>
-
-            {/* Text */}
-            <div className="min-w-0">
-              <h3 className="text-sm font-bold text-heading">
-                {item.title}
-              </h3>
-
-              <p className="mt-1 text-xs leading-5 text-muted">
-                {item.desc}
-              </p>
-            </div>
-          </motion.div>
-        );
-      })}
-    </motion.div>
+          );
+        })}
+      </motion.div>
+    </div>
   );
 }

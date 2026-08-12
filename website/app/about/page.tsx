@@ -4,7 +4,7 @@ import Features from "@/app/Components/About/Features";
 import StorySection from "@/app/Components/About/StorySection";
 import Statistics from "@/app/Components/About/Statistics";
 import Values from "@/app/Components/About/Values";
-import BottomCTA from "@/app/Components/About/BottomCTA";
+import BottomCTA from "@/app/Components/BottomCTA";
 
 export default function AboutPage() {
   return (
@@ -26,8 +26,12 @@ export default function AboutPage() {
       </section>
 
       <Values />
-
-      <BottomCTA />
+{/* ===================================== Bottom CTA ====================================== */} 
+<section className="py-10 sm:py-14">
+   <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8"> 
+    <BottomCTA /> 
+    </div>
+    </section>
     </main>
   );
 }

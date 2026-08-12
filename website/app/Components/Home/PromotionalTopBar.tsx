@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from "react";
@@ -10,20 +11,21 @@ export default function PromotionalTopBar() {
   if (!open) return null;
 
   return (
-    <div className="w-full bg-[#1A365D] text-white">
+    <div className="w-full bg-[var(--primary)] text-white">
       <div className="mx-auto w-full max-w-7xl px-3 sm:px-6 lg:px-8">
         <div className="flex min-h-[48px] items-center justify-between gap-2 sm:min-h-[52px] sm:gap-3">
-          
+
           {/* LEFT */}
           <div className="flex min-w-0 flex-1 items-center gap-2 sm:gap-3">
-            {/* Icon */}
-            <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-[#FFC107] text-[#1A365D] sm:h-8 sm:w-8 sm:rounded-lg">
+
+            {/* ICON */}
+            <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-[var(--secondary)] text-[var(--primary)] sm:h-8 sm:w-8 sm:rounded-lg">
               <Tag className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
             </div>
 
-            {/* Text */}
+            {/* TEXT */}
             <div className="flex min-w-0 items-center gap-2 sm:gap-3">
-              <span className="hidden shrink-0 text-[10px] font-bold uppercase tracking-[0.12em] text-[#FFC107] sm:inline sm:text-xs">
+              <span className="hidden shrink-0 text-[10px] font-bold uppercase tracking-[0.12em] text-[var(--secondary)] sm:inline sm:text-xs">
                 Limited Time
               </span>
 
@@ -42,7 +44,7 @@ export default function PromotionalTopBar() {
 
             {/* PHONE */}
             <a
-              href="tel:98435 44844"
+              href="tel:9843544844"
               className="
                 hidden
                 items-center
@@ -51,40 +53,39 @@ export default function PromotionalTopBar() {
                 font-semibold
                 text-white/90
                 transition
-                hover:text-[#FFC107]
+                hover:text-[var(--secondary)]
                 lg:flex
               "
             >
               <Phone className="h-3.5 w-3.5" />
-               98435 44844
+              98435 44844
             </a>
 
-            {/* BOOK */}
-            <Link
-              href="/booking"
-              className="
-                flex
-                items-center
-                gap-1
-                rounded-md
-                bg-[#FFC107]
-                px-2.5
-                py-1.5
-                text-[11px]
-                font-bold
-                leading-4
-                text-[#1A365D]
-                transition
-                hover:bg-yellow-300
-                sm:rounded-lg
-                sm:px-4
-                sm:py-2
-                sm:text-xs
-              "
-            >
-              Book Now
-              <ArrowRight className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
-            </Link>
+           <Link
+  href="/booking"
+  className="
+    flex
+    items-center
+    gap-1
+    rounded-md
+    !bg-[var(--secondary)]
+    px-2.5
+    py-1.5
+    !text-[var(--primary)]
+    text-[11px]
+    font-bold
+    leading-4
+    transition
+    hover:!bg-[var(--secondary-dark)]
+    sm:rounded-lg
+    sm:px-4
+    sm:py-2
+    sm:text-xs
+  "
+>
+  Book Now
+  <ArrowRight className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
+</Link>
 
             {/* CLOSE */}
             <button
@@ -109,6 +110,7 @@ export default function PromotionalTopBar() {
             >
               <X className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
             </button>
+
           </div>
         </div>
       </div>

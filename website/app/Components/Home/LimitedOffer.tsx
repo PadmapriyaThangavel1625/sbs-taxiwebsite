@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from "react";
@@ -10,7 +11,7 @@ export default function LimitedOffer() {
   if (!open) return null;
 
   return (
-    <div className="fixed bottom-4 left-4 z-50">
+    <div className="fixed bottom-[80px] left-4 z-50 md:bottom-4">
       {/* SMALL PROMOTIONAL WIDGET */}
       <div
         className="
@@ -106,7 +107,7 @@ export default function LimitedOffer() {
                 </p>
 
                 <a
-                  href="tel:98435 44844"
+                  href="tel:9843544844"
                   className="mt-0.5 inline-block text-[11px] font-bold text-[#1A365D] transition hover:text-[#FFC107]"
                 >
                   98435 44844
@@ -145,11 +146,11 @@ export default function LimitedOffer() {
           {/* PHONE */}
           <div className="text-center">
             <span className="text-[9px] text-slate-400">
-              Call us :{"  "}
+              Call us :{" "}
             </span>
 
             <a
-              href="tel:98435 44844"
+              href="tel:9843544844"
               className="text-[9px] font-semibold text-slate-500 transition hover:text-[#1A365D]"
             >
               98435 44844

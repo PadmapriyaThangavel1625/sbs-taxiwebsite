@@ -1,10 +1,10 @@
-
 "use client";
 
 import { useState } from "react";
 import { motion, Variants } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
+
 import {
   Users,
   Luggage,
@@ -101,9 +101,13 @@ export default function FleetSection() {
 
   return (
     <section className="section-bg py-10 sm:py-12 lg:py-16">
-      <div className="container-custom">
 
-        {/* Heading */}
+      {/* Same container alignment as Navbar */}
+      <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+
+        {/* =====================================
+            Heading
+        ====================================== */}
         <motion.div
           initial={{
             opacity: 0,
@@ -131,7 +135,9 @@ export default function FleetSection() {
           </p>
         </motion.div>
 
-        {/* Fleet Cards */}
+        {/* =====================================
+            Fleet Cards
+        ====================================== */}
         <motion.div
           variants={containerVariants}
           initial="hidden"
@@ -171,7 +177,9 @@ export default function FleetSection() {
           ))}
         </motion.div>
 
-        {/* Selected Vehicle Details */}
+        {/* =====================================
+            Selected Vehicle Details
+        ====================================== */}
         <motion.div
           key={selectedCar.name}
           initial={{
@@ -202,7 +210,9 @@ export default function FleetSection() {
         >
           <div className="grid grid-cols-1 items-center gap-8 lg:grid-cols-2">
 
-            {/* Vehicle Image */}
+            {/* =====================================
+                Vehicle Image
+            ====================================== */}
             <div
               className="
                 relative
@@ -226,7 +236,9 @@ export default function FleetSection() {
               />
             </div>
 
-            {/* Vehicle Details */}
+            {/* =====================================
+                Vehicle Details
+            ====================================== */}
             <div>
 
               {/* Label */}
@@ -258,7 +270,9 @@ export default function FleetSection() {
                 {selectedCar.vehicles}
               </p>
 
-              {/* Features */}
+              {/* =====================================
+                  Features
+              ====================================== */}
               <div
                 className="
                   my-5
@@ -326,7 +340,9 @@ export default function FleetSection() {
 
               </div>
 
-              {/* Fare + Button */}
+              {/* =====================================
+                  Fare + Button
+              ====================================== */}
               <div
                 className="
                   flex
@@ -349,6 +365,7 @@ export default function FleetSection() {
 
                   <h2 className="mt-1 text-2xl font-bold text-primary">
                     ₹{selectedCar.price}
+
                     <span className="text-sm font-normal text-muted">
                       {" "}
                       / km
@@ -369,7 +386,7 @@ export default function FleetSection() {
                     px-6
                     py-3
                     font-semibold
-                    text-white
+                    !text-white
                     shadow-md
                     transition
                     duration-200
@@ -377,11 +394,12 @@ export default function FleetSection() {
                     sm:w-auto
                   "
                 >
-                  Book This Ride
+                  Book a Ride
                 </Link>
 
               </div>
             </div>
+
           </div>
         </motion.div>
 

@@ -24,7 +24,6 @@ type ChatMessage = {
 
 /* =====================================================
    SBS TAXI FAQ
-   LOCAL ONLY - NO API
 ===================================================== */
 
 const defaultQuestions = [
@@ -91,8 +90,7 @@ const defaultQuestions = [
 ];
 
 /* =====================================================
-   LOCAL AI-LIKE ANSWER SYSTEM
-   NO API / NO OPENAI
+   LOCAL AI ANSWER SYSTEM
 ===================================================== */
 
 function getAnswer(message: string) {
@@ -342,8 +340,11 @@ export default function ChatBox() {
             bottom-20
             z-[9999]
             mx-auto
+            flex
+            h-[min(650px,calc(100dvh-100px))]
             w-auto
             max-w-[390px]
+            flex-col
             overflow-hidden
             rounded-2xl
             bg-white
@@ -356,8 +357,6 @@ export default function ChatBox() {
 
             md:right-6
             md:bottom-24
-
-            max-h-[calc(100dvh-90px)]
           "
         >
           {/* =================================================
@@ -368,7 +367,7 @@ export default function ChatBox() {
             className="
               relative
               shrink-0
-              bg-[#1A365D]
+              bg-[var(--primary)]
               px-4
               py-3
               text-white
@@ -376,7 +375,7 @@ export default function ChatBox() {
               sm:py-4
             "
           >
-            {/* CLOSE BUTTON */}
+            {/* CLOSE */}
 
             <button
               type="button"
@@ -385,7 +384,7 @@ export default function ChatBox() {
               className="
                 absolute
                 right-3
-                top-2
+                top-3
                 z-10
                 flex
                 h-9
@@ -405,7 +404,6 @@ export default function ChatBox() {
             {/* HEADER CONTENT */}
 
             <div className="flex items-center gap-3 pr-10">
-
               {/* LOGO */}
 
               <div
@@ -431,43 +429,53 @@ export default function ChatBox() {
                   width={100}
                   height={100}
                   priority
-                  className="
-                    h-full
-                    w-full
-                    object-cover
-                  "
+                  className="h-full w-full object-cover"
                 />
               </div>
 
               {/* TITLE */}
 
               <div className="min-w-0">
-                <p className="text-[11px] font-medium uppercase tracking-wide !text-green-300">
-                  ● Online
-                </p>
+                <div className="flex items-center gap-1.5">
+                  <span className="text-[10px] font-bold text-green-300">
+                    ●
+                  </span>
 
-                <h2 className="truncate text-base font-bold !text-white sm:text-lg">
+                  <p className="text-[10px] font-bold uppercase tracking-wide text-green-300">
+                    Online
+                  </p>
+                </div>
+
+                <h2 className="mt-0.5 truncate text-base font-bold !text-white sm:text-lg">
                   SBS Taxi
                 </h2>
 
-                <p className="truncate text-xs !text-white/75 sm:text-sm">
+                <p className="truncate text-xs text-white/75 sm:text-sm">
                   How can we help you?
                 </p>
               </div>
-
             </div>
           </div>
 
           {/* =================================================
-              MENU SCREEN
+              MAIN MENU
           ================================================= */}
 
           {screen === "menu" && (
-            <div className="max-h-[calc(100dvh-170px)] overflow-y-auto">
+            <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
 
               {/* WELCOME */}
 
-              <div className="bg-[#1A365D] px-4 pb-4 sm:px-5 sm:pb-5">
+              <div
+                className="
+                  shrink-0
+                  bg-[var(--primary)]
+                  px-4
+                  pb-4
+                  sm:px-5
+                  sm:pb-5
+                "
+              >
                 <div
                   className="
                     rounded-xl
@@ -477,27 +485,27 @@ export default function ChatBox() {
                     p-3
                     text-sm
                     leading-5
-                    !text-white/90
+                    text-white/90
                     sm:p-4
                     sm:leading-6
                   "
                 >
                   Hi 👋{" "}
-                  <strong className="!text-white">
+                  <strong className="text-white">
                     Welcome to SBS Taxi!
                   </strong>
 
                   <br />
 
                   I can help you with booking, fares,
-                  airport rides, vehicles and other
-                  SBS Taxi services.
+                  airport rides, vehicles and other SBS
+                  Taxi services.
                 </div>
               </div>
 
               {/* OPTIONS */}
 
-              <div className="bg-white">
+              <div className="min-h-0 flex-1 overflow-y-auto bg-white">
 
                 {/* BOOK RIDE */}
 
@@ -529,7 +537,7 @@ export default function ChatBox() {
                       justify-center
                       rounded-xl
                       bg-blue-50
-                      text-[#1A365D]
+                      text-[var(--primary)]
                     "
                   >
                     <Car className="h-5 w-5" />
@@ -578,7 +586,7 @@ export default function ChatBox() {
                       justify-center
                       rounded-xl
                       bg-blue-50
-                      text-[#1A365D]
+                      text-[var(--primary)]
                     "
                   >
                     <MapPin className="h-5 w-5" />
@@ -629,7 +637,7 @@ export default function ChatBox() {
                       justify-center
                       rounded-xl
                       bg-blue-50
-                      text-[#1A365D]
+                      text-[var(--primary)]
                     "
                   >
                     <MessageCircle className="h-5 w-5" />
@@ -651,7 +659,7 @@ export default function ChatBox() {
                 {/* CALL */}
 
                 <Link
-                  href="/contact"
+                  href="/contacts"
                   onClick={closeChat}
                   className="
                     flex
@@ -694,7 +702,43 @@ export default function ChatBox() {
 
                   <ChevronRight className="h-5 w-5 shrink-0 text-gray-400" />
                 </Link>
+              </div>
 
+              {/* =================================================
+                  MAIN SCREEN FOOTER
+              ================================================= */}
+
+              <div
+                className="
+                  shrink-0
+                  border-t
+                  border-gray-100
+                  bg-white
+                  px-3
+                  py-2
+                  text-center
+                "
+              >
+                <p className="text-[10px] font-semibold text-gray-500">
+                  Powered by{" "}
+                  <span className="font-bold text-[var(--primary)]">
+                    SBS Technology
+                  </span>
+                </p>
+
+                <div className="mt-1 flex items-center justify-center gap-1.5">
+                  <Image
+                    src="/flag.jpg"
+                    alt="India"
+                    width={18}
+                    height={12}
+                    className="h-3 w-[18px] rounded-sm object-cover"
+                  />
+
+                  <p className="text-[9px] text-gray-500">
+                    Made in India
+                  </p>
+                </div>
               </div>
             </div>
           )}
@@ -704,13 +748,7 @@ export default function ChatBox() {
           ================================================= */}
 
           {screen === "chat" && (
-            <div
-              className="
-                flex
-                h-[min(520px,calc(100dvh-150px))]
-                flex-col
-              "
-            >
+            <div className="flex min-h-0 flex-1 flex-col bg-white">
 
               {/* CHAT TOP */}
 
@@ -721,6 +759,7 @@ export default function ChatBox() {
                   items-center
                   gap-2
                   border-b
+                  border-gray-200
                   bg-white
                   px-3
                   py-2.5
@@ -741,21 +780,26 @@ export default function ChatBox() {
                     items-center
                     justify-center
                     rounded-full
+                    text-gray-700
                     transition
                     hover:bg-gray-100
                   "
                 >
-                  <ArrowLeft className="h-5 w-5 text-gray-700" />
+                  <ArrowLeft className="h-5 w-5" />
                 </button>
 
-                <div className="min-w-0">
+                <div className="min-w-0 flex-1">
                   <p className="truncate text-sm font-semibold text-gray-900">
                     SBS Taxi Support
                   </p>
 
-                  <p className="text-[11px] text-green-600">
+                  <p className="text-[11px] font-medium text-green-600">
                     ● Assistant Online
                   </p>
+                </div>
+
+                <div className="hidden rounded-full bg-blue-50 px-2.5 py-1 text-[9px] font-semibold text-[var(--primary)] sm:block">
+                  LOCAL ASSISTANT
                 </div>
               </div>
 
@@ -768,9 +812,10 @@ export default function ChatBox() {
                   space-y-3
                   overflow-y-auto
                   bg-gray-50
-                  p-3
+                  px-3
+                  py-4
                   sm:space-y-4
-                  sm:p-4
+                  sm:px-4
                 "
               >
                 {messages.map((msg) => (
@@ -789,8 +834,8 @@ export default function ChatBox() {
                             max-w-[82%]
                             rounded-2xl
                             rounded-tr-sm
-                            bg-[#1A365D]
-                            px-3
+                            bg-[var(--primary)]
+                            px-3.5
                             py-2.5
                             text-white
                             shadow-sm
@@ -801,8 +846,10 @@ export default function ChatBox() {
                             max-w-[85%]
                             rounded-2xl
                             rounded-tl-sm
+                            border
+                            border-gray-100
                             bg-white
-                            px-3
+                            px-3.5
                             py-2.5
                             text-gray-700
                             shadow-sm
@@ -811,7 +858,16 @@ export default function ChatBox() {
                           `
                       }
                     >
-                      <p className="whitespace-pre-wrap text-xs leading-5 sm:text-sm sm:leading-6">
+                      <p
+                        className="
+                          whitespace-pre-wrap
+                          break-words
+                          text-xs
+                          leading-5
+                          sm:text-sm
+                          sm:leading-6
+                        "
+                      >
                         {msg.content}
                       </p>
                     </div>
@@ -827,16 +883,26 @@ export default function ChatBox() {
                 className="
                   shrink-0
                   border-t
+                  border-gray-200
                   bg-white
                   px-3
                   py-2
                 "
               >
-                <p className="mb-1.5 text-[10px] font-semibold text-gray-500">
+                <p className="mb-1.5 text-[10px] font-bold uppercase tracking-wide text-gray-400">
                   Quick Questions
                 </p>
 
-                <div className="flex gap-2 overflow-x-auto pb-0.5">
+                <div
+                  className="
+                    flex
+                    gap-2
+                    overflow-x-auto
+                    pb-1
+                    [scrollbar-width:none]
+                    [&::-webkit-scrollbar]:hidden
+                  "
+                >
                   {defaultQuestions
                     .slice(0, 4)
                     .map((item, index) => (
@@ -857,11 +923,12 @@ export default function ChatBox() {
                           bg-gray-50
                           px-3
                           py-1.5
-                          text-[11px]
+                          text-[10px]
+                          font-medium
                           text-gray-700
                           transition
-                          hover:border-[#FFC107]
-                          hover:bg-yellow-50
+                          hover:border-[var(--secondary)]
+                          hover:bg-[var(--secondary-light)]
                         "
                       >
                         {item.question}
@@ -876,6 +943,7 @@ export default function ChatBox() {
                 className="
                   shrink-0
                   border-t
+                  border-gray-200
                   bg-white
                   px-3
                   py-2
@@ -886,17 +954,18 @@ export default function ChatBox() {
                   onClick={closeChat}
                   className="
                     flex
+                    w-full
                     items-center
                     justify-center
                     rounded-xl
-                    bg-[#FFC107]
+                    bg-[var(--secondary)]
                     px-4
                     py-2.5
                     text-sm
                     font-bold
-                    text-[#1A365D]
+                    text-[var(--primary)]
                     transition
-                    hover:bg-[#eab308]
+                    hover:bg-[var(--secondary-dark)]
                   "
                 >
                   🚕 Book a Ride
@@ -909,12 +978,12 @@ export default function ChatBox() {
                 className="
                   shrink-0
                   border-t
+                  border-gray-200
                   bg-white
                   p-2.5
                 "
               >
                 <div className="flex items-center gap-2">
-
                   <input
                     type="text"
                     value={message}
@@ -937,6 +1006,7 @@ export default function ChatBox() {
                       rounded-xl
                       border
                       border-gray-200
+                      bg-gray-50
                       px-3
                       py-2.5
                       text-xs
@@ -944,9 +1014,10 @@ export default function ChatBox() {
                       outline-none
                       transition
                       placeholder:text-gray-400
-                      focus:border-[#1A365D]
+                      focus:border-[var(--primary)]
+                      focus:bg-white
                       focus:ring-1
-                      focus:ring-[#1A365D]
+                      focus:ring-[var(--primary)]
                       sm:px-4
                       sm:py-3
                       sm:text-sm
@@ -966,10 +1037,10 @@ export default function ChatBox() {
                       items-center
                       justify-center
                       rounded-xl
-                      bg-[#1A365D]
+                      bg-[var(--primary)]
                       text-white
                       transition
-                      hover:bg-[#0f2747]
+                      hover:bg-[var(--primary-dark)]
                       disabled:cursor-not-allowed
                       disabled:opacity-40
                       sm:h-11
@@ -978,10 +1049,43 @@ export default function ChatBox() {
                   >
                     <Send className="h-4 w-4 sm:h-5 sm:w-5" />
                   </button>
-
                 </div>
               </div>
 
+              {/* CHAT FOOTER */}
+
+              <div
+                className="
+                  shrink-0
+                  border-t
+                  border-gray-100
+                  bg-white
+                  px-3
+                  py-2.5
+                  text-center
+                "
+              >
+                <p className="text-[10px] font-semibold text-gray-500">
+                  Powered by{" "}
+                  <span className="font-bold text-[var(--primary)]">
+                    SBS Technology
+                  </span>
+                </p>
+
+                <div className="mt-1 flex items-center justify-center gap-1.5">
+                  <Image
+                    src="/flag.jpg"
+                    alt="India"
+                    width={18}
+                    height={12}
+                    className="h-3 w-[18px] rounded-sm object-cover"
+                  />
+
+                  <p className="text-[9px] text-gray-400">
+                    Made in India
+                  </p>
+                </div>
+              </div>
             </div>
           )}
         </div>

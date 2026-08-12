@@ -2,6 +2,8 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   images: {
+    qualities: [100, 75],
+
     remotePatterns: [
       {
         protocol: "https",
@@ -22,7 +24,7 @@ const nextConfig: NextConfig = {
     "localhost",
     "127.0.0.1",
     "192.168.29.193",
-    "10.166.238.135"
+    "10.166.238.135",
   ],
 };
 

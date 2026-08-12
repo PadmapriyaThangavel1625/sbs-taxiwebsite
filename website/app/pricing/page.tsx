@@ -1,7 +1,7 @@
 import PricingHero from "@/app/Components/Pricing/PricingHero";
 import VehicleCards from "@/app/Components/Pricing/VehicleCards";
 import BenefitsBar from "@/app/Components/Pricing/BenefitsBar";
-import HelpBanner from "@/app/Components/Pricing/HelpBanner";
+import BottomCTA from "@/app/Components/BottomCTA";
 
 export default function PricingPage() {
   return (
@@ -50,9 +50,9 @@ export default function PricingPage() {
       </section>
 
       {/* Help Banner */}
-      <section className="pb-8 sm:pb-10 lg:pb-12">
-        <HelpBanner />
-      </section>
+      <div className="mt-16 sm:mt-20 lg:mt-24">
+                  <BottomCTA />
+                </div>
     </main>
   );
 }

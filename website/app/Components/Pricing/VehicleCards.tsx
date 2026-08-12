@@ -225,7 +225,7 @@ export default function VehiclePricing() {
                   px-5
                   py-3
                   font-semibold
-                  text-white
+                  !text-white
                   transition
                   hover:bg-primary-dark
                 "

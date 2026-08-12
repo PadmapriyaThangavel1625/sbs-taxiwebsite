@@ -1,160 +1,149 @@
+
 "use client";
 
 import Link from "next/link";
 import {
-Home,
-BriefcaseBusiness,
-CarFront,
-IndianRupee,
-MapPin,
-Tag,
+  Home,
+  BriefcaseBusiness,
+  CarFront,
+  IndianRupee,
+  MapPin,
+  Tag,
 } from "lucide-react";
 
 export default function BottomBar() {
-return ( <nav
-   className="
-     fixed
-     bottom-0
-     left-0
-     right-0
-     z-[9997]
-     block
-     border-t
-     border-gray-200
-     bg-white
-     shadow-[0_-4px_15px_rgba(0,0,0,0.08)]
-     md:hidden
-     font-[var(--font-jakarta)]
-   "
- > <div
-     className="
-       mx-auto
-       grid
-       h-16
-       w-full
-       max-w-md
-       grid-cols-6
-       items-center
-     "
-   >
-{/* HOME */} <Link
-       href="/"
-       className="
-         flex
-         flex-col
-         items-center
-         justify-center
-         gap-1
-         text-[10px]
-         font-medium
-         text-gray-600
-         transition
-         hover:text-[#1A365D]
-       "
-     > <Home className="h-5 w-5" /> <span>Home</span> </Link>
-
-    {/* SERVICES */}
-    <Link
-      href="/services"
+  return (
+    <nav
       className="
-        flex
-        flex-col
-        items-center
-        justify-center
-        gap-1
-        text-[10px]
-        font-medium
-        text-gray-600
-        transition
-        hover:text-[#1A365D]
+        fixed
+        inset-x-0
+        bottom-0
+        z-[9997]
+        block
+        border-t
+        border-gray-200
+        bg-white
+        md:hidden
+        font-[var(--font-jakarta)]
       "
     >
-      <BriefcaseBusiness className="h-5 w-5" />
-      <span>Services</span>
-    </Link>
+      <div className="grid h-16 w-full grid-cols-6 bg-white">
 
-    {/* FLEET */}
-    <Link
-      href="/fleet"
-      className="
-        flex
-        flex-col
-        items-center
-        justify-center
-        gap-1
-        text-[10px]
-        font-medium
-        text-gray-600
-        transition
-        hover:text-[#1A365D]
-      "
-    >
-      <CarFront className="h-5 w-5" />
-      <span>Fleet</span>
-    </Link>
+        {/* HOME */}
+        <Link
+          href="/"
+          className="
+            flex
+            flex-col
+            items-center
+            justify-center
+            gap-1
+            text-gray-600
+            active:bg-gray-100
+          "
+        >
+          <Home className="h-5 w-5" />
+          <span className="text-[10px] font-medium">
+            Home
+          </span>
+        </Link>
 
-    {/* PRICING */}
-    <Link
-      href="/pricing"
-      className="
-        flex
-        flex-col
-        items-center
-        justify-center
-        gap-1
-        text-[10px]
-        font-medium
-        text-gray-600
-        transition
-        hover:text-[#1A365D]
-      "
-    >
-      <IndianRupee className="h-5 w-5" />
-      <span>Pricing</span>
-    </Link>
+        {/* SERVICES */}
+        <Link
+          href="/services"
+          className="
+            flex
+            flex-col
+            items-center
+            justify-center
+            gap-1
+            text-gray-600
+            active:bg-gray-100
+          "
+        >
+          <BriefcaseBusiness className="h-5 w-5" />
+          <span className="text-[10px] font-medium">
+            Services
+          </span>
+        </Link>
 
-    {/* DESTINATIONS */}
-    <Link
-      href="/destinations"
-      className="
-        flex
-        flex-col
-        items-center
-        justify-center
-        gap-1
-        text-[10px]
-        font-medium
-        text-gray-600
-        transition
-        hover:text-[#1A365D]
-      "
-    >
-      <MapPin className="h-5 w-5" />
-      <span>Destinations</span>
-    </Link>
+        {/* FLEET */}
+        <Link
+          href="/fleet"
+          className="
+            flex
+            flex-col
+            items-center
+            justify-center
+            gap-1
+            text-gray-600
+            active:bg-gray-100
+          "
+        >
+          <CarFront className="h-5 w-5" />
+          <span className="text-[10px] font-medium">
+            Fleet
+          </span>
+        </Link>
 
-    {/* OFFERS */}
-    <Link
-      href="/offers"
-      className="
-        flex
-        flex-col
-        items-center
-        justify-center
-        gap-1
-        text-[10px]
-        font-medium
-        text-gray-600
-        transition
-        hover:text-[#1A365D]
-      "
-    >
-      <Tag className="h-5 w-5" />
-      <span>Offers</span>
-    </Link>
-  </div>
-</nav>
+        {/* PRICING */}
+        <Link
+          href="/pricing"
+          className="
+            flex
+            flex-col
+            items-center
+            justify-center
+            gap-1
+            text-gray-600
+            active:bg-gray-100
+          "
+        >
+          <IndianRupee className="h-5 w-5" />
+          <span className="text-[10px] font-medium">
+            Pricing
+          </span>
+        </Link>
 
+        {/* DESTINATIONS */}
+        <Link
+          href="/destinations"
+          className="
+            flex
+            flex-col
+            items-center
+            justify-center
+            gap-1
+            text-gray-600
+            active:bg-gray-100
+          "
+        >
+          <MapPin className="h-5 w-5" />
+          <span className="text-[10px] font-medium">
+            Destinations
+          </span>
+        </Link>
 
-);
+        {/* OFFERS */}
+        <Link
+          href="/offers"
+          className="
+            flex
+            flex-col
+            items-center
+            justify-center
+            gap-1
+            text-gray-600
+            active:bg-gray-100
+          "
+        >
+          <Tag className="h-5 w-5" />
+          <span className="text-[10px] font-medium">
+            Offers
+          </span>
+        </Link>
+
+      </div>
+    </nav>
+  );
 }

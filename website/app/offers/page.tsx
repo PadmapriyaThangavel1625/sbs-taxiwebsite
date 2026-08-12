@@ -2,7 +2,7 @@ import OffersHero from "@/app/Components/Offers/OffersHero";
 import ExclusiveOffers from "@/app/Components/Offers/ExclusiveOffers";
 import AppDownload from "@/app/Components/Offers/AppDownload";
 import FeaturesBar from "@/app/Components/Offers/FeaturesBar";
-import BottomCTA from "@/app/Components/Offers/BottomCTA";
+import BottomCTA from "@/app/Components/BottomCTA";
 
 export default function OffersPage() {
   return (
@@ -19,8 +19,9 @@ export default function OffersPage() {
 
         <FeaturesBar />
       </section>
-
-      <BottomCTA />
+<div className="mt-16 sm:mt-20 lg:mt-24">
+            <BottomCTA />
+          </div>
     </main>
   );
 }

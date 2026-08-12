@@ -1,4 +1,3 @@
-
 "use client";
 
 import Image from "next/image";
@@ -9,7 +8,6 @@ import {
   CheckCircle2,
 } from "lucide-react";
 
-// Export the interface so it can be imported elsewhere
 export interface Fleet {
   name: string;
   type: string;
@@ -61,7 +59,9 @@ export default function FleetCard({
         }
       `}
     >
-      {/* Top Section */}
+      {/* ================================
+          Top Section
+      ================================= */}
       <div>
         {/* Fleet Name */}
         <div className="flex items-center justify-between gap-2">
@@ -103,7 +103,9 @@ export default function FleetCard({
         </p>
       </div>
 
-      {/* Bottom Section */}
+      {/* ================================
+          Bottom Section
+      ================================= */}
       <div>
         {/* Features */}
         <div
@@ -120,26 +122,42 @@ export default function FleetCard({
         >
           {/* Seats */}
           <div className="flex flex-col items-center gap-1">
-            <Users size={18} className="text-primary" />
+            <Users
+              size={18}
+              className="text-primary"
+            />
+
             <span>{seat}</span>
           </div>
 
           {/* Bags */}
           <div className="flex flex-col items-center gap-1">
-            <Luggage size={18} className="text-primary" />
+            <Luggage
+              size={18}
+              className="text-primary"
+            />
+
             <span>{bags}</span>
           </div>
 
           {/* AC */}
           <div className="flex flex-col items-center gap-1">
-            <Snowflake size={18} className="text-primary" />
+            <Snowflake
+              size={18}
+              className="text-primary"
+            />
+
             <span>AC</span>
           </div>
         </div>
 
         {/* Price */}
         <h2 className="mt-4 text-xl font-bold text-primary">
-          ₹{price} / km
+          ₹{price}
+          <span className="text-sm font-normal text-muted">
+            {" "}
+            / km
+          </span>
         </h2>
 
         {/* Button */}
@@ -167,9 +185,13 @@ export default function FleetCard({
             }
           `}
         >
-          {isSelected && <CheckCircle2 size={18} />}
+          {isSelected && (
+            <CheckCircle2 size={18} />
+          )}
 
-          {isSelected ? "Selected Details" : "View Details"}
+          {isSelected
+            ? "Selected Details"
+            : "View Details"}
         </button>
       </div>
     </div>
