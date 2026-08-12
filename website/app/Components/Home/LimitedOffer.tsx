@@ -25,7 +25,7 @@ export default function LimitedOffer() {
         "
       >
         {/* HEADER */}
-        <div className="relative bg-[#1A365D] px-4 py-3.5">
+        <div className="relative bg-[var(--secondary)] px-4 py-3.5">
           <button
             type="button"
             onClick={() => setOpen(false)}
@@ -46,20 +46,20 @@ export default function LimitedOffer() {
               hover:bg-white/20
             "
           >
-            <X className="h-4 w-4" />
+            <X className="h-4 w-4 text-black" />
           </button>
 
           <div className="flex items-center gap-3 pr-8">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#FFC107] text-[#1A365D] shadow-md">
-              <Tag className="h-5 w-5" />
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[var(--primary)] text-[var(--secondary)] shadow-md">
+              <Tag className="h-5 w-5 " />
             </div>
 
             <div className="min-w-0">
-              <p className="text-[9px] font-bold uppercase tracking-[0.14em] text-[#FFC107]">
+              <p className="text-[9px] !font-bold uppercase tracking-[0.14em] text-black">
                 Limited Time
               </p>
 
-              <h2 className="mt-0.5 text-[17px] font-bold leading-tight !text-white">
+              <h2 className="mt-0.5 text-[17px] !font-bold leading-tight !text-black">
                 Special Promotion
               </h2>
             </div>
@@ -73,22 +73,29 @@ export default function LimitedOffer() {
             <div className="flex gap-2.5">
               <Sparkles className="mt-0.5 h-4 w-4 shrink-0 text-[#d89200]" />
 
-              <div className="min-w-0">
-                <h3 className="text-[13px] font-bold leading-5 text-[#c17b00]">
-                  Special Taxi Offers
-                </h3>
+            
 
-                <p className="mt-0.5 text-[11px] leading-[18px] text-slate-600">
-                  Book your ride today and enjoy our{" "}
-                  <strong className="text-slate-800">
-                    limited-time special rates.
-                  </strong>
-                </p>
+<Link
+  href="/offers"
+  className="block cursor-pointer transition-opacity hover:opacity-90"
+>
+  <div className="min-w-0">
+    <h3 className="text-[13px] font-bold leading-5 text-[#c17b00]">
+      Special Taxi Offers
+    </h3>
 
-                <p className="mt-0.5 text-[9px] font-semibold leading-4 text-slate-500">
-                  Limited availability remaining
-                </p>
-              </div>
+    <p className="mt-0.5 text-[11px] leading-[18px] text-slate-600">
+      Book your ride today and enjoy our{" "}
+      <strong className="text-slate-800">
+        limited-time special rates.
+      </strong>
+    </p>
+
+    <p className="mt-0.5 text-[9px] font-semibold leading-4 text-slate-500">
+      Limited availability remaining
+    </p>
+  </div>
+</Link>
             </div>
           </div>
 
@@ -127,15 +134,15 @@ export default function LimitedOffer() {
               justify-center
               gap-2
               rounded-xl
-              bg-[#1A365D]
+              !bg-[#fdb708]
               px-4
               py-2.5
               text-[12px]
               font-bold
-              !text-white
+              !text-black
               shadow-md
               transition
-              hover:bg-[#0753b8]
+              !hover:bg-[#e6ac00]
               hover:shadow-lg
             "
           >
@@ -143,19 +150,7 @@ export default function LimitedOffer() {
             <ArrowRight className="h-4 w-4" />
           </Link>
 
-          {/* PHONE */}
-          <div className="text-center">
-            <span className="text-[9px] text-slate-400">
-              Call us :{" "}
-            </span>
-
-            <a
-              href="tel:9843544844"
-              className="text-[9px] font-semibold text-slate-500 transition hover:text-[#1A365D]"
-            >
-              98435 44844
-            </a>
-          </div>
+          
         </div>
       </div>
     </div>

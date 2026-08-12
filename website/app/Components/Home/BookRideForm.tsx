@@ -3,6 +3,7 @@
 
 import { useState } from "react";
 import toast from "react-hot-toast";
+import Logo from "../Logo";
 import {
   CalendarDays,
   ChevronDown,
@@ -89,9 +90,8 @@ export default function BookRideForm() {
     <div className="w-full overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-xl">
       {/* Header */}
       <div className="bg-primary px-5 py-5 text-white sm:px-6">
-        <h2 className="!text-white text-xl font-bold sm:text-2xl">
-          Book a Ride
-        </h2>
+        <Logo variant="footer" />
+        
 
         <p className="mt-1 text-xs !text-white/80 sm:text-sm">
           Enter your trip details to book a taxi.
@@ -337,7 +337,7 @@ export default function BookRideForm() {
             sm:text-base
           "
         >
-          {sending ? "Sending Booking..." : "Book Ride Now"}
+          {sending ? "Sending Booking..." : "Book a Ride "}
         </button>
       </div>
     </div>

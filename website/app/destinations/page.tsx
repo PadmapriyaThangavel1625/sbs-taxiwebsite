@@ -10,11 +10,16 @@ export default function Page() {
       className="w-full overflow-x-hidden"
       style={{ fontFamily: "var(--font-jakarta)" }}
     >
-      {/* HERO */}
+      {/* =====================================================
+          HERO
+      ====================================================== */}
       <DestinationHero />
 
-      {/* DESTINATIONS + WHY TRAVEL */}
-      <section className="w-full px-4 py-6 sm:px-6 md:px-8 lg:px-0">
+      {/* =====================================================
+          DESTINATIONS + WHY TRAVEL
+          Same container alignment as Navbar
+      ====================================================== */}
+      <section className="w-full px-4 py-6 sm:px-6 lg:px-8">
         <div
           className="
             mx-auto
@@ -23,8 +28,11 @@ export default function Page() {
             max-w-7xl
             grid-cols-1
             gap-6
+
             md:grid-cols-4
             md:gap-5
+
+            lg:gap-6
           "
         >
           {/* DESTINATION CARDS */}
@@ -33,21 +41,28 @@ export default function Page() {
           </div>
 
           {/* WHY TRAVEL */}
-          <div className="w-full min-w-0">
+          <div className="w-full min-w-0 md:col-span-1">
             <WhyTravel />
           </div>
         </div>
       </section>
 
-      {/* BENEFITS */}
-      <div className="w-full">
-        <BenefitsBar />
-      </div>
+      {/* =====================================================
+          BENEFITS
+          Same left/right alignment as Navbar
+      ====================================================== */}
+      <section className="w-full px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto w-full max-w-7xl">
+          <BenefitsBar />
+        </div>
+      </section>
 
-      {/* CTA */}
-      <div className="w-full">
+      {/* =====================================================
+          BOTTOM CTA
+      ====================================================== */}
+      <section className="mt-16 w-full sm:mt-20 lg:mt-24">
         <BottomCTA />
-      </div>
+      </section>
     </main>
   );
 }

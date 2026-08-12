@@ -31,7 +31,7 @@ export default function Navbar() {
         w-full
         border-b
         border-gray-100
-        bg-white
+        bg-[var(--primary)]
         shadow-sm
       "
     >
@@ -61,7 +61,7 @@ export default function Navbar() {
           className="flex shrink-0 items-center"
           onClick={() => setOpen(false)}
         >
-          <Logo variant="navbar" />
+          <Logo variant="footer" />
         </Link>
 
         {/* =================================================
@@ -85,13 +85,14 @@ export default function Navbar() {
                   whitespace-nowrap
                   py-2
                   text-[15px]
+                  !text-white
                   font-medium
                   transition-colors
                   duration-200
                   ${
                     isActive
-                      ? "text-[#0753b8]"
-                      : "text-gray-700 hover:text-[#0753b8]"
+                      ? "!text-[#e6ac00;]"
+                      : "text-yellow-700 !hover:text-[#e6ac00;]"
                   }
                 `}
                 style={{

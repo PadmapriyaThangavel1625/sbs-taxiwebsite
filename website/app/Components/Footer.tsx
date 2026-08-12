@@ -1,4 +1,3 @@
-
 "use client";
 
 import Link from "next/link";
@@ -15,7 +14,6 @@ import Logo from "@/app/Components/Logo";
 
 /* =====================================================
    SOCIAL MEDIA LINKS
-   Replace YOUR_* with your actual social IDs
 ===================================================== */
 
 const socialLinks = [
@@ -71,14 +69,20 @@ const services = [
 
 export default function Footer() {
   return (
-    <footer className="bg-[var(--primary)] pb-16 text-white md:pb-0">
-
+    <footer
+      className="
+        bg-[var(--primary)]
+        pb-16
+        font-[var(--font-jakarta)]
+        text-white
+        md:pb-0
+      "
+    >
       {/* =================================================
           MAIN FOOTER
       ================================================== */}
 
       <div className="mx-auto max-w-7xl px-5 py-10 sm:px-8 lg:px-8 lg:py-14">
-
         <div className="grid grid-cols-1 gap-10 lg:grid-cols-12 lg:gap-8">
 
           {/* =================================================
@@ -86,11 +90,8 @@ export default function Footer() {
           ================================================== */}
 
           <div className="lg:col-span-3">
-
-            {/* Logo */}
             <Logo variant="footer" />
 
-            {/* Description */}
             <p className="mt-6 max-w-[300px] text-[15px] leading-7 text-blue-100/80 lg:text-sm">
               Comfortable rides, professional drivers, and transparent fares
               for every journey. Travel with confidence wherever the road
@@ -158,68 +159,25 @@ export default function Footer() {
           </div>
 
           {/* =================================================
-              COLUMN 2 — EXPLORE
-          ================================================== */}
-
-          <div className="lg:col-span-2">
-
-            <h3
-              className="
-                mb-6 text-sm font-semibold uppercase
-                tracking-[0.2em] text-[var(--secondary)]
-              "
-            >
-              Explore
-            </h3>
-
-            <nav
-              aria-label="Explore"
-              className="flex flex-col gap-4"
-            >
-              {exploreLinks.map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className="
-                    group flex items-center gap-2
-                    text-sm text-blue-100/75
-                    transition-colors duration-200
-                    hover:text-white
-                  "
-                >
-                  <span>{item.label}</span>
-
-                  <ArrowUpRight
-                    size={14}
-                    className="
-                      -translate-x-1 opacity-0
-                      transition-all duration-200
-                      group-hover:translate-x-0
-                      group-hover:opacity-100
-                      group-hover:text-[var(--secondary)]
-                    "
-                  />
-                </Link>
-              ))}
-            </nav>
-
-          </div>
-
-          {/* =================================================
-              COLUMN 3 — SERVICES
+              COLUMN 2 — SERVICES
           ================================================== */}
 
           <div className="lg:col-span-3">
 
             <h3
               className="
-                mb-6 text-sm font-semibold uppercase
-                tracking-[0.2em] text-[var(--secondary)]
+                !mb-4
+                !font-var(--font-instrument)
+                text-lg
+                !font-semibold
+                uppercase
+                tracking-[0.2em]
+                !text-[var(--secondary)]
               "
             >
               Services
             </h3>
-
+            
             <nav
               aria-label="Services"
               className="flex flex-col gap-4"
@@ -278,6 +236,59 @@ export default function Footer() {
           </div>
 
           {/* =================================================
+              COLUMN 3 — SITE MAP
+          ================================================== */}
+
+          <div className="lg:col-span-2">
+
+            <h3
+              className="
+                !mb-4
+                font-!var(--font-instrument)
+                text-lg
+                !font-semibold
+                uppercase
+                tracking-[0.2em]
+                !text-[var(--secondary)]
+              "
+            >
+              Site Map
+            </h3>
+
+            <nav
+              aria-label="Explore"
+              className="flex flex-col gap-4"
+            >
+              {exploreLinks.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className="
+                    group flex items-center gap-2
+                    text-sm text-blue-100/75
+                    transition-colors duration-200
+                    hover:text-white
+                  "
+                >
+                  <span>{item.label}</span>
+
+                  <ArrowUpRight
+                    size={14}
+                    className="
+                      -translate-x-1 opacity-0
+                      transition-all duration-200
+                      group-hover:translate-x-0
+                      group-hover:opacity-100
+                      group-hover:text-[var(--secondary)]
+                    "
+                  />
+                </Link>
+              ))}
+            </nav>
+
+          </div>
+
+          {/* =================================================
               COLUMN 4 — CONTACT + SOCIAL
           ================================================== */}
 
@@ -286,16 +297,19 @@ export default function Footer() {
             {/* Contact Heading */}
             <h3
               className="
-                mb-6 text-sm font-semibold uppercase
+                !mb-4
+                !font-!var(--font-instrument)
+                text-lg
+                !font-semibold
+                uppercase
                 tracking-[0.2em]
-                text-[var(--secondary)]
+                !text-[var(--secondary)]
               "
             >
               Contact Us
             </h3>
 
-            {/* ================= ADDRESS ================= */}
-
+            {/* ADDRESS */}
             <div className="flex items-start gap-3">
 
               <div
@@ -313,11 +327,7 @@ export default function Footer() {
               </div>
 
               <div className="pt-0.5">
-                <p className="text-sm font-semibold text-white">
-                  Our Location
-                </p>
-
-                <p className="mt-0.5 text-xs leading-5 text-blue-100/60">
+                <p className="mt-0.5 text-xs leading-5 text-white-100/60">
                   1/166, Vallalar Street,
                   <br />
                   Municipal Colony Road,
@@ -328,8 +338,7 @@ export default function Footer() {
 
             </div>
 
-            {/* ================= CALL ================= */}
-
+            {/* CALL */}
             <a
               href="tel:9843544844"
               aria-label="Call SBS Taxi"
@@ -340,7 +349,6 @@ export default function Footer() {
                 hover:bg-white/[0.03]
               "
             >
-
               <div
                 className="
                   flex h-10 w-10 shrink-0
@@ -358,19 +366,13 @@ export default function Footer() {
               </div>
 
               <div>
-                <p className="text-sm font-semibold text-white">
-                  Call Us
-                </p>
-
-                <p className="mt-0.5 text-xs text-blue-100/60">
+                <p className="mt-0.5 text-xs text-white-100/60">
                   98435 44844
                 </p>
               </div>
-
             </a>
 
-            {/* ================= EMAIL ================= */}
-
+            {/* EMAIL */}
             <a
               href="mailto:hr@sbstechnologies.in"
               aria-label="Email SBS Taxi"
@@ -381,7 +383,6 @@ export default function Footer() {
                 hover:bg-white/[0.03]
               "
             >
-
               <div
                 className="
                   flex h-10 w-10 shrink-0
@@ -399,27 +400,23 @@ export default function Footer() {
               </div>
 
               <div className="min-w-0">
-                <p className="text-sm font-semibold text-white">
-                  Email Us
-                </p>
-
-                <p className="mt-0.5 break-all text-xs text-blue-100/60">
+                <p className="mt-0.5 break-all text-xs text-white-100/60">
                   hr@sbstechnologies.in
                 </p>
               </div>
-
             </a>
 
-            {/* =================================================
-                SOCIAL MEDIA
-            ================================================== */}
-
+            {/* SOCIAL MEDIA */}
             <div className="mt-7">
 
               <p
                 className="
-                  mb-4 text-xs font-semibold uppercase
-                  tracking-[0.15em] text-blue-100/60
+                  mb-4
+                  text-xs
+                  font-semibold
+                  uppercase
+                  tracking-[0.15em]
+                  text-blue-100/60
                 "
               >
                 Follow Us
@@ -466,41 +463,6 @@ export default function Footer() {
 
             </div>
 
-            {/* Social CTA 
-            <div
-              className="
-                mt-6 rounded-2xl
-                border border-white/10
-                bg-white/[0.04]
-                p-5
-              "
-            >
-
-              <p className="text-sm font-semibold text-white">
-                Your Journey. Our Commitment.
-              </p>
-
-              <p className="mt-2 text-xs leading-5 text-blue-100/60">
-                Follow SBS Taxi for the latest travel updates,
-                special offers, and more.
-              </p>
-
-              <Link
-                href="/offers"
-                className="
-                  mt-4 inline-flex items-center gap-2
-                  text-xs font-semibold
-                  text-[var(--secondary)]
-                  transition-colors
-                  hover:text-white
-                "
-              >
-                View Latest Offers
-                <ArrowUpRight size={14} />
-              </Link>
-
-            </div> */}
-
           </div>
 
         </div>
@@ -517,7 +479,8 @@ export default function Footer() {
             mx-auto flex max-w-7xl
             flex-col items-center
             justify-between gap-3
-            px-5 py-5 text-xs
+            px-5 py-5
+            text-xs
             sm:flex-row sm:px-8
             lg:px-8
           "

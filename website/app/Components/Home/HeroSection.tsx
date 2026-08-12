@@ -63,26 +63,51 @@ const fadeLeft: Variants = {
 export default function HeroSection() {
   return (
     <section className="relative w-full overflow-hidden">
+
       {/* =================================================
           HERO BACKGROUND
+          
+          Static background:
+          - No zoom
+          - No scale animation
+          - No transform animation
       ================================================== */}
-      <div className="absolute inset-0 z-0">
+
+      <div
+        className="
+          absolute
+          inset-0
+          z-0
+          overflow-hidden
+
+          [&_*]:!transform-none
+          [&_*]:!scale-100
+          [&_*]:!transition-none
+        "
+      >
         <HeroSlider />
       </div>
 
       {/* =================================================
           LIGHT OVERLAY
+
+          Fixed opacity - no animation
       ================================================== */}
-      <div className="absolute inset-0 z-10 bg-white/20" />
+
+      <div
+        className="
+          pointer-events-none
+          absolute
+          inset-0
+          z-10
+          bg-white/20
+        "
+      />
 
       {/* =================================================
           HERO CONTAINER
-
-          Same max width + horizontal padding as Navbar
-          so content lines up with:
-          Logo        → left
-          Book a Ride → right
       ================================================== */}
+
       <div
         className="
           relative
@@ -123,9 +148,11 @@ export default function HeroSection() {
             2xl:gap-12
           "
         >
+
           {/* =================================================
               LEFT CONTENT
           ================================================== */}
+
           <motion.div
             variants={container}
             initial="hidden"
@@ -142,9 +169,11 @@ export default function HeroSection() {
               lg:text-left
             "
           >
+
             {/* =================================================
                 HEADING
             ================================================== */}
+
             <motion.h1
               variants={fadeUp}
               className="
@@ -154,7 +183,7 @@ export default function HeroSection() {
                 font-extrabold
                 leading-[1.12]
                 tracking-[-0.02em]
-                text-[var(--heading)]
+                !text-[var(--primary)]
 
                 sm:text-[34px]
 
@@ -166,12 +195,14 @@ export default function HeroSection() {
                 xl:text-[52px]
 
                 2xl:text-[58px]
+
+                !font-bold
               "
             >
               One Brand.
               <br />
 
-              <span className="text-[var(--primary)]">
+              <span className="!text-[var(--primary)] font-bold">
                 One Fare.
               </span>
 
@@ -183,6 +214,7 @@ export default function HeroSection() {
             {/* =================================================
                 DESCRIPTION
             ================================================== */}
+
             <motion.p
               variants={fadeUp}
               className="
@@ -190,7 +222,7 @@ export default function HeroSection() {
                 w-full
                 max-w-[560px]
                 text-[13px]
-                font-normal
+                font-semibold
                 leading-6
                 text-[var(--muted)]
 
@@ -210,6 +242,7 @@ export default function HeroSection() {
             {/* =================================================
                 TRUST CARDS
             ================================================== */}
+
             <motion.div
               variants={fadeUp}
               className="
@@ -217,17 +250,18 @@ export default function HeroSection() {
                 grid
                 w-full
                 max-w-[580px]
+                grid-cols-3
                 overflow-hidden
                 rounded-xl
                 bg-white
                 shadow-lg
-
-                sm:grid-cols-3
               "
             >
+
               {/* =================================================
                   24/7
               ================================================== */}
+
               <motion.div
                 whileHover={{
                   y: -3,
@@ -238,12 +272,12 @@ export default function HeroSection() {
                   min-h-[72px]
                   items-center
                   justify-center
-                  gap-3
-                  px-4
+                  gap-2
+                  px-2
                   py-3
                   text-center
                   transition
-
+                  sm:gap-3
                   sm:px-3
                 "
               >
@@ -257,8 +291,8 @@ export default function HeroSection() {
                   }}
                   className="
                     flex
-                    h-9
-                    w-9
+                    h-8
+                    w-8
                     shrink-0
                     items-center
                     justify-center
@@ -266,125 +300,153 @@ export default function HeroSection() {
                     border-2
                     border-[var(--primary)]
                     text-[var(--primary)]
+                    sm:h-9
+                    sm:w-9
                   "
                 >
-                  <CheckCircle2 size={18} />
+                  <CheckCircle2 size={17} />
                 </motion.div>
 
                 <div className="text-left">
-                  <p className="text-[13px] font-bold text-[var(--primary)]">
+                  <p className="text-[11px] font-bold text-[var(--primary)] sm:text-[13px]">
                     24/7
                   </p>
 
-                  <p className="text-[12px] leading-4 text-[var(--muted)]">
+                  <p className="text-[10px] leading-4 text-[var(--muted)] sm:text-[12px]">
                     Taxi Service
                   </p>
                 </div>
               </motion.div>
 
-              {/* Mobile Divider */}
-              <div className="h-px w-full bg-gray-200 sm:hidden" />
-
-              {/* Desktop Divider */}
-              <div className="my-3 hidden w-px bg-gray-200 sm:block" />
-
               {/* =================================================
                   NO HIDDEN CHARGES
               ================================================== */}
-              <motion.div
-                whileHover={{
-                  y: -3,
-                  scale: 1.02,
-                }}
-                className="
-                  flex
-                  min-h-[72px]
-                  items-center
-                  justify-center
-                  gap-3
-                  px-4
-                  py-3
-                  text-center
 
-                  sm:px-3
-                "
-              >
+              <div className="relative">
+
+                <div
+                  className="
+                    absolute
+                    left-0
+                    top-1/2
+                    h-10
+                    w-px
+                    -translate-y-1/2
+                    bg-gray-200
+                  "
+                />
+
                 <motion.div
                   whileHover={{
-                    rotate: 10,
-                    scale: 1.15,
+                    y: -3,
+                    scale: 1.02,
                   }}
-                  className="shrink-0"
+                  className="
+                    flex
+                    min-h-[72px]
+                    items-center
+                    justify-center
+                    gap-2
+                    px-2
+                    py-3
+                    text-center
+                    transition
+                    sm:gap-3
+                    sm:px-3
+                  "
                 >
-                  <ShieldCheck
-                    size={28}
-                    className="text-[var(--primary)]"
-                  />
+                  <motion.div
+                    whileHover={{
+                      rotate: 10,
+                      scale: 1.15,
+                    }}
+                    className="shrink-0"
+                  >
+                    <ShieldCheck
+                      size={24}
+                      className="text-[var(--primary)] sm:h-7 sm:w-7"
+                    />
+                  </motion.div>
+
+                  <div className="text-left">
+                    <p className="text-[11px] font-bold text-[var(--heading)] sm:text-[13px]">
+                      No Hidden
+                    </p>
+
+                    <p className="text-[10px] leading-4 text-[var(--muted)] sm:text-[12px]">
+                      Charges
+                    </p>
+                  </div>
                 </motion.div>
-
-                <div className="text-left">
-                  <p className="text-[13px] font-bold text-[var(--heading)]">
-                    No Hidden
-                  </p>
-
-                  <p className="text-[12px] leading-4 text-[var(--muted)]">
-                    Charges
-                  </p>
-                </div>
-              </motion.div>
-
-              {/* Mobile Divider */}
-              <div className="h-px w-full bg-gray-200 sm:hidden" />
+              </div>
 
               {/* =================================================
                   VERIFIED DRIVERS
               ================================================== */}
-              <motion.div
-                whileHover={{
-                  y: -3,
-                  scale: 1.02,
-                }}
-                className="
-                  flex
-                  min-h-[72px]
-                  items-center
-                  justify-center
-                  gap-3
-                  px-4
-                  py-3
-                  text-center
 
-                  sm:px-3
-                "
-              >
+              <div className="relative">
+
+                <div
+                  className="
+                    absolute
+                    left-0
+                    top-1/2
+                    h-10
+                    w-px
+                    -translate-y-1/2
+                    bg-gray-200
+                  "
+                />
+
                 <motion.div
                   whileHover={{
-                    rotate: -10,
-                    scale: 1.15,
+                    y: -3,
+                    scale: 1.02,
                   }}
-                  className="shrink-0"
+                  className="
+                    flex
+                    min-h-[72px]
+                    items-center
+                    justify-center
+                    gap-2
+                    px-2
+                    py-3
+                    text-center
+                    transition
+                    sm:gap-3
+                    sm:px-3
+                  "
                 >
-                  <UserCheck
-                    size={28}
-                    className="text-[var(--primary)]"
-                  />
+                  <motion.div
+                    whileHover={{
+                      rotate: -10,
+                      scale: 1.15,
+                    }}
+                    className="shrink-0"
+                  >
+                    <UserCheck
+                      size={24}
+                      className="text-[var(--primary)] sm:h-7 sm:w-7"
+                    />
+                  </motion.div>
+
+                  <div className="text-left">
+                    <p className="text-[11px] font-bold text-[var(--heading)] sm:text-[13px]">
+                      Verified
+                    </p>
+
+                    <p className="text-[10px] leading-4 text-[var(--muted)] sm:text-[12px]">
+                      Drivers
+                    </p>
+                  </div>
                 </motion.div>
-
-                <div className="text-left">
-                  <p className="text-[13px] font-bold text-[var(--heading)]">
-                    Verified
-                  </p>
-
-                  <p className="text-[12px] leading-4 text-[var(--muted)]">
-                    Drivers
-                  </p>
-                </div>
-              </motion.div>
+              </div>
             </motion.div>
 
             {/* =================================================
                 BUTTONS
             ================================================== */}
+
             <motion.div
               variants={fadeUp}
               className="
@@ -403,9 +465,11 @@ export default function HeroSection() {
                 lg:justify-start
               "
             >
+
               {/* =================================================
                   BOOK NOW
               ================================================== */}
+
               <motion.div
                 whileHover={{
                   scale: 1.03,
@@ -424,7 +488,7 @@ export default function HeroSection() {
                     justify-center
                     gap-3
                     rounded-lg
-                    bg-[var(--primary)]
+                    bg-[var(--secondary)]
                     px-7
                     py-3.5
                     text-sm
@@ -433,13 +497,13 @@ export default function HeroSection() {
                     shadow-md
                     transition
 
-                    hover:bg-[var(--primary-dark)]
+                    hover:bg-[var(--secondary-dark)]
 
                     sm:w-auto
                   "
                 >
-                  <span className="text-white">
-                    Book Now
+                  <span className="text-black">
+                    Book a Ride
                   </span>
 
                   <motion.div
@@ -459,6 +523,7 @@ export default function HeroSection() {
               {/* =================================================
                   WHATSAPP
               ================================================== */}
+
               <motion.a
                 whileHover={{
                   scale: 1.03,
@@ -514,10 +579,8 @@ export default function HeroSection() {
 
           {/* =================================================
               BOOKING FORM
-              
-              Right edge now matches the Navbar
-              "Book a Ride" button area.
           ================================================== */}
+
           <motion.div
             variants={fadeLeft}
             initial="hidden"
@@ -549,6 +612,7 @@ export default function HeroSection() {
               <BookRideForm />
             </div>
           </motion.div>
+
         </div>
       </div>
     </section>
