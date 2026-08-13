@@ -61,7 +61,6 @@ export default function TaxiGallery() {
             w-full
             overflow-hidden
             rounded-2xl
-            bg-white
             sm:aspect-video
           "
         >
@@ -77,7 +76,12 @@ export default function TaxiGallery() {
             {images.map((image, index) => (
               <div
                 key={image}
-                className="relative h-full min-w-full shrink-0"
+                className="
+                  relative
+                  h-full
+                  min-w-full
+                  shrink-0
+                "
               >
                 <Image
                   src={image}
@@ -85,7 +89,9 @@ export default function TaxiGallery() {
                   fill
                   priority={index === 0}
                   sizes="100vw"
-                  className="object-contain"
+                  className="
+                    object-cover
+                  "
                 />
               </div>
             ))}
@@ -97,7 +103,7 @@ export default function TaxiGallery() {
           <div className="pointer-events-none absolute inset-0 bg-black/10" />
 
           {/* =========================
-              DOTS ONLY
+              DOTS
           ========================== */}
           <div className="absolute bottom-5 left-1/2 z-10 flex -translate-x-1/2 gap-2">
             {images.map((_, index) => (

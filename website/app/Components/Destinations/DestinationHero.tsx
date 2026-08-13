@@ -83,7 +83,7 @@ export default function DestinationHero() {
           {/* Heading */}
           <motion.h1
             variants={fadeUp}
-            className="text-4xl !font-bold text-[var(--primary)] sm:text-5xl"
+            className="text-4xl !font-bold !text-white sm:text-5xl"
             style={{
               fontFamily: "var(--font-instrument)",
             }}

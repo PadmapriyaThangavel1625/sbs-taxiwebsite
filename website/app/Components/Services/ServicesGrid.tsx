@@ -109,7 +109,7 @@ const services: Service[] = [
     details:
       "Choose a self-drive vehicle when you prefer to travel independently. Select your preferred car and rental duration and enjoy the flexibility of driving yourself.",
     image:
-      "https://images.unsplash.com/photo-1493238792000-8113da705763?auto=format&fit=crop&w=700&q=80",
+      "/images/selfdrive.webp",
     icon: <Car size={28} />,
   },
 
