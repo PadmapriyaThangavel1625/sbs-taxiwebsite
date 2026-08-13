@@ -14,6 +14,7 @@ export default function Page() {
           HERO
       ====================================================== */}
       <DestinationHero />
+      <BottomCTA />
 
       {/* =====================================================
           DESTINATIONS + WHY TRAVEL
@@ -60,9 +61,7 @@ export default function Page() {
       {/* =====================================================
           BOTTOM CTA
       ====================================================== */}
-      <section className="mt-16 w-full sm:mt-20 lg:mt-24">
-        <BottomCTA />
-      </section>
+      
     </main>
   );
 }

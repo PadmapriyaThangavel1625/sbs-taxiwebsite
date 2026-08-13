@@ -11,6 +11,7 @@ export default function PricingPage() {
     >
       {/* Pricing Hero */}
       <PricingHero />
+      <BottomCTA />
 
       {/* Choose Your Ride */}
       <section className="section-bg py-10 sm:py-12 lg:py-16">
@@ -50,9 +51,7 @@ export default function PricingPage() {
       </section>
 
       {/* Help Banner */}
-      <div className="mt-16 sm:mt-20 lg:mt-24">
-                  <BottomCTA />
-                </div>
+      
     </main>
   );
 }

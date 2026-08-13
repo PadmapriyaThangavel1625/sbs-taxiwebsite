@@ -11,6 +11,7 @@ export default function OffersPage() {
       style={{ fontFamily: "var(--font-jakarta)" }}
     >
       <OffersHero />
+      <BottomCTA />
 
       <section className="container-custom py-8 sm:py-10 lg:py-12">
         <ExclusiveOffers />
@@ -19,9 +20,7 @@ export default function OffersPage() {
 
         <FeaturesBar />
       </section>
-<div className="mt-16 sm:mt-20 lg:mt-24">
-            <BottomCTA />
-          </div>
+
     </main>
   );
 }

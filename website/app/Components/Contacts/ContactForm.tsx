@@ -22,31 +22,25 @@ import {
 const MAX_MESSAGE_LENGTH = 1000;
 const REQUEST_TIMEOUT = 15000;
 
-/* ============================================================
-   INPUT STYLES
-============================================================ */
-
 const inputClassName = `
   w-full
   rounded-xl
   border
-  border-slate-200
-  bg-white
+  border-[var(--border)]
+  bg-[var(--background)]
   px-4
   py-3
   text-sm
   text-[var(--text)]
   outline-none
-  placeholder:text-slate-400
+  placeholder:text-[var(--muted)]
   transition-all
   duration-200
-  hover:border-slate-300
   focus:border-[var(--primary)]
   focus:bg-white
   focus:ring-4
   focus:ring-[var(--primary)]/10
   disabled:cursor-not-allowed
-  disabled:bg-slate-50
   disabled:opacity-60
 `;
 
@@ -55,11 +49,9 @@ const labelClassName = `
   flex
   items-center
   gap-1.5
-  text-[11px]
+  text-xs
   font-semibold
-  uppercase
-  tracking-[0.12em]
-  text-slate-700
+  text-[var(--text)]
 `;
 
 /* ============================================================
@@ -113,7 +105,7 @@ export default function ContactForm() {
   }, [status.message]);
 
   /* ==========================================================
-     STATUS HELPERS
+     STATUS HELPER
   ========================================================== */
 
   function showError(message: string) {
@@ -133,7 +125,7 @@ export default function ContactForm() {
   }
 
   /* ==========================================================
-     FORM SUBMIT
+     SUBMIT
   ========================================================== */
 
   async function handleSubmit(
@@ -152,9 +144,9 @@ export default function ContactForm() {
 
     setLoading(true);
 
-    /* ========================================================
+    /* ==========================================================
        FORM DATA
-    ======================================================== */
+    ========================================================== */
 
     const formData = new FormData(form);
 
@@ -190,14 +182,20 @@ export default function ContactForm() {
       formData.get("message") || ""
     ).trim();
 
-    /* ========================================================
+    /* ==========================================================
        VALIDATION
-    ======================================================== */
+    ========================================================== */
+
+    /* NAME */
 
     if (name.length < 2) {
-      showError("Please enter a valid name.");
+      showError(
+        "Please enter a valid name."
+      );
       return;
     }
+
+    /* PHONE */
 
     const normalizedPhone =
       phone.replace(/\D/g, "");
@@ -212,6 +210,8 @@ export default function ContactForm() {
       return;
     }
 
+    /* EMAIL */
+
     const emailRegex =
       /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -222,12 +222,16 @@ export default function ContactForm() {
       return;
     }
 
+    /* PICKUP */
+
     if (pickup.length < 2) {
       showError(
         "Please enter a valid pickup location."
       );
       return;
     }
+
+    /* DROP */
 
     if (drop.length < 2) {
       showError(
@@ -236,6 +240,8 @@ export default function ContactForm() {
       return;
     }
 
+    /* VEHICLE TYPE */
+
     if (!vehicleType) {
       showError(
         "Please select a vehicle type."
@@ -243,12 +249,16 @@ export default function ContactForm() {
       return;
     }
 
+    /* SERVICE */
+
     if (!subject) {
       showError(
         "Please select a service."
       );
       return;
     }
+
+    /* MESSAGE */
 
     if (message.length < 10) {
       showError(
@@ -267,9 +277,9 @@ export default function ContactForm() {
       return;
     }
 
-    /* ========================================================
+    /* ==========================================================
        REQUEST DATA
-    ======================================================== */
+    ========================================================== */
 
     const data = {
       name,
@@ -282,9 +292,9 @@ export default function ContactForm() {
       message,
     };
 
-    /* ========================================================
+    /* ==========================================================
        ABORT CONTROLLER
-    ======================================================== */
+    ========================================================== */
 
     const controller =
       new AbortController();
@@ -293,9 +303,9 @@ export default function ContactForm() {
       controller.abort();
     }, REQUEST_TIMEOUT);
 
-    /* ========================================================
+    /* ==========================================================
        SEND REQUEST
-    ======================================================== */
+    ========================================================== */
 
     try {
       const response = await fetch(
@@ -314,9 +324,9 @@ export default function ContactForm() {
         }
       );
 
-      /* ======================================================
-         RESPONSE
-      ====================================================== */
+      /* ========================================================
+         PARSE RESPONSE
+      ======================================================== */
 
       let result: ApiResponse = {};
 
@@ -326,6 +336,10 @@ export default function ContactForm() {
         result = {};
       }
 
+      /* ========================================================
+         SERVER ERROR
+      ======================================================== */
+
       if (!response.ok) {
         throw new Error(
           result.error ||
@@ -334,6 +348,10 @@ export default function ContactForm() {
         );
       }
 
+      /* ========================================================
+         API SUCCESS CHECK
+      ======================================================== */
+
       if (result.success === false) {
         throw new Error(
           result.error ||
@@ -341,18 +359,26 @@ export default function ContactForm() {
         );
       }
 
-      /* ======================================================
+      /* ========================================================
          SUCCESS
-      ====================================================== */
+      ======================================================== */
 
       showSuccess(
         result.message ||
           "Your enquiry has been sent successfully. Our SBS Taxi team will contact you shortly."
       );
 
+      /* ========================================================
+         RESET FORM
+      ======================================================== */
+
       form.reset();
 
       setMessageLength(0);
+
+      /* ========================================================
+         SCROLL STATUS INTO VIEW
+      ======================================================== */
 
       window.setTimeout(() => {
         document
@@ -370,6 +396,10 @@ export default function ContactForm() {
         error
       );
 
+      /* ========================================================
+         TIMEOUT ERROR
+      ======================================================== */
+
       if (
         error instanceof DOMException &&
         error.name === "AbortError"
@@ -380,6 +410,10 @@ export default function ContactForm() {
 
         return;
       }
+
+      /* ========================================================
+         NORMAL ERROR
+      ======================================================== */
 
       showError(
         error instanceof Error
@@ -400,85 +434,50 @@ export default function ContactForm() {
     <section
       aria-labelledby="contact-form-title"
       className="
-        relative
         w-full
-        overflow-hidden
-        rounded-[28px]
+        rounded-3xl
         border
-        border-slate-200
+        border-[var(--border)]
         bg-white
         p-5
-        shadow-[0_12px_40px_rgba(15,23,42,0.08)]
-        ring-1
-        ring-black/[0.02]
+        shadow-sm
         sm:p-7
         lg:p-8
       "
     >
       {/* =====================================================
-          PREMIUM TOP BORDER
-      ====================================================== */}
-
-      <div
-        aria-hidden="true"
-        className="
-          absolute
-          left-0
-          right-0
-          top-0
-          h-[3px]
-          bg-gradient-to-r
-          from-[var(--primary)]
-          via-[var(--primary)]
-          to-[#D99A2B]
-        "
-      />
-
-      {/* =====================================================
-          INNER BORDER
-      ====================================================== */}
-
-      <div
-        aria-hidden="true"
-        className="
-          pointer-events-none
-          absolute
-          inset-[5px]
-          rounded-[23px]
-          border
-          border-slate-100
-        "
-      />
-
-      {/* =====================================================
           HEADER
       ====================================================== */}
 
-      <div className="relative mb-8">
-        {/* Small Accent */}
-
-        <div
+      <div className="mb-7">
+        <span
           className="
-            mb-5
-            h-[3px]
-            w-12
+            inline-flex
+            items-center
             rounded-full
-            bg-gradient-to-r
-            from-[var(--primary)]
-            to-[#D99A2B]
+            bg-[var(--primary-light)]
+            px-3
+            py-1
+            text-[11px]
+            font-bold
+            uppercase
+            tracking-wider
+            text-[var(--primary)]
           "
-        />
+        >
+          Contact Us
+        </span>
 
         <h2
           id="contact-form-title"
           className="
+            mt-3
             font-[family-name:var(--font-instrument)]
-            text-[32px]
+            text-2xl
             font-normal
-            leading-tight
             tracking-tight
             text-[var(--text)]
-            sm:text-4xl
+            sm:text-3xl
           "
         >
           Send Us a Message
@@ -486,16 +485,17 @@ export default function ContactForm() {
 
         <p
           className="
-            mt-3
+            mt-2
             max-w-xl
-            text-[15px]
-            leading-7
-            text-slate-600
+            text-sm
+            leading-6
+            text-[var(--muted)]
           "
         >
-          Questions about availability, pricing,
-          or scheduling a ride? We're here to
-          help.
+          Have a question, booking request, or
+          feedback? Fill out the form below and
+          our SBS Taxi team will get back to you
+          shortly.
         </p>
       </div>
 
@@ -507,13 +507,10 @@ export default function ContactForm() {
         ref={formRef}
         onSubmit={handleSubmit}
         noValidate
-        className="
-          relative
-          space-y-5
-        "
+        className="space-y-5"
       >
         {/* ===================================================
-            NAME + EMAIL
+            NAME + PHONE
         ==================================================== */}
 
         <div
@@ -540,9 +537,12 @@ export default function ContactForm() {
                 "
               />
 
-              Full Name
+              Your Name
 
-              <span className="text-[var(--primary)]">
+              <span
+                aria-hidden="true"
+                className="text-[var(--primary)]"
+              >
                 *
               </span>
             </label>
@@ -551,7 +551,7 @@ export default function ContactForm() {
               id="name"
               name="name"
               type="text"
-              placeholder="Your Name"
+              placeholder="Enter your name"
               required
               minLength={2}
               maxLength={80}
@@ -561,55 +561,6 @@ export default function ContactForm() {
             />
           </div>
 
-          {/* EMAIL */}
-
-          <div>
-            <label
-              htmlFor="email"
-              className={labelClassName}
-            >
-              <Mail
-                aria-hidden="true"
-                className="
-                  h-3.5
-                  w-3.5
-                  text-[var(--primary)]
-                "
-              />
-
-              Email Address
-
-              <span className="text-[var(--primary)]">
-                *
-              </span>
-            </label>
-
-            <input
-              id="email"
-              name="email"
-              type="email"
-              placeholder="Your Email Address"
-              required
-              maxLength={120}
-              autoComplete="email"
-              disabled={loading}
-              className={inputClassName}
-            />
-          </div>
-        </div>
-
-        {/* ===================================================
-            PHONE + VEHICLE TYPE
-        ==================================================== */}
-
-        <div
-          className="
-            grid
-            grid-cols-1
-            gap-5
-            sm:grid-cols-2
-          "
-        >
           {/* PHONE */}
 
           <div>
@@ -628,7 +579,10 @@ export default function ContactForm() {
 
               Phone Number
 
-              <span className="text-[var(--primary)]">
+              <span
+                aria-hidden="true"
+                className="text-[var(--primary)]"
+              >
                 *
               </span>
             </label>
@@ -646,82 +600,47 @@ export default function ContactForm() {
               className={inputClassName}
             />
           </div>
+        </div>
 
-          {/* VEHICLE TYPE */}
+        {/* ===================================================
+            EMAIL
+        ==================================================== */}
 
-          <div>
-            <label
-              htmlFor="vehicleType"
-              className={labelClassName}
+        <div>
+          <label
+            htmlFor="email"
+            className={labelClassName}
+          >
+            <Mail
+              aria-hidden="true"
+              className="
+                h-3.5
+                w-3.5
+                text-[var(--primary)]
+              "
+            />
+
+            Email Address
+
+            <span
+              aria-hidden="true"
+              className="text-[var(--primary)]"
             >
-              <CarFront
-                aria-hidden="true"
-                className="
-                  h-3.5
-                  w-3.5
-                  text-[var(--primary)]
-                "
-              />
+              *
+            </span>
+          </label>
 
-              Vehicle Type
-
-              <span className="text-[var(--primary)]">
-                *
-              </span>
-            </label>
-
-            <div className="relative">
-              <select
-                id="vehicleType"
-                name="vehicleType"
-                required
-                defaultValue=""
-                disabled={loading}
-                className={`
-                  ${inputClassName}
-                  appearance-none
-                  pr-11
-                `}
-              >
-                <option
-                  value=""
-                  disabled
-                >
-                  Select Vehicle Type
-                </option>
-
-                <option value="SBS MINI">
-                  SBS MINI
-                </option>
-
-                <option value="SBS SEDAN">
-                  SBS SEDAN
-                </option>
-
-                <option value="SBS VAN">
-                  SBS VAN
-                </option>
-
-                <option value="SBS SUV">
-                  SBS SUV
-                </option>
-              </select>
-
-              <ChevronDown
-                aria-hidden="true"
-                className="
-                  pointer-events-none
-                  absolute
-                  right-4
-                  top-1/2
-                  h-4
-                  w-4
-                  -translate-y-1/2
-                  text-slate-400
-                "
-              />
-            </div>
-          </div>
+          <input
+            id="email"
+            name="email"
+            type="email"
+            placeholder="Enter your email address"
+            required
+            maxLength={120}
+            autoComplete="email"
+            disabled={loading}
+            className={inputClassName}
+          />
         </div>
 
         {/* ===================================================
@@ -754,7 +673,10 @@ export default function ContactForm() {
 
               Pickup Location
 
-              <span className="text-[var(--primary)]">
+              <span
+                aria-hidden="true"
+                className="text-[var(--primary)]"
+              >
                 *
               </span>
             </label>
@@ -763,7 +685,7 @@ export default function ContactForm() {
               id="pickup"
               name="pickup"
               type="text"
-              placeholder="Enter Pickup Location"
+              placeholder="Enter pickup location"
               required
               minLength={2}
               maxLength={200}
@@ -790,7 +712,10 @@ export default function ContactForm() {
 
               Drop Location
 
-              <span className="text-[var(--primary)]">
+              <span
+                aria-hidden="true"
+                className="text-[var(--primary)]"
+              >
                 *
               </span>
             </label>
@@ -799,7 +724,7 @@ export default function ContactForm() {
               id="drop"
               name="drop"
               type="text"
-              placeholder="Enter Drop Location"
+              placeholder="Enter drop location"
               required
               minLength={2}
               maxLength={200}
@@ -810,100 +735,187 @@ export default function ContactForm() {
         </div>
 
         {/* ===================================================
-            SERVICE
+            VEHICLE TYPE + SERVICE
         ==================================================== */}
 
-        <div>
-          <label
-            htmlFor="subject"
-            className={labelClassName}
-          >
-            <MessageSquare
-              aria-hidden="true"
-              className="
-                h-3.5
-                w-3.5
-                text-[var(--primary)]
-              "
-            />
+        <div
+          className="
+            grid
+            grid-cols-1
+            gap-5
+            sm:grid-cols-2
+          "
+        >
+          {/* VEHICLE TYPE */}
 
-            Service Required
-
-            <span className="text-[var(--primary)]">
-              *
-            </span>
-          </label>
-
-          <div className="relative">
-            <select
-              id="subject"
-              name="subject"
-              required
-              defaultValue=""
-              disabled={loading}
-              className={`
-                ${inputClassName}
-                appearance-none
-                pr-11
-              `}
+          <div>
+            <label
+              htmlFor="vehicleType"
+              className={labelClassName}
             >
-              <option
-                value=""
-                disabled
+              <CarFront
+                aria-hidden="true"
+                className="
+                  h-3.5
+                  w-3.5
+                  text-[var(--primary)]
+                "
+              />
+
+              Vehicle Type
+
+              <span
+                aria-hidden="true"
+                className="text-[var(--primary)]"
               >
-                Select a Service
-              </option>
+                *
+              </span>
+            </label>
 
-              <option value="Local City Rides">
-                Local City Rides
-              </option>
+            <div className="relative">
+              <select
+                id="vehicleType"
+                name="vehicleType"
+                required
+                defaultValue=""
+                disabled={loading}
+                className={`
+                  ${inputClassName}
+                  appearance-none
+                  pr-11
+                `}
+              >
+                <option value="" disabled>
+                  Select vehicle type
+                </option>
 
-              <option value="Outstation Trips">
-                Outstation Trips
-              </option>
+                <option value="SBS MINI">
+                  SBS MINI
+                </option>
 
-              <option value="Airport Transfers">
-                Airport Transfers
-              </option>
+                <option value="SBS SEDAN">
+                  SBS SEDAN
+                </option>
 
-              <option value="One Way Trips">
-                One Way Trips
-              </option>
+                <option value="SBS VAN">
+                  SBS VAN
+                </option>
 
-              <option value="Round Trips">
-                Round Trips
-              </option>
+                <option value="SBS SUV">
+                  SBS SUV
+                </option>
+              </select>
 
-              <option value="Corporate Trips">
-                Corporate Trips
-              </option>
+              <ChevronDown
+                aria-hidden="true"
+                className="
+                  pointer-events-none
+                  absolute
+                  right-4
+                  top-1/2
+                  h-4
+                  w-4
+                  -translate-y-1/2
+                  text-[var(--muted)]
+                "
+              />
+            </div>
+          </div>
 
-              <option value="Temple Tours">
-                Temple Tours
-              </option>
+          {/* SERVICE */}
 
-              <option value="General Enquiry">
-                General Enquiry
-              </option>
+          <div>
+            <label
+              htmlFor="subject"
+              className={labelClassName}
+            >
+              <MessageSquare
+                aria-hidden="true"
+                className="
+                  h-3.5
+                  w-3.5
+                  text-[var(--primary)]
+                "
+              />
 
-              <option value="Customer Support">
-                Customer Support
-              </option>
-            </select>
+              Service Required
 
-            <ChevronDown
-              aria-hidden="true"
-              className="
-                pointer-events-none
-                absolute
-                right-4
-                top-1/2
-                h-4
-                w-4
-                -translate-y-1/2
-                text-slate-400
-              "
-            />
+              <span
+                aria-hidden="true"
+                className="text-[var(--primary)]"
+              >
+                *
+              </span>
+            </label>
+
+            <div className="relative">
+              <select
+                id="subject"
+                name="subject"
+                required
+                defaultValue=""
+                disabled={loading}
+                className={`
+                  ${inputClassName}
+                  appearance-none
+                  pr-11
+                `}
+              >
+                <option value="" disabled>
+                  Select a service
+                </option>
+
+                <option value="Local City Rides">
+                  Local City Rides
+                </option>
+
+                <option value="Outstation Trips">
+                  Outstation Trips
+                </option>
+
+                <option value="Airport Transfers">
+                  Airport Transfers
+                </option>
+
+                <option value="One Way Trips">
+                  One Way Trips
+                </option>
+
+                <option value="Round Trips">
+                  Round Trips
+                </option>
+
+                <option value="Corporate Trips">
+                  Corporate Trips
+                </option>
+
+                <option value="Temple Tours">
+                  Temple Tours
+                </option>
+
+                <option value="General Enquiry">
+                  General Enquiry
+                </option>
+
+                <option value="Customer Support">
+                  Customer Support
+                </option>
+              </select>
+
+              <ChevronDown
+                aria-hidden="true"
+                className="
+                  pointer-events-none
+                  absolute
+                  right-4
+                  top-1/2
+                  h-4
+                  w-4
+                  -translate-y-1/2
+                  text-[var(--muted)]
+                "
+              />
+            </div>
           </div>
         </div>
 
@@ -938,7 +950,10 @@ export default function ContactForm() {
 
               Message
 
-              <span className="text-[var(--primary)]">
+              <span
+                aria-hidden="true"
+                className="text-[var(--primary)]"
+              >
                 *
               </span>
             </label>
@@ -950,7 +965,7 @@ export default function ContactForm() {
                   messageLength >
                   MAX_MESSAGE_LENGTH * 0.9
                     ? "font-semibold text-orange-500"
-                    : "text-slate-400"
+                    : "text-[var(--muted)]"
                 }
               `}
             >
@@ -1114,7 +1129,7 @@ export default function ContactForm() {
         </button>
 
         {/* ===================================================
-            PRIVACY
+            PRIVACY NOTE
         ==================================================== */}
 
         <p
@@ -1122,7 +1137,7 @@ export default function ContactForm() {
             text-center
             text-[11px]
             leading-5
-            text-slate-400
+            text-[var(--muted)]
           "
         >
           We respect your privacy and will only

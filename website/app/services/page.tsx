@@ -12,6 +12,9 @@ export default function ServicesPage() {
     >
       {/* Hero */}
       <ServicesHero />
+     
+            <BottomCTA />
+          
 
       {/* Services */}
       <section className="section-bg py-8 sm:py-10 lg:py-12">
@@ -21,9 +24,7 @@ export default function ServicesPage() {
           <DriverCTA />
 
           {/* Space between Services and Bottom CTA */}
-          <div className="mt-16 sm:mt-20 lg:mt-24">
-            <BottomCTA />
-          </div>
+          
         </div>
       </section>
     </main>

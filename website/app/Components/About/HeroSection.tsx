@@ -212,21 +212,23 @@ export default function AboutHero() {
             z-10
           "
         >
-          <div
-            className="
-              mx-auto
-              flex
-              h-full
-              w-full
-              max-w-7xl
-              items-center
-              px-4
-
-              sm:px-6
-
-              lg:px-8
-            "
-          >
+         <div
+  className="
+    mx-auto
+    flex
+    h-full
+    w-full
+    max-w-7xl
+    items-center
+    px-4
+    mt-3
+    sm:mt-8
+    md:mt-10
+    lg:mt-12
+    sm:px-6
+    lg:px-8
+  "
+>
             <div
               className="
                 w-full
@@ -244,6 +246,7 @@ export default function AboutHero() {
               <motion.div
                 variants={fadeLeft}
                 className="
+               
                   mb-4
                   inline-flex
                   items-center

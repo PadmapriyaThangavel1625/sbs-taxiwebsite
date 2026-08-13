@@ -134,7 +134,7 @@ export default function LimitedOffer() {
               justify-center
               gap-2
               rounded-xl
-              !bg-[#fdb708]
+              !bg-[var(--secondary)]
               px-4
               py-2.5
               text-[12px]
@@ -142,7 +142,7 @@ export default function LimitedOffer() {
               !text-black
               shadow-md
               transition
-              !hover:bg-[#e6ac00]
+              !hover:bg-[var(--secondary-dark)
               hover:shadow-lg
             "
           >

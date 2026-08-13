@@ -10,6 +10,7 @@ export default function AboutPage() {
   return (
     <main className="about-page">
       <HeroSection />
+      <BottomCTA />
 
       <Features />
 
@@ -27,11 +28,7 @@ export default function AboutPage() {
 
       <Values />
 {/* ===================================== Bottom CTA ====================================== */} 
-<section className="py-10 sm:py-14">
-   <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8"> 
-    <BottomCTA /> 
-    </div>
-    </section>
+
     </main>
   );
 }

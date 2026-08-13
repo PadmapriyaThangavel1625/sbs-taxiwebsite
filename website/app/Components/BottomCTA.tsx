@@ -133,7 +133,7 @@ export default function BottomCTA() {
                 sm:text-sm
               "
             >
-              Call Us Now
+              Book a Ride
             </p>
           </div>
         </div>

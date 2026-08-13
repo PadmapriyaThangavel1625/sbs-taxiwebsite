@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 
 const images = [
-  "/images/aboutus.webp",
+  
   "/images/service.webp",
   "/images/fleet.webp",
   "/images/destination.webp",
