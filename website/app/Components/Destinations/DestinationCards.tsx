@@ -603,7 +603,7 @@ export default function DestinationCards() {
                 <button
                   type="button"
                   onClick={() => handleCityClick(d)}
-                  className="mt-5 w-full rounded-lg bg-blue-700 px-4 py-3 text-sm font-semibold text-white transition hover:bg-blue-800 active:scale-[0.98]"
+                  className="mt-5 w-full rounded-lg bg-[var(--primary)] px-4 py-3 text-sm font-semibold text-white transition hover:[var(--primary-dark)] active:scale-[0.98]"
                 >
                   View Tourist Spots
                 </button>
@@ -619,17 +619,17 @@ export default function DestinationCards() {
             className="mt-10 overflow-hidden rounded-2xl bg-white shadow-xl sm:mt-12 md:mt-14"
           >
             {/* Header */}
-            <div className="bg-blue-700 px-5 py-7 text-white sm:px-8 sm:py-8 md:px-10">
-              <p className="flex items-center gap-2 text-xs font-medium uppercase tracking-wider text-blue-100 sm:text-sm">
+            <div className="bg-[var(--primary)] px-5 py-7 text-[var(--secondary)] sm:px-8 sm:py-8 md:px-10">
+              <p className="flex items-center gap-2 text-xs font-medium uppercase tracking-wider text-[var(--secondary)] sm:text-sm">
                 <MapPin size={17} />
                 Erode → {selectedCity.name}
               </p>
 
-              <h2 className="mt-2 text-2xl font-bold sm:text-3xl md:text-4xl">
+              <h2 className="mt-2 text-2xl !text-[var(--secondary)] font-bold sm:text-3xl md:text-4xl">
                 Tourist Places in {selectedCity.name}
               </h2>
 
-              <p className="mt-2 text-sm text-blue-100 sm:text-base">
+              <p className="mt-2 text-sm text-[var(--secondary)] sm:text-base">
                 Explore popular tourist attractions with SBS Taxi.
               </p>
             </div>
@@ -656,7 +656,7 @@ export default function DestinationCards() {
                     <p className="text-sm">One Way Fare</p>
                   </div>
 
-                  <p className="text-2xl font-bold text-blue-700">
+                  <p className="text-2xl font-bold text-[var(--secondary)]">
                     ₹{selectedCity.price}
                   </p>
                 </div>
@@ -752,7 +752,7 @@ export default function DestinationCards() {
 
                           <Link
                             href="/booking"
-                            className="mt-5 block w-full rounded-lg bg-blue-700 py-3 text-center text-sm font-semibold text-white transition hover:bg-blue-800 active:scale-[0.98]"
+                            className="mt-5 block w-full rounded-lg bg-[var(--secondary)] py-3 text-center text-sm font-semibold text-white transition hover:bg-[var(--secondary-dark)] active:scale-[0.98]"
                           >
                             Book Cab
                           </Link>
@@ -769,7 +769,7 @@ export default function DestinationCards() {
                   type="button"
                   onClick={previousSlide}
                   aria-label="Previous tourist spot"
-                  className="flex h-11 w-11 items-center justify-center rounded-full border border-gray-300 bg-white text-gray-700 shadow-sm transition active:scale-95"
+                  className="flex h-11 w-11 items-center justify-center rounded-full border border-gray-300 bg-white text-[var(--secondary)] shadow-sm transition active:scale-95"
                 >
                   <ChevronLeft size={20} />
                 </button>
@@ -778,7 +778,7 @@ export default function DestinationCards() {
                   type="button"
                   onClick={nextSlide}
                   aria-label="Next tourist spot"
-                  className="flex h-11 w-11 items-center justify-center rounded-full border border-gray-300 bg-white text-gray-700 shadow-sm transition active:scale-95"
+                  className="flex h-11 w-11 items-center justify-center rounded-full border border-gray-300 bg-white text-[var(--secondary)] shadow-sm transition active:scale-95"
                 >
                   <ChevronRight size={20} />
                 </button>
@@ -794,8 +794,8 @@ export default function DestinationCards() {
                     aria-label={`Go to ${spot.name}`}
                     className={`h-2 rounded-full transition-all ${
                       index === slideIndex
-                        ? "w-7 bg-blue-700"
-                        : "w-2 bg-gray-300"
+                        ? "w-7 bg-[var(--primary)]"
+                        : "w-2 bg-[var(--primary-dark)]"
                     }`}
                   />
                 ))}
@@ -815,7 +815,7 @@ export default function DestinationCards() {
 
                 <Link
                   href="/booking"
-                  className="w-full rounded-lg bg-blue-700 px-8 py-3 text-center text-sm font-semibold text-white transition hover:bg-blue-800 active:scale-[0.98] sm:w-auto"
+                  className="w-full rounded-lg bg-[var(--secondary)] px-8 py-3 text-center text-sm font-semibold text-white transition hover:bg-[var(--secondary-dark)] active:scale-[0.98] sm:w-auto"
                 >
                   Book Now
                 </Link>

@@ -49,7 +49,7 @@ export default function WhyTravel() {
               key={item.title}
               className="flex items-start gap-4"
             >
-              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-blue-700 text-white">
+              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[var(--primary)] text-[var(--secondary)]">
                 <Icon size={22} strokeWidth={2} />
               </div>
 
@@ -70,7 +70,7 @@ export default function WhyTravel() {
       {/* WhatsApp CTA */}
       <div className="mt-7 rounded-xl bg-white p-4 shadow-sm">
         <div className="flex items-start gap-3">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-green-100 text-green-600">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[var(--primary)] text-[var(--secondary)]">
             <MessageCircle size={21} />
           </div>
 
