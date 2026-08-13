@@ -45,7 +45,7 @@ export default function BottomBar() {
             items-center
             justify-center
             gap-1
-            ! text-white
+            !text-white
             transition-colors
             duration-200
             hover:text-[var(--secondary)]

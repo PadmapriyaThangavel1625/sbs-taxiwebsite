@@ -49,41 +49,7 @@ export default function FeatureCards() {
 
   return (
     <section className="py-8 font-[family-name:var(--font-jakarta)]">
-      {/* Header */}
-      <div>
-        <p className="text-sm font-semibold text-[var(--primary)]">
-          Why Choose Us
-        </p>
-
-        <h2
-          className="
-            mt-3
-            font-[family-name:var(--font-instrument)]
-            text-3xl
-            font-normal
-            tracking-tight
-            text-[var(--text)]
-            sm:text-4xl
-          "
-        >
-          We're Here to Help
-        </h2>
-
-        <p
-          className="
-            mt-2
-            max-w-lg
-            text-sm
-            leading-6
-            text-[var(--muted)]
-          "
-        >
-          From booking assistance to customer support, our team is ready
-          to make your SBS Taxi experience simple and comfortable.
-        </p>
-      </div>
-
-      {/* Feature Cards */}
+    
       <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
         {features.map((feature) => {
           const Icon = feature.icon;

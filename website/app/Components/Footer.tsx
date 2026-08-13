@@ -163,11 +163,10 @@ export default function Footer() {
           ================================================== */}
 
           <div className="lg:col-span-3">
-
             <h3
               className="
                 !mb-4
-                !font-var(--font-instrument)
+                !font-[var(--font-instrument)]
                 text-lg
                 !font-semibold
                 uppercase
@@ -177,7 +176,7 @@ export default function Footer() {
             >
               Services
             </h3>
-            
+
             <nav
               aria-label="Services"
               className="flex flex-col gap-4"
@@ -232,7 +231,6 @@ export default function Footer() {
                 className="text-black"
               />
             </Link>
-
           </div>
 
           {/* =================================================
@@ -240,11 +238,10 @@ export default function Footer() {
           ================================================== */}
 
           <div className="lg:col-span-2">
-
             <h3
               className="
                 !mb-4
-                font-!var(--font-instrument)
+                !font-[var(--font-instrument)]
                 text-lg
                 !font-semibold
                 uppercase
@@ -285,7 +282,6 @@ export default function Footer() {
                 </Link>
               ))}
             </nav>
-
           </div>
 
           {/* =================================================
@@ -298,7 +294,7 @@ export default function Footer() {
             <h3
               className="
                 !mb-4
-                !font-!var(--font-instrument)
+                !font-[var(--font-instrument)]
                 text-lg
                 !font-semibold
                 uppercase
@@ -311,7 +307,6 @@ export default function Footer() {
 
             {/* ADDRESS */}
             <div className="flex items-start gap-3">
-
               <div
                 className="
                   flex h-10 w-10 shrink-0
@@ -327,7 +322,7 @@ export default function Footer() {
               </div>
 
               <div className="pt-0.5">
-                <p className="mt-0.5 text-xs leading-5 text-white-100/60">
+                <p className="mt-0.5 text-xs leading-5 text-white/60">
                   1/166, Vallalar Street,
                   <br />
                   Municipal Colony Road,
@@ -335,7 +330,6 @@ export default function Footer() {
                   Erode, Tamil Nadu - 638004
                 </p>
               </div>
-
             </div>
 
             {/* CALL */}
@@ -366,7 +360,7 @@ export default function Footer() {
               </div>
 
               <div>
-                <p className="mt-0.5 text-xs text-white-100/60">
+                <p className="mt-0.5 text-xs text-white/60">
                   98435 44844
                 </p>
               </div>
@@ -400,7 +394,7 @@ export default function Footer() {
               </div>
 
               <div className="min-w-0">
-                <p className="mt-0.5 break-all text-xs text-white-100/60">
+                <p className="mt-0.5 break-all text-xs text-white/60">
                   hr@sbstechnologies.in
                 </p>
               </div>
@@ -408,7 +402,6 @@ export default function Footer() {
 
             {/* SOCIAL MEDIA */}
             <div className="mt-7">
-
               <p
                 className="
                   mb-4
@@ -423,7 +416,6 @@ export default function Footer() {
               </p>
 
               <div className="flex items-center gap-3">
-
                 {socialLinks.map((social) => (
                   <Link
                     key={social.label}
@@ -458,13 +450,10 @@ export default function Footer() {
                     </span>
                   </Link>
                 ))}
-
               </div>
-
             </div>
 
           </div>
-
         </div>
       </div>
 
@@ -473,22 +462,30 @@ export default function Footer() {
       ====================================================== */}
 
       <div className="border-t border-white/10">
-
         <div
           className="
-            mx-auto flex max-w-7xl
-            flex-col items-center
-            justify-between gap-3
-            px-5 py-5
+            mx-auto
+            flex
+            max-w-7xl
+            flex-col
+            items-center
+            justify-center
+            gap-3
+            px-5
+            py-5
             text-xs
-            sm:flex-row sm:px-8
+            sm:px-8
+            lg:flex-row
+            lg:justify-between
             lg:px-8
           "
         >
 
-          {/* Made in India */}
-          <div className="flex items-center gap-2 text-blue-100/50">
+          {/* =================================================
+              MADE IN INDIA
+          ================================================== */}
 
+          <div className="flex items-center gap-2 text-blue-100/60">
             <Image
               src="/flag.jpg"
               alt="Indian Flag"
@@ -497,46 +494,90 @@ export default function Footer() {
               className="h-4 w-6 rounded-sm object-cover"
             />
 
-            <span>
+            <span className="text-xs font-medium sm:text-sm">
               Made in India
             </span>
-
           </div>
 
-          {/* Copyright */}
-          <p className="text-center text-blue-100/50">
-            © {new Date().getFullYear()} SBS Taxi.
-            All Rights Reserved.
+          {/* =================================================
+              COPYRIGHT
+          ================================================== */}
+
+          <p className="text-center text-xs text-blue-100/50 sm:text-sm">
+            © {new Date().getFullYear()} SBS Taxi. All Rights Reserved.
           </p>
 
-          {/* Powered By */}
-          <div className="flex items-center gap-1">
+          {/* =================================================
+              PRIVACY POLICY + TERMS + POWERED BY
+          ================================================== */}
 
-            <span className="text-[10px] font-light text-blue-100/50 sm:text-[11px]">
-              Powered by
-            </span>
+          <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4">
 
+            {/* Privacy Policy */}
             <Link
-              href="https://sbstechnologies.in/"
-              target="_blank"
-              rel="noopener noreferrer"
+              href="/privacy-policy"
               className="
-                text-xs font-medium
+                text-xs
+                font-medium
                 text-blue-100/65
                 transition-colors
+                duration-200
                 hover:text-[var(--secondary)]
                 sm:text-sm
               "
             >
-              SBS Technologies
+              Privacy Policy
             </Link>
 
+            {/* Divider */}
+            <span className="h-4 w-px bg-white/15" />
+
+            {/* Terms & Conditions */}
+            <Link
+              href="/terms-and-conditions"
+              className="
+                text-xs
+                font-medium
+                text-blue-100/65
+                transition-colors
+                duration-200
+                hover:text-[var(--secondary)]
+                sm:text-sm
+              "
+            >
+              Terms & Conditions
+            </Link>
+
+            {/* Divider */}
+            <span className="h-4 w-px bg-white/15" />
+
+            {/* Powered By */}
+            <div className="flex items-center gap-1.5">
+              <span className="text-[10px] font-light text-blue-100/50 sm:text-xs">
+                Powered by
+              </span>
+
+              <Link
+                href="https://sbstechnologies.in/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="
+                  text-xs
+                  font-semibold
+                  text-blue-100/70
+                  transition-colors
+                  duration-200
+                  hover:text-[var(--secondary)]
+                  sm:text-sm
+                "
+              >
+                SBS Technologies
+              </Link>
+            </div>
+
           </div>
-
         </div>
-
       </div>
-
     </footer>
   );
 }

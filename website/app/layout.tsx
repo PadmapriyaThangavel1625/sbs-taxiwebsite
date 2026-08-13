@@ -13,7 +13,7 @@ import Footer from "@/app/Components/Footer";
 import LimitedOffer from "@/app/Components/Home/LimitedOffer";
 import BottomBar from "@/app/Components/BottomBar";
 import ChatBox from "@/app/Components/ChatBox";
-import MapSection from "./Components/Contacts/MapSection";
+import MapSection from "@/app/Components/MapSection";
 
 /* =========================
    FONTS
@@ -81,12 +81,7 @@ export default function RootLayout({
 
         {/* ================= MAP ================= */}
 
-        <section className="w-full bg-white py-10 sm:py-12">
-          <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
-            <MapSection />
-          </div>
-        </section>
-
+       
         {/* ================= FOOTER ================= */}
 
         <Footer />

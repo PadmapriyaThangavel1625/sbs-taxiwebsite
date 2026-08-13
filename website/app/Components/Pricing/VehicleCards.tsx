@@ -230,7 +230,7 @@ export default function VehiclePricing() {
                   hover:bg-primary-dark
                 "
               >
-                Book Now
+                Book a Ride
                 <ArrowRight size={18} />
               </Link>
             </div>

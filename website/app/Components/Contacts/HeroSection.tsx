@@ -1,71 +1,63 @@
-
 export default function HeroSection() {
   return (
     <section
       className="
         w-full
-        bg-white
+        bg-[var(--primary)]
+        px-4
+        py-16
+        text-white
         font-[family-name:var(--font-jakarta)]
+        sm:py-20
+        md:py-24
       "
     >
-      {/* Full Banner Image */}
-      <div className="w-full">
-        <img
-          src="/home_banner.webp"
-          alt="Contact Us Banner"
-          className="
-            block
-            w-full
-            h-auto
-            object-contain
-          "
-        />
-      </div>
-
-      {/* Contact Content Below Banner */}
-      <div className="px-4 py-8 text-center sm:py-10 md:py-12">
+      <div className="mx-auto max-w-6xl text-left">
         {/* Small Heading */}
         <p
           className="
-            text-sm
+            !text-4xl
             sm:text-base
             font-semibold
             uppercase
-            tracking-wide
-            text-[var(--primary)]
+            tracking-wider
+            text-[var(--secondary)]
           "
         >
           Contact Us
         </p>
 
         {/* Main Heading */}
-        <h2
+        <h1
           className="
-            mt-2
+            !mt-4
             font-[family-name:var(--font-instrument)]
-            text-3xl
-            md:text-4xl
+            text-4xl
+            !text-white
             font-normal
-            text-[var(--primary-dark)]
+            sm:text-5xl
+            md:text-6xl
           "
         >
-          We're Here to Help You!
-        </h2>
+          We&apos;re Here to Help You!
+        </h1>
 
         {/* Description */}
         <p
           className="
-            mx-auto
-            mt-4
+            mt-5
             max-w-2xl
             text-base
             leading-relaxed
-            text-[var(--muted)]
+            text-slate-200
+            sm:text-lg
           "
         >
-          Have questions, feedback, or need support? Get in touch with us.
-          Our team is available 24/7 to assist you.
+          Have questions, feedback, or need support with your rides? Get in touch with us. 
+          Our support team is available 24/7 to assist you with inquiries, corporate bookings, and general assistance.
         </p>
+
+
       </div>
     </section>
   );

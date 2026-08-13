@@ -3,6 +3,7 @@
 import { motion, Variants } from "framer-motion";
 import ServiceCard from "./ServiceCard";
 import type { ReactNode } from "react";
+import Link from "next/link";
 
 import {
   Building2,
@@ -31,7 +32,7 @@ const services: Service[] = [
     details:
       "Book a comfortable city ride for your daily travel, shopping, office meetings, hospital visits and other local journeys. SBS Taxi provides reliable drivers and comfortable vehicles to help you travel around the city safely and conveniently.",
     image:
-      "https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?auto=format&fit=crop&w=700&q=80",
+      "/images/aboutus.webp",
     icon: <MapPin size={28} />,
   },
 
@@ -42,7 +43,7 @@ const services: Service[] = [
     details:
       "Travel to and from the airport without stress. Our airport taxi service provides convenient pickup and drop facilities with professional drivers. Book your airport ride in advance and enjoy a smooth journey.",
     image:
-      "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&w=700&q=80",
+      "/images/airport.webp",
     icon: <Plane size={28} />,
   },
 
@@ -97,7 +98,7 @@ const services: Service[] = [
     details:
       "SBS Taxi offers reliable transportation solutions for companies and business professionals. Use our service for employee travel, client transportation, meetings, airport transfers and corporate events.",
     image:
-      "https://images.unsplash.com/photo-1497366811353-6870744d04b2?auto=format&fit=crop&w=700&q=80",
+      "/images/corporate.webp",
     icon: <Building2 size={28} />,
   },
 

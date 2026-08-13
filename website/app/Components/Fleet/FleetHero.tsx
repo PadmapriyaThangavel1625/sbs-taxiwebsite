@@ -79,11 +79,13 @@ const features = [
 export default function FleetHero() {
   return (
     <section className="relative mb-6 w-full overflow-hidden sm:mb-8">
-      {/* Background Image */}
+      {/* =====================================================
+          BACKGROUND IMAGE
+      ====================================================== */}
       <motion.div
         initial={{
           opacity: 0,
-          scale: 1.04,
+          scale: 1.02,
         }}
         animate={{
           opacity: 1,
@@ -93,7 +95,18 @@ export default function FleetHero() {
           duration: 1.4,
           ease: "easeOut",
         }}
-        className="relative !h-[600px] w-full sm:h-[200px] lg:h-[215px]"
+        className="
+          relative
+          !h-[700px]
+          w-full
+          overflow-hidden
+
+          sm:h-[300px]
+
+          md:h-[280px]
+
+          lg:h-[215px]
+        "
       >
         <Image
           src="/images/car3.png"
@@ -101,10 +114,20 @@ export default function FleetHero() {
           fill
           priority
           sizes="100vw"
-          className="object-cover object-center"
+          className="
+            object-cover
+
+            object-center
+
+            sm:object-[55%_center]
+
+            md:object-center
+          "
         />
 
-        {/* Overlay */}
+        {/* =================================================
+            OVERLAY
+        ================================================== */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -112,7 +135,9 @@ export default function FleetHero() {
           className="absolute inset-0 bg-black/15"
         />
 
-        {/* Content */}
+        {/* =================================================
+            CONTENT
+        ================================================== */}
         <motion.div
           variants={container}
           initial="hidden"
@@ -125,23 +150,37 @@ export default function FleetHero() {
               w-full
               max-w-7xl
               px-4
+
               sm:px-6
+
               lg:px-8
             "
           >
             <div className="flex items-center">
-              <div className="w-full max-w-[600px] text-left">
+              <div
+                className="
+                  w-full
+                  max-w-[600px]
+                  text-left
 
-                {/* Heading */}
+                  /* MOBILE */
+                  pt-4
+
+                  sm:pt-0
+                "
+              >
+                {/* =================================================
+                    HEADING
+                ================================================== */}
                 <motion.h1
                   variants={fadeLeft}
                   className="
-                    !font-[var(--font-jakarta)]
-                    text-4xl
-                    !font-extrabold
+                    font-[var(--font-jakarta)]
+                    text-3xl
+                    font-extrabold
                     leading-tight
                     tracking-tight
-                    !text-[var(--primary)]
+                    !text-white
 
                     sm:text-4xl
 
@@ -151,17 +190,20 @@ export default function FleetHero() {
                   Our Fleet
                 </motion.h1>
 
-                {/* Subtitle */}
+                {/* =================================================
+                    SUBTITLE
+                ================================================== */}
                 <motion.p
                   variants={fadeUp}
                   className="
-                    mt-3
-                    !font-[var(--font-jakarta)]
-                    text-xl
+                    mt-2
+                    font-[var(--font-jakarta)]
+                    text-lg
                     font-bold
                     leading-tight
-                    !text-[var(--primary)]
+                    !text-white
 
+                    sm:mt-3
                     sm:text-lg
 
                     lg:text-xl
@@ -170,18 +212,22 @@ export default function FleetHero() {
                   Premium cars. Best comfort. Affordable fares.
                 </motion.p>
 
-                {/* Description */}
+                {/* =================================================
+                    DESCRIPTION
+                ================================================== */}
                 <motion.p
                   variants={fadeUp}
                   className="
-                    mt-4
+                    mt-3
                     max-w-[550px]
-                    !font-[var(--font-jakarta)]
-                    text-base
+                    font-[var(--font-jakarta)]
+                    text-sm
+                    text-white
                     font-medium
-                    leading-7
-                    !text-[var(--primary)]
+                    leading-5
+                    text-[var(--primary)]
 
+                    sm:mt-4
                     sm:text-sm
                     sm:leading-6
 
@@ -194,19 +240,22 @@ export default function FleetHero() {
                   that suits your travel needs and budget.
                 </motion.p>
 
-                {/* Features */}
+                {/* =================================================
+                    FEATURES
+                ================================================== */}
                 <motion.div
                   variants={container}
                   className="
-                    mt-9
-                    flex
-                    flex-wrap
-                    items-center
-                    gap-x-8
-                    gap-y-5
+                    mt-6
+                    grid
+                    grid-cols-1
+                    gap-3
 
-                    sm:mt-6
+                    sm:flex
+                    sm:flex-wrap
+                    sm:items-center
                     sm:gap-x-6
+                    sm:gap-y-4
 
                     lg:mt-8
                     lg:gap-x-10
@@ -224,7 +273,7 @@ export default function FleetHero() {
                       }}
                       className="flex items-center gap-3"
                     >
-                      {/* Icon */}
+                      {/* ICON */}
                       <motion.div
                         variants={fadeScale}
                         whileHover={{
@@ -236,21 +285,20 @@ export default function FleetHero() {
                         }}
                         className="
                           flex
-                          h-11
-                          w-11
+                          h-9
+                          w-9
                           shrink-0
                           items-center
                           justify-center
                           rounded-full
                           border-2
-                          border-secondary
+                          border-[var(--secondary)]
                           bg-[var(--primary)]
-                          text-base
+                          text-sm
                           text-white
 
                           sm:h-9
                           sm:w-9
-                          sm:text-sm
 
                           lg:h-10
                           lg:w-10
@@ -260,15 +308,15 @@ export default function FleetHero() {
                         {feature.icon}
                       </motion.div>
 
-                      {/* Feature Text */}
+                      {/* FEATURE TEXT */}
                       <div className="whitespace-nowrap">
                         <p
                           className="
-                            !font-[var(--font-jakarta)]
-                            text-sm
+                            font-[var(--font-jakarta)]
+                            text-xs
                             font-bold
                             leading-tight
-                            !text-[var(--secondary)]
+                            text-[var(--secondary)]
 
                             sm:text-xs
 
@@ -281,11 +329,11 @@ export default function FleetHero() {
                         <p
                           className="
                             mt-1
-                            !font-[var(--font-jakarta)]
-                            text-[11px]
+                            font-[var(--font-jakarta)]
+                            text-[10px]
                             font-medium
                             leading-tight
-                            !text-white/85
+                            text-white/85
 
                             sm:text-[9px]
 
@@ -298,7 +346,6 @@ export default function FleetHero() {
                     </motion.div>
                   ))}
                 </motion.div>
-
               </div>
             </div>
           </div>

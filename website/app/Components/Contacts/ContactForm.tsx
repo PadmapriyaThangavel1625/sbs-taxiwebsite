@@ -1,134 +1,484 @@
-
 "use client";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
 import {
+  AlertCircle,
+  CarFront,
+  CheckCircle2,
+  ChevronDown,
+  Loader2,
+  Mail,
+  MapPin,
+  MessageSquare,
+  Phone,
   Send,
   User,
-  Phone,
-  Mail,
-  MessageSquare,
-  ChevronDown,
-  MapPin,
-  CheckCircle2,
-  AlertCircle,
 } from "lucide-react";
 
+/* ============================================================
+   CONSTANTS
+============================================================ */
+
+const MAX_MESSAGE_LENGTH = 1000;
+const REQUEST_TIMEOUT = 15000;
+
+/* ============================================================
+   INPUT STYLES
+============================================================ */
+
+const inputClassName = `
+  w-full
+  rounded-xl
+  border
+  border-slate-200
+  bg-white
+  px-4
+  py-3
+  text-sm
+  text-[var(--text)]
+  outline-none
+  placeholder:text-slate-400
+  transition-all
+  duration-200
+  hover:border-slate-300
+  focus:border-[var(--primary)]
+  focus:bg-white
+  focus:ring-4
+  focus:ring-[var(--primary)]/10
+  disabled:cursor-not-allowed
+  disabled:bg-slate-50
+  disabled:opacity-60
+`;
+
+const labelClassName = `
+  mb-2
+  flex
+  items-center
+  gap-1.5
+  text-[11px]
+  font-semibold
+  uppercase
+  tracking-[0.12em]
+  text-slate-700
+`;
+
+/* ============================================================
+   TYPES
+============================================================ */
+
+type StatusType = "success" | "error" | "";
+
+interface FormStatus {
+  type: StatusType;
+  message: string;
+}
+
+interface ApiResponse {
+  success?: boolean;
+  message?: string;
+  error?: string;
+}
+
+/* ============================================================
+   COMPONENT
+============================================================ */
+
 export default function ContactForm() {
+  const formRef = useRef<HTMLFormElement>(null);
+
   const [loading, setLoading] = useState(false);
 
-  const [status, setStatus] = useState<{
-    type: "success" | "error" | "";
-    message: string;
-  }>({
+  const [status, setStatus] = useState<FormStatus>({
     type: "",
     message: "",
   });
 
-  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
+  const [messageLength, setMessageLength] = useState(0);
+
+  /* ==========================================================
+     AUTO CLEAR STATUS
+  ========================================================== */
+
+  useEffect(() => {
+    if (!status.message) return;
+
+    const timer = window.setTimeout(() => {
+      setStatus({
+        type: "",
+        message: "",
+      });
+    }, 8000);
+
+    return () => window.clearTimeout(timer);
+  }, [status.message]);
+
+  /* ==========================================================
+     STATUS HELPERS
+  ========================================================== */
+
+  function showError(message: string) {
+    setStatus({
+      type: "error",
+      message,
+    });
+
+    setLoading(false);
+  }
+
+  function showSuccess(message: string) {
+    setStatus({
+      type: "success",
+      message,
+    });
+  }
+
+  /* ==========================================================
+     FORM SUBMIT
+  ========================================================== */
+
+  async function handleSubmit(
+    e: FormEvent<HTMLFormElement>
+  ) {
     e.preventDefault();
 
-    setLoading(true);
+    if (loading) return;
+
+    const form = e.currentTarget;
 
     setStatus({
       type: "",
       message: "",
     });
 
-    const form = e.currentTarget;
+    setLoading(true);
+
+    /* ========================================================
+       FORM DATA
+    ======================================================== */
+
     const formData = new FormData(form);
 
+    const name = String(
+      formData.get("name") || ""
+    ).trim();
+
+    const phone = String(
+      formData.get("phone") || ""
+    ).trim();
+
+    const email = String(
+      formData.get("email") || ""
+    ).trim();
+
+    const pickup = String(
+      formData.get("pickup") || ""
+    ).trim();
+
+    const drop = String(
+      formData.get("drop") || ""
+    ).trim();
+
+    const vehicleType = String(
+      formData.get("vehicleType") || ""
+    ).trim();
+
+    const subject = String(
+      formData.get("subject") || ""
+    ).trim();
+
+    const message = String(
+      formData.get("message") || ""
+    ).trim();
+
+    /* ========================================================
+       VALIDATION
+    ======================================================== */
+
+    if (name.length < 2) {
+      showError("Please enter a valid name.");
+      return;
+    }
+
+    const normalizedPhone =
+      phone.replace(/\D/g, "");
+
+    if (
+      normalizedPhone.length < 8 ||
+      normalizedPhone.length > 15
+    ) {
+      showError(
+        "Please enter a valid phone number."
+      );
+      return;
+    }
+
+    const emailRegex =
+      /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!emailRegex.test(email)) {
+      showError(
+        "Please enter a valid email address."
+      );
+      return;
+    }
+
+    if (pickup.length < 2) {
+      showError(
+        "Please enter a valid pickup location."
+      );
+      return;
+    }
+
+    if (drop.length < 2) {
+      showError(
+        "Please enter a valid drop location."
+      );
+      return;
+    }
+
+    if (!vehicleType) {
+      showError(
+        "Please select a vehicle type."
+      );
+      return;
+    }
+
+    if (!subject) {
+      showError(
+        "Please select a service."
+      );
+      return;
+    }
+
+    if (message.length < 10) {
+      showError(
+        "Please provide at least 10 characters in your message."
+      );
+      return;
+    }
+
+    if (
+      message.length >
+      MAX_MESSAGE_LENGTH
+    ) {
+      showError(
+        `Message cannot exceed ${MAX_MESSAGE_LENGTH} characters.`
+      );
+      return;
+    }
+
+    /* ========================================================
+       REQUEST DATA
+    ======================================================== */
+
     const data = {
-      name: formData.get("name"),
-      phone: formData.get("phone"),
-      email: formData.get("email"),
-      pickup: formData.get("pickup"),
-      drop: formData.get("drop"),
-      subject: formData.get("subject"),
-      message: formData.get("message"),
+      name,
+      phone,
+      email,
+      pickup,
+      drop,
+      vehicleType,
+      subject,
+      message,
     };
 
-    try {
-      const response = await fetch("/api/email", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
+    /* ========================================================
+       ABORT CONTROLLER
+    ======================================================== */
 
-      const result = await response.json();
+    const controller =
+      new AbortController();
+
+    const timeout = window.setTimeout(() => {
+      controller.abort();
+    }, REQUEST_TIMEOUT);
+
+    /* ========================================================
+       SEND REQUEST
+    ======================================================== */
+
+    try {
+      const response = await fetch(
+        "/api/email",
+        {
+          method: "POST",
+
+          headers: {
+            "Content-Type":
+              "application/json",
+          },
+
+          body: JSON.stringify(data),
+
+          signal: controller.signal,
+        }
+      );
+
+      /* ======================================================
+         RESPONSE
+      ====================================================== */
+
+      let result: ApiResponse = {};
+
+      try {
+        result = await response.json();
+      } catch {
+        result = {};
+      }
 
       if (!response.ok) {
         throw new Error(
-          result.message || "Unable to send your message."
+          result.error ||
+            result.message ||
+            "Unable to send your message. Please try again."
         );
       }
 
-      setStatus({
-        type: "success",
-        message:
-          "Your enquiry has been sent successfully. We will contact you shortly.",
-      });
+      if (result.success === false) {
+        throw new Error(
+          result.error ||
+            "Unable to send your message. Please try again."
+        );
+      }
+
+      /* ======================================================
+         SUCCESS
+      ====================================================== */
+
+      showSuccess(
+        result.message ||
+          "Your enquiry has been sent successfully. Our SBS Taxi team will contact you shortly."
+      );
 
       form.reset();
-    } catch (error) {
-      console.error(error);
 
-      setStatus({
-        type: "error",
-        message:
-          error instanceof Error
-            ? error.message
-            : "Unable to send your message. Please try again.",
-      });
+      setMessageLength(0);
+
+      window.setTimeout(() => {
+        document
+          .getElementById(
+            "contact-form-status"
+          )
+          ?.scrollIntoView({
+            behavior: "smooth",
+            block: "nearest",
+          });
+      }, 100);
+    } catch (error) {
+      console.error(
+        "SBS Taxi Contact Form Error:",
+        error
+      );
+
+      if (
+        error instanceof DOMException &&
+        error.name === "AbortError"
+      ) {
+        showError(
+          "The request took too long. Please check your connection and try again."
+        );
+
+        return;
+      }
+
+      showError(
+        error instanceof Error
+          ? error.message
+          : "Unable to send your message. Please try again."
+      );
     } finally {
+      window.clearTimeout(timeout);
       setLoading(false);
     }
   }
 
+  /* ============================================================
+     RENDER
+  ============================================================ */
+
   return (
     <section
+      aria-labelledby="contact-form-title"
       className="
-        font-[family-name:var(--font-jakarta)]
-        rounded-3xl
+        relative
+        w-full
+        overflow-hidden
+        rounded-[28px]
         border
-        border-[var(--border)]
+        border-slate-200
         bg-white
         p-5
-        shadow-sm
+        shadow-[0_12px_40px_rgba(15,23,42,0.08)]
+        ring-1
+        ring-black/[0.02]
         sm:p-7
         lg:p-8
       "
     >
-      {/* Header */}
-      <div className="mb-6">
-        <span
+      {/* =====================================================
+          PREMIUM TOP BORDER
+      ====================================================== */}
+
+      <div
+        aria-hidden="true"
+        className="
+          absolute
+          left-0
+          right-0
+          top-0
+          h-[3px]
+          bg-gradient-to-r
+          from-[var(--primary)]
+          via-[var(--primary)]
+          to-[#D99A2B]
+        "
+      />
+
+      {/* =====================================================
+          INNER BORDER
+      ====================================================== */}
+
+      <div
+        aria-hidden="true"
+        className="
+          pointer-events-none
+          absolute
+          inset-[5px]
+          rounded-[23px]
+          border
+          border-slate-100
+        "
+      />
+
+      {/* =====================================================
+          HEADER
+      ====================================================== */}
+
+      <div className="relative mb-8">
+        {/* Small Accent */}
+
+        <div
           className="
-            inline-flex
+            mb-5
+            h-[3px]
+            w-12
             rounded-full
-            bg-[var(--primary-light)]
-            px-3
-            py-1
-            text-[11px]
-            font-bold
-            uppercase
-            tracking-wider
-            text-[var(--primary)]
+            bg-gradient-to-r
+            from-[var(--primary)]
+            to-[#D99A2B]
           "
-        >
-          Contact Us
-        </span>
+        />
 
         <h2
+          id="contact-form-title"
           className="
-            mt-3
             font-[family-name:var(--font-instrument)]
-            text-2xl
+            text-[32px]
             font-normal
+            leading-tight
             tracking-tight
             text-[var(--text)]
-            sm:text-3xl
+            sm:text-4xl
           "
         >
           Send Us a Message
@@ -136,280 +486,352 @@ export default function ContactForm() {
 
         <p
           className="
-            mt-2
+            mt-3
             max-w-xl
-            text-sm
-            leading-6
-            text-[var(--muted)]
+            text-[15px]
+            leading-7
+            text-slate-600
           "
         >
-          Have a question, booking request, or feedback? Fill out the
-          form below and our team will get back to you.
+          Questions about availability, pricing,
+          or scheduling a ride? We're here to
+          help.
         </p>
       </div>
 
-      {/* Form */}
+      {/* =====================================================
+          FORM
+      ====================================================== */}
+
       <form
+        ref={formRef}
         onSubmit={handleSubmit}
-        className="space-y-5"
+        noValidate
+        className="
+          relative
+          space-y-5
+        "
       >
-        {/* Name + Phone */}
-        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
-          {/* Name */}
+        {/* ===================================================
+            NAME + EMAIL
+        ==================================================== */}
+
+        <div
+          className="
+            grid
+            grid-cols-1
+            gap-5
+            sm:grid-cols-2
+          "
+        >
+          {/* NAME */}
+
           <div>
             <label
               htmlFor="name"
-              className="
-                mb-2
-                flex
-                items-center
-                gap-1.5
-                text-xs
-                font-semibold
-                text-[var(--text)]
-              "
+              className={labelClassName}
             >
-              <User className="h-3.5 w-3.5 text-[var(--primary)]" />
-              Your Name
-              <span className="text-[var(--primary)]">*</span>
+              <User
+                aria-hidden="true"
+                className="
+                  h-3.5
+                  w-3.5
+                  text-[var(--primary)]
+                "
+              />
+
+              Full Name
+
+              <span className="text-[var(--primary)]">
+                *
+              </span>
             </label>
 
             <input
               id="name"
               name="name"
               type="text"
-              placeholder="Enter your name"
+              placeholder="Your Name"
               required
+              minLength={2}
+              maxLength={80}
               autoComplete="name"
-              className="
-                w-full
-                rounded-xl
-                border
-                border-[var(--border)]
-                bg-[var(--background)]
-                px-4
-                py-3
-                text-sm
-                text-[var(--text)]
-                outline-none
-                placeholder:text-[var(--muted)]
-                transition-all
-                focus:border-[var(--primary)]
-                focus:bg-white
-                focus:ring-4
-                focus:ring-[var(--primary)]/10
-              "
+              disabled={loading}
+              className={inputClassName}
             />
           </div>
 
-          {/* Phone */}
+          {/* EMAIL */}
+
+          <div>
+            <label
+              htmlFor="email"
+              className={labelClassName}
+            >
+              <Mail
+                aria-hidden="true"
+                className="
+                  h-3.5
+                  w-3.5
+                  text-[var(--primary)]
+                "
+              />
+
+              Email Address
+
+              <span className="text-[var(--primary)]">
+                *
+              </span>
+            </label>
+
+            <input
+              id="email"
+              name="email"
+              type="email"
+              placeholder="Your Email Address"
+              required
+              maxLength={120}
+              autoComplete="email"
+              disabled={loading}
+              className={inputClassName}
+            />
+          </div>
+        </div>
+
+        {/* ===================================================
+            PHONE + VEHICLE TYPE
+        ==================================================== */}
+
+        <div
+          className="
+            grid
+            grid-cols-1
+            gap-5
+            sm:grid-cols-2
+          "
+        >
+          {/* PHONE */}
+
           <div>
             <label
               htmlFor="phone"
-              className="
-                mb-2
-                flex
-                items-center
-                gap-1.5
-                text-xs
-                font-semibold
-                text-[var(--text)]
-              "
+              className={labelClassName}
             >
-              <Phone className="h-3.5 w-3.5 text-[var(--primary)]" />
+              <Phone
+                aria-hidden="true"
+                className="
+                  h-3.5
+                  w-3.5
+                  text-[var(--primary)]
+                "
+              />
+
               Phone Number
-              <span className="text-[var(--primary)]">*</span>
+
+              <span className="text-[var(--primary)]">
+                *
+              </span>
             </label>
 
             <input
               id="phone"
               name="phone"
               type="tel"
-              placeholder="Enter your phone number"
+              placeholder="+91 98435 44844"
               required
+              maxLength={20}
               inputMode="tel"
               autoComplete="tel"
-              className="
-                w-full
-                rounded-xl
-                border
-                border-[var(--border)]
-                bg-[var(--background)]
-                px-4
-                py-3
-                text-sm
-                text-[var(--text)]
-                outline-none
-                placeholder:text-[var(--muted)]
-                transition-all
-                focus:border-[var(--primary)]
-                focus:bg-white
-                focus:ring-4
-                focus:ring-[var(--primary)]/10
-              "
+              disabled={loading}
+              className={inputClassName}
             />
+          </div>
+
+          {/* VEHICLE TYPE */}
+
+          <div>
+            <label
+              htmlFor="vehicleType"
+              className={labelClassName}
+            >
+              <CarFront
+                aria-hidden="true"
+                className="
+                  h-3.5
+                  w-3.5
+                  text-[var(--primary)]
+                "
+              />
+
+              Vehicle Type
+
+              <span className="text-[var(--primary)]">
+                *
+              </span>
+            </label>
+
+            <div className="relative">
+              <select
+                id="vehicleType"
+                name="vehicleType"
+                required
+                defaultValue=""
+                disabled={loading}
+                className={`
+                  ${inputClassName}
+                  appearance-none
+                  pr-11
+                `}
+              >
+                <option
+                  value=""
+                  disabled
+                >
+                  Select Vehicle Type
+                </option>
+
+                <option value="SBS MINI">
+                  SBS MINI
+                </option>
+
+                <option value="SBS SEDAN">
+                  SBS SEDAN
+                </option>
+
+                <option value="SBS VAN">
+                  SBS VAN
+                </option>
+
+                <option value="SBS SUV">
+                  SBS SUV
+                </option>
+              </select>
+
+              <ChevronDown
+                aria-hidden="true"
+                className="
+                  pointer-events-none
+                  absolute
+                  right-4
+                  top-1/2
+                  h-4
+                  w-4
+                  -translate-y-1/2
+                  text-slate-400
+                "
+              />
+            </div>
           </div>
         </div>
 
-        {/* Email */}
-        <div>
-          <label
-            htmlFor="email"
-            className="
-              mb-2
-              flex
-              items-center
-              gap-1.5
-              text-xs
-              font-semibold
-              text-[var(--text)]
-            "
-          >
-            <Mail className="h-3.5 w-3.5 text-[var(--primary)]" />
-            Email Address
-            <span className="text-[var(--primary)]">*</span>
-          </label>
+        {/* ===================================================
+            PICKUP + DROP
+        ==================================================== */}
 
-          <input
-            id="email"
-            name="email"
-            type="email"
-            placeholder="Enter your email address"
-            required
-            autoComplete="email"
-            className="
-              w-full
-              rounded-xl
-              border
-              border-[var(--border)]
-              bg-[var(--background)]
-              px-4
-              py-3
-              text-sm
-              text-[var(--text)]
-              outline-none
-              placeholder:text-[var(--muted)]
-              transition-all
-              focus:border-[var(--primary)]
-              focus:bg-white
-              focus:ring-4
-              focus:ring-[var(--primary)]/10
-            "
-          />
-        </div>
+        <div
+          className="
+            grid
+            grid-cols-1
+            gap-5
+            sm:grid-cols-2
+          "
+        >
+          {/* PICKUP */}
 
-        {/* Pickup + Drop */}
-        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
-          {/* Pickup */}
           <div>
             <label
               htmlFor="pickup"
-              className="
-                mb-2
-                flex
-                items-center
-                gap-1.5
-                text-xs
-                font-semibold
-                text-[var(--text)]
-              "
+              className={labelClassName}
             >
-              <MapPin className="h-3.5 w-3.5 text-[var(--primary)]" />
+              <MapPin
+                aria-hidden="true"
+                className="
+                  h-3.5
+                  w-3.5
+                  text-[var(--primary)]
+                "
+              />
+
               Pickup Location
-              <span className="text-[var(--primary)]">*</span>
+
+              <span className="text-[var(--primary)]">
+                *
+              </span>
             </label>
 
             <input
               id="pickup"
               name="pickup"
               type="text"
-              placeholder="Enter pickup location"
+              placeholder="Enter Pickup Location"
               required
-              className="
-                w-full
-                rounded-xl
-                border
-                border-[var(--border)]
-                bg-[var(--background)]
-                px-4
-                py-3
-                text-sm
-                text-[var(--text)]
-                outline-none
-                placeholder:text-[var(--muted)]
-                transition-all
-                focus:border-[var(--primary)]
-                focus:bg-white
-                focus:ring-4
-                focus:ring-[var(--primary)]/10
-              "
+              minLength={2}
+              maxLength={200}
+              disabled={loading}
+              className={inputClassName}
             />
           </div>
 
-          {/* Drop */}
+          {/* DROP */}
+
           <div>
             <label
               htmlFor="drop"
-              className="
-                mb-2
-                flex
-                items-center
-                gap-1.5
-                text-xs
-                font-semibold
-                text-[var(--text)]
-              "
+              className={labelClassName}
             >
-              <MapPin className="h-3.5 w-3.5 text-[var(--primary)]" />
+              <MapPin
+                aria-hidden="true"
+                className="
+                  h-3.5
+                  w-3.5
+                  text-[var(--primary)]
+                "
+              />
+
               Drop Location
-              <span className="text-[var(--primary)]">*</span>
+
+              <span className="text-[var(--primary)]">
+                *
+              </span>
             </label>
 
             <input
               id="drop"
               name="drop"
               type="text"
-              placeholder="Enter drop location"
+              placeholder="Enter Drop Location"
               required
-              className="
-                w-full
-                rounded-xl
-                border
-                border-[var(--border)]
-                bg-[var(--background)]
-                px-4
-                py-3
-                text-sm
-                text-[var(--text)]
-                outline-none
-                placeholder:text-[var(--muted)]
-                transition-all
-                focus:border-[var(--primary)]
-                focus:bg-white
-                focus:ring-4
-                focus:ring-[var(--primary)]/10
-              "
+              minLength={2}
+              maxLength={200}
+              disabled={loading}
+              className={inputClassName}
             />
           </div>
         </div>
 
-        {/* Service */}
+        {/* ===================================================
+            SERVICE
+        ==================================================== */}
+
         <div>
           <label
             htmlFor="subject"
-            className="
-              mb-2
-              flex
-              items-center
-              gap-1.5
-              text-xs
-              font-semibold
-              text-[var(--text)]
-            "
+            className={labelClassName}
           >
-            <MessageSquare className="h-3.5 w-3.5 text-[var(--primary)]" />
+            <MessageSquare
+              aria-hidden="true"
+              className="
+                h-3.5
+                w-3.5
+                text-[var(--primary)]
+              "
+            />
+
             Service Required
-            <span className="text-[var(--primary)]">*</span>
+
+            <span className="text-[var(--primary)]">
+              *
+            </span>
           </label>
 
           <div className="relative">
@@ -418,28 +840,18 @@ export default function ContactForm() {
               name="subject"
               required
               defaultValue=""
-              className="
-                w-full
+              disabled={loading}
+              className={`
+                ${inputClassName}
                 appearance-none
-                rounded-xl
-                border
-                border-[var(--border)]
-                bg-[var(--background)]
-                px-4
-                py-3
                 pr-11
-                text-sm
-                text-[var(--text)]
-                outline-none
-                transition-all
-                focus:border-[var(--primary)]
-                focus:bg-white
-                focus:ring-4
-                focus:ring-[var(--primary)]/10
-              "
+              `}
             >
-              <option value="" disabled>
-                Select a service
+              <option
+                value=""
+                disabled
+              >
+                Select a Service
               </option>
 
               <option value="Local City Rides">
@@ -465,9 +877,22 @@ export default function ContactForm() {
               <option value="Corporate Trips">
                 Corporate Trips
               </option>
+
+              <option value="Temple Tours">
+                Temple Tours
+              </option>
+
+              <option value="General Enquiry">
+                General Enquiry
+              </option>
+
+              <option value="Customer Support">
+                Customer Support
+              </option>
             </select>
 
             <ChevronDown
+              aria-hidden="true"
               className="
                 pointer-events-none
                 absolute
@@ -476,30 +901,63 @@ export default function ContactForm() {
                 h-4
                 w-4
                 -translate-y-1/2
-                text-[var(--muted)]
+                text-slate-400
               "
             />
           </div>
         </div>
 
-        {/* Message */}
+        {/* ===================================================
+            MESSAGE
+        ==================================================== */}
+
         <div>
-          <label
-            htmlFor="message"
+          <div
             className="
               mb-2
               flex
               items-center
-              gap-1.5
-              text-xs
-              font-semibold
-              text-[var(--text)]
+              justify-between
             "
           >
-            <MessageSquare className="h-3.5 w-3.5 text-[var(--primary)]" />
-            Message
-            <span className="text-[var(--primary)]">*</span>
-          </label>
+            <label
+              htmlFor="message"
+              className={`
+                ${labelClassName}
+                mb-0
+              `}
+            >
+              <MessageSquare
+                aria-hidden="true"
+                className="
+                  h-3.5
+                  w-3.5
+                  text-[var(--primary)]
+                "
+              />
+
+              Message
+
+              <span className="text-[var(--primary)]">
+                *
+              </span>
+            </label>
+
+            <span
+              className={`
+                text-[10px]
+                ${
+                  messageLength >
+                  MAX_MESSAGE_LENGTH * 0.9
+                    ? "font-semibold text-orange-500"
+                    : "text-slate-400"
+                }
+              `}
+            >
+              {messageLength}/
+              {MAX_MESSAGE_LENGTH}
+            </span>
+          </div>
 
           <textarea
             id="message"
@@ -507,32 +965,31 @@ export default function ContactForm() {
             rows={5}
             placeholder="Tell us about your travel requirements..."
             required
-            className="
-              w-full
+            minLength={10}
+            maxLength={MAX_MESSAGE_LENGTH}
+            disabled={loading}
+            onChange={(e) =>
+              setMessageLength(
+                e.target.value.length
+              )
+            }
+            className={`
+              ${inputClassName}
               resize-none
-              rounded-xl
-              border
-              border-[var(--border)]
-              bg-[var(--background)]
-              px-4
-              py-3
-              text-sm
               leading-6
-              text-[var(--text)]
-              outline-none
-              placeholder:text-[var(--muted)]
-              transition-all
-              focus:border-[var(--primary)]
-              focus:bg-white
-              focus:ring-4
-              focus:ring-[var(--primary)]/10
-            "
+            `}
           />
         </div>
 
-        {/* Status */}
+        {/* ===================================================
+            STATUS
+        ==================================================== */}
+
         {status.message && (
           <div
+            id="contact-form-status"
+            role="alert"
+            aria-live="polite"
             className={`
               flex
               items-start
@@ -543,25 +1000,55 @@ export default function ContactForm() {
               text-sm
               ${
                 status.type === "success"
-                  ? "border-green-200 bg-green-50 text-green-700"
-                  : "border-red-200 bg-red-50 text-red-700"
+                  ? `
+                    border-green-200
+                    bg-green-50
+                    text-green-700
+                  `
+                  : `
+                    border-red-200
+                    bg-red-50
+                    text-red-700
+                  `
               }
             `}
           >
             {status.type === "success" ? (
-              <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0" />
+              <CheckCircle2
+                aria-hidden="true"
+                className="
+                  mt-0.5
+                  h-5
+                  w-5
+                  shrink-0
+                "
+              />
             ) : (
-              <AlertCircle className="mt-0.5 h-5 w-5 shrink-0" />
+              <AlertCircle
+                aria-hidden="true"
+                className="
+                  mt-0.5
+                  h-5
+                  w-5
+                  shrink-0
+                "
+              />
             )}
 
-            <p>{status.message}</p>
+            <p className="leading-5">
+              {status.message}
+            </p>
           </div>
         )}
 
-        {/* Submit */}
+        {/* ===================================================
+            SUBMIT BUTTON
+        ==================================================== */}
+
         <button
           type="submit"
           disabled={loading}
+          aria-disabled={loading}
           className="
             group
             flex
@@ -583,40 +1070,64 @@ export default function ContactForm() {
             hover:-translate-y-0.5
             hover:bg-[var(--primary-dark)]
             hover:shadow-lg
+            focus:outline-none
+            focus:ring-4
+            focus:ring-[var(--primary)]/20
             disabled:cursor-not-allowed
+            disabled:translate-y-0
             disabled:opacity-60
           "
         >
-          <Send
-            className={`
-              h-4
-              w-4
-              transition-transform
-              duration-300
-              ${
-                loading
-                  ? "animate-pulse"
-                  : "group-hover:translate-x-0.5"
-              }
-            `}
-          />
+          {loading ? (
+            <>
+              <Loader2
+                aria-hidden="true"
+                className="
+                  h-4
+                  w-4
+                  animate-spin
+                "
+              />
 
-          <span>
-            {loading ? "Sending..." : "Send Message"}
-          </span>
+              <span>
+                Sending...
+              </span>
+            </>
+          ) : (
+            <>
+              <Send
+                aria-hidden="true"
+                className="
+                  h-4
+                  w-4
+                  transition-transform
+                  duration-300
+                  group-hover:translate-x-0.5
+                "
+              />
+
+              <span>
+                Send Message
+              </span>
+            </>
+          )}
         </button>
 
-        {/* Privacy */}
+        {/* ===================================================
+            PRIVACY
+        ==================================================== */}
+
         <p
           className="
             text-center
             text-[11px]
             leading-5
-            text-[var(--muted)]
+            text-slate-400
           "
         >
-          We respect your privacy and will only use your information
-          to respond to your enquiry.
+          We respect your privacy and will only
+          use your information to respond to your
+          enquiry.
         </p>
       </form>
     </section>

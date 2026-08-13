@@ -1,415 +1,526 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import {
-  MessageCircle,
-  X,
-  ChevronRight,
-  Car,
-  MapPin,
-  Phone,
-  ArrowLeft,
-  Send,
-} from "lucide-react";
 import Logo from "@/app/Components/Logo";
+import { useState, useRef, useEffect } from "react";
 
-type ChatScreen = "menu" | "chat";
+import {
+  Bot,
+  X,
+  Send,
+  MessageCircle,
+  Phone,
+  MapPin,
+  Car,
+  IndianRupee,
+  Plane,
+  Building2,
+  HelpCircle,
+  AlertCircle,
+  Star,
+  FileText,
+  Package,
+  UserRound,
+  ChevronRight,
+  Minimize2,
+} from "lucide-react";
 
-type ChatMessage = {
+/* =========================================================
+   MESSAGE TYPE
+========================================================= */
+
+type Message = {
   id: number;
-  role: "user" | "assistant";
-  content: string;
-  action?: "booking" | "contact";
+  sender: "bot" | "user";
+  text: string;
 };
 
-/* =====================================================
-   SBS TAXI FAQ
-===================================================== */
+/* =========================================================
+   MENU ITEMS
+========================================================= */
 
-const defaultQuestions = [
+const menuItems = [
   {
-    question: "🚕 How can I book a taxi?",
-    answer:
-      "You can book an SBS Taxi by entering your pickup and drop location, selecting a vehicle, and confirming your booking.",
-    action: "booking" as const,
+    label: "🚖 Book a Taxi",
+    key: "book",
+    icon: Car,
   },
   {
-    question: "💰 What is the taxi fare?",
-    answer:
-      "Taxi fare depends on the distance, vehicle type, and trip type. Enter your pickup and drop locations to check the estimated fare.",
+    label: "💰 Fare Estimate",
+    key: "fare",
+    icon: IndianRupee,
   },
   {
-    question: "📍 Where do you provide service?",
-    answer:
-      "SBS Taxi provides local city rides, outstation trips, airport rides and trips to popular tourist destinations.",
+    label: "📍 Track My Ride",
+    key: "track",
+    icon: MapPin,
   },
   {
-    question: "✈️ Do you provide airport rides?",
-    answer:
-      "Yes. SBS Taxi provides airport pickup and drop services.",
+    label: "🚗 Our Fleet",
+    key: "fleet",
+    icon: Car,
   },
   {
-    question: "🕐 Can I book for later?",
-    answer:
-      "Yes. You can schedule a taxi for a future date and time through the booking option.",
-    action: "booking" as const,
+    label: "🎁 Offers & Discounts",
+    key: "offers",
+    icon: Star,
   },
   {
-    question: "🚗 What vehicles are available?",
-    answer:
-      "SBS Taxi provides vehicle options such as Mini, Sedan, SUV and other available categories.",
+    label: "🛫 Airport Transfer",
+    key: "airport",
+    icon: Plane,
   },
   {
-    question: "🗺️ Do you provide outstation trips?",
-    answer:
-      "Yes. SBS Taxi provides one-way and round-trip outstation taxi services.",
+    label: "🏢 Corporate Booking",
+    key: "corporate",
+    icon: Building2,
   },
   {
-    question: "🏨 Do you provide tourist trips?",
-    answer:
-      "Yes. SBS Taxi can help you travel to popular tourist destinations and sightseeing places.",
+    label: "📦 Parcel Delivery",
+    key: "parcel",
+    icon: Package,
   },
   {
-    question: "💳 What payment methods are accepted?",
-    answer:
-      "Payment options can include Cash, UPI and other available payment methods.",
+    label: "❓ FAQs",
+    key: "faq",
+    icon: HelpCircle,
   },
   {
-    question: "❌ How can I cancel my booking?",
-    answer:
-      "You can cancel your booking from the booking or active trip section. Cancellation charges may apply.",
+    label: "🆘 Emergency Support",
+    key: "emergency",
+    icon: AlertCircle,
   },
   {
-    question: "📞 How can I contact SBS Taxi?",
-    answer:
-      "You can contact SBS Taxi by calling +91 98435 44844.",
-    action: "contact" as const,
+    label: "📞 Call Customer Care",
+    key: "contact",
+    icon: Phone,
   },
   {
-    question: "🎁 Do you have any offers?",
-    answer:
-      "SBS Taxi may provide special offers and discounts. Please check the Offers section for current offers.",
+    label: "💬 Chat with Executive",
+    key: "executive",
+    icon: UserRound,
+  },
+  {
+    label: "⭐ Rate Your Ride",
+    key: "rate",
+    icon: Star,
+  },
+  {
+    label: "📝 Feedback & Complaints",
+    key: "feedback",
+    icon: FileText,
   },
 ];
 
-/* =====================================================
-   LOCAL AI ANSWER SYSTEM
-===================================================== */
+/* =========================================================
+   QUICK REPLIES
+========================================================= */
 
-function getAnswer(message: string): {
-  answer: string;
-  action?: "booking" | "contact";
-} {
-  const lower = message.toLowerCase().trim();
+const quickReplies = [
+  {
+    label: "🚖 Book Now",
+    key: "book",
+  },
+  {
+    label: "📍 Track Ride",
+    key: "track",
+  },
+  {
+    label: "💵 Check Fare",
+    key: "fare",
+  },
+  {
+    label: "📞 Call Us",
+    key: "contact",
+  },
+  {
+    label: "💬 Live Chat",
+    key: "executive",
+  },
+];
 
-  if (
-    lower.includes("hi") ||
-    lower.includes("hello") ||
-    lower.includes("hey") ||
-    lower.includes("hai")
-  ) {
-    return {
-      answer:
-        "👋 Hi! Welcome to SBS Taxi. How can I help you? You can ask me about booking, fare, airport rides, vehicles, outstation trips, payments or offers.",
-    };
-  }
+/* =========================================================
+   BOT ANSWERS
+========================================================= */
 
-  if (
-    lower.includes("book") ||
-    lower.includes("booking") ||
-    lower.includes("taxi") ||
-    lower.includes("ride")
-  ) {
-    return {
-      answer: defaultQuestions[0].answer,
-      action: "booking",
-    };
-  }
+const answers: Record<string, string> = {
+  welcome: `Welcome to SBS Taxi! 🚖
 
-  if (
-    lower.includes("fare") ||
-    lower.includes("price") ||
-    lower.includes("cost") ||
-    lower.includes("rate")
-  ) {
-    return {
-      answer: defaultQuestions[1].answer,
-    };
-  }
+One Brand. One Fare. One Trusted Service.
 
-  if (
-    lower.includes("where") ||
-    lower.includes("service") ||
-    lower.includes("area") ||
-    lower.includes("location")
-  ) {
-    return {
-      answer: defaultQuestions[2].answer,
-    };
-  }
+How can we help you today?`,
 
-  if (lower.includes("airport") || lower.includes("flight")) {
-    return {
-      answer: defaultQuestions[3].answer,
-    };
-  }
+  book: `Booking a taxi is simple! 🚖
 
-  if (
-    lower.includes("later") ||
-    lower.includes("schedule") ||
-    lower.includes("future") ||
-    lower.includes("tomorrow")
-  ) {
-    return {
-      answer: defaultQuestions[4].answer,
-      action: "booking",
-    };
-  }
+Please share:
 
-  if (
-    lower.includes("vehicle") ||
-    lower.includes("car") ||
-    lower.includes("sedan") ||
-    lower.includes("suv") ||
-    lower.includes("mini")
-  ) {
-    return {
-      answer: defaultQuestions[5].answer,
-    };
-  }
+1. 📍 Pickup Location
+2. 📍 Drop Location
+3. 📅 Travel Date
+4. 🕒 Pickup Time
+5. 👥 Number of Passengers
 
-  if (
-    lower.includes("outstation") ||
-    lower.includes("out station") ||
-    lower.includes("one way") ||
-    lower.includes("round trip")
-  ) {
-    return {
-      answer: defaultQuestions[6].answer,
-    };
-  }
+We'll confirm your booking within minutes.
 
-  if (
-    lower.includes("tourist") ||
-    lower.includes("destination") ||
-    lower.includes("sightseeing") ||
-    lower.includes("place")
-  ) {
-    return {
-      answer: defaultQuestions[7].answer,
-    };
-  }
+You can also book through our website or mobile app.`,
 
-  if (
-    lower.includes("payment") ||
-    lower.includes("upi") ||
-    lower.includes("cash")
-  ) {
-    return {
-      answer: defaultQuestions[8].answer,
-    };
-  }
+  fare: `Our starting fares:
 
-  if (
-    lower.includes("cancel") ||
-    lower.includes("cancellation")
-  ) {
-    return {
-      answer: defaultQuestions[9].answer,
-    };
-  }
+🚗 SBS Mini – From ₹12/km
+🚙 SBS Sedan – From ₹12.50/km
+🚘 SBS SUV – From ₹17/km
+🚖 SBS MUV – From ₹18/km
+👑 SBS MUV+ – From ₹19/km
 
-  if (
-    lower.includes("contact") ||
-    lower.includes("phone") ||
-    lower.includes("support") ||
-    lower.includes("call")
-  ) {
-    return {
-      answer: defaultQuestions[10].answer,
-      action: "contact",
-    };
-  }
+The final fare depends on distance, trip type, tolls, parking and travel duration, where applicable.`,
 
-  if (
-    lower.includes("offer") ||
-    lower.includes("discount") ||
-    lower.includes("coupon")
-  ) {
-    return {
-      answer: defaultQuestions[11].answer,
-    };
-  }
+  track: `📍 Track My Ride
 
-  return {
+Please enter your Booking ID or Registered Mobile Number to track your taxi in real time.
+
+If you need assistance, our support team is available 24×7.`,
+
+  fleet: `🚗 Our Fleet
+
+Choose the vehicle that best suits your trip:
+
+🚗 SBS Mini
+🚙 SBS Sedan
+🚐 SBS Van
+🚘 SBS SUV
+🚖 SBS MUV
+🌿 SBS EV
+💼 SBS Corporate
+⭐ SBS Premium
+👑 SBS Luxury
+🚌 SBS Traveller
+
+You can select your preferred vehicle during booking, subject to availability.`,
+
+  offers: `🎁 Current Customer Benefits
+
+🎉 ₹50 OFF on your first 3 rides
+💸 ₹20 OFF on every ride after that
+✅ No hidden charges
+✅ No driver bata charges
+✅ No waiting charges
+✅ No extra fee for online payments
+
+Offers may be subject to applicable terms and conditions.`,
+
+  airport: `🛫 Airport Transfer
+
+Book reliable airport pickup and drop services with SBS Taxi.
+
+Available 24×7 for:
+
+✈️ Domestic Airports
+✈️ International Airports
+📍 Flight tracking
+⏰ On-time pickup
+👨‍✈️ Professional drivers
+
+Please share your flight number and pickup details when booking.`,
+
+  corporate: `🏢 Corporate Booking
+
+We provide business travel solutions including:
+
+• Employee transportation
+• Airport transfers
+• Client pickup
+• Monthly billing
+• GST invoices
+• Dedicated account manager
+
+Please share your company name and travel requirements with our team.`,
+
+  parcel: `📦 Parcel Delivery
+
+Need to send a parcel?
+
+We provide same-day local parcel delivery for:
+
+📄 Documents
+📦 Small packages
+🎁 Gifts
+🏢 Business deliveries
+
+Please provide the pickup and delivery addresses.`,
+
+  faq: `❓ Frequently Asked Questions
+
+Q: Can I cancel my ride?
+A: Yes. Cancellations are allowed according to our cancellation policy.
+
+Q: Can I book a taxi in advance?
+A: Yes. You can schedule a ride for a future date and time.
+
+Q: Do you provide airport pickup?
+A: Yes. Airport pickup and drop services are available 24×7.
+
+Q: Do you provide GST invoices?
+A: Yes, GST invoices are available for eligible bookings.
+
+Q: Can I pay online?
+A: Yes. UPI, debit/credit cards, net banking and cash are accepted.
+
+Q: Is SBS Taxi available 24×7?
+A: Yes. SBS Taxi operates 24 hours a day, 7 days a week.
+
+Q: Are your drivers verified?
+A: Yes. Our drivers are background-verified and professionally trained.
+
+Q: Are there hidden charges?
+A: No. SBS Taxi follows transparent pricing.`,
+
+  emergency: `🆘 Emergency Support
+
+Your safety is our priority.
+
+If you need urgent assistance:
+
+1. Contact our support team immediately.
+2. Share your Booking ID.
+3. Share your current location.
+4. Explain the issue clearly.
+
+Our team will assist you as quickly as possible.
+
+📞 Customer Care: 98435 44844`,
+
+  contact: `📞 Contact Customer Care
+
+Need help?
+
+📱 Mobile: 98435 44844
+📧 Email: hr@sbstechnologies.in
+
+Our support team can assist with:
+
+• Bookings
+• Cancellations
+• Payments
+• Ride issues
+• Corporate bookings
+• General enquiries
+
+⏰ Support is available 24×7.`,
+
+  executive: `💬 Chat with Executive
+
+A customer support executive will join the chat shortly.
+
+Please tell us how we can help:
+
+• Booking assistance
+• Fare enquiry
+• Ride issues
+• Payment support
+• Corporate bookings
+
+Our support team is available 24×7.`,
+
+  rate: `⭐ Rate Your Ride
+
+Thank you for choosing SBS Taxi!
+
+Please rate your experience:
+
+⭐⭐⭐⭐⭐ Excellent
+⭐⭐⭐⭐ Good
+⭐⭐⭐ Average
+⭐⭐ Fair
+⭐ Poor
+
+We also welcome your comments and suggestions.`,
+
+  feedback: `📝 Feedback & Complaints
+
+We value your feedback.
+
+Please provide:
+
+• Booking ID, if available
+• Your feedback or complaint
+• Photos or screenshots, if applicable
+
+Our support team will review your request and respond as soon as possible.`,
+
+  general: `I'm here to help with SBS Taxi! 🚖
+
+You can ask me about:
+
+🚖 Booking
+💰 Fare
+📍 Ride Tracking
+🚗 Fleet
+🎁 Offers
+🛫 Airport Transfer
+🏢 Corporate Booking
+📦 Parcel Delivery
+❓ FAQs
+📞 Customer Support
+
+Please choose an option below or type your question.`,
+};
+
+/* =========================================================
+   FAQ DATA
+========================================================= */
+
+const faqQuestions = [
+  {
+    question: "How do I book an SBS Taxi?",
     answer:
-      "Sorry 😔 I can currently help with SBS Taxi questions.\n\n" +
-      "You can ask about:\n" +
-      "🚕 Taxi booking\n" +
-      "💰 Fare\n" +
-      "✈️ Airport rides\n" +
-      "🚗 Vehicles\n" +
-      "🗺️ Outstation trips\n" +
-      "💳 Payments\n" +
-      "❌ Cancellation\n" +
-      "🎁 Offers",
-  };
-}
+      "You can book through our website, mobile app, or by calling our customer support.",
+  },
+  {
+    question: "Can I book a taxi in advance?",
+    answer:
+      "Yes. You can schedule your ride for any future date and time.",
+  },
+  {
+    question: "Do you provide instant bookings?",
+    answer: "Yes, subject to vehicle availability.",
+  },
+  {
+    question: "Can I cancel my booking?",
+    answer:
+      "Yes. Cancellation policies may apply depending on the booking type.",
+  },
+  {
+    question: "What services do you offer?",
+    answer:
+      "We provide Local City Rides, Airport Pickup & Drop, Outstation Trips, One-Way Trips, Round Trips, Corporate Travel and Hourly Rental Packages.",
+  },
+  {
+    question: "Do you provide airport pickup?",
+    answer:
+      "Yes. We provide 24/7 airport pickup and drop services.",
+  },
+  {
+    question: "Do you offer corporate accounts?",
+    answer:
+      "Yes. We offer customized corporate travel solutions for businesses.",
+  },
+  {
+    question: "What vehicle types are available?",
+    answer:
+      "We offer SBS Mini, SBS Sedan, SBS Van, SBS SUV, SBS MUV, SBS EV, SBS Premium, SBS Luxury and SBS Traveller.",
+  },
+  {
+    question: "Can I choose my preferred vehicle?",
+    answer:
+      "Yes. You can select your preferred vehicle during booking, subject to availability.",
+  },
+  {
+    question: "How is the fare calculated?",
+    answer:
+      "The fare depends on the trip distance, vehicle type and travel duration.",
+  },
+  {
+    question: "Are there any hidden charges?",
+    answer:
+      "No. SBS Taxi follows transparent pricing with no hidden charges.",
+  },
+  {
+    question: "Is online payment available?",
+    answer:
+      "Yes. We accept UPI, credit/debit cards, net banking and cash.",
+  },
+  {
+    question: "Are your drivers verified?",
+    answer:
+      "Yes. All SBS Taxi drivers are background-verified and professionally trained.",
+  },
+  {
+    question: "Can I contact my driver before pickup?",
+    answer:
+      "Yes. Driver contact details are shared before your trip.",
+  },
+  {
+    question: "Is SBS Taxi safe for women and families?",
+    answer:
+      "Yes. Passenger safety is our top priority with verified drivers and trip tracking.",
+  },
+  {
+    question: "Can I share my trip with family?",
+    answer:
+      "Yes. You can share your live trip details with your family or friends.",
+  },
+  {
+    question: "Which payment methods are accepted?",
+    answer:
+      "Cash, UPI, debit cards, credit cards and online payments are accepted.",
+  },
+  {
+    question: "Will I receive an invoice?",
+    answer:
+      "Yes. A digital invoice is sent after every completed trip.",
+  },
+  {
+    question: "How can I contact customer support?",
+    answer:
+      "You can contact us by phone, email or through the support section.",
+  },
+  {
+    question: "What are your customer support hours?",
+    answer: "Our customer support is available 24×7.",
+  },
+  {
+    question: "Do you operate 24×7?",
+    answer:
+      "Yes. SBS Taxi is available 24 hours a day, 7 days a week.",
+  },
+  {
+    question: "Which cities do you serve?",
+    answer:
+      "We primarily serve Erode and nearby locations, with outstation services across Tamil Nadu and neighboring states.",
+  },
+  {
+    question: "Can I book a taxi for an entire day?",
+    answer:
+      "Yes. We offer flexible hourly and full-day rental packages.",
+  },
+  {
+    question: "Do you provide GST invoices for business travel?",
+    answer:
+      "Yes. GST invoices are available for eligible bookings.",
+  },
+  {
+    question: "Why should I choose SBS Taxi?",
+    answer:
+      "We offer transparent pricing, verified drivers, clean and comfortable vehicles, 24/7 availability, multiple vehicle options, secure online payments and reliable customer support.",
+  },
+];
 
-/* =====================================================
-   ACTION BUTTON
-===================================================== */
+/* =========================================================
+   CHATBOT
+========================================================= */
 
-function ActionButton({
-  action,
-  onClose,
-}: {
-  action: "booking" | "contact";
-  onClose: () => void;
-}) {
-  if (action === "booking") {
-    return (
-      <Link
-        href="/booking"
-        onClick={onClose}
-        className="
-          mt-3
-          inline-flex
-          w-full
-          items-center
-          justify-center
-          gap-2
-          rounded-xl
-          bg-[var(--secondary)]
-          px-4
-          py-2.5
-          text-xs
-          font-bold
-          text-[var(--primary)]
-          transition
-          hover:bg-[var(--secondary-dark)]
-          sm:text-sm
-        "
-      >
-        <Car className="h-4 w-4" />
-        Book a Ride
-        <ChevronRight className="h-4 w-4" />
-      </Link>
-    );
-  }
+export default function ChatbotAI() {
+  const [isOpen, setIsOpen] = useState(false);
+  const [isMinimized, setIsMinimized] = useState(false);
 
-  return (
-    <Link
-      href="/contacts"
-      onClick={onClose}
-      className="
-        mt-3
-        inline-flex
-        w-full
-        items-center
-        justify-center
-        gap-2
-        rounded-xl
-        bg-[var(--primary)]
-        px-4
-        py-2.5
-        text-xs
-        font-bold
-        !text-white
-        transition
-        hover:bg-[var(--primary-dark)]
-        sm:text-sm
-      "
-    >
-      <Phone className="h-4 w-4" />
-      Contact SBS Taxi
-      <ChevronRight className="h-4 w-4" />
-    </Link>
-  );
-}
-
-/* =====================================================
-   FOOTER
-===================================================== */
-
-function ChatFooter() {
-  return (
-    <div
-      className="
-        shrink-0
-        border-t
-        border-gray-100
-        bg-white
-        px-3
-        py-2.5
-        text-center
-      "
-    >
-      <p className="text-[10px] font-semibold text-gray-500">
-        Powered by{" "}
-        <a
-          href="https://sbstechnologies.in/"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="
-            font-bold
-            text-[var(--primary)]
-            transition
-            hover:underline
-          "
-        >
-          SBS Technologies
-        </a>
-      </p>
-
-      <div className="mt-1 flex items-center justify-center gap-1.5">
-        <Image
-          src="/flag.jpg"
-          alt="India"
-          width={18}
-          height={12}
-          className="h-3 w-[18px] rounded-sm object-cover"
-        />
-
-        <p className="text-[9px] text-gray-400">
-          Made in India
-        </p>
-      </div>
-    </div>
-  );
-}
-
-/* =====================================================
-   CHAT BOX
-===================================================== */
-
-export default function ChatBox() {
-  const [open, setOpen] = useState(false);
-
-  /*
-   * Directly open CHAT screen.
-   * No menu is shown when clicking the floating button.
-   */
-  const [screen, setScreen] = useState<ChatScreen>("chat");
-
-  const [message, setMessage] = useState("");
-
-  const [messages, setMessages] = useState<ChatMessage[]>([
+  const [messages, setMessages] = useState<Message[]>([
     {
       id: 1,
-      role: "assistant",
-      content:
-        "Hi 👋 Welcome to SBS Taxi!\n\nHow can I help you today?",
+      sender: "bot",
+      text: answers.welcome,
     },
   ]);
 
-  const messagesEndRef = useRef<HTMLDivElement | null>(null);
+  const [input, setInput] = useState("");
+  const [showMenu, setShowMenu] = useState(false);
+  const [showFaq, setShowFaq] = useState(false);
 
-  /* =====================================================
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  /* =======================================================
      AUTO SCROLL
-  ===================================================== */
+  ======================================================= */
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({
@@ -417,861 +528,816 @@ export default function ChatBox() {
     });
   }, [messages]);
 
-  /* =====================================================
-     ASK QUESTION
-  ===================================================== */
+  /* =======================================================
+     ADD MESSAGE
+  ======================================================= */
 
-  const askQuestion = (
-    question: string,
-    answer: string,
-    action?: "booking" | "contact"
+  const addMessage = (
+    userText: string,
+    botText: string
   ) => {
-    const id = Date.now();
+    const messageId = Date.now();
 
     setMessages((prev) => [
       ...prev,
       {
-        id,
-        role: "user",
-        content: question,
+        id: messageId,
+        sender: "user",
+        text: userText,
       },
       {
-        id: id + 1,
-        role: "assistant",
-        content: answer,
-        action,
+        id: messageId + 1,
+        sender: "bot",
+        text: botText,
       },
     ]);
-
-    setScreen("chat");
   };
 
-  /* =====================================================
+  /* =======================================================
+     MENU CLICK
+  ======================================================= */
+
+  const handleMenuClick = (
+    key: string,
+    label: string
+  ) => {
+    if (key === "faq") {
+      setShowFaq(true);
+      setShowMenu(false);
+
+      addMessage(label, answers.faq);
+      return;
+    }
+
+    const response =
+      answers[key] || answers.general;
+
+    setShowMenu(false);
+    setShowFaq(false);
+
+    addMessage(label, response);
+  };
+
+  /* =======================================================
+     FIND ANSWER
+  ======================================================= */
+
+  const findAnswer = (question: string) => {
+    const text = question.toLowerCase().trim();
+
+    const match = faqQuestions.find((faq) => {
+      const words = faq.question
+        .toLowerCase()
+        .split(" ")
+        .filter((word) => word.length > 3);
+
+      const matchedWords = words.filter((word) =>
+        text.includes(word)
+      );
+
+      return matchedWords.length >= 2;
+    });
+
+    if (match) {
+      return match.answer;
+    }
+
+    if (
+      text.includes("book") ||
+      text.includes("booking") ||
+      text.includes("taxi")
+    ) {
+      return answers.book;
+    }
+
+    if (
+      text.includes("fare") ||
+      text.includes("price") ||
+      text.includes("cost") ||
+      text.includes("rate")
+    ) {
+      return answers.fare;
+    }
+
+    if (
+      text.includes("track") ||
+      text.includes("location") ||
+      text.includes("where is my")
+    ) {
+      return answers.track;
+    }
+
+    if (
+      text.includes("airport") ||
+      text.includes("flight")
+    ) {
+      return answers.airport;
+    }
+
+    if (
+      text.includes("corporate") ||
+      text.includes("company") ||
+      text.includes("business")
+    ) {
+      return answers.corporate;
+    }
+
+    if (
+      text.includes("parcel") ||
+      text.includes("delivery")
+    ) {
+      return answers.parcel;
+    }
+
+    if (
+      text.includes("driver") ||
+      text.includes("vehicle") ||
+      text.includes("car") ||
+      text.includes("fleet")
+    ) {
+      return answers.fleet;
+    }
+
+    if (
+      text.includes("offer") ||
+      text.includes("discount") ||
+      text.includes("coupon")
+    ) {
+      return answers.offers;
+    }
+
+    if (
+      text.includes("support") ||
+      text.includes("contact") ||
+      text.includes("phone") ||
+      text.includes("email")
+    ) {
+      return answers.contact;
+    }
+
+    if (
+      text.includes("cancel") ||
+      text.includes("cancellation")
+    ) {
+      return "Yes. You can cancel your booking according to the applicable cancellation policy.";
+    }
+
+    if (
+      text.includes("payment") ||
+      text.includes("pay") ||
+      text.includes("upi") ||
+      text.includes("cash")
+    ) {
+      return "Yes. SBS Taxi accepts cash, UPI, debit cards, credit cards, net banking and online payments.";
+    }
+
+    if (
+      text.includes("gst") ||
+      text.includes("invoice")
+    ) {
+      return "Yes. GST invoices are available for eligible business bookings.";
+    }
+
+    if (
+      text.includes("safe") ||
+      text.includes("safety") ||
+      text.includes("women") ||
+      text.includes("family")
+    ) {
+      return "Yes. Passenger safety is our top priority. SBS Taxi focuses on verified drivers, trip tracking and a safe, comfortable travel experience.";
+    }
+
+    if (
+      text.includes("24") ||
+      text.includes("hours") ||
+      text.includes("available")
+    ) {
+      return "Yes. SBS Taxi customer support and services are available 24×7.";
+    }
+
+    return answers.general;
+  };
+
+  /* =======================================================
      SEND MESSAGE
-  ===================================================== */
+  ======================================================= */
 
-  const sendMessage = () => {
-    const text = message.trim();
+  const handleSend = () => {
+    if (!input.trim()) return;
 
-    if (!text) return;
+    const userQuestion = input.trim();
+    const response = findAnswer(userQuestion);
 
-    const result = getAnswer(text);
-    const id = Date.now();
+    const messageId = Date.now();
 
     setMessages((prev) => [
       ...prev,
       {
-        id,
-        role: "user",
-        content: text,
+        id: messageId,
+        sender: "user",
+        text: userQuestion,
       },
       {
-        id: id + 1,
-        role: "assistant",
-        content: result.answer,
-        action: result.action,
+        id: messageId + 1,
+        sender: "bot",
+        text: response,
       },
     ]);
 
-    setMessage("");
+    setInput("");
   };
 
-  /* =====================================================
-     OPEN CHAT
-  ===================================================== */
+  /* =======================================================
+     ENTER KEY
+  ======================================================= */
 
-  const openChat = () => {
-    setOpen(true);
-
-    /*
-     * Always open directly to chat.
-     */
-    setScreen("chat");
+  const handleKeyDown = (
+    e: React.KeyboardEvent<HTMLInputElement>
+  ) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      handleSend();
+    }
   };
 
-  /* =====================================================
-     CLOSE CHAT
-  ===================================================== */
+  /* =======================================================
+     CUSTOMER CARE
+  ======================================================= */
 
-  const closeChat = () => {
-    setOpen(false);
+  const callCustomerCare = () => {
+    window.location.href = "tel:9843544844";
   };
+
+  /* =========================================================
+     FLOATING CHAT BUTTON
+     
+     MOBILE:
+     bottom-[72px] keeps chatbot ABOVE the bottom navbar.
+     
+     DESKTOP:
+     sm:bottom-6 restores normal bottom position.
+  ========================================================= */
+
+  if (!isOpen) {
+    return (
+      <button
+        onClick={() => setIsOpen(true)}
+        aria-label="Open SBS Taxi Chatbot"
+        className="
+          fixed
+          !bottom-[72px]
+          right-4
+          z-[9999]
+          flex
+          h-16
+          w-16
+          items-center
+          justify-center
+          rounded-full
+          bg-[var(--secondary)]
+          text-[var(--primary)]
+          shadow-[0_8px_25px_rgba(0,0,0,0.25)]
+          transition
+          duration-300
+          hover:scale-110
+          sm:bottom-6
+          sm:right-6
+        "
+      >
+        <MessageCircle
+          size={30}
+          strokeWidth={2.5}
+        />
+
+        {/* ONLINE INDICATOR */}
+
+        <span
+          className="
+            absolute
+            right-0
+            top-0
+            h-4
+            w-4
+            rounded-full
+            border-2
+            border-white
+            bg-green-500
+          "
+        />
+      </button>
+    );
+  }
+
+  /* =========================================================
+     CHAT WINDOW
+     
+     MOBILE:
+     bottom-[72px] keeps full chatbot above bottom navbar.
+     
+     DESKTOP:
+     sm:bottom-6 restores normal desktop position.
+  ========================================================= */
 
   return (
-    <>
-      {/* =====================================================
-          CHAT WINDOW
-      ===================================================== */}
+    <div
+      className="
+        fixed
+        bottom-[72px]
+        right-4
+        z-[9999]
+        w-[calc(100vw-32px)]
+        max-w-[390px]
+        overflow-hidden
+        rounded-2xl
+        bg-white
+        shadow-[0_20px_60px_rgba(0,0,0,0.25)]
+        sm:bottom-6
+        sm:right-6
+      "
+    >
+      {/* ===================================================
+          HEADER
+      =================================================== */}
 
-      {open && (
-        <div
-          className="
-            fixed
-            inset-x-3
-            bottom-20
-            z-[9999]
-            mx-auto
-            flex
-            h-[min(650px,calc(100dvh-100px))]
-            w-auto
-            max-w-[390px]
-            flex-col
-            overflow-hidden
-            rounded-2xl
-            bg-white
-            shadow-[0_20px_60px_rgba(0,0,0,0.25)]
+      <div
+        className="
+          flex
+          min-h-[64px]
+          items-center
+          justify-between
+          gap-3
+          bg-[var(--primary)]
+          px-4
+          py-2.5
+          text-white
+        "
+      >
+        {/* LOGO */}
 
-            sm:inset-x-auto
-            sm:right-5
-            sm:bottom-24
-            sm:w-[390px]
+        <div className="flex min-w-0 flex-1 items-center">
+          <Logo variant="footer" />
+        </div>
 
-            md:right-6
-            md:bottom-24
-          "
-        >
+        {/* HEADER BUTTONS */}
+
+        <div className="flex shrink-0 items-center gap-1">
+          <button
+            onClick={() => {
+              setIsMinimized((prev) => !prev);
+              setShowMenu(false);
+              setShowFaq(false);
+            }}
+            className="
+              rounded-lg
+              p-2
+              text-white
+              transition
+              hover:bg-white/10
+            "
+            aria-label={
+              isMinimized
+                ? "Expand chatbot"
+                : "Minimize chatbot"
+            }
+          >
+            <Minimize2 size={17} />
+          </button>
+
+          <button
+            onClick={() => setIsOpen(false)}
+            className="
+              rounded-lg
+              p-2
+              text-white
+              transition
+              hover:bg-white/10
+            "
+            aria-label="Close chatbot"
+          >
+            <X size={19} />
+          </button>
+        </div>
+      </div>
+
+      {!isMinimized && (
+        <>
           {/* =================================================
-              HEADER
+              MESSAGES
           ================================================= */}
 
           <div
             className="
-              relative
-              shrink-0
-              bg-[var(--primary)]
-              px-4
-              py-3
-              text-white
-              sm:px-5
-              sm:py-4
+              h-[390px]
+              overflow-y-auto
+              bg-slate-50
+              px-3
+              py-4
+              sm:h-[430px]
             "
           >
-            {/* CLOSE */}
+            {messages.map((message) => (
+              <div
+                key={message.id}
+                className={`mb-3 flex ${
+                  message.sender === "user"
+                    ? "justify-end"
+                    : "justify-start"
+                }`}
+              >
+                {/* BOT ICON */}
 
-            <button
-              type="button"
-              onClick={closeChat}
-              aria-label="Close SBS Taxi chat"
-              className="
-                absolute
-                right-3
-                top-3
-                z-10
-                flex
-                h-9
-                w-9
-                items-center
-                justify-center
-                rounded-full
-                bg-white/10
-                text-white
-                transition
-                hover:bg-white/20
-              "
-            >
-              <X className="h-5 w-5" />
-            </button>
+                {message.sender === "bot" && (
+                  <div
+                    className="
+                      mr-2
+                      mt-1
+                      flex
+                      h-7
+                      w-7
+                      shrink-0
+                      items-center
+                      justify-center
+                      rounded-full
+                      bg-[var(--primary)]
+                      text-white
+                    "
+                  >
+                    <Bot size={15} />
+                  </div>
+                )}
 
-            {/* HEADER CONTENT */}
+                {/* MESSAGE */}
 
-            <div className="flex items-center gap-3 pr-10">
-              <Logo variant="footer" />
-            </div>
+                <div
+                  className={`
+                    max-w-[82%]
+                    whitespace-pre-line
+                    rounded-2xl
+                    px-3.5
+                    py-2.5
+                    text-[13px]
+                    leading-5
+                    ${
+                      message.sender === "user"
+                        ? "rounded-br-md bg-[var(--primary)] text-white"
+                        : "rounded-bl-md bg-white text-slate-700 shadow-sm"
+                    }
+                  `}
+                >
+                  {message.text}
+                </div>
+              </div>
+            ))}
+
+            <div ref={messagesEndRef} />
           </div>
 
           {/* =================================================
-              CHAT SCREEN
+              FAQ PANEL
           ================================================= */}
 
-          {screen === "chat" && (
-            <div className="flex min-h-0 flex-1 flex-col bg-white">
-              {/* CHAT TOP */}
+          {showFaq && (
+            <div
+              className="
+                absolute
+                bottom-[112px]
+                left-2
+                right-2
+                max-h-[300px]
+                overflow-y-auto
+                rounded-xl
+                border
+                border-slate-200
+                bg-white
+                p-2
+                shadow-xl
+              "
+            >
+              <div className="mb-2 px-2 py-1">
+                <p className="text-xs font-bold text-[var(--primary)]">
+                  Frequently Asked Questions
+                </p>
+              </div>
+
+              {faqQuestions.map((faq, index) => (
+                <button
+                  key={index}
+                  onClick={() => {
+                    addMessage(
+                      faq.question,
+                      faq.answer
+                    );
+
+                    setShowFaq(false);
+                  }}
+                  className="
+                    flex
+                    w-full
+                    items-center
+                    justify-between
+                    gap-2
+                    rounded-lg
+                    px-3
+                    py-2.5
+                    text-left
+                    text-xs
+                    text-slate-700
+                    transition
+                    hover:bg-blue-50
+                  "
+                >
+                  <span>{faq.question}</span>
+
+                  <ChevronRight
+                    size={14}
+                    className="shrink-0 text-slate-400"
+                  />
+                </button>
+              ))}
+            </div>
+          )}
+
+          {/* =================================================
+              MENU PANEL
+          ================================================= */}
+
+          {showMenu && (
+            <div
+              className="
+                absolute
+                bottom-[112px]
+                left-2
+                right-2
+                max-h-[330px]
+                overflow-y-auto
+                rounded-xl
+                border
+                border-slate-200
+                bg-white
+                p-2
+                shadow-xl
+              "
+            >
+              <div className="mb-2 px-2 py-1">
+                <p className="text-xs font-bold text-[var(--primary)]">
+                  How can we help?
+                </p>
+              </div>
+
+              <div className="grid grid-cols-2 gap-1">
+                {menuItems.map((item) => {
+                  const Icon = item.icon;
+
+                  return (
+                    <button
+                      key={item.key}
+                      onClick={() =>
+                        handleMenuClick(
+                          item.key,
+                          item.label
+                        )
+                      }
+                      className="
+                        flex
+                        items-center
+                        gap-2
+                        rounded-lg
+                        px-2.5
+                        py-2.5
+                        text-left
+                        text-[11px]
+                        font-medium
+                        text-slate-700
+                        transition
+                        hover:bg-blue-50
+                        hover:text-[var(--primary)]
+                      "
+                    >
+                      <Icon
+                        size={15}
+                        className="shrink-0"
+                      />
+
+                      <span>{item.label}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* =================================================
+              QUICK REPLIES
+          ================================================= */}
+
+          <div
+            className="
+              flex
+              gap-1.5
+              overflow-x-auto
+              border-t
+              border-slate-100
+              bg-white
+              px-3
+              py-2
+              scrollbar-none
+            "
+          >
+            {quickReplies.map((item) => (
+              <button
+                key={item.key}
+                onClick={() =>
+                  handleMenuClick(
+                    item.key,
+                    item.label
+                  )
+                }
+                className="
+                  shrink-0
+                  rounded-full
+                  border
+                  border-blue-100
+                  bg-blue-50
+                  px-3
+                  py-1.5
+                  text-[10px]
+                  font-semibold
+                  text-[var(--primary)]
+                  transition
+                  hover:bg-[var(--primary)]
+                  hover:text-white
+                "
+              >
+                {item.label}
+              </button>
+            ))}
+          </div>
+
+          {/* =================================================
+              INPUT
+          ================================================= */}
+
+          <div
+            className="
+              border-t
+              border-slate-100
+              bg-white
+              p-3
+            "
+          >
+            <div className="flex items-center gap-2">
+              {/* MENU */}
+
+              <button
+                onClick={() => {
+                  setShowMenu((prev) => !prev);
+                  setShowFaq(false);
+                }}
+                className="
+                  flex
+                  h-10
+                  w-10
+                  shrink-0
+                  items-center
+                  justify-center
+                  rounded-xl
+                  bg-blue-50
+                  text-[var(--primary)]
+                  transition
+                  hover:bg-blue-100
+                "
+                aria-label="Open chatbot menu"
+              >
+                <MessageCircle size={18} />
+              </button>
+
+              {/* INPUT */}
+
+              <input
+                type="text"
+                value={input}
+                onChange={(e) =>
+                  setInput(e.target.value)
+                }
+                onKeyDown={handleKeyDown}
+                placeholder="Ask SBS Taxi..."
+                className="
+                  h-10
+                  min-w-0
+                  flex-1
+                  rounded-xl
+                  border
+                  border-slate-200
+                  bg-slate-50
+                  px-3
+                  text-xs
+                  text-slate-700
+                  outline-none
+                  placeholder:text-slate-400
+                  focus:border-blue-300
+                  focus:bg-white
+                "
+              />
+
+              {/* SEND */}
+
+              <button
+                onClick={handleSend}
+                className="
+                  flex
+                  h-10
+                  w-10
+                  shrink-0
+                  items-center
+                  justify-center
+                  rounded-xl
+                  bg-[var(--secondary)]
+                  text-[var(--primary)]
+                  transition
+                  hover:scale-105
+                "
+                aria-label="Send message"
+              >
+                <Send size={17} />
+              </button>
+            </div>
+
+            {/* =================================================
+                MADE IN INDIA + POWERED BY
+            ================================================= */}
+
+            <div className="mt-2">
+              {/* MADE IN INDIA */}
+
+              <div
+                className="
+                  mt-1
+                  flex
+                  items-center
+                  justify-center
+                  gap-1.5
+                  text-[10px]
+                  text-slate-400
+                "
+              >
+                <Image
+                  src="/flag.jpg"
+                  alt="Made in India"
+                  width={22}
+                  height={15}
+                  className="
+                    h-[15px]
+                    w-[22px]
+                    object-contain
+                  "
+                />
+
+                <span>Made in India</span>
+              </div>
+
+              {/* POWERED BY */}
 
               <div
                 className="
                   flex
-                  shrink-0
+                  w-full
                   items-center
-                  gap-2
-                  border-b
-                  border-gray-200
-                  bg-white
-                  px-3
-                  py-2.5
-                  sm:gap-3
-                  sm:px-4
-                  sm:py-3
+                  justify-center
+                  gap-1.5
                 "
               >
-                {/* BACK TO MENU */}
-
-                <button
-                  type="button"
-                  onClick={() => setScreen("menu")}
-                  aria-label="Back"
+                <span
                   className="
-                    flex
-                    h-9
-                    w-9
-                    shrink-0
-                    items-center
-                    justify-center
-                    rounded-full
-                    text-gray-700
-                    transition
-                    hover:bg-gray-100
+                    text-[10px]
+                    font-light
+                    text-[var(--primary)]
+                    sm:text-xs
                   "
                 >
-                  <ArrowLeft className="h-5 w-5" />
-                </button>
+                  Powered by
+                </span>
 
-                <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm font-semibold text-gray-900">
-                    SBS Taxi Support
-                  </p>
-
-                  <p className="text-[11px] font-medium text-green-600">
-                    ● Assistant Online
-                  </p>
-                </div>
-
-                <div
+                <Link
+                  href="https://sbstechnologies.in/"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="
-                    hidden
-                    rounded-full
-                    bg-blue-50
-                    px-2.5
-                    py-1
-                    text-[9px]
+                    text-xs
                     font-semibold
-                    text-[var(--primary)]
-                    sm:block
+                    text-blue-100/70
+                    transition-colors
+                    duration-200
+                    hover:text-[var(--secondary)]
+                    sm:text-sm
                   "
                 >
-                  LOCAL ASSISTANT
-                </div>
-              </div>
-
-              {/* =================================================
-                  MESSAGES
-              ================================================= */}
-
-              <div
-                className="
-                  min-h-0
-                  flex-1
-                  space-y-3
-                  overflow-y-auto
-                  bg-gray-50
-                  px-3
-                  py-4
-                  sm:space-y-4
-                  sm:px-4
-                "
-              >
-                {messages.map((msg) => (
-                  <div
-                    key={msg.id}
-                    className={
-                      msg.role === "user"
-                        ? "flex justify-end"
-                        : "flex justify-start"
-                    }
-                  >
-                    <div
-                      className={
-                        msg.role === "user"
-                          ? `
-                            max-w-[82%]
-                            rounded-2xl
-                            rounded-tr-sm
-                            bg-[var(--primary)]
-                            px-3.5
-                            py-2.5
-                            text-white
-                            shadow-sm
-                            sm:px-4
-                            sm:py-3
-                          `
-                          : `
-                            max-w-[85%]
-                            rounded-2xl
-                            rounded-tl-sm
-                            border
-                            border-gray-100
-                            bg-white
-                            px-3.5
-                            py-2.5
-                            text-gray-700
-                            shadow-sm
-                            sm:px-4
-                            sm:py-3
-                          `
-                      }
-                    >
-                      <p
-                        className="
-                          whitespace-pre-wrap
-                          break-words
-                          text-xs
-                          leading-5
-                          sm:text-sm
-                          sm:leading-6
-                        "
-                      >
-                        {msg.content}
-                      </p>
-
-                      {/* =================================================
-                          ACTION LINK INSIDE ASSISTANT MESSAGE
-                      ================================================= */}
-
-                      {msg.role === "assistant" &&
-                        msg.action && (
-                          <ActionButton
-                            action={msg.action}
-                            onClose={closeChat}
-                          />
-                        )}
-                    </div>
-                  </div>
-                ))}
-
-                <div ref={messagesEndRef} />
-              </div>
-
-            {/* =================================================
-    QUICK QUESTIONS
-================================================= */}
-
-<div
-  className="
-    shrink-0
-    border-t
-    border-gray-200
-    bg-white
-    px-3
-    py-2
-  "
->
-  <p
-    className="
-      mb-1.5
-      text-[10px]
-      font-bold
-      uppercase
-      tracking-wide
-      text-gray-400
-    "
-  >
-    Quick Questions
-  </p>
-
-  <div
-    className="
-      flex
-      gap-2
-      overflow-x-auto
-      overflow-y-hidden
-      pb-2
-
-      /* Firefox */
-      [scrollbar-width:thin]
-      [scrollbar-color:var(--primary)_#e5e7eb]
-
-      /* Chrome / Edge / Safari */
-      [&::-webkit-scrollbar]:h-1.5
-      [&::-webkit-scrollbar-track]:rounded-full
-      [&::-webkit-scrollbar-track]:bg-gray-200
-      [&::-webkit-scrollbar-thumb]:rounded-full
-      [&::-webkit-scrollbar-thumb]:bg-[var(--primary)]
-      [&::-webkit-scrollbar-thumb:hover]:bg-[var(--primary-dark)]
-    "
-  >
-    {defaultQuestions.slice(0, 4).map(
-      (item, index) => (
-        <button
-          key={index}
-          type="button"
-          onClick={() =>
-            askQuestion(
-              item.question,
-              item.answer,
-              item.action
-            )
-          }
-          className="
-            shrink-0
-            rounded-full
-            border
-            border-gray-200
-            bg-gray-50
-            px-3
-            py-1.5
-            text-[10px]
-            font-medium
-            text-gray-700
-            transition
-            hover:border-[var(--secondary)]
-            hover:bg-[var(--secondary-light)]
-          "
-        >
-          {item.question}
-        </button>
-      )
-    )}
-  </div>
-</div>
-
-              {/* =================================================
-                  BOOK RIDE
-              ================================================= */}
-
-              <div
-                className="
-                  shrink-0
-                  border-t
-                  border-gray-200
-                  bg-white
-                  px-3
-                  py-2
-                "
-              >
-                <Link
-                  href="/booking"
-                  onClick={closeChat}
-                  className="
-                    flex
-                    w-full
-                    items-center
-                    justify-center
-                    gap-2
-                    rounded-xl
-                    bg-[var(--secondary)]
-                    px-4
-                    py-2.5
-                    text-sm
-                    font-bold
-                    text-[var(--primary)]
-                    transition
-                    hover:bg-[var(--secondary-dark)]
-                  "
-                >
-                  <Car className="h-4 w-4" />
-                  Book a Ride
+                  SBS Technologies
                 </Link>
               </div>
-
-              {/* =================================================
-                  MESSAGE INPUT
-              ================================================= */}
-
-              <div
-                className="
-                  shrink-0
-                  border-t
-                  border-gray-200
-                  bg-white
-                  p-2.5
-                "
-              >
-                <div className="flex items-center gap-2">
-                  <input
-                    type="text"
-                    value={message}
-                    onChange={(e) =>
-                      setMessage(e.target.value)
-                    }
-                    onKeyDown={(e) => {
-                      if (
-                        e.key === "Enter" &&
-                        !e.shiftKey
-                      ) {
-                        e.preventDefault();
-                        sendMessage();
-                      }
-                    }}
-                    placeholder="Ask about SBS Taxi..."
-                    className="
-                      min-w-0
-                      flex-1
-                      rounded-xl
-                      border
-                      border-gray-200
-                      bg-gray-50
-                      px-3
-                      py-2.5
-                      text-xs
-                      text-gray-900
-                      outline-none
-                      transition
-                      placeholder:text-gray-400
-                      focus:border-[var(--primary)]
-                      focus:bg-white
-                      focus:ring-1
-                      focus:ring-[var(--primary)]
-                      sm:px-4
-                      sm:py-3
-                      sm:text-sm
-                    "
-                  />
-
-                  <button
-                    type="button"
-                    onClick={sendMessage}
-                    disabled={!message.trim()}
-                    aria-label="Send message"
-                    className="
-                      flex
-                      h-10
-                      w-10
-                      shrink-0
-                      items-center
-                      justify-center
-                      rounded-xl
-                      bg-[var(--primary)]
-                      text-white
-                      transition
-                      hover:bg-[var(--primary-dark)]
-                      disabled:cursor-not-allowed
-                      disabled:opacity-40
-                      sm:h-11
-                      sm:w-11
-                    "
-                  >
-                    <Send className="h-4 w-4 sm:h-5 sm:w-5" />
-                  </button>
-                </div>
-              </div>
-
-              {/* =================================================
-                  CHAT FOOTER
-              ================================================= */}
-
-              <ChatFooter />
             </div>
-          )}
-
-          {/* =================================================
-              MENU SCREEN
-          ================================================= */}
-
-          {screen === "menu" && (
-            <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
-              {/* WELCOME */}
-
-              <div
-                className="
-                  shrink-0
-                  bg-[var(--primary)]
-                  px-4
-                  pb-4
-                  sm:px-5
-                  sm:pb-5
-                "
-              >
-                <div
-                  className="
-                    rounded-xl
-                    border
-                    border-white/10
-                    bg-white/10
-                    p-3
-                    text-sm
-                    leading-5
-                    text-white/90
-                    sm:p-4
-                    sm:leading-6
-                  "
-                >
-                  Hi 👋{" "}
-                  <strong className="text-white">
-                    Welcome to SBS Taxi!
-                  </strong>
-
-                  <br />
-
-                  I can help you with booking, fares,
-                  airport rides, vehicles and other SBS
-                  Taxi services.
-                </div>
-              </div>
-
-              {/* OPTIONS */}
-
-              <div className="min-h-0 flex-1 overflow-y-auto bg-white">
-                {/* BOOK RIDE */}
-
-                <Link
-                  href="/booking"
-                  onClick={closeChat}
-                  className="
-                    flex
-                    items-center
-                    gap-3
-                    border-b
-                    border-gray-200
-                    px-4
-                    py-3
-                    transition
-                    hover:bg-gray-50
-                    sm:gap-4
-                    sm:px-5
-                    sm:py-4
-                  "
-                >
-                  <div
-                    className="
-                      flex
-                      h-10
-                      w-10
-                      shrink-0
-                      items-center
-                      justify-center
-                      rounded-xl
-                      bg-blue-50
-                      text-[var(--primary)]
-                    "
-                  >
-                    <Car className="h-5 w-5" />
-                  </div>
-
-                  <div className="min-w-0 flex-1">
-                    <h3 className="text-sm font-semibold text-gray-900 sm:text-base">
-                      Book a Ride
-                    </h3>
-
-                    <p className="truncate text-xs text-gray-500 sm:text-sm">
-                      Book your taxi now
-                    </p>
-                  </div>
-
-                  <ChevronRight className="h-5 w-5 shrink-0 text-gray-400" />
-                </Link>
-
-                {/* TRACK RIDE */}
-
-                <Link
-                  href="/booking"
-                  onClick={closeChat}
-                  className="
-                    flex
-                    items-center
-                    gap-3
-                    border-b
-                    border-gray-200
-                    px-4
-                    py-3
-                    transition
-                    hover:bg-gray-50
-                    sm:gap-4
-                    sm:px-5
-                    sm:py-4
-                  "
-                >
-                  <div
-                    className="
-                      flex
-                      h-10
-                      w-10
-                      shrink-0
-                      items-center
-                      justify-center
-                      rounded-xl
-                      bg-blue-50
-                      text-[var(--primary)]
-                    "
-                  >
-                    <MapPin className="h-5 w-5" />
-                  </div>
-
-                  <div className="min-w-0 flex-1">
-                    <h3 className="text-sm font-semibold text-gray-900 sm:text-base">
-                      Track My Ride
-                    </h3>
-
-                    <p className="truncate text-xs text-gray-500 sm:text-sm">
-                      Check your taxi location
-                    </p>
-                  </div>
-
-                  <ChevronRight className="h-5 w-5 shrink-0 text-gray-400" />
-                </Link>
-
-                {/* CHAT */}
-
-                <button
-                  type="button"
-                  onClick={() => setScreen("chat")}
-                  className="
-                    flex
-                    w-full
-                    items-center
-                    gap-3
-                    border-b
-                    border-gray-200
-                    px-4
-                    py-3
-                    text-left
-                    transition
-                    hover:bg-gray-50
-                    sm:gap-4
-                    sm:px-5
-                    sm:py-4
-                  "
-                >
-                  <div
-                    className="
-                      flex
-                      h-10
-                      w-10
-                      shrink-0
-                      items-center
-                      justify-center
-                      rounded-xl
-                      bg-blue-50
-                      text-[var(--primary)]
-                    "
-                  >
-                    <MessageCircle className="h-5 w-5" />
-                  </div>
-
-                  <div className="min-w-0 flex-1">
-                    <h3 className="text-sm font-semibold text-gray-900 sm:text-base">
-                      Chat with Us
-                    </h3>
-
-                    <p className="truncate text-xs text-gray-500 sm:text-sm">
-                      SBS Taxi Assistant
-                    </p>
-                  </div>
-
-                  <ChevronRight className="h-5 w-5 shrink-0 text-gray-400" />
-                </button>
-
-                {/* CALL */}
-
-                <Link
-                  href="/contacts"
-                  onClick={closeChat}
-                  className="
-                    flex
-                    items-center
-                    gap-3
-                    px-4
-                    py-3
-                    transition
-                    hover:bg-gray-50
-                    sm:gap-4
-                    sm:px-5
-                    sm:py-4
-                  "
-                >
-                  <div
-                    className="
-                      flex
-                      h-10
-                      w-10
-                      shrink-0
-                      items-center
-                      justify-center
-                      rounded-xl
-                      bg-green-50
-                      text-green-600
-                    "
-                  >
-                    <Phone className="h-5 w-5" />
-                  </div>
-
-                  <div className="min-w-0 flex-1">
-                    <h3 className="text-sm font-semibold !text-white-900 sm:text-base">
-                      Call SBS Taxi
-                    </h3>
-
-                    <p className="text-xs text-white-500 sm:text-sm">
-                      98435 44844
-                    </p>
-                  </div>
-
-                  <ChevronRight className="h-5 w-5 shrink-0 text-gray-400" />
-                </Link>
-              </div>
-
-              {/* FOOTER */}
-
-              <ChatFooter />
-            </div>
-          )}
-        </div>
+          </div>
+        </>
       )}
-
-      {/* =====================================================
-          FLOATING MESSAGE BUTTON
-      ===================================================== */}
-
-      {!open && (
-        <button
-          type="button"
-          onClick={openChat}
-          aria-label="Open SBS Taxi chat"
-          className="
-            fixed
-            bottom-20
-            right-3
-            z-[9998]
-            flex
-            h-14
-            w-14
-            items-center
-            justify-center
-            rounded-full
-            bg-[var(--secondary)]
-            text-[var(--primary)]
-            shadow-[0_8px_25px_rgba(0,0,0,0.25)]
-            transition-all
-            duration-300
-            hover:scale-110
-            hover:bg-[var(--secondary-dark)]
-            active:scale-95
-
-            sm:bottom-24
-            sm:right-4
-            sm:h-16
-            sm:w-16
-
-            md:bottom-6
-            md:right-6
-            md:h-16
-            md:w-16
-          "
-        >
-          <MessageCircle
-            className="
-              h-7
-              w-7
-              sm:h-8
-              sm:w-8
-            "
-            strokeWidth={2.2}
-          />
-
-          {/* ONLINE DOT */}
-
-          <span
-            className="
-              absolute
-              right-0.5
-              top-0.5
-              h-3.5
-              w-3.5
-              rounded-full
-              border-2
-              border-white
-              bg-green-500
-            "
-          />
-        </button>
-      )}
-    </>
+    </div>
   );
 }

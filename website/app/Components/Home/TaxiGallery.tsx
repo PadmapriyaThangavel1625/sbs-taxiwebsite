@@ -4,24 +4,19 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 
 const images = [
-  "/images/home.webp",
   "/images/aboutus.webp",
   "/images/service.webp",
   "/images/fleet.webp",
   "/images/destination.webp",
   "/images/offers.webp",
-  "/images/pricing.webp",
-  "/images/contact.webp",
   "/images/airport.webp",
   "/images/corporate.webp",
-  "/images/trip.webp",
-  "/images/selfdrive.webp",
-  "/images/sbsairport.webp",
 ];
 
 export default function TaxiGallery() {
   const [current, setCurrent] = useState(0);
 
+  // Automatic slide change every 3 seconds
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrent((prev) => (prev + 1) % images.length);
@@ -36,16 +31,17 @@ export default function TaxiGallery() {
           SECTION CONTENT
       ========================== */}
       <div className="mx-auto mb-10 max-w-3xl px-4 text-center">
-        <span className="text-lg !font-bold uppercase tracking-[0.2em] text-[var(--secondary)]">
+        <span className="text-lg font-bold uppercase tracking-[0.2em] text-[var(--secondary)]">
           Our Gallery
         </span>
 
         <h2 className="mt-3 text-3xl font-extrabold text-[var(--primary)] sm:text-4xl lg:text-5xl">
           Explore SBS Taxi
         </h2>
-        <h3 className="mt-1 text-2xl font-bold sm:text-3xl lg:text-4xl">
-              Your Journey. Our Commitment.
-            </h3>
+
+        <h3 className="mt-1 text-2xl font-bold text-[var(--primary)] sm:text-3xl lg:text-4xl">
+          Your Journey. Our Commitment.
+        </h3>
 
         <p className="mx-auto mt-4 max-w-2xl text-base leading-7 text-[var(--primary)] sm:text-lg">
           Take a look at our taxis, journeys, and the experiences we create
@@ -53,15 +49,25 @@ export default function TaxiGallery() {
           is committed to making every journey safe, comfortable, and reliable.
         </p>
       </div>
-        
 
       {/* =========================
           GALLERY
       ========================== */}
       <div className="mx-auto w-full max-w-7xl px-4">
-        <div className="relative h-[280px] w-full overflow-hidden rounded-2xl sm:h-[400px] md:h-[500px] lg:h-[600px]">
-
-          {/* SLIDER */}
+        <div
+          className="
+            relative
+            aspect-[4/3]
+            w-full
+            overflow-hidden
+            rounded-2xl
+            bg-white
+            sm:aspect-video
+          "
+        >
+          {/* =========================
+              AUTO SLIDER
+          ========================== */}
           <div
             className="flex h-full transition-transform duration-1000 ease-in-out"
             style={{
@@ -78,25 +84,22 @@ export default function TaxiGallery() {
                   alt={`SBS Taxi Gallery ${index + 1}`}
                   fill
                   priority={index === 0}
-                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 100vw, 1200px"
-                  className="object-cover"
+                  sizes="100vw"
+                  className="object-contain"
                 />
               </div>
             ))}
           </div>
 
-          {/* IMAGE OVERLAY */}
-          <div className="pointer-events-none absolute inset-0 bg-black/20" />
+          {/* =========================
+              LIGHT OVERLAY
+          ========================== */}
+          <div className="pointer-events-none absolute inset-0 bg-black/10" />
 
           {/* =========================
-              TEXT
+              DOTS ONLY
           ========================== */}
-          
-
-          {/* =========================
-              DOTS
-          ========================== */}
-          <div className="absolute bottom-5 left-1/2 flex -translate-x-1/2 gap-2">
+          <div className="absolute bottom-5 left-1/2 z-10 flex -translate-x-1/2 gap-2">
             {images.map((_, index) => (
               <button
                 key={index}
@@ -111,7 +114,6 @@ export default function TaxiGallery() {
               />
             ))}
           </div>
-
         </div>
       </div>
     </section>

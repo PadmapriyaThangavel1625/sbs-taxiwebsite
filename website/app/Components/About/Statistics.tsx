@@ -12,17 +12,17 @@ import { motion } from "framer-motion";
 const stats = [
   {
     icon: Users,
-    value: "50,000+",
+    value: "15+",
     label: "Happy Customers and counting",
   },
   {
     icon: Car,
-    value: "1,500+",
+    value: "2+",
     label: "Cars on Road well maintained fleet",
   },
   {
     icon: MapPin,
-    value: "100+",
+    value: "20+",
     label: "Cities Covered across India",
   },
   {

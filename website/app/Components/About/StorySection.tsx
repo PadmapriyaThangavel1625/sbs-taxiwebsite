@@ -95,35 +95,37 @@ export default function StorySection() {
 
           {/* Right Image */}
           <motion.div
-            initial={{ opacity: 0, x: 40, scale: 0.97 }}
-            whileInView={{ opacity: 1, x: 0, scale: 1 }}
-            viewport={{ once: true, amount: 0.2 }}
-            transition={{
-              duration: 0.8,
-              ease: [0.22, 1, 0.36, 1],
-            }}
-            className="
-              relative
-              h-80
-              overflow-hidden
-              rounded-2xl
-              shadow-lg
-              lg:h-[450px]
-            "
-          >
-            <Image
-              src="https://images.unsplash.com/photo-1519003722824-194d4455a60c?auto=format&fit=crop&w=1200&q=80"
-              alt="SBS Taxi Drivers Team"
-              fill
-              sizes="(max-width: 1024px) 100vw, 50vw"
-              className="
-                object-cover
-                transition-transform
-                duration-700
-                hover:scale-105
-              "
-            />
-          </motion.div>
+  initial={{ opacity: 0, x: 40, scale: 0.97 }}
+  whileInView={{ opacity: 1, x: 0, scale: 1 }}
+  viewport={{ once: true, amount: 0.2 }}
+  transition={{
+    duration: 0.8,
+    ease: [0.22, 1, 0.36, 1],
+  }}
+  className="
+    relative
+    w-full
+    aspect-[1536/910]
+    overflow-hidden
+    rounded-2xl
+    shadow-lg
+    bg-slate-100
+  "
+>
+  <Image
+    src="/images/offers.webp"
+    alt="SBS Taxi Drivers Team"
+    fill
+    priority
+    sizes="(max-width: 1024px) 100vw, 50vw"
+    className="
+      object-contain
+      transition-transform
+      duration-700
+      hover:scale-105
+    "
+  />
+</motion.div>
         </div>
       </div>
     </section>
