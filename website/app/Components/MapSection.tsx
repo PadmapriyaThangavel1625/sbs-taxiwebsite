@@ -1,4 +1,6 @@
-import { MapPin, ExternalLink } from "lucide-react";
+"use client";
+
+import { Clock3, ExternalLink, MapPin } from "lucide-react";
 
 export default function MapSection() {
   return (
@@ -9,27 +11,46 @@ export default function MapSection() {
       "
     >
       {/* =====================================================
-          HEADING
+          CONTENT OUTSIDE MAP BORDER
       ====================================================== */}
+      <div className="mb-7 sm:mb-8">
+        {/* LABEL */}
+        <div className="flex items-center gap-2">
+          <span className="h-px w-7 bg-[var(--secondary)]" />
 
-      <div className="mb-6 sm:mb-7">
+          <span
+            className="
+              text-[10px]
+              font-bold
+              uppercase
+              tracking-[0.25em]
+              text-[var(--secondary)]
+            "
+          >
+            Our Location
+          </span>
+        </div>
+
+        {/* HEADING */}
         <h2
           className="
+            mt-2
             font-[family-name:var(--font-instrument)]
-            text-3xl
+            text-4xl
             font-normal
+            leading-tight
             tracking-tight
             text-[var(--text)]
-            sm:text-4xl
-            lg:text-[2.5rem]
+            sm:text-5xl
           "
         >
           Visit SBS Taxi
         </h2>
 
+        {/* DESCRIPTION */}
         <p
           className="
-            mt-2
+            mt-3
             max-w-2xl
             text-sm
             leading-6
@@ -37,16 +58,122 @@ export default function MapSection() {
             sm:text-[15px]
           "
         >
-          Find our office in Erode and get in touch with
-          the SBS Taxi team for reliable and comfortable
-          transportation services.
+          Visit our Erode office for bookings, enquiries, and
+          customer support. Our team is ready to help you plan
+          a safe, comfortable, and reliable journey with SBS Taxi.
         </p>
+
+        {/* =================================================
+            OFFICE + CUSTOMER SUPPORT
+        ================================================== */}
+        <div
+          className="
+            mt-6
+            grid
+            grid-cols-1
+            gap-5
+            sm:grid-cols-2
+            sm:gap-10
+          "
+        >
+          {/* ================= OFFICE ================= */}
+          <div className="flex items-start gap-3">
+            <div
+              className="
+                flex
+                h-9
+                w-9
+                shrink-0
+                items-center
+                justify-center
+                rounded-full
+                bg-[var(--primary-light)]
+                text-[var(--primary)]
+              "
+            >
+              <MapPin className="h-4 w-4" />
+            </div>
+
+            <div className="min-w-0">
+              <p
+                className="
+                  text-[9px]
+                  font-bold
+                  uppercase
+                  tracking-[0.18em]
+                  text-[var(--muted)]
+                "
+              >
+                Our Office
+              </p>
+
+              <p
+                className="
+                  mt-1
+                  max-w-md
+                  text-xs
+                  font-semibold
+                  leading-5
+                  text-[var(--text)]
+                "
+              >
+                1/166, Vallalar Street, Municipal Colony Main Road,
+                Erode – 638004, Tamil Nadu
+              </p>
+            </div>
+          </div>
+
+          {/* ================= SUPPORT ================= */}
+          <div className="flex items-start gap-3">
+            <div
+              className="
+                flex
+                h-9
+                w-9
+                shrink-0
+                items-center
+                justify-center
+                rounded-full
+                bg-[var(--primary-light)]
+                text-[var(--primary)]
+              "
+            >
+              <Clock3 className="h-4 w-4" />
+            </div>
+
+            <div className="min-w-0">
+              <p
+                className="
+                  text-[9px]
+                  font-bold
+                  uppercase
+                  tracking-[0.18em]
+                  text-[var(--muted)]
+                "
+              >
+                Customer Support
+              </p>
+
+              <p
+                className="
+                  mt-1
+                  text-xs
+                  font-semibold
+                  leading-5
+                  text-[var(--text)]
+                "
+              >
+                Available 24/7 for bookings, enquiries,
+                and travel assistance
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* =====================================================
           MAP CARD
       ====================================================== */}
-
       <div
         className="
           relative
@@ -60,8 +187,9 @@ export default function MapSection() {
           shadow-slate-900/5
         "
       >
-        {/* GOOGLE MAP */}
-
+        {/* ===================================================
+            GOOGLE MAP
+        ==================================================== */}
         <div
           className="
             h-[320px]
@@ -86,7 +214,6 @@ export default function MapSection() {
         {/* ===================================================
             LOCATION CARD
         ==================================================== */}
-
         <div
           className="
             absolute
@@ -113,9 +240,7 @@ export default function MapSection() {
             "
           >
             <div className="flex items-start gap-3.5">
-
               {/* LOCATION ICON */}
-
               <div
                 className="
                   flex
@@ -137,7 +262,6 @@ export default function MapSection() {
               </div>
 
               {/* ADDRESS */}
-
               <div className="min-w-0 flex-1">
                 <p
                   className="
@@ -146,7 +270,7 @@ export default function MapSection() {
                     text-white
                   "
                 >
-                  SBS Taxi 
+                  SBS Taxi
                 </p>
 
                 <p
@@ -160,8 +284,7 @@ export default function MapSection() {
                 >
                   1/166, Vallalar Street,
                   Municipal Colony Main Road,
-                  Erode – 638004,
-                  Tamil Nadu
+                  Erode – 638004, Tamil Nadu
                 </p>
               </div>
             </div>
@@ -169,7 +292,6 @@ export default function MapSection() {
             {/* =================================================
                 DIRECTIONS LINK
             ================================================== */}
-
             <a
               href="https://www.google.com/maps/search/?api=1&query=1/166+Vallalar+Street,+Municipal+Colony+Main+Road,+Erode,+Tamil+Nadu+638004"
               target="_blank"
@@ -186,9 +308,8 @@ export default function MapSection() {
                 px-4
                 py-2.5
                 text-xs
-                !text-black
                 font-bold
-                text-slate-900
+                !text-black
                 transition-all
                 duration-200
                 hover:bg-[var(--secondary-dark)]

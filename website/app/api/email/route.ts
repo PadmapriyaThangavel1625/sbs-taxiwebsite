@@ -27,6 +27,19 @@ function cleanEmailSubject(value: unknown): string {
 }
 
 /* ============================================================
+   EMAIL LIST HELPER
+============================================================ */
+
+function parseEmailList(value: string | undefined): string[] {
+  if (!value) return [];
+
+  return value
+    .split(",")
+    .map((email) => email.trim())
+    .filter(Boolean);
+}
+
+/* ============================================================
    POST
 ============================================================ */
 
@@ -53,8 +66,21 @@ export async function POST(request: Request) {
     const smtpPassword =
       process.env.SMTP_PASSWORD;
 
+    /* ============================================================
+       EMAIL RECIPIENTS
+    ============================================================ */
+
     const contactEmail =
       process.env.CONTACT_EMAIL;
+
+    const contactCC =
+      process.env.CONTACT_CC;
+
+    const toEmails =
+      parseEmailList(contactEmail);
+
+    const ccEmails =
+      parseEmailList(contactCC);
 
     /* ============================================================
        CHECK SMTP CONFIGURATION
@@ -64,7 +90,7 @@ export async function POST(request: Request) {
       !smtpHost ||
       !smtpUser ||
       !smtpPassword ||
-      !contactEmail
+      toEmails.length === 0
     ) {
       return NextResponse.json(
         {
@@ -90,6 +116,18 @@ export async function POST(request: Request) {
           pass: smtpPassword,
         },
       });
+
+    /* ============================================================
+       COMMON EMAIL OPTIONS
+    ============================================================ */
+
+    const commonMailOptions = {
+      from: `"SBS Taxi Website" <${smtpUser}>`,
+      to: toEmails,
+      ...(ccEmails.length > 0
+        ? { cc: ccEmails }
+        : {}),
+    };
 
     /* ============================================================
        SIMPLE BOOKING
@@ -137,10 +175,7 @@ export async function POST(request: Request) {
       ========================================================== */
 
       await transporter.sendMail({
-        from:
-          `"SBS Taxi Website" <${smtpUser}>`,
-
-        to: contactEmail,
+        ...commonMailOptions,
 
         replyTo: email,
 
@@ -150,299 +185,324 @@ export async function POST(request: Request) {
           )}`,
 
         html: `
-          <!DOCTYPE html>
+<!DOCTYPE html>
 
-          <html>
-            <head>
-              <meta charset="UTF-8" />
-              <meta
-                name="viewport"
-                content="width=device-width, initial-scale=1.0"
-              />
-              <title>SBS Taxi Booking</title>
-            </head>
+<html>
 
-            <body
-              style="
-                margin:0;
-                padding:0;
-                background:#f1f5f9;
-                font-family:Arial,Helvetica,sans-serif;
-              "
-            >
+<head>
 
-              <div
-                style="
-                  max-width:700px;
-                  margin:30px auto;
-                  background:#ffffff;
-                  border-radius:14px;
-                  overflow:hidden;
-                  border:1px solid #e2e8f0;
-                "
-              >
+  <meta charset="UTF-8" />
 
-                <div
-                  style="
-                    background:#1A365D;
-                    color:#ffffff;
-                    padding:25px;
-                    text-align:center;
-                  "
-                >
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
 
-                  <h1
-                    style="
-                      margin:0;
-                      font-size:28px;
-                      letter-spacing:1px;
-                    "
-                  >
-                    SBS <span style="color:#facc15;">TAXI</span>
-                  </h1>
+  <title>SBS Taxi Booking</title>
 
-                  <p
-                    style="
-                      margin:8px 0 0;
-                      font-size:14px;
-                      opacity:.9;
-                    "
-                  >
-                    New Ride Booking Request
-                  </p>
+</head>
 
-                </div>
+<body
+  style="
+    margin:0;
+    padding:0;
+    background:#f1f5f9;
+    font-family:Arial,Helvetica,sans-serif;
+  "
+>
 
-                <div style="padding:28px;">
+  <div
+    style="
+      max-width:700px;
+      margin:30px auto;
+      background:#ffffff;
+      border-radius:14px;
+      overflow:hidden;
+      border:1px solid #e2e8f0;
+    "
+  >
 
-                  <h2
-                    style="
-                      margin:0 0 15px;
-                      color:#1A365D;
-                      font-size:19px;
-                    "
-                  >
-                    Customer Details
-                  </h2>
+    <!-- HEADER -->
 
-                  <table
-                    width="100%"
-                    cellpadding="0"
-                    cellspacing="0"
-                    style="border-collapse:collapse;"
-                  >
+    <div
+      style="
+        background:#1A365D;
+        color:#ffffff;
+        padding:25px;
+        text-align:center;
+      "
+    >
 
-                    <tr>
-                      <td
-                        style="
-                          padding:10px 0;
-                          color:#64748b;
-                          width:40%;
-                        "
-                      >
-                        Name
-                      </td>
+      <h1
+        style="
+          margin:0;
+          font-size:28px;
+          letter-spacing:1px;
+        "
+      >
+        SBS
+        <span style="color:#facc15;">
+          TAXI
+        </span>
+      </h1>
 
-                      <td
-                        style="
-                          padding:10px 0;
-                          font-weight:bold;
-                          color:#0f172a;
-                        "
-                      >
-                        ${escapeHtml(name)}
-                      </td>
-                    </tr>
+      <p
+        style="
+          margin:8px 0 0;
+          font-size:14px;
+          opacity:.9;
+        "
+      >
+        New Ride Booking Request
+      </p>
 
-                    <tr>
-                      <td
-                        style="
-                          padding:10px 0;
-                          color:#64748b;
-                        "
-                      >
-                        Email
-                      </td>
+    </div>
 
-                      <td
-                        style="
-                          padding:10px 0;
-                          font-weight:bold;
-                          color:#0f172a;
-                        "
-                      >
-                        ${escapeHtml(email)}
-                      </td>
-                    </tr>
+    <!-- CONTENT -->
 
-                  </table>
+    <div style="padding:28px;">
 
-                  <h2
-                    style="
-                      margin:25px 0 15px;
-                      color:#1A365D;
-                      font-size:19px;
-                    "
-                  >
-                    Trip Details
-                  </h2>
+      <h2
+        style="
+          margin:0 0 15px;
+          color:#1A365D;
+          font-size:19px;
+        "
+      >
+        Customer Details
+      </h2>
 
-                  <table
-                    width="100%"
-                    cellpadding="0"
-                    cellspacing="0"
-                    style="border-collapse:collapse;"
-                  >
+      <table
+        width="100%"
+        cellpadding="0"
+        cellspacing="0"
+        style="border-collapse:collapse;"
+      >
 
-                    <tr>
-                      <td
-                        style="
-                          padding:10px 0;
-                          color:#64748b;
-                          width:40%;
-                        "
-                      >
-                        Pickup Location
-                      </td>
+        <tr>
 
-                      <td
-                        style="
-                          padding:10px 0;
-                          font-weight:bold;
-                          color:#0f172a;
-                        "
-                      >
-                        ${escapeHtml(pickup)}
-                      </td>
-                    </tr>
+          <td
+            style="
+              padding:10px 0;
+              color:#64748b;
+              width:40%;
+            "
+          >
+            Name
+          </td>
 
-                    <tr>
-                      <td
-                        style="
-                          padding:10px 0;
-                          color:#64748b;
-                        "
-                      >
-                        Drop Location
-                      </td>
+          <td
+            style="
+              padding:10px 0;
+              font-weight:bold;
+              color:#0f172a;
+            "
+          >
+            ${escapeHtml(name)}
+          </td>
 
-                      <td
-                        style="
-                          padding:10px 0;
-                          font-weight:bold;
-                          color:#0f172a;
-                        "
-                      >
-                        ${escapeHtml(drop)}
-                      </td>
-                    </tr>
+        </tr>
 
-                    <tr>
-                      <td
-                        style="
-                          padding:10px 0;
-                          color:#64748b;
-                        "
-                      >
-                        Date
-                      </td>
+        <tr>
 
-                      <td
-                        style="
-                          padding:10px 0;
-                          font-weight:bold;
-                          color:#0f172a;
-                        "
-                      >
-                        ${escapeHtml(date)}
-                      </td>
-                    </tr>
+          <td
+            style="
+              padding:10px 0;
+              color:#64748b;
+            "
+          >
+            Email
+          </td>
 
-                    <tr>
-                      <td
-                        style="
-                          padding:10px 0;
-                          color:#64748b;
-                        "
-                      >
-                        Time
-                      </td>
+          <td
+            style="
+              padding:10px 0;
+              font-weight:bold;
+              color:#0f172a;
+            "
+          >
+            ${escapeHtml(email)}
+          </td>
 
-                      <td
-                        style="
-                          padding:10px 0;
-                          font-weight:bold;
-                          color:#0f172a;
-                        "
-                      >
-                        ${escapeHtml(time)}
-                      </td>
-                    </tr>
+        </tr>
 
-                    <tr>
-                      <td
-                        style="
-                          padding:10px 0;
-                          color:#64748b;
-                        "
-                      >
-                        Vehicle
-                      </td>
+      </table>
 
-                      <td
-                        style="
-                          padding:10px 0;
-                          font-weight:bold;
-                          color:#0f172a;
-                        "
-                      >
-                        ${escapeHtml(vehicle)}
-                      </td>
-                    </tr>
+      <h2
+        style="
+          margin:25px 0 15px;
+          color:#1A365D;
+          font-size:19px;
+        "
+      >
+        Trip Details
+      </h2>
 
-                  </table>
+      <table
+        width="100%"
+        cellpadding="0"
+        cellspacing="0"
+        style="border-collapse:collapse;"
+      >
 
-                  <div
-                    style="
-                      margin-top:25px;
-                      padding:16px;
-                      border-radius:10px;
-                      background:#eff6ff;
-                      border:1px solid #bfdbfe;
-                      color:#1A365D;
-                      font-weight:bold;
-                    "
-                  >
-                    New booking request received from the
-                    SBS Taxi website.
-                  </div>
+        <tr>
 
-                  <hr
-                    style="
-                      margin:25px 0;
-                      border:0;
-                      border-top:1px solid #e2e8f0;
-                    "
-                  />
+          <td
+            style="
+              padding:10px 0;
+              color:#64748b;
+              width:40%;
+            "
+          >
+            Pickup Location
+          </td>
 
-                  <p
-                    style="
-                      margin:0;
-                      color:#64748b;
-                      font-size:13px;
-                      line-height:1.6;
-                    "
-                  >
-                    Please contact the customer to confirm
-                    the booking.
-                  </p>
+          <td
+            style="
+              padding:10px 0;
+              font-weight:bold;
+              color:#0f172a;
+            "
+          >
+            ${escapeHtml(pickup)}
+          </td>
 
-                </div>
+        </tr>
 
-              </div>
+        <tr>
 
-            </body>
-          </html>
+          <td
+            style="
+              padding:10px 0;
+              color:#64748b;
+            "
+          >
+            Drop Location
+          </td>
+
+          <td
+            style="
+              padding:10px 0;
+              font-weight:bold;
+              color:#0f172a;
+            "
+          >
+            ${escapeHtml(drop)}
+          </td>
+
+        </tr>
+
+        <tr>
+
+          <td
+            style="
+              padding:10px 0;
+              color:#64748b;
+            "
+          >
+            Date
+          </td>
+
+          <td
+            style="
+              padding:10px 0;
+              font-weight:bold;
+              color:#0f172a;
+            "
+          >
+            ${escapeHtml(date)}
+          </td>
+
+        </tr>
+
+        <tr>
+
+          <td
+            style="
+              padding:10px 0;
+              color:#64748b;
+            "
+          >
+            Time
+          </td>
+
+          <td
+            style="
+              padding:10px 0;
+              font-weight:bold;
+              color:#0f172a;
+            "
+          >
+            ${escapeHtml(time)}
+          </td>
+
+        </tr>
+
+        <tr>
+
+          <td
+            style="
+              padding:10px 0;
+              color:#64748b;
+            "
+          >
+            Vehicle
+          </td>
+
+          <td
+            style="
+              padding:10px 0;
+              font-weight:bold;
+              color:#0f172a;
+            "
+          >
+            ${escapeHtml(vehicle)}
+          </td>
+
+        </tr>
+
+      </table>
+
+      <div
+        style="
+          margin-top:25px;
+          padding:16px;
+          border-radius:10px;
+          background:#eff6ff;
+          border:1px solid #bfdbfe;
+          color:#1A365D;
+          font-weight:bold;
+        "
+      >
+        New booking request received from the SBS Taxi website.
+      </div>
+
+      <hr
+        style="
+          margin:25px 0;
+          border:0;
+          border-top:1px solid #e2e8f0;
+        "
+      />
+
+      <p
+        style="
+          margin:0;
+          color:#64748b;
+          font-size:13px;
+          line-height:1.6;
+        "
+      >
+        Please contact the customer to confirm the booking.
+      </p>
+
+    </div>
+
+  </div>
+
+</body>
+
+</html>
         `,
       });
 
@@ -512,67 +572,62 @@ export async function POST(request: Request) {
               },
               index: number
             ) => `
-              <tr>
+<tr>
 
-                <td
-                  style="
-                    padding:10px;
-                    border:1px solid #dbeafe;
-                    text-align:center;
-                  "
-                >
-                  ${index + 1}
-                </td>
+  <td
+    style="
+      padding:10px;
+      border:1px solid #dbeafe;
+      text-align:center;
+    "
+  >
+    ${index + 1}
+  </td>
 
-                <td
-                  style="
-                    padding:10px;
-                    border:1px solid #dbeafe;
-                  "
-                >
-                  ${escapeHtml(
-                    temple.name || ""
-                  )}
+  <td
+    style="
+      padding:10px;
+      border:1px solid #dbeafe;
+    "
+  >
+    ${escapeHtml(temple.name || "")}
 
-                  ${
-                    temple.location
-                      ? ` - ${escapeHtml(
-                          temple.location
-                        )}`
-                      : ""
-                  }
+    ${
+      temple.location
+        ? ` - ${escapeHtml(temple.location)}`
+        : ""
+    }
 
-                  ${
-                    temple.custom
-                      ? `
-                        <span
-                          style="
-                            color:#b45309;
-                            font-weight:bold;
-                          "
-                        >
-                          (Custom Destination)
-                        </span>
-                      `
-                      : ""
-                  }
-                </td>
+    ${
+      temple.custom
+        ? `
+          <span
+            style="
+              color:#b45309;
+              font-weight:bold;
+            "
+          >
+            (Custom Destination)
+          </span>
+        `
+        : ""
+    }
 
-                <td
-                  style="
-                    padding:10px;
-                    border:1px solid #dbeafe;
-                    text-align:right;
-                    font-weight:bold;
-                  "
-                >
-                  ${formatCurrency(
-                    temple.fare
-                  )}
-                </td>
+  </td>
 
-              </tr>
-            `
+  <td
+    style="
+      padding:10px;
+      border:1px solid #dbeafe;
+      text-align:right;
+      font-weight:bold;
+    "
+  >
+    ${formatCurrency(temple.fare)}
+  </td>
+
+</tr>
+`
           )
           .join("");
 
@@ -581,232 +636,238 @@ export async function POST(request: Request) {
       ========================================================== */
 
       await transporter.sendMail({
-        from:
-          `"SBS Taxi Website" <${smtpUser}>`,
-
-        to: contactEmail,
+        ...commonMailOptions,
 
         subject:
           "New SBS Taxi Temple Tour Booking",
 
         html: `
-          <!DOCTYPE html>
+<!DOCTYPE html>
 
-          <html>
-            <head>
-              <meta charset="UTF-8" />
+<html>
 
-              <meta
-                name="viewport"
-                content="width=device-width, initial-scale=1.0"
-              />
+<head>
 
-              <title>SBS Taxi Temple Tour</title>
-            </head>
+  <meta charset="UTF-8" />
 
-            <body
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
+
+  <title>SBS Taxi Temple Tour</title>
+
+</head>
+
+<body
+  style="
+    margin:0;
+    padding:0;
+    background:#f1f5f9;
+    font-family:Arial,Helvetica,sans-serif;
+  "
+>
+
+  <div
+    style="
+      max-width:750px;
+      margin:30px auto;
+      background:#ffffff;
+      border-radius:14px;
+      overflow:hidden;
+      border:1px solid #e2e8f0;
+    "
+  >
+
+    <div
+      style="
+        background:#1A365D;
+        color:#ffffff;
+        padding:25px;
+        text-align:center;
+      "
+    >
+
+      <h1
+        style="
+          margin:0;
+          font-size:28px;
+        "
+      >
+        SBS
+        <span style="color:#facc15;">
+          TAXI
+        </span>
+      </h1>
+
+      <p style="margin:8px 0 0;">
+        New Temple Tour Booking
+      </p>
+
+    </div>
+
+    <div style="padding:28px;">
+
+      <h2
+        style="
+          color:#1A365D;
+          font-size:19px;
+        "
+      >
+        Trip Details
+      </h2>
+
+      <p>
+        <strong>Pickup:</strong>
+        ${escapeHtml(pickup)}
+      </p>
+
+      <p>
+        <strong>Travel Date:</strong>
+        ${escapeHtml(date)}
+      </p>
+
+      <p>
+        <strong>Number of Days:</strong>
+        ${escapeHtml(days)}
+      </p>
+
+      <p>
+        <strong>Passengers:</strong>
+        ${escapeHtml(passengers || 1)}
+      </p>
+
+      <p>
+        <strong>Vehicle:</strong>
+        ${escapeHtml(vehicle)}
+      </p>
+
+      <p>
+        <strong>Seater:</strong>
+        ${escapeHtml(seats || "-")}
+      </p>
+
+      <p>
+        <strong>Trip Package:</strong>
+        ${escapeHtml(tripPackage || "-")}
+      </p>
+
+      <h2
+        style="
+          color:#1A365D;
+          font-size:19px;
+          margin-top:28px;
+        "
+      >
+        Selected Temples / Destinations
+      </h2>
+
+      <table
+        width="100%"
+        cellpadding="0"
+        cellspacing="0"
+        style="
+          width:100%;
+          border-collapse:collapse;
+        "
+      >
+
+        <thead>
+
+          <tr style="background:#eff6ff;">
+
+            <th
               style="
-                margin:0;
-                padding:0;
-                background:#f1f5f9;
-                font-family:Arial,Helvetica,sans-serif;
+                padding:10px;
+                border:1px solid #dbeafe;
               "
             >
+              #
+            </th>
 
-              <div
-                style="
-                  max-width:750px;
-                  margin:30px auto;
-                  background:#ffffff;
-                  border-radius:14px;
-                  overflow:hidden;
-                  border:1px solid #e2e8f0;
-                "
-              >
+            <th
+              style="
+                padding:10px;
+                border:1px solid #dbeafe;
+                text-align:left;
+              "
+            >
+              Temple / Destination
+            </th>
 
-                <div
-                  style="
-                    background:#1A365D;
-                    color:#ffffff;
-                    padding:25px;
-                    text-align:center;
-                  "
-                >
+            <th
+              style="
+                padding:10px;
+                border:1px solid #dbeafe;
+                text-align:right;
+              "
+            >
+              Fare
+            </th>
 
-                  <h1
-                    style="
-                      margin:0;
-                      font-size:28px;
-                    "
-                  >
-                    SBS <span style="color:#facc15;">TAXI</span>
-                  </h1>
+          </tr>
 
-                  <p style="margin:8px 0 0;">
-                    New Temple Tour Booking
-                  </p>
+        </thead>
 
-                </div>
+        <tbody>
+          ${templeRows}
+        </tbody>
 
-                <div style="padding:28px;">
+      </table>
 
-                  <h2
-                    style="
-                      color:#1A365D;
-                      font-size:19px;
-                    "
-                  >
-                    Trip Details
-                  </h2>
+      <h2
+        style="
+          color:#1A365D;
+          font-size:19px;
+          margin-top:28px;
+        "
+      >
+        Fare Details
+      </h2>
 
-                  <p>
-                    <strong>Pickup:</strong>
-                    ${escapeHtml(pickup)}
-                  </p>
+      <p>
+        <strong>Base Fare:</strong>
+        ${formatCurrency(baseFare)}
+      </p>
 
-                  <p>
-                    <strong>Travel Date:</strong>
-                    ${escapeHtml(date)}
-                  </p>
+      <div
+        style="
+          margin-top:15px;
+          padding:16px;
+          border-radius:10px;
+          background:#fefce8;
+          border:1px solid #fde68a;
+          font-size:18px;
+        "
+      >
+        <strong>Total Fare:</strong>
+        ${formatCurrency(totalFare)}
+      </div>
 
-                  <p>
-                    <strong>Number of Days:</strong>
-                    ${escapeHtml(days)}
-                  </p>
+      <hr
+        style="
+          margin:25px 0;
+          border:0;
+          border-top:1px solid #e2e8f0;
+        "
+      />
 
-                  <p>
-                    <strong>Passengers:</strong>
-                    ${escapeHtml(passengers || 1)}
-                  </p>
+      <p
+        style="
+          color:#64748b;
+          font-size:13px;
+        "
+      >
+        SBS Taxi Temple Tour Booking
+      </p>
 
-                  <p>
-                    <strong>Vehicle:</strong>
-                    ${escapeHtml(vehicle)}
-                  </p>
+    </div>
 
-                  <p>
-                    <strong>Seater:</strong>
-                    ${escapeHtml(seats || "-")}
-                  </p>
+  </div>
 
-                  <p>
-                    <strong>Trip Package:</strong>
-                    ${escapeHtml(tripPackage || "-")}
-                  </p>
+</body>
 
-                  <h2
-                    style="
-                      color:#1A365D;
-                      font-size:19px;
-                      margin-top:28px;
-                    "
-                  >
-                    Selected Temples / Destinations
-                  </h2>
-
-                  <table
-                    width="100%"
-                    cellpadding="0"
-                    cellspacing="0"
-                    style="
-                      width:100%;
-                      border-collapse:collapse;
-                    "
-                  >
-
-                    <thead>
-                      <tr style="background:#eff6ff;">
-
-                        <th
-                          style="
-                            padding:10px;
-                            border:1px solid #dbeafe;
-                          "
-                        >
-                          #
-                        </th>
-
-                        <th
-                          style="
-                            padding:10px;
-                            border:1px solid #dbeafe;
-                            text-align:left;
-                          "
-                        >
-                          Temple / Destination
-                        </th>
-
-                        <th
-                          style="
-                            padding:10px;
-                            border:1px solid #dbeafe;
-                            text-align:right;
-                          "
-                        >
-                          Fare
-                        </th>
-
-                      </tr>
-                    </thead>
-
-                    <tbody>
-                      ${templeRows}
-                    </tbody>
-
-                  </table>
-
-                  <h2
-                    style="
-                      color:#1A365D;
-                      font-size:19px;
-                      margin-top:28px;
-                    "
-                  >
-                    Fare Details
-                  </h2>
-
-                  <p>
-                    <strong>Base Fare:</strong>
-                    ${formatCurrency(baseFare)}
-                  </p>
-
-                  <div
-                    style="
-                      margin-top:15px;
-                      padding:16px;
-                      border-radius:10px;
-                      background:#fefce8;
-                      border:1px solid #fde68a;
-                      font-size:18px;
-                    "
-                  >
-                    <strong>Total Fare:</strong>
-                    ${formatCurrency(totalFare)}
-                  </div>
-
-                  <hr
-                    style="
-                      margin:25px 0;
-                      border:0;
-                      border-top:1px solid #e2e8f0;
-                    "
-                  />
-
-                  <p
-                    style="
-                      color:#64748b;
-                      font-size:13px;
-                    "
-                  >
-                    SBS Taxi Temple Tour Booking
-                  </p>
-
-                </div>
-
-              </div>
-
-            </body>
-          </html>
+</html>
         `,
       });
 
@@ -891,10 +952,7 @@ export async function POST(request: Request) {
       ========================================================== */
 
       await transporter.sendMail({
-        from:
-          `"SBS Taxi Website" <${smtpUser}>`,
-
-        to: contactEmail,
+        ...commonMailOptions,
 
         subject:
           `New SBS Taxi Booking - ${cleanEmailSubject(
@@ -902,671 +960,712 @@ export async function POST(request: Request) {
           )}`,
 
         html: `
-          <!DOCTYPE html>
+<!DOCTYPE html>
 
-          <html>
+<html>
 
-            <head>
+<head>
 
-              <meta charset="UTF-8" />
+  <meta charset="UTF-8" />
 
-              <meta
-                name="viewport"
-                content="width=device-width, initial-scale=1.0"
-              />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
 
-              <title>
-                SBS Taxi Booking
-              </title>
+  <title>SBS Taxi Booking</title>
 
-            </head>
+</head>
 
-            <body
+<body
+  style="
+    margin:0;
+    padding:0;
+    background:#f1f5f9;
+    font-family:Arial,Helvetica,sans-serif;
+    color:#1e293b;
+  "
+>
+
+  <div
+    style="
+      max-width:720px;
+      margin:30px auto;
+      background:#ffffff;
+      border-radius:16px;
+      overflow:hidden;
+      border:1px solid #dbeafe;
+      box-shadow:0 4px 15px rgba(15,23,42,.08);
+    "
+  >
+
+    <!-- HEADER -->
+
+    <div
+      style="
+        background:#1A365D;
+        padding:28px 20px;
+        text-align:center;
+        color:#ffffff;
+      "
+    >
+
+      <h1
+        style="
+          margin:0;
+          font-size:32px;
+          letter-spacing:1px;
+        "
+      >
+        SBS
+        <span style="color:#facc15;">
+          TAXI
+        </span>
+      </h1>
+
+      <p
+        style="
+          margin:8px 0 0;
+          font-size:14px;
+          color:#dbeafe;
+        "
+      >
+        One Brand. One Fare.
+        One Trusted Service.
+      </p>
+
+      <div
+        style="
+          margin-top:18px;
+          display:inline-block;
+          padding:9px 18px;
+          border-radius:30px;
+          background:#ffffff;
+          color:#1A365D;
+          font-size:14px;
+          font-weight:bold;
+        "
+      >
+        NEW RIDE BOOKING
+      </div>
+
+    </div>
+
+    <div style="padding:28px;">
+
+      <!-- STATUS -->
+
+      <div
+        style="
+          padding:18px;
+          background:#f0fdf4;
+          border:1px solid #bbf7d0;
+          border-radius:12px;
+          margin-bottom:25px;
+        "
+      >
+
+        <div
+          style="
+            font-size:17px;
+            font-weight:bold;
+            color:#166534;
+          "
+        >
+          ✓ New Booking Received
+        </div>
+
+        <p
+          style="
+            margin:7px 0 0;
+            color:#475569;
+            font-size:13px;
+            line-height:1.5;
+          "
+        >
+          A new taxi booking has been submitted
+          from the SBS Taxi website.
+        </p>
+
+      </div>
+
+      <!-- PASSENGER -->
+
+      <h2
+        style="
+          margin:0 0 15px;
+          color:#1A365D;
+          font-size:20px;
+        "
+      >
+        Passenger Details
+      </h2>
+
+      <table
+        width="100%"
+        cellpadding="0"
+        cellspacing="0"
+        style="
+          border-collapse:collapse;
+          margin-bottom:25px;
+        "
+      >
+
+        <tr>
+
+          <td
+            style="
+              padding:11px 0;
+              color:#64748b;
+              width:42%;
+              border-bottom:1px solid #f1f5f9;
+            "
+          >
+            Passenger Name
+          </td>
+
+          <td
+            style="
+              padding:11px 0;
+              font-weight:bold;
+              color:#0f172a;
+              border-bottom:1px solid #f1f5f9;
+            "
+          >
+            ${escapeHtml(passengerName)}
+          </td>
+
+        </tr>
+
+        <tr>
+
+          <td
+            style="
+              padding:11px 0;
+              color:#64748b;
+              border-bottom:1px solid #f1f5f9;
+            "
+          >
+            Total People
+          </td>
+
+          <td
+            style="
+              padding:11px 0;
+              font-weight:bold;
+              border-bottom:1px solid #f1f5f9;
+            "
+          >
+            ${escapeHtml(people || 1)}
+          </td>
+
+        </tr>
+
+        <tr>
+
+          <td
+            style="
+              padding:11px 0;
+              color:#64748b;
+              border-bottom:1px solid #f1f5f9;
+            "
+          >
+            Babies
+          </td>
+
+          <td
+            style="
+              padding:11px 0;
+              font-weight:bold;
+              border-bottom:1px solid #f1f5f9;
+            "
+          >
+            ${escapeHtml(babies || 0)}
+          </td>
+
+        </tr>
+
+        <tr>
+
+          <td
+            style="
+              padding:11px 0;
+              color:#64748b;
+            "
+          >
+            Elderly People
+          </td>
+
+          <td
+            style="
+              padding:11px 0;
+              font-weight:bold;
+            "
+          >
+            ${escapeHtml(elderly || 0)}
+          </td>
+
+        </tr>
+
+      </table>
+
+      <!-- TRIP -->
+
+      <h2
+        style="
+          margin:0 0 15px;
+          color:#1A365D;
+          font-size:20px;
+        "
+      >
+        Trip Details
+      </h2>
+
+      <table
+        width="100%"
+        cellpadding="0"
+        cellspacing="0"
+        style="
+          border-collapse:collapse;
+          margin-bottom:25px;
+        "
+      >
+
+        <tr>
+
+          <td
+            style="
+              padding:11px 0;
+              color:#64748b;
+              width:42%;
+              border-bottom:1px solid #f1f5f9;
+            "
+          >
+            Pickup Location
+          </td>
+
+          <td
+            style="
+              padding:11px 0;
+              font-weight:bold;
+              border-bottom:1px solid #f1f5f9;
+            "
+          >
+            ${escapeHtml(pickup)}
+          </td>
+
+        </tr>
+
+        <tr>
+
+          <td
+            style="
+              padding:11px 0;
+              color:#64748b;
+              border-bottom:1px solid #f1f5f9;
+            "
+          >
+            Drop Location
+          </td>
+
+          <td
+            style="
+              padding:11px 0;
+              font-weight:bold;
+              border-bottom:1px solid #f1f5f9;
+            "
+          >
+            ${escapeHtml(drop)}
+          </td>
+
+        </tr>
+
+        <tr>
+
+          <td
+            style="
+              padding:11px 0;
+              color:#64748b;
+              border-bottom:1px solid #f1f5f9;
+            "
+          >
+            Trip Type
+          </td>
+
+          <td
+            style="
+              padding:11px 0;
+              font-weight:bold;
+              border-bottom:1px solid #f1f5f9;
+            "
+          >
+            ${escapeHtml(tripType || "-")}
+          </td>
+
+        </tr>
+
+        <tr>
+
+          <td
+            style="
+              padding:11px 0;
+              color:#64748b;
+              border-bottom:1px solid #f1f5f9;
+            "
+          >
+            Pickup Date
+          </td>
+
+          <td
+            style="
+              padding:11px 0;
+              font-weight:bold;
+              border-bottom:1px solid #f1f5f9;
+            "
+          >
+            ${escapeHtml(date)}
+          </td>
+
+        </tr>
+
+        <tr>
+
+          <td
+            style="
+              padding:11px 0;
+              color:#64748b;
+              border-bottom:1px solid #f1f5f9;
+            "
+          >
+            Pickup Time
+          </td>
+
+          <td
+            style="
+              padding:11px 0;
+              font-weight:bold;
+              border-bottom:1px solid #f1f5f9;
+            "
+          >
+            ${escapeHtml(time)}
+          </td>
+
+        </tr>
+
+        <tr>
+
+          <td
+            style="
+              padding:11px 0;
+              color:#64748b;
+            "
+          >
+            Round Trip
+          </td>
+
+          <td
+            style="
+              padding:11px 0;
+              font-weight:bold;
+            "
+          >
+            ${isRoundTrip ? "Yes" : "No"}
+          </td>
+
+        </tr>
+
+      </table>
+
+      <!-- VEHICLE -->
+
+      <h2
+        style="
+          margin:0 0 15px;
+          color:#1A365D;
+          font-size:20px;
+        "
+      >
+        Vehicle Details
+      </h2>
+
+      <div
+        style="
+          background:#f8fafc;
+          border:1px solid #e2e8f0;
+          border-radius:12px;
+          padding:5px 18px;
+          margin-bottom:25px;
+        "
+      >
+
+        <table
+          width="100%"
+          cellpadding="0"
+          cellspacing="0"
+          style="border-collapse:collapse;"
+        >
+
+          <tr>
+
+            <td
               style="
-                margin:0;
-                padding:0;
-                background:#f1f5f9;
-                font-family:
-                  Arial,
-                  Helvetica,
-                  sans-serif;
-                color:#1e293b;
+                padding:12px 0;
+                color:#64748b;
+                width:42%;
+                border-bottom:1px solid #e2e8f0;
               "
             >
-
-              <div
-                style="
-                  max-width:720px;
-                  margin:30px auto;
-                  background:#ffffff;
-                  border-radius:16px;
-                  overflow:hidden;
-                  border:1px solid #dbeafe;
-                  box-shadow:
-                    0 4px 15px
-                    rgba(15,23,42,.08);
-                "
-              >
-
-                <div
-                  style="
-                    background:#1A365D;
-                    padding:28px 20px;
-                    text-align:center;
-                    color:#ffffff;
-                  "
-                >
-
-                  <h1
-                    style="
-                      margin:0;
-                      font-size:32px;
-                      letter-spacing:1px;
-                    "
-                  >
-                    SBS
-                    <span style="color:#facc15;">
-                      TAXI
-                    </span>
-                  </h1>
-
-                  <p
-                    style="
-                      margin:8px 0 0;
-                      font-size:14px;
-                      color:#dbeafe;
-                    "
-                  >
-                    One Brand. One Fare.
-                    One Trusted Service.
-                  </p>
-
-                  <div
-                    style="
-                      margin-top:18px;
-                      display:inline-block;
-                      padding:9px 18px;
-                      border-radius:30px;
-                      background:#ffffff;
-                      color:#1A365D;
-                      font-size:14px;
-                      font-weight:bold;
-                    "
-                  >
-                    NEW RIDE BOOKING
-                  </div>
-
-                </div>
-
-                <div style="padding:28px;">
-
-                  <div
-                    style="
-                      padding:18px;
-                      background:#f0fdf4;
-                      border:1px solid #bbf7d0;
-                      border-radius:12px;
-                      margin-bottom:25px;
-                    "
-                  >
-
-                    <div
-                      style="
-                        font-size:17px;
-                        font-weight:bold;
-                        color:#166534;
-                      "
-                    >
-                      ✓ New Booking Received
-                    </div>
-
-                    <p
-                      style="
-                        margin:7px 0 0;
-                        color:#475569;
-                        font-size:13px;
-                        line-height:1.5;
-                      "
-                    >
-                      A new taxi booking has been
-                      submitted from the SBS Taxi website.
-                    </p>
-
-                  </div>
-
-                  <h2
-                    style="
-                      margin:0 0 15px;
-                      color:#1A365D;
-                      font-size:20px;
-                    "
-                  >
-                    Passenger Details
-                  </h2>
-
-                  <table
-                    width="100%"
-                    cellpadding="0"
-                    cellspacing="0"
-                    style="
-                      border-collapse:collapse;
-                      margin-bottom:25px;
-                    "
-                  >
-
-                    <tr>
-                      <td
-                        style="
-                          padding:11px 0;
-                          color:#64748b;
-                          width:42%;
-                          border-bottom:1px solid #f1f5f9;
-                        "
-                      >
-                        Passenger Name
-                      </td>
-
-                      <td
-                        style="
-                          padding:11px 0;
-                          font-weight:bold;
-                          color:#0f172a;
-                          border-bottom:1px solid #f1f5f9;
-                        "
-                      >
-                        ${escapeHtml(passengerName)}
-                      </td>
-                    </tr>
-
-                    <tr>
-                      <td
-                        style="
-                          padding:11px 0;
-                          color:#64748b;
-                          border-bottom:1px solid #f1f5f9;
-                        "
-                      >
-                        Total People
-                      </td>
-
-                      <td
-                        style="
-                          padding:11px 0;
-                          font-weight:bold;
-                          border-bottom:1px solid #f1f5f9;
-                        "
-                      >
-                        ${escapeHtml(people || 1)}
-                      </td>
-                    </tr>
-
-                    <tr>
-                      <td
-                        style="
-                          padding:11px 0;
-                          color:#64748b;
-                          border-bottom:1px solid #f1f5f9;
-                        "
-                      >
-                        Babies
-                      </td>
-
-                      <td
-                        style="
-                          padding:11px 0;
-                          font-weight:bold;
-                          border-bottom:1px solid #f1f5f9;
-                        "
-                      >
-                        ${escapeHtml(babies || 0)}
-                      </td>
-                    </tr>
-
-                    <tr>
-                      <td
-                        style="
-                          padding:11px 0;
-                          color:#64748b;
-                        "
-                      >
-                        Elderly People
-                      </td>
-
-                      <td
-                        style="
-                          padding:11px 0;
-                          font-weight:bold;
-                        "
-                      >
-                        ${escapeHtml(elderly || 0)}
-                      </td>
-                    </tr>
-
-                  </table>
-
-                  <h2
-                    style="
-                      margin:0 0 15px;
-                      color:#1A365D;
-                      font-size:20px;
-                    "
-                  >
-                    Trip Details
-                  </h2>
-
-                  <table
-                    width="100%"
-                    cellpadding="0"
-                    cellspacing="0"
-                    style="
-                      border-collapse:collapse;
-                      margin-bottom:25px;
-                    "
-                  >
-
-                    <tr>
-                      <td
-                        style="
-                          padding:11px 0;
-                          color:#64748b;
-                          width:42%;
-                          border-bottom:1px solid #f1f5f9;
-                        "
-                      >
-                        Pickup Location
-                      </td>
-
-                      <td
-                        style="
-                          padding:11px 0;
-                          font-weight:bold;
-                          border-bottom:1px solid #f1f5f9;
-                        "
-                      >
-                        ${escapeHtml(pickup)}
-                      </td>
-                    </tr>
-
-                    <tr>
-                      <td
-                        style="
-                          padding:11px 0;
-                          color:#64748b;
-                          border-bottom:1px solid #f1f5f9;
-                        "
-                      >
-                        Drop Location
-                      </td>
-
-                      <td
-                        style="
-                          padding:11px 0;
-                          font-weight:bold;
-                          border-bottom:1px solid #f1f5f9;
-                        "
-                      >
-                        ${escapeHtml(drop)}
-                      </td>
-                    </tr>
-
-                    <tr>
-                      <td
-                        style="
-                          padding:11px 0;
-                          color:#64748b;
-                          border-bottom:1px solid #f1f5f9;
-                        "
-                      >
-                        Trip Type
-                      </td>
-
-                      <td
-                        style="
-                          padding:11px 0;
-                          font-weight:bold;
-                          border-bottom:1px solid #f1f5f9;
-                        "
-                      >
-                        ${escapeHtml(tripType || "-")}
-                      </td>
-                    </tr>
-
-                    <tr>
-                      <td
-                        style="
-                          padding:11px 0;
-                          color:#64748b;
-                          border-bottom:1px solid #f1f5f9;
-                        "
-                      >
-                        Pickup Date
-                      </td>
-
-                      <td
-                        style="
-                          padding:11px 0;
-                          font-weight:bold;
-                          border-bottom:1px solid #f1f5f9;
-                        "
-                      >
-                        ${escapeHtml(date)}
-                      </td>
-                    </tr>
-
-                    <tr>
-                      <td
-                        style="
-                          padding:11px 0;
-                          color:#64748b;
-                          border-bottom:1px solid #f1f5f9;
-                        "
-                      >
-                        Pickup Time
-                      </td>
-
-                      <td
-                        style="
-                          padding:11px 0;
-                          font-weight:bold;
-                          border-bottom:1px solid #f1f5f9;
-                        "
-                      >
-                        ${escapeHtml(time)}
-                      </td>
-                    </tr>
-
-                    <tr>
-                      <td
-                        style="
-                          padding:11px 0;
-                          color:#64748b;
-                        "
-                      >
-                        Round Trip
-                      </td>
-
-                      <td
-                        style="
-                          padding:11px 0;
-                          font-weight:bold;
-                        "
-                      >
-                        ${isRoundTrip ? "Yes" : "No"}
-                      </td>
-                    </tr>
-
-                  </table>
-
-                  <h2
-                    style="
-                      margin:0 0 15px;
-                      color:#1A365D;
-                      font-size:20px;
-                    "
-                  >
-                    Vehicle Details
-                  </h2>
-
-                  <div
-                    style="
-                      background:#f8fafc;
-                      border:1px solid #e2e8f0;
-                      border-radius:12px;
-                      padding:5px 18px;
-                      margin-bottom:25px;
-                    "
-                  >
-
-                    <table
-                      width="100%"
-                      cellpadding="0"
-                      cellspacing="0"
-                      style="border-collapse:collapse;"
-                    >
-
-                      <tr>
-                        <td
-                          style="
-                            padding:12px 0;
-                            color:#64748b;
-                            width:42%;
-                            border-bottom:1px solid #e2e8f0;
-                          "
-                        >
-                          Vehicle Type
-                        </td>
-
-                        <td
-                          style="
-                            padding:12px 0;
-                            font-weight:bold;
-                            color:#1A365D;
-                            border-bottom:1px solid #e2e8f0;
-                          "
-                        >
-                          ${escapeHtml(vehicleType)}
-                        </td>
-                      </tr>
-
-                      <tr>
-                        <td
-                          style="
-                            padding:12px 0;
-                            color:#64748b;
-                            border-bottom:1px solid #e2e8f0;
-                          "
-                        >
-                          Vehicle
-                        </td>
-
-                        <td
-                          style="
-                            padding:12px 0;
-                            font-weight:bold;
-                            border-bottom:1px solid #e2e8f0;
-                          "
-                        >
-                          ${escapeHtml(vehicle)}
-                        </td>
-                      </tr>
-
-                      <tr>
-                        <td
-                          style="
-                            padding:12px 0;
-                            color:#64748b;
-                            border-bottom:1px solid #e2e8f0;
-                          "
-                        >
-                          Model
-                        </td>
-
-                        <td
-                          style="
-                            padding:12px 0;
-                            font-weight:bold;
-                            border-bottom:1px solid #e2e8f0;
-                          "
-                        >
-                          ${escapeHtml(model || "-")}
-                        </td>
-                      </tr>
-
-                      <tr>
-                        <td
-                          style="
-                            padding:12px 0;
-                            color:#64748b;
-                            border-bottom:1px solid #e2e8f0;
-                          "
-                        >
-                          Seats
-                        </td>
-
-                        <td
-                          style="
-                            padding:12px 0;
-                            font-weight:bold;
-                            border-bottom:1px solid #e2e8f0;
-                          "
-                        >
-                          ${escapeHtml(seats || "-")}
-                        </td>
-                      </tr>
-
-                      <tr>
-                        <td
-                          style="
-                            padding:12px 0;
-                            color:#64748b;
-                          "
-                        >
-                          Price
-                        </td>
-
-                        <td
-                          style="
-                            padding:12px 0;
-                            font-weight:bold;
-                            color:#166534;
-                          "
-                        >
-                          ${escapeHtml(price || "-")}
-                        </td>
-                      </tr>
-
-                    </table>
-
-                  </div>
-
-                  <h2
-                    style="
-                      margin:0 0 15px;
-                      color:#1A365D;
-                      font-size:20px;
-                    "
-                  >
-                    Payment Method
-                  </h2>
-
-                  <div
-                    style="
-                      padding:15px 18px;
-                      background:#eff6ff;
-                      border:1px solid #bfdbfe;
-                      border-radius:10px;
-                      font-weight:bold;
-                      color:#1A365D;
-                      margin-bottom:25px;
-                    "
-                  >
-                    ${escapeHtml(paymentMethod)}
-                  </div>
-
-                  <h2
-                    style="
-                      margin:0 0 15px;
-                      color:#1A365D;
-                      font-size:20px;
-                    "
-                  >
-                    Additional Preferences
-                  </h2>
-
-                  <div
-                    style="
-                      padding:15px 18px;
-                      background:#f8fafc;
-                      border:1px solid #e2e8f0;
-                      border-radius:10px;
-                      margin-bottom:25px;
-                      line-height:1.6;
-                    "
-                  >
-                    ${preferenceText}
-                  </div>
-
-                  <div
-                    style="
-                      padding:18px;
-                      background:#fff7ed;
-                      border:1px solid #fed7aa;
-                      border-radius:10px;
-                    "
-                  >
-
-                    <strong style="color:#9a3412;">
-                      Action Required
-                    </strong>
-
-                    <p
-                      style="
-                        margin:7px 0 0;
-                        color:#7c2d12;
-                        font-size:13px;
-                        line-height:1.6;
-                      "
-                    >
-                      Please review the booking details
-                      and contact the customer to confirm
-                      the ride.
-                    </p>
-
-                  </div>
-
-                </div>
-
-                <div
-                  style="
-                    background:#f8fafc;
-                    border-top:1px solid #e2e8f0;
-                    padding:22px;
-                    text-align:center;
-                  "
-                >
-
-                  <div
-                    style="
-                      font-size:20px;
-                      font-weight:bold;
-                      color:#1A365D;
-                    "
-                  >
-                    SBS
-                    <span style="color:#facc15;">
-                      TAXI
-                    </span>
-                  </div>
-
-                  <p
-                    style="
-                      margin:7px 0;
-                      color:#64748b;
-                      font-size:13px;
-                    "
-                  >
-                    One Brand. One Fare.
-                    One Trusted Service.
-                  </p>
-
-                  <p
-                    style="
-                      margin:12px 0 0;
-                      color:#94a3b8;
-                      font-size:11px;
-                    "
-                  >
-                    This email was generated automatically
-                    from the SBS Taxi website.
-                  </p>
-
-                </div>
-
-              </div>
-
-            </body>
-
-          </html>
+              Vehicle Type
+            </td>
+
+            <td
+              style="
+                padding:12px 0;
+                font-weight:bold;
+                color:#1A365D;
+                border-bottom:1px solid #e2e8f0;
+              "
+            >
+              ${escapeHtml(vehicleType)}
+            </td>
+
+          </tr>
+
+          <tr>
+
+            <td
+              style="
+                padding:12px 0;
+                color:#64748b;
+                border-bottom:1px solid #e2e8f0;
+              "
+            >
+              Vehicle
+            </td>
+
+            <td
+              style="
+                padding:12px 0;
+                font-weight:bold;
+                border-bottom:1px solid #e2e8f0;
+              "
+            >
+              ${escapeHtml(vehicle)}
+            </td>
+
+          </tr>
+
+          <tr>
+
+            <td
+              style="
+                padding:12px 0;
+                color:#64748b;
+                border-bottom:1px solid #e2e8f0;
+              "
+            >
+              Model
+            </td>
+
+            <td
+              style="
+                padding:12px 0;
+                font-weight:bold;
+                border-bottom:1px solid #e2e8f0;
+              "
+            >
+              ${escapeHtml(model || "-")}
+            </td>
+
+          </tr>
+
+          <tr>
+
+            <td
+              style="
+                padding:12px 0;
+                color:#64748b;
+                border-bottom:1px solid #e2e8f0;
+              "
+            >
+              Seats
+            </td>
+
+            <td
+              style="
+                padding:12px 0;
+                font-weight:bold;
+                border-bottom:1px solid #e2e8f0;
+              "
+            >
+              ${escapeHtml(seats || "-")}
+            </td>
+
+          </tr>
+
+          <tr>
+
+            <td
+              style="
+                padding:12px 0;
+                color:#64748b;
+              "
+            >
+              Price
+            </td>
+
+            <td
+              style="
+                padding:12px 0;
+                font-weight:bold;
+                color:#166534;
+              "
+            >
+              ${escapeHtml(price || "-")}
+            </td>
+
+          </tr>
+
+        </table>
+
+      </div>
+
+      <!-- PAYMENT -->
+
+      <h2
+        style="
+          margin:0 0 15px;
+          color:#1A365D;
+          font-size:20px;
+        "
+      >
+        Payment Method
+      </h2>
+
+      <div
+        style="
+          padding:15px 18px;
+          background:#eff6ff;
+          border:1px solid #bfdbfe;
+          border-radius:10px;
+          font-weight:bold;
+          color:#1A365D;
+          margin-bottom:25px;
+        "
+      >
+        ${escapeHtml(paymentMethod)}
+      </div>
+
+      <!-- PREFERENCES -->
+
+      <h2
+        style="
+          margin:0 0 15px;
+          color:#1A365D;
+          font-size:20px;
+        "
+      >
+        Additional Preferences
+      </h2>
+
+      <div
+        style="
+          padding:15px 18px;
+          background:#f8fafc;
+          border:1px solid #e2e8f0;
+          border-radius:10px;
+          margin-bottom:25px;
+          line-height:1.6;
+        "
+      >
+        ${preferenceText}
+      </div>
+
+      <!-- ACTION -->
+
+      <div
+        style="
+          padding:18px;
+          background:#fff7ed;
+          border:1px solid #fed7aa;
+          border-radius:10px;
+        "
+      >
+
+        <strong style="color:#9a3412;">
+          Action Required
+        </strong>
+
+        <p
+          style="
+            margin:7px 0 0;
+            color:#7c2d12;
+            font-size:13px;
+            line-height:1.6;
+          "
+        >
+          Please review the booking details
+          and contact the customer to confirm
+          the ride.
+        </p>
+
+      </div>
+
+    </div>
+
+    <!-- FOOTER -->
+
+    <div
+      style="
+        background:#f8fafc;
+        border-top:1px solid #e2e8f0;
+        padding:22px;
+        text-align:center;
+      "
+    >
+
+      <div
+        style="
+          font-size:20px;
+          font-weight:bold;
+          color:#1A365D;
+        "
+      >
+        SBS
+        <span style="color:#facc15;">
+          TAXI
+        </span>
+      </div>
+
+      <p
+        style="
+          margin:7px 0;
+          color:#64748b;
+          font-size:13px;
+        "
+      >
+        One Brand. One Fare.
+        One Trusted Service.
+      </p>
+
+      <p
+        style="
+          margin:12px 0 0;
+          color:#94a3b8;
+          font-size:11px;
+        "
+      >
+        This email was generated automatically
+        from the SBS Taxi website.
+      </p>
+
+    </div>
+
+  </div>
+
+</body>
+
+</html>
         `,
       });
 
@@ -1594,17 +1693,6 @@ export async function POST(request: Request) {
 
     /* ==========================================================
        VALIDATION
-
-       REQUIRED:
-       - Name
-       - Phone
-       - Email
-       - Pickup
-       - Drop
-       - Subject
-
-       OPTIONAL:
-       - Message
     ========================================================== */
 
     if (
@@ -1640,10 +1728,7 @@ export async function POST(request: Request) {
     ========================================================== */
 
     await transporter.sendMail({
-      from:
-        `"SBS Taxi Website" <${smtpUser}>`,
-
-      to: contactEmail,
+      ...commonMailOptions,
 
       replyTo: email,
 
@@ -1653,200 +1738,194 @@ export async function POST(request: Request) {
         )}`,
 
       html: `
-        <!DOCTYPE html>
+<!DOCTYPE html>
 
-        <html>
+<html>
 
-          <head>
+<head>
 
-            <meta charset="UTF-8" />
+  <meta charset="UTF-8" />
 
-            <meta
-              name="viewport"
-              content="width=device-width, initial-scale=1.0"
-            />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
 
-            <title>
-              SBS Taxi Enquiry
-            </title>
+  <title>SBS Taxi Enquiry</title>
 
-          </head>
+</head>
 
-          <body
-            style="
-              margin:0;
-              padding:0;
-              background:#f1f5f9;
-              font-family:Arial,Helvetica,sans-serif;
-            "
-          >
+<body
+  style="
+    margin:0;
+    padding:0;
+    background:#f1f5f9;
+    font-family:Arial,Helvetica,sans-serif;
+  "
+>
 
-            <div
-              style="
-                max-width:700px;
-                margin:30px auto;
-                background:#ffffff;
-                border-radius:14px;
-                overflow:hidden;
-                border:1px solid #e2e8f0;
-              "
-            >
+  <div
+    style="
+      max-width:700px;
+      margin:30px auto;
+      background:#ffffff;
+      border-radius:14px;
+      overflow:hidden;
+      border:1px solid #e2e8f0;
+    "
+  >
 
-              <!-- HEADER -->
+    <!-- HEADER -->
 
-              <div
-                style="
-                  background:#1A365D;
-                  color:#ffffff;
-                  padding:25px;
-                  text-align:center;
-                "
-              >
+    <div
+      style="
+        background:#1A365D;
+        color:#ffffff;
+        padding:25px;
+        text-align:center;
+      "
+    >
 
-                <h1
-                  style="
-                    margin:0;
-                    font-size:28px;
-                  "
-                >
-                  SBS
-                  <span style="color:#facc15;">
-                    TAXI
-                  </span>
-                </h1>
+      <h1
+        style="
+          margin:0;
+          font-size:28px;
+        "
+      >
+        SBS
+        <span style="color:#facc15;">
+          TAXI
+        </span>
+      </h1>
 
-                <p
-                  style="
-                    margin:8px 0 0;
-                    font-size:14px;
-                  "
-                >
-                  New Customer Enquiry
-                </p>
+      <p
+        style="
+          margin:8px 0 0;
+          font-size:14px;
+        "
+      >
+        New Customer Enquiry
+      </p>
 
-              </div>
+    </div>
 
-              <!-- CONTENT -->
+    <!-- CONTENT -->
 
-              <div
-                style="
-                  padding:28px;
-                "
-              >
+    <div style="padding:28px;">
 
-                <h2
-                  style="
-                    color:#1A365D;
-                    font-size:19px;
-                  "
-                >
-                  Customer Details
-                </h2>
+      <h2
+        style="
+          color:#1A365D;
+          font-size:19px;
+        "
+      >
+        Customer Details
+      </h2>
 
-                <p>
-                  <strong>Name:</strong>
-                  ${escapeHtml(name)}
-                </p>
+      <p>
+        <strong>Name:</strong>
+        ${escapeHtml(name)}
+      </p>
 
-                <p>
-                  <strong>Phone:</strong>
-                  ${escapeHtml(phone)}
-                </p>
+      <p>
+        <strong>Phone:</strong>
+        ${escapeHtml(phone)}
+      </p>
 
-                <p>
-                  <strong>Email:</strong>
-                  ${escapeHtml(email)}
-                </p>
+      <p>
+        <strong>Email:</strong>
+        ${escapeHtml(email)}
+      </p>
 
-                <h2
-                  style="
-                    color:#1A365D;
-                    font-size:19px;
-                    margin-top:25px;
-                  "
-                >
-                  Trip Details
-                </h2>
+      <h2
+        style="
+          color:#1A365D;
+          font-size:19px;
+          margin-top:25px;
+        "
+      >
+        Trip Details
+      </h2>
 
-                <p>
-                  <strong>Service:</strong>
-                  ${escapeHtml(subject)}
-                </p>
+      <p>
+        <strong>Service:</strong>
+        ${escapeHtml(subject)}
+      </p>
 
-                <p>
-                  <strong>Pickup:</strong>
-                  ${escapeHtml(pickup)}
-                </p>
+      <p>
+        <strong>Pickup:</strong>
+        ${escapeHtml(pickup)}
+      </p>
 
-                <p>
-                  <strong>Drop:</strong>
-                  ${escapeHtml(drop)}
-                </p>
+      <p>
+        <strong>Drop:</strong>
+        ${escapeHtml(drop)}
+      </p>
 
-                <h2
-                  style="
-                    color:#1A365D;
-                    font-size:19px;
-                    margin-top:25px;
-                  "
-                >
-                  Message
-                </h2>
+      <h2
+        style="
+          color:#1A365D;
+          font-size:19px;
+          margin-top:25px;
+        "
+      >
+        Message
+      </h2>
 
-                <div
-                  style="
-                    padding:16px;
-                    background:#f8fafc;
-                    border:1px solid #e2e8f0;
-                    border-radius:10px;
-                    line-height:1.6;
-                  "
-                >
-                  ${contactMessage}
-                </div>
+      <div
+        style="
+          padding:16px;
+          background:#f8fafc;
+          border:1px solid #e2e8f0;
+          border-radius:10px;
+          line-height:1.6;
+        "
+      >
+        ${contactMessage}
+      </div>
 
-              </div>
+    </div>
 
-              <!-- FOOTER -->
+    <!-- FOOTER -->
 
-              <div
-                style="
-                  padding:20px;
-                  background:#f8fafc;
-                  border-top:1px solid #e2e8f0;
-                  text-align:center;
-                "
-              >
+    <div
+      style="
+        padding:20px;
+        background:#f8fafc;
+        border-top:1px solid #e2e8f0;
+        text-align:center;
+      "
+    >
 
-                <strong
-                  style="
-                    color:#1A365D;
-                  "
-                >
-                  SBS
-                  <span style="color:#facc15;">
-                    TAXI
-                  </span>
-                </strong>
+      <strong
+        style="
+          color:#1A365D;
+        "
+      >
+        SBS
+        <span style="color:#facc15;">
+          TAXI
+        </span>
+      </strong>
 
-                <p
-                  style="
-                    margin:7px 0 0;
-                    color:#64748b;
-                    font-size:12px;
-                  "
-                >
-                  One Brand. One Fare.
-                  One Trusted Service.
-                </p>
+      <p
+        style="
+          margin:7px 0 0;
+          color:#64748b;
+          font-size:12px;
+        "
+      >
+        One Brand. One Fare.
+        One Trusted Service.
+      </p>
 
-              </div>
+    </div>
 
-            </div>
+  </div>
 
-          </body>
+</body>
 
-        </html>
+</html>
       `,
     });
 
@@ -1861,10 +1940,6 @@ export async function POST(request: Request) {
     });
 
   } catch (error) {
-
-    /* ============================================================
-       ERROR
-    ============================================================ */
 
     console.error(
       "SBS TAXI EMAIL API ERROR:",

@@ -1,9 +1,8 @@
-
 "use client";
 
 import { useState } from "react";
 import Link from "next/link";
-import { Tag, Sparkles, ArrowRight, X, Phone } from "lucide-react";
+import { Tag, Sparkles, ArrowRight, X, Percent } from "lucide-react";
 
 export default function LimitedOffer() {
   const [open, setOpen] = useState(true);
@@ -16,7 +15,7 @@ export default function LimitedOffer() {
       <div
         className="
           relative
-          w-[300px]
+          w-[320px]
           max-w-[calc(100vw-32px)]
           overflow-hidden
           rounded-2xl
@@ -51,7 +50,7 @@ export default function LimitedOffer() {
 
           <div className="flex items-center gap-3 pr-8">
             <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[var(--primary)] text-[var(--secondary)] shadow-md">
-              <Tag className="h-5 w-5 " />
+              <Tag className="h-5 w-5" />
             </div>
 
             <div className="min-w-0">
@@ -60,7 +59,7 @@ export default function LimitedOffer() {
               </p>
 
               <h2 className="mt-0.5 text-[17px] !font-bold leading-tight !text-black">
-                Special Promotion
+                Exclusive Offers
               </h2>
             </div>
           </div>
@@ -68,60 +67,80 @@ export default function LimitedOffer() {
 
         {/* CONTENT */}
         <div className="space-y-2.5 bg-[#fffdf4] p-3.5">
-          {/* OFFER */}
+          
+          {/* OFFER / LIMITED NOTE */}
           <div className="rounded-xl border border-[#e8d9a7] bg-[var(--secondary-light)] p-3">
-            <div className="flex gap-2.5">
-              <Sparkles className="mt-0.5 h-4 w-4 shrink-0 text-[#d89200]" />
+            <div className="flex items-center gap-3">
+              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[var(--primary)] text-[var(--secondary)] shadow-sm">
+                <Sparkles className="h-4 w-4" />
+              </div>
 
-            
+              <Link
+                href="/offers"
+                onClick={() => setOpen(false)}
+                className="block cursor-pointer transition-opacity hover:opacity-90 min-w-0"
+              >
+                <div>
+                  <h3 className="text-[13px] font-bold leading-5 text-[#c17b00]">
+                    Special Taxi Offers
+                  </h3>
 
-<Link
-  href="/offers"
-  className="block cursor-pointer transition-opacity hover:opacity-90"
->
-  <div className="min-w-0">
-    <h3 className="text-[13px] font-bold leading-5 text-[#c17b00]">
-      Special Taxi Offers
-    </h3>
+                  <p className="mt-0.5 text-[11px] leading-[18px] text-slate-600">
+                    Book your ride today and enjoy our{" "}
+                    <strong className="text-slate-800">
+                      limited-time special rates.
+                    </strong>
+                  </p>
 
-    <p className="mt-0.5 text-[11px] leading-[18px] text-slate-600">
-      Book your ride today and enjoy our{" "}
-      <strong className="text-slate-800">
-        limited-time special rates.
-      </strong>
-    </p>
-
-    <p className="mt-0.5 text-[9px] font-semibold leading-4 text-slate-500">
-      Limited availability remaining
-    </p>
-  </div>
-</Link>
+                  <p className="mt-0.5 text-[9px] font-semibold leading-4 text-slate-500">
+                    Limited availability remaining
+                  </p>
+                </div>
+              </Link>
             </div>
           </div>
 
-          {/* CONTACT */}
-          <div className="rounded-xl border border-slate-200 bg-white p-3">
-            <div className="flex gap-2.5">
-              <Phone className="mt-0.5 h-4 w-4 shrink-0 text-[#1A365D]" />
-
+          {/* OFFER 1: ₹50 OFF */}
+          <Link
+            href="/offers"
+            onClick={() => setOpen(false)}
+            className="block rounded-xl border border-[#e8d9a7] bg-[var(--secondary-light)] p-3 transition-all hover:shadow-md"
+          >
+            <div className="flex items-center gap-3">
+              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[var(--primary)] text-[var(--secondary)] shadow-sm">
+                <Tag className="h-4 w-4" />
+              </div>
               <div className="min-w-0">
-                <h3 className="text-[13px] font-bold leading-5 text-[#1A365D]">
-                  Contact Us Today
+                <h3 className="text-[14px] font-bold leading-5 text-[#c17b00]">
+                  ₹50 OFF
                 </h3>
-
-                <p className="mt-0.5 text-[11px] leading-[18px] text-slate-600">
-                  Call us for details on current offers.
+                <p className="mt-0.5 text-[11px] leading-[16px] text-slate-600">
+                  On your first 3 bookings with SBS Taxi
                 </p>
-
-                <a
-                  href="tel:9843544844"
-                  className="mt-0.5 inline-block text-[11px] font-bold text-[#1A365D] transition hover:text-[#FFC107]"
-                >
-                  98435 44844
-                </a>
               </div>
             </div>
-          </div>
+          </Link>
+
+          {/* OFFER 2: ₹20 OFF */}
+          <Link
+            href="/offers"
+            onClick={() => setOpen(false)}
+            className="block rounded-xl border border-[#e8d9a7] bg-[var(--secondary-light)] p-3 transition-all hover:shadow-md"
+          >
+            <div className="flex items-center gap-3">
+              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[var(--primary)] text-[var(--secondary)] shadow-sm">
+                <Percent className="h-4 w-4" />
+              </div>
+              <div className="min-w-0">
+                <h3 className="text-[14px] font-bold leading-5 text-[#c17b00]">
+                  ₹20 OFF
+                </h3>
+                <p className="mt-0.5 text-[11px] leading-[16px] text-slate-600">
+                  On every booking after your first 3 rides
+                </p>
+              </div>
+            </div>
+          </Link>
 
           {/* BOOK BUTTON */}
           <Link
@@ -142,7 +161,6 @@ export default function LimitedOffer() {
               !text-black
               shadow-md
               transition
-              !hover:bg-[var(--secondary-dark)
               hover:shadow-lg
             "
           >
@@ -150,7 +168,6 @@ export default function LimitedOffer() {
             <ArrowRight className="h-4 w-4" />
           </Link>
 
-          
         </div>
       </div>
     </div>

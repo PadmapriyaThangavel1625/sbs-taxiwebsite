@@ -1,4 +1,3 @@
-
 "use client";
 
 import Link from "next/link";
@@ -7,28 +6,23 @@ import {
   Mail,
   MessageCircle,
   MapPin,
+  Clock3,
   ArrowUpRight,
 } from "lucide-react";
 
 export default function ContactInfo() {
   return (
     <section className="h-full font-[family-name:var(--font-jakarta)]">
-      {/* =========================
-          Heading
-      ========================== */}
-      <div className="mb-6">
+      {/* =========================================================
+          HEADING
+      ========================================================== */}
+      <div className="mb-8">
         <span
           className="
-            inline-flex
-            items-center
-            rounded-full
-            bg-[var(--primary-light)]
-            px-3
-            py-1
             text-xs
             font-bold
             uppercase
-            tracking-wider
+            tracking-[0.25em]
             text-[var(--secondary)]
           "
         >
@@ -39,339 +33,48 @@ export default function ContactInfo() {
           className="
             mt-3
             font-[family-name:var(--font-instrument)]
-            text-2xl
+            text-3xl
             font-normal
             tracking-tight
             text-[var(--text)]
-            sm:text-3xl
+            sm:text-4xl
           "
         >
-          Get in Touch
+          We’re Here to Help
         </h2>
 
         <p
           className="
-            mt-2
-            max-w-lg
+            mt-3
+            max-w-xl
             text-sm
             leading-6
             text-[var(--muted)]
+            sm:text-base
           "
         >
-          Have a question or need a ride? Our team is available to help you
-          with bookings, enquiries and support.
+          Have a question, need a ride, or want to know more about our
+          services? Get in touch with the SBS Taxi team anytime.
         </p>
       </div>
 
-      {/* =========================
-          Contact Cards
-      ========================== */}
-      <div
-        className="
-          grid
-          grid-cols-1
-          gap-4
-          sm:grid-cols-2
-        "
-      >
-        {/* =========================
-            Call Us
-        ========================== */}
-        <a
-          href="tel:+919843544844"
+      {/* =========================================================
+          ADDRESS
+      ========================================================== */}
+      <div className="mb-8">
+        <p
           className="
-            group
-            flex
-            items-start
-            gap-4
-            rounded-2xl
-            border
-            border-[var(--border)]
-            bg-white
-            p-4
-            shadow-sm
-            transition-all
-            duration-300
-            hover:-translate-y-0.5
-            hover:border-[var(--primary)]
-            hover:shadow-lg
+            mb-4
+            text-xs
+            font-bold
+            uppercase
+            tracking-[0.25em]
+            text-[var(--secondary)]
           "
         >
-          <div
-            className="
-              flex
-              h-11
-              w-11
-              shrink-0
-              items-center
-              justify-center
-              rounded-xl
-              bg-[var(--primary-light)]
-              text-[var(--secondary)]
-              transition-transform
-              duration-300
-              group-hover:scale-105
-            "
-          >
-            <Phone className="h-5 w-5" />
-          </div>
+          Address
+        </p>
 
-          <div className="min-w-0 flex-1">
-            <div className="flex items-center justify-between gap-2">
-              <p
-                className="
-                  text-xs
-                  font-semibold
-                  uppercase
-                  tracking-wide
-                  text-[var(--muted)]
-                "
-              >
-                Call Us
-              </p>
-
-              <ArrowUpRight
-                className="
-                  h-4
-                  w-4
-                  shrink-0
-                  text-[var(--secondary)]
-                  opacity-0
-                  transition-all
-                  duration-300
-                  group-hover:-translate-y-0.5
-                  group-hover:translate-x-0.5
-                  group-hover:text-[var(--primary)]
-                  group-hover:opacity-100
-                "
-              />
-            </div>
-
-            <p
-              className="
-                mt-1
-                text-sm
-                font-bold
-                text-[var(--text)]
-                sm:text-base
-              "
-            >
-              +91 9843544844
-            </p>
-
-            <p
-              className="
-                mt-1
-                text-xs
-                text-[var(--muted)]
-              "
-            >
-              Available 24/7
-            </p>
-          </div>
-        </a>
-
-        {/* =========================
-            WhatsApp
-        ========================== */}
-        <a
-          href="https://wa.me/919843544844"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="
-            group
-            flex
-            items-start
-            gap-4
-            rounded-2xl
-            border
-            border-[var(--border)]
-            bg-white
-            p-4
-            shadow-sm
-            transition-all
-            duration-300
-            hover:-translate-y-0.5
-            hover:border-[var(--primary)]
-            hover:shadow-lg
-          "
-        >
-          <div
-            className="
-              flex
-              h-11
-              w-11
-              shrink-0
-              items-center
-              justify-center
-              rounded-xl
-              bg-[var(--primary-light)]
-              !text-[var(--secondary)]
-              transition-transform
-              duration-300
-              group-hover:scale-105
-            "
-          >
-            <MessageCircle className="h-5 w-5" />
-          </div>
-
-          <div className="min-w-0 flex-1">
-            <div className="flex items-center justify-between gap-2">
-              <p
-                className="
-                  text-xs
-                  font-semibold
-                  uppercase
-                  tracking-wide
-                  text-[var(--muted)]
-                "
-              >
-                WhatsApp
-              </p>
-
-              <ArrowUpRight
-                className="
-                  h-4
-                  w-4
-                  shrink-0
-                  text-[var(--muted)]
-                  opacity-0
-                  transition-all
-                  duration-300
-                  group-hover:-translate-y-0.5
-                  group-hover:translate-x-0.5
-                  group-hover:text-[var(--primary)]
-                  group-hover:opacity-100
-                "
-              />
-            </div>
-
-            <p
-              className="
-                mt-1
-                text-sm
-                font-bold
-                text-[var(--text)]
-                sm:text-base
-              "
-            >
-              +91 9843544844
-            </p>
-
-            <p
-              className="
-                mt-1
-                text-xs
-                text-[var(--muted)]
-              "
-            >
-              Chat with us
-            </p>
-          </div>
-        </a>
-
-        {/* =========================
-            Email
-            Full Width
-        ========================== */}
-        <a
-          href="mailto:hr@sbstechnologies.in"
-          className="
-            group
-            flex
-            items-start
-            gap-4
-            rounded-2xl
-            border
-            border-[var(--border)]
-            bg-white
-            p-4
-            shadow-sm
-            transition-all
-            duration-300
-            hover:-translate-y-0.5
-            hover:border-[var(--primary)]
-            hover:shadow-lg
-            sm:col-span-2
-          "
-        >
-          <div
-            className="
-              flex
-              h-11
-              w-11
-              shrink-0
-              items-center
-              justify-center
-              rounded-xl
-              bg-[var(--primary-light)]
-              text-[var(--secondary)]
-              transition-transform
-              duration-300
-              group-hover:scale-105
-            "
-          >
-            <Mail className="h-5 w-5" />
-          </div>
-
-          <div className="min-w-0 flex-1">
-            <div className="flex items-center justify-between gap-2">
-              <p
-                className="
-                  text-xs
-                  font-semibold
-                  uppercase
-                  tracking-wide
-                  text-[var(--muted)]
-                "
-              >
-                Email Us
-              </p>
-
-              <ArrowUpRight
-                className="
-                  h-4
-                  w-4
-                  text-[var(--muted)]
-                  opacity-0
-                  transition-all
-                  duration-300
-                  group-hover:-translate-y-0.5
-                  group-hover:translate-x-0.5
-                  group-hover:text-[var(--primary)]
-                  group-hover:opacity-100
-                "
-              />
-            </div>
-
-            <p
-              className="
-                mt-1
-                break-all
-                text-sm
-                font-bold
-                text-[var(--primary)]
-              "
-            >
-              hr@sbstechnologies.in
-            </p>
-
-            <p
-              className="
-                mt-1
-                text-xs
-                text-[var(--muted)]
-              "
-            >
-              Send us your enquiry anytime
-            </p>
-          </div>
-        </a>
-
-        {/* =========================
-            Visit Us
-            Full Width
-        ========================== */}
         <a
           href="https://www.google.com/maps/search/?api=1&query=1%2F166%20Vallalar%20Street%2C%20Municipal%20Colony%20Main%20Road%2C%20Erode%2C%20Tamil%20Nadu%20638004"
           target="_blank"
@@ -381,76 +84,48 @@ export default function ContactInfo() {
             flex
             items-start
             gap-4
-            rounded-2xl
-            border
-            border-[var(--border)]
-            bg-white
-            p-4
-            shadow-sm
-            transition-all
-            duration-300
-            hover:-translate-y-0.5
-            hover:border-[var(--primary)]
-            hover:shadow-lg
-            sm:col-span-2
+            transition-colors
           "
         >
           <div
             className="
               flex
-              h-11
-              w-11
+              h-10
+              w-10
               shrink-0
               items-center
               justify-center
-              rounded-xl
-              bg-[var(--primary-light)]
+              rounded-lg
+              border
+              border-[var(--border)]
+              bg-[var(--primary)]
               text-[var(--secondary)]
-              transition-transform
+              transition-all
               duration-300
+              group-hover:border-[var(--primary-dark)]
               group-hover:scale-105
             "
           >
             <MapPin className="h-5 w-5" />
           </div>
 
-          <div className="min-w-0 flex-1">
-            <div className="flex items-center justify-between gap-2">
-              <p
-                className="
-                  text-xs
-                  font-semibold
-                  uppercase
-                  tracking-wide
-                  text-[var(--muted)]
-                "
-              >
-                Visit Us
-              </p>
-
-              <ArrowUpRight
-                className="
-                  h-4
-                  w-4
-                  text-[var(--muted)]
-                  opacity-0
-                  transition-all
-                  duration-300
-                  group-hover:-translate-y-0.5
-                  group-hover:translate-x-0.5
-                  group-hover:text-[var(--primary)]
-                  group-hover:opacity-100
-                "
-              />
-            </div>
+          <div>
+            <p
+              className="
+                text-base
+                font-semibold
+                text-[var(--text)]
+              "
+            >
+              SBS Taxi
+            </p>
 
             <p
               className="
                 mt-1
                 text-sm
-                font-bold
-                leading-5
-                text-[var(--text)]
+                leading-6
+                text-[var(--muted)]
               "
             >
               1/166, Vallalar Street,
@@ -468,18 +143,348 @@ export default function ContactInfo() {
                 text-[var(--primary)]
               "
             >
-              View location on Google Maps →
+              View on Google Maps →
             </p>
           </div>
         </a>
       </div>
 
-      {/* =========================
-          Internal Navigation
-      ========================== */}
+      {/* =========================================================
+          CONTACT
+      ========================================================== */}
+      <div className="mb-8">
+        <p
+          className="
+            mb-4
+            text-xs
+            font-bold
+            uppercase
+            tracking-[0.25em]
+            text-[var(--secondary)]
+          "
+        >
+          Contact
+        </p>
+
+        <div className="space-y-4">
+          {/* ================= PHONE ================= */}
+          <a
+            href="tel:+919843544844"
+            className="
+              group
+              flex
+              items-center
+              gap-4
+            "
+          >
+            <div
+              className="
+                flex
+                h-10
+                w-10
+                shrink-0
+                items-center
+                justify-center
+                rounded-lg
+                border
+                border-[var(--border)]
+                bg-[var(--primary)]
+                text-[var(--secondary)]
+                transition-all
+                duration-300
+                group-hover:border-[var(--primary)]
+                group-hover:scale-105
+              "
+            >
+              <Phone className="h-5 w-5" />
+            </div>
+
+            <div className="min-w-0">
+              <p
+                className="
+                  text-[11px]
+                  font-semibold
+                  uppercase
+                  tracking-wider
+                  text-[var(--muted)]
+                "
+              >
+                Customer Care
+              </p>
+
+              <p
+                className="
+                  mt-0.5
+                  text-base
+                  font-bold
+                  text-[var(--primary)]
+                "
+              >
+                +91 98435 44844
+              </p>
+            </div>
+
+            <ArrowUpRight
+              className="
+                ml-auto
+                h-4
+                w-4
+                text-[var(--muted)]
+                opacity-0
+                transition-all
+                duration-300
+                group-hover:translate-x-0.5
+                group-hover:-translate-y-0.5
+                group-hover:text-[var(--primary-dark)]
+                group-hover:opacity-100
+              "
+            />
+          </a>
+
+          {/* ================= WHATSAPP ================= */}
+          <a
+            href="https://wa.me/919843544844"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="
+              group
+              flex
+              items-center
+              gap-4
+            "
+          >
+            <div
+              className="
+                flex
+                h-10
+                w-10
+                shrink-0
+                items-center
+                justify-center
+                rounded-lg
+                border
+                border-[var(--border)]
+                bg-[var(--primary)]
+                text-[var(--secondary)]
+                transition-all
+                duration-300
+                group-hover:border-[var(--primary-dark)]
+                group-hover:scale-105
+              "
+            >
+              <MessageCircle className="h-5 w-5" />
+            </div>
+
+            <div className="min-w-0">
+              <p
+                className="
+                  text-[11px]
+                  font-semibold
+                  uppercase
+                  tracking-wider
+                  text-[var(--muted)]
+                "
+              >
+                WhatsApp
+              </p>
+
+              <p
+                className="
+                  mt-0.5
+                  text-base
+                  font-bold
+                  text-[var(--primary)]
+                "
+              >
+                +91 98435 44844
+              </p>
+            </div>
+
+            <ArrowUpRight
+              className="
+                ml-auto
+                h-4
+                w-4
+                text-[var(--muted)]
+                opacity-0
+                transition-all
+                duration-300
+                group-hover:translate-x-0.5
+                group-hover:-translate-y-0.5
+                group-hover:text-[var(--primary)]
+                group-hover:opacity-100
+              "
+            />
+          </a>
+
+          {/* ================= EMAIL ================= */}
+          <a
+            href="mailto:hr@sbstechnologies.in"
+            className="
+              group
+              flex
+              items-center
+              gap-4
+            "
+          >
+            <div
+              className="
+                flex
+                h-10
+                w-10
+                shrink-0
+                items-center
+                justify-center
+                rounded-lg
+                border
+                border-[var(--border)]
+                bg-[var(--primary)]
+                text-[var(--secondary)]
+                transition-all
+                duration-300
+                group-hover:border-[var(--primary)]
+                group-hover:scale-105
+              "
+            >
+              <Mail className="h-5 w-5" />
+            </div>
+
+            <div className="min-w-0">
+              <p
+                className="
+                  text-[11px]
+                  font-semibold
+                  uppercase
+                  tracking-wider
+                  text-[var(--muted)]
+                "
+              >
+                Email
+              </p>
+
+              <p
+                className="
+                  mt-0.5
+                  break-all
+                  text-sm
+                  font-bold
+                  text-[var(--primary)]
+                  sm:text-base
+                "
+              >
+                hr@sbstechnologies.in
+              </p>
+            </div>
+
+            <ArrowUpRight
+              className="
+                ml-auto
+                h-4
+                w-4
+                shrink-0
+                text-[var(--muted)]
+                opacity-0
+                transition-all
+                duration-300
+                group-hover:translate-x-0.5
+                group-hover:-translate-y-0.5
+                group-hover:text-[var(--primary)]
+                group-hover:opacity-100
+              "
+            />
+          </a>
+        </div>
+      </div>
+
+      {/* =========================================================
+          SERVICE HOURS
+      ========================================================== */}
+      <div className="mb-8">
+        <p
+          className="
+            mb-4
+            text-xs
+            font-bold
+            uppercase
+            tracking-[0.25em]
+            text-[var(--secondary)]
+          "
+        >
+          Service Availability
+        </p>
+
+        <div className="flex items-start gap-4">
+          <div
+            className="
+              flex
+              h-10
+              w-10
+              shrink-0
+              items-center
+              justify-center
+              rounded-lg
+              border
+              border-[var(--border)]
+              bg-[var(--primary)]
+              text-[var(--secondary)]
+            "
+          >
+            <Clock3 className="h-5 w-5" />
+          </div>
+
+          <div>
+            <div className="flex items-center justify-between gap-8">
+              <span className="text-sm text-[var(--muted)]">
+                Customer Support
+              </span>
+
+              <span
+                className="
+                  text-sm
+                  font-bold
+                  text-[var(--primary)]
+                "
+              >
+                24/7
+              </span>
+            </div>
+
+            <div className="mt-2 flex items-center justify-between gap-8">
+              <span className="text-sm text-[var(--muted)]">
+                Taxi Booking
+              </span>
+
+              <span
+                className="
+                  text-sm
+                  font-bold
+                  text-[var(--primary)]
+                "
+              >
+                Available Anytime
+              </span>
+            </div>
+
+            <p
+              className="
+                mt-4
+                text-sm
+                leading-6
+                text-[var(--muted)]
+              "
+            >
+              We’re available to assist you with bookings,
+              enquiries and travel support whenever you need us.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* =========================================================
+          QUICK ACCESS
+      ========================================================== */}
       <div
         className="
-          mt-6
           flex
           flex-wrap
           items-center

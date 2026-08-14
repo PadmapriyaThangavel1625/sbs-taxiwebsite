@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState } from "react";
@@ -48,9 +47,20 @@ export default function FeatureCards() {
   >(null);
 
   return (
-    <section className="py-8 font-[family-name:var(--font-jakarta)]">
-    
-      <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
+    <section className="w-full py-8 font-[family-name:var(--font-jakarta)]">
+      <div
+        className="
+          mx-auto
+          grid
+          w-full
+          max-w-7xl
+          grid-cols-1
+          gap-4
+          px-4
+          sm:grid-cols-2
+          lg:grid-cols-4
+        "
+      >
         {features.map((feature) => {
           const Icon = feature.icon;
 
@@ -103,7 +113,7 @@ export default function FeatureCards() {
                   items-center
                   justify-center
                   rounded-xl
-                  bg-[var(--primary-light)]
+                  bg-[var(--primary)]
                   !text-[var(--secondary)]
                   transition-all
                   duration-300
@@ -172,7 +182,10 @@ export default function FeatureCards() {
         })}
       </div>
 
-      {/* Information Popup */}
+      {/* =====================================================
+          INFORMATION POPUP
+      ===================================================== */}
+
       {selectedFeature && (
         <div
           className="
@@ -235,11 +248,15 @@ export default function FeatureCards() {
                 items-center
                 justify-center
                 rounded-xl
-                bg-[var(--primary-light)]
+                bg-[var(--primary)]
                 text-[var(--primary)]
               "
             >
-              <selectedFeature.icon className="h-6 w-6" />
+              {(() => {
+                const Icon = selectedFeature.icon;
+
+                return <Icon className="h-6 w-6" />;
+              })()}
             </div>
 
             {/* Content */}
@@ -267,7 +284,7 @@ export default function FeatureCards() {
               </p>
             </div>
 
-            {/* Close Button */}
+            {/* Got It */}
             <button
               type="button"
               onClick={() => setSelectedFeature(null)}

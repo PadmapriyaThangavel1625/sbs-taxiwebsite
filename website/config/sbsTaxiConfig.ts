@@ -633,12 +633,12 @@ export const SBS_TAXI_CONFIG = {
     muv: "/vehicle/muv.png",
     muvPlus: "/vehicle/muv-plus.png",
 
-    about: "/images/aboutus.webp",
-    service: "/images/service.webp",
-    fleet: "/images/fleet.webp",
-    destination: "/images/destination.webp",
-    offers: "/images/offers.webp",
-    airport: "/images/airport.webp",
+    about: "/images/1.png",
+    service: "/images/2.png",
+    fleet: "/images/3.png",
+    destination: "/images/4.png",
+    offers: "/images/5.png",
+    airport: "/images/6.png",
     corporate: "/images/corporate.webp",
   },
 
