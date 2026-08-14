@@ -639,7 +639,7 @@ export const SBS_TAXI_CONFIG = {
     destination: "/images/4.png",
     offers: "/images/5.png",
     airport: "/images/6.png",
-    corporate: "/images/corporate.webp",
+    
   },
 
   // =====================================================
@@ -817,11 +817,11 @@ export const SBS_TAXI_CONFIG = {
 
     muvPlus: {
       name: "SBS MUV+",
-      type: "Innova",
+      type: "MUV Plus",
 
-      cars: ["Toyota Innova"],
+      cars: ["MUV Plus"],
 
-      description: "Toyota Innova",
+      description: "MUV Plus",
 
       seats: 7,
       luggage: 5,

@@ -329,7 +329,7 @@ export default function VehiclePricing() {
             sm:mt-10
           "
         >
-          <strong className="text-[var(--text-primary)] !mr:2">
+          <strong className="text-[#D62828] !mr:2">
             Note  : 
           </strong>{" "}
           Prices mentioned are starting rates per kilometer.

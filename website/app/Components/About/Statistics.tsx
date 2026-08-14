@@ -12,108 +12,70 @@ const stats = [
   {
     icon: Users,
     value: "15+",
-    label: "Happy Customers and counting",
+    label: "Happy Customers & Counting",
+    highlight: "Growing Fast",
   },
   {
     icon: Car,
     value: "6+",
-    label: "Cars on Road well maintained fleet",
+    label: "Well-Maintained Fleet Cars",
+    highlight: "Ready 24/7",
   },
   {
     icon: MapPin,
     value: "5+",
-    label: "Cities Covered across Tamil Nadu",
+    label: "Cities Covered Across Tamil Nadu",
+    highlight: "Wide Reach",
   },
   {
     icon: Award,
-    value: "",
-    label: "New Startup Venture in Travel Business 2026",
+    value: "2026",
+    label: "New Startup Venture in Travel",
+    highlight: "Started Fresh",
   },
 ];
 
 const customEase: Easing = [0.22, 1, 0.36, 1];
 
 const containerVariants: Variants = {
-  hidden: {
-    opacity: 0,
-  },
+  hidden: { opacity: 0 },
   show: {
     opacity: 1,
-    transition: {
-      staggerChildren: 0.14,
-    },
+    transition: { staggerChildren: 0.12 },
   },
 };
 
 const cardVariants: Variants = {
-  hidden: {
-    opacity: 0,
-    y: 45,
-    scale: 0.94,
-  },
+  hidden: { opacity: 0, y: 30, scale: 0.96 },
   show: {
     opacity: 1,
     y: 0,
     scale: 1,
-    transition: {
-      duration: 0.65,
-      ease: customEase,
-    },
+    transition: { duration: 0.55, ease: customEase },
   },
 };
 
 export default function Statistics() {
   return (
-    <section className="w-full py-10 sm:py-12 lg:py-16">
-      <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
-
+    <section className="relative w-full py-20 bg-gradient-to-b from-[var(--background)] via-amber-50/20 to-[var(--background)] overflow-hidden">
+      <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10">
+        
         {/* Heading */}
         <motion.div
-          initial={{
-            opacity: 0,
-            y: 30,
-          }}
-          whileInView={{
-            opacity: 1,
-            y: 0,
-          }}
-          viewport={{
-            once: true,
-            amount: 0.3,
-          }}
-          transition={{
-            duration: 0.7,
-            ease: customEase,
-          }}
-          className="mb-8 text-center sm:mb-10 lg:mb-12"
+          initial={{ opacity: 0, y: 25 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{ duration: 0.6, ease: customEase }}
+          className="mb-14 text-center"
         >
-          <h2
-            className="
-              font-[family-name:var(--font-instrument)]
-              text-2xl
-              font-normal
-              text-[var(--text-primary)]
-              sm:text-3xl
-              lg:text-4xl
-            "
-          >
+          <span className="inline-block px-3.5 py-1 mb-3 text-xs font-semibold uppercase tracking-widest text-amber-700 bg-amber-100/80 rounded-full">
+            Milestones
+          </span>
+          <h2 className="font-[family-name:var(--font-instrument)] text-3xl sm:text-4xl lg:text-5xl font-normal text-[var(--text-primary)]">
             SBS Taxi in Numbers
           </h2>
-
-          <p
-            className="
-              mx-auto
-              mt-2
-              max-w-2xl
-              font-[family-name:var(--font-jakarta)]
-              text-sm
-              leading-6
-              text-[var(--text-secondary)]
-              sm:text-base
-            "
-          >
-            Trusted by thousands of customers with a growing fleet
-            and expanding service coverage across India.
+          <p className="mx-auto mt-3 max-w-xl font-[family-name:var(--font-jakarta)] text-sm sm:text-base text-[var(--text-secondary)] leading-relaxed">
+            Building trust mile by mile with exceptional service and a dependable fleet across Tamil Nadu.
           </p>
         </motion.div>
 
@@ -122,209 +84,41 @@ export default function Statistics() {
           variants={containerVariants}
           initial="hidden"
           whileInView="show"
-          viewport={{
-            once: true,
-            amount: 0.2,
-          }}
-          className="
-            grid
-            grid-cols-2
-            gap-4
-            sm:gap-6
-            lg:grid-cols-4
-            lg:gap-8
-          "
+          viewport={{ once: true, amount: 0.2 }}
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
         >
-          {stats.map((stat) => {
+          {stats.map((stat, idx) => {
             const Icon = stat.icon;
 
             return (
               <motion.div
-                key={stat.label}
+                key={idx}
                 variants={cardVariants}
-                whileHover={{
-                  y: -8,
-                  scale: 1.025,
-                  transition: {
-                    duration: 0.25,
-                    ease: "easeOut",
-                  },
-                }}
-                className="
-                  group
-                  relative
-                  flex
-                  min-w-0
-                  flex-col
-                  items-center
-                  overflow-hidden
-                  rounded-xl
-                  border
-                  border-[var(--border)]
-                  bg-white
-                  p-4
-                  text-center
-                  shadow-sm
-                  transition-shadow
-                  duration-300
-                  hover:shadow-xl
-                  sm:p-6
-                  lg:p-7
-                "
+                whileHover={{ y: -6, transition: { duration: 0.2, ease: "easeOut" } }}
+                className="group relative bg-white/90 backdrop-blur-md p-8 rounded-3xl border border-[var(--border)] shadow-sm hover:shadow-xl hover:border-amber-300/60 transition-all duration-300 flex flex-col justify-between"
               >
+                {/* Top Badge */}
+                <div className="flex items-center justify-between w-full mb-6">
+                  <div className="w-12 h-12 rounded-2xl bg-amber-100/70 text-amber-800 flex items-center justify-center shadow-inner group-hover:bg-amber-500 group-hover:text-white transition-colors duration-300">
+                    <Icon className="w-6 h-6" />
+                  </div>
+                  <span className="text-[11px] font-medium px-2.5 py-1 rounded-full bg-slate-100 text-slate-600 group-hover:bg-amber-50 group-hover:text-amber-800 transition-colors">
+                    {stat.highlight}
+                  </span>
+                </div>
 
-                {/* Hover glow */}
-                <motion.div
-                  initial={{
-                    opacity: 0,
-                    scale: 0.8,
-                  }}
-                  whileHover={{
-                    opacity: 1,
-                    scale: 1,
-                  }}
-                  transition={{
-                    duration: 0.35,
-                  }}
-                  className="
-                    pointer-events-none
-                    absolute
-                    -right-10
-                    -top-10
-                    h-28
-                    w-28
-                    rounded-full
-                    bg-[var(--secondary)]
-                    opacity-0
-                    blur-2xl
-                  "
-                />
+                {/* Content */}
+                <div>
+                  <h3 className="font-[family-name:var(--font-instrument)] text-4xl sm:text-5xl font-normal text-[var(--text-primary)] tracking-tight">
+                    {stat.value}
+                  </h3>
+                  <p className="mt-2 font-[family-name:var(--font-jakarta)] text-sm text-[var(--text-secondary)] leading-normal">
+                    {stat.label}
+                  </p>
+                </div>
 
-                {/* Icon */}
-                <motion.div
-                  initial={{
-                    opacity: 0,
-                    scale: 0.4,
-                    rotate: -15,
-                  }}
-                  whileInView={{
-                    opacity: 1,
-                    scale: 1,
-                    rotate: 0,
-                  }}
-                  viewport={{
-                    once: true,
-                    amount: 0.3,
-                  }}
-                  transition={{
-                    type: "spring",
-                    stiffness: 220,
-                    damping: 14,
-                    delay: 0.25,
-                  }}
-                  whileHover={{
-                    scale: 1.12,
-                    rotate: 5,
-                    transition: {
-                      type: "spring",
-                      stiffness: 300,
-                      damping: 12,
-                    },
-                  }}
-                  className="
-                    relative
-                    z-10
-                    flex
-                    h-11
-                    w-11
-                    items-center
-                    justify-center
-                    rounded-xl
-                    bg-[var(--secondary)]
-                    text-[var(--primary)]
-                    shadow-sm
-                    transition-shadow
-                    duration-300
-                    group-hover:shadow-md
-                    sm:h-12
-                    sm:w-12
-                  "
-                >
-                  <Icon className="h-5 w-5 sm:h-6 sm:w-6" />
-                </motion.div>
-
-                {/* Number */}
-                <motion.h4
-                  initial={{
-                    opacity: 0,
-                    y: 15,
-                  }}
-                  whileInView={{
-                    opacity: 1,
-                    y: 0,
-                  }}
-                  viewport={{
-                    once: true,
-                    amount: 0.3,
-                  }}
-                  transition={{
-                    duration: 0.5,
-                    delay: 0.35,
-                    ease: customEase,
-                  }}
-                  className="
-                    relative
-                    z-10
-                    mt-4
-                    font-[family-name:var(--font-instrument)]
-                    text-2xl
-                    font-normal
-                    text-[var(--text-primary)]
-                    transition-transform
-                    duration-300
-                    group-hover:scale-105
-                    sm:mt-5
-                    sm:text-3xl
-                    lg:text-4xl
-                  "
-                >
-                  {stat.value}
-                </motion.h4>
-
-                {/* Label */}
-                <motion.p
-                  initial={{
-                    opacity: 0,
-                    y: 12,
-                  }}
-                  whileInView={{
-                    opacity: 1,
-                    y: 0,
-                  }}
-                  viewport={{
-                    once: true,
-                    amount: 0.3,
-                  }}
-                  transition={{
-                    duration: 0.5,
-                    delay: 0.45,
-                    ease: customEase,
-                  }}
-                  className="
-                    relative
-                    z-10
-                    mt-2
-                    font-[family-name:var(--font-jakarta)]
-                    text-xs
-                    leading-5
-                    text-[var(--text-secondary)]
-                    sm:text-sm
-                    sm:leading-6
-                  "
-                >
-                  {stat.label}
-                </motion.p>
-
+                {/* Decorative Bottom Bar */}
+                <div className="w-full h-1 bg-gradient-to-r from-transparent via-amber-400/40 to-transparent mt-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               </motion.div>
             );
           })}

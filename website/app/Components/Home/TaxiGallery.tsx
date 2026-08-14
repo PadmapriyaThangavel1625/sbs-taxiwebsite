@@ -10,7 +10,7 @@ const images = [
   SBS_TAXI_CONFIG.images.destination,
   SBS_TAXI_CONFIG.images.offers,
   SBS_TAXI_CONFIG.images.airport,
-  SBS_TAXI_CONFIG.images.corporate,
+ 
 ];
 
 export default function TaxiGallery() {

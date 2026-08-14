@@ -220,6 +220,7 @@ export default function SBSTaxiOverview() {
                       absolute
                       left-4
                       top-4
+                      
                       flex
                       h-11
                       w-11
@@ -243,6 +244,7 @@ export default function SBSTaxiOverview() {
                       flex
                       !h-10
                       !w-10
+                      !mb-6
                       items-center
                       justify-center
                       !bg-[var(--secondary)]

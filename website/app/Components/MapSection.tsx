@@ -1,333 +1,58 @@
-"use client";
-
-import { Clock3, ExternalLink, MapPin } from "lucide-react";
+import React from "react";
 
 export default function MapSection() {
   return (
-    <section
-      className="
-        w-full
-        font-[family-name:var(--font-jakarta)]
-      "
-    >
-      {/* =====================================================
-          CONTENT OUTSIDE MAP BORDER
-      ====================================================== */}
-      <div className="mb-7 sm:mb-8">
-        {/* LABEL */}
-        <div className="flex items-center gap-2">
-          <span className="h-px w-7 bg-[var(--secondary)]" />
-
-          <span
-            className="
-              text-[10px]
-              font-bold
-              uppercase
-              tracking-[0.25em]
-              text-[var(--secondary)]
-            "
-          >
-            Our Location
-          </span>
+    <section className="w-full py-12 bg-gray-50 dark:bg-gray-900">
+      <div className="text-center mb-8">
+          <h2 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-4xl">
+            Find Us Here
+          </h2>
+          <p className="mt-2 text-lg text-gray-600 dark:text-gray-400">
+            SBS Technologies, Municipal Colony, Erode, Tamil Nadu
+          </p>
         </div>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        {/* Section Header */}
+        
 
-        {/* HEADING */}
-        <h2
-          className="
-            mt-2
-            font-[family-name:var(--font-instrument)]
-            text-4xl
-            font-normal
-            leading-tight
-            tracking-tight
-            text-[var(--text)]
-            sm:text-5xl
-          "
-        >
-          Visit SBS Taxi
-        </h2>
-
-        {/* DESCRIPTION */}
-        <p
-          className="
-            mt-3
-            max-w-2xl
-            text-sm
-            leading-6
-            text-[var(--muted)]
-            sm:text-[15px]
-          "
-        >
-          Visit our Erode office for bookings, enquiries, and
-          customer support. Our team is ready to help you plan
-          a safe, comfortable, and reliable journey with SBS Taxi.
-        </p>
-
-        {/* =================================================
-            OFFICE + CUSTOMER SUPPORT
-        ================================================== */}
-        <div
-          className="
-            mt-6
-            grid
-            grid-cols-1
-            gap-5
-            sm:grid-cols-2
-            sm:gap-10
-          "
-        >
-          {/* ================= OFFICE ================= */}
-          <div className="flex items-start gap-3">
-            <div
-              className="
-                flex
-                h-9
-                w-9
-                shrink-0
-                items-center
-                justify-center
-                rounded-full
-                bg-[var(--primary-light)]
-                text-[var(--primary)]
-              "
-            >
-              <MapPin className="h-4 w-4" />
-            </div>
-
-            <div className="min-w-0">
-              <p
-                className="
-                  text-[9px]
-                  font-bold
-                  uppercase
-                  tracking-[0.18em]
-                  text-[var(--muted)]
-                "
-              >
-                Our Office
-              </p>
-
-              <p
-                className="
-                  mt-1
-                  max-w-md
-                  text-xs
-                  font-semibold
-                  leading-5
-                  text-[var(--text)]
-                "
-              >
-                1/166, Vallalar Street, Municipal Colony Main Road,
-                Erode – 638004, Tamil Nadu
-              </p>
-            </div>
+        {/* Map Container */}
+        <div className="overflow-hidden rounded-2xl shadow-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-800">
+          <div className="relative w-full h-[450px]">
+            <iframe
+              title="SBS Technologies Location Map"
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d7823.696348157736!2d77.7118981!3d11.345798100000001!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ba96f30096ba631%3A0x3bbc4afcb415c5e0!2sSBS%20TECHNOLOGIES!5e0!3m2!1sen!2sin!4v1786340963957!5m2!1sen!2sin"
+              width="100%"
+              height="100%"
+              style={{ border: 0 }}
+              allowFullScreen={true}
+              loading="lazy"
+              referrerPolicy="strict-origin-when-cross-origin"
+              className="absolute inset-0 w-full h-full"
+            />
           </div>
 
-          {/* ================= SUPPORT ================= */}
-          <div className="flex items-start gap-3">
-            <div
-              className="
-                flex
-                h-9
-                w-9
-                shrink-0
-                items-center
-                justify-center
-                rounded-full
-                bg-[var(--primary-light)]
-                text-[var(--primary)]
-              "
-            >
-              <Clock3 className="h-4 w-4" />
-            </div>
-
-            <div className="min-w-0">
-              <p
-                className="
-                  text-[9px]
-                  font-bold
-                  uppercase
-                  tracking-[0.18em]
-                  text-[var(--muted)]
-                "
-              >
-                Customer Support
-              </p>
-
-              <p
-                className="
-                  mt-1
-                  text-xs
-                  font-semibold
-                  leading-5
-                  text-[var(--text)]
-                "
-              >
-                Available 24/7 for bookings, enquiries,
-                and travel assistance
+          {/* Optional Footer Details inside Card */}
+          <div className="p-6 bg-white dark:bg-gray-800 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <div>
+              <h3 className="font-semibold text-gray-900 dark:text-white text-lg">
+                SBS Technologies
+              </h3>
+              <p className="text-sm text-gray-600 dark:text-gray-400">
+                1/166, Vallalar St, Municipal Colony, Main Road, Erode, Tamil Nadu 638004
               </p>
             </div>
-          </div>
-        </div>
-      </div>
-
-      {/* =====================================================
-          MAP CARD
-      ====================================================== */}
-      <div
-        className="
-          relative
-          w-full
-          overflow-hidden
-          rounded-2xl
-          border
-          border-[var(--border)]
-          bg-slate-100
-          shadow-lg
-          shadow-slate-900/5
-        "
-      >
-        {/* ===================================================
-            GOOGLE MAP
-        ==================================================== */}
-        <div
-          className="
-            h-[320px]
-            w-full
-            sm:h-[380px]
-            lg:h-[420px]
-          "
-        >
-          <iframe
-            title="SBS Taxi Office Location"
-            src="https://www.google.com/maps?q=1/166%20Vallalar%20Street,%20Municipal%20Colony%20Main%20Road,%20Erode,%20Tamil%20Nadu%20638004&output=embed"
-            className="
-              h-full
-              w-full
-              border-0
-            "
-            loading="lazy"
-            referrerPolicy="no-referrer-when-downgrade"
-          />
-        </div>
-
-        {/* ===================================================
-            LOCATION CARD
-        ==================================================== */}
-        <div
-          className="
-            absolute
-            bottom-4
-            left-4
-            right-4
-            sm:bottom-5
-            sm:left-5
-            sm:right-auto
-            sm:w-[380px]
-          "
-        >
-          <div
-            className="
-              rounded-2xl
-              border
-              border-white/20
-              bg-slate-950/85
-              p-4
-              text-white
-              shadow-xl
-              backdrop-blur-md
-              sm:p-5
-            "
-          >
-            <div className="flex items-start gap-3.5">
-              {/* LOCATION ICON */}
-              <div
-                className="
-                  flex
-                  h-10
-                  w-10
-                  shrink-0
-                  items-center
-                  justify-center
-                  rounded-xl
-                  bg-[#FFC107]
-                  text-slate-950
-                  shadow-sm
-                "
-              >
-                <MapPin
-                  aria-hidden="true"
-                  className="h-5 w-5"
-                />
-              </div>
-
-              {/* ADDRESS */}
-              <div className="min-w-0 flex-1">
-                <p
-                  className="
-                    text-sm
-                    font-bold
-                    text-white
-                  "
-                >
-                  SBS Taxi
-                </p>
-
-                <p
-                  className="
-                    mt-1
-                    text-xs
-                    leading-5
-                    text-white/70
-                    sm:text-[13px]
-                  "
-                >
-                  1/166, Vallalar Street,
-                  Municipal Colony Main Road,
-                  Erode – 638004, Tamil Nadu
-                </p>
-              </div>
-            </div>
-
-            {/* =================================================
-                DIRECTIONS LINK
-            ================================================== */}
             <a
-              href="https://www.google.com/maps/search/?api=1&query=1/166+Vallalar+Street,+Municipal+Colony+Main+Road,+Erode,+Tamil+Nadu+638004"
+              href="https://maps.app.goo.gl/3bbc4afcb415c5e0"
               target="_blank"
               rel="noopener noreferrer"
-              className="
-                mt-4
-                flex
-                w-full
-                items-center
-                justify-center
-                gap-2
-                rounded-xl
-                bg-[var(--secondary)]
-                px-4
-                py-2.5
-                text-xs
-                font-bold
-                !text-black
-                transition-all
-                duration-200
-                hover:bg-[var(--secondary-dark)]
-                hover:text-slate-950
-                focus:outline-none
-                focus:ring-2
-                focus:ring-white/60
-              "
+              className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors shadow-sm"
             >
-              <span>Get Directions</span>
-
-              <ExternalLink
-                aria-hidden="true"
-                className="h-3.5 w-3.5"
-              />
+              Open in Google Maps
             </a>
           </div>
         </div>
+
       </div>
     </section>
   );

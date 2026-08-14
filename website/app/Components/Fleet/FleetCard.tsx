@@ -91,7 +91,7 @@ export default function FleetCard({
           <span
             className="
               rounded-full
-              bg-[var(--secondary)]
+              bg-[var(--primary)]
               px-2.5
               py-1
               font-[family-name:var(--font-jakarta)]
@@ -192,7 +192,7 @@ export default function FleetCard({
             rounded-xl
             border
             border-[var(--border)]
-            bg-[var(--secondary-light)]
+            bg-[var(--primary]
             p-3
             text-center
           "
@@ -209,7 +209,7 @@ export default function FleetCard({
           >
             <Users
               size={18}
-              className="text-[var(--primary)]"
+              className="text-[var(--text-secondary0.]"
             />
 
             <span
@@ -279,45 +279,6 @@ export default function FleetCard({
           </div>
         </div>
 
-        {/* =================================================
-            PRICE
-        ================================================== */}
-
-        <div className="mt-4">
-          <span
-            className="
-              font-[family-name:var(--font-jakarta)]
-              text-[10px]
-              text-[var(--text-secondary)]
-            "
-          >
-            Starting from
-          </span>
-
-          <h2
-            className="
-              mt-0.5
-              font-[family-name:var(--font-instrument)]
-              text-2xl
-              font-normal
-              text-[var(--primary)]
-            "
-          >
-            ₹{price}
-
-            <span
-              className="
-                font-[family-name:var(--font-jakarta)]
-                text-sm
-                font-normal
-                text-[var(--text-secondary)]
-              "
-            >
-              {" "}
-              / km
-            </span>
-          </h2>
-        </div>
 
         {/* =================================================
             VIEW DETAILS BUTTON
@@ -334,22 +295,22 @@ export default function FleetCard({
             justify-center
             gap-2
             rounded-xl
-            bg-[var(--primary)]
+            bg-[var(--secondary)]
             px-4
             py-2.5
             font-[family-name:var(--font-jakarta)]
             text-sm
             font-semibold
-            text-[var(--text-primary)]
+            text-[var(--text-secondary)]
             shadow-sm
             transition-all
             duration-300
             hover:-translate-y-0.5
-            hover:bg-[var(--primary-dark)]
+            hover:bg-[var(--secondary-dark)]
             hover:shadow-md
           "
         >
-          View Details
+          Book a Ride
 
           <ArrowRight
             size={16}

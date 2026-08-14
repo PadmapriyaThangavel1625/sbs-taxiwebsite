@@ -57,7 +57,7 @@ const vehicles = [
 
   {
     ...SBS_TAXI_CONFIG.vehicles.muvPlus,
-    type: "Innova",
+    type: "MUV Plus",
     seats: 7,
     luggage: 5,
     price: "19",

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Tag, Sparkles, ArrowRight, X, Percent } from "lucide-react";
+import { Tag,User, CarFront,Sparkles, BriefcaseBusiness,ArrowRight, X, Percent,Star } from "lucide-react";
 
 export default function LimitedOffer() {
   const [open, setOpen] = useState(true);
@@ -66,82 +66,297 @@ export default function LimitedOffer() {
         </div>
 
         {/* CONTENT */}
-        <div className="space-y-2.5 bg-[#fffdf4] p-3.5">
+        <div className="space-y-2.5 !bg-[var(--primary)] p-3.5">
           
-          {/* OFFER / LIMITED NOTE */}
-          <div className="rounded-xl border border-[#e8d9a7] bg-[var(--secondary-light)] p-3">
-            <div className="flex items-center gap-3">
-              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[var(--primary)] text-[var(--secondary)] shadow-sm">
-                <Sparkles className="h-4 w-4" />
-              </div>
-
-              <Link
-                href="/offers"
-                onClick={() => setOpen(false)}
-                className="block cursor-pointer transition-opacity hover:opacity-90 min-w-0"
-              >
-                <div>
-                  <h3 className="text-[13px] font-bold leading-5 text-[#c17b00]">
-                    Special Taxi Offers
-                  </h3>
-
-                  <p className="mt-0.5 text-[11px] leading-[18px] text-slate-600">
-                    Book your ride today and enjoy our{" "}
-                    <strong className="text-slate-800">
-                      limited-time special rates.
-                    </strong>
-                  </p>
-
-                  <p className="mt-0.5 text-[9px] font-semibold leading-4 text-slate-500">
-                    Limited availability remaining
-                  </p>
-                </div>
-              </Link>
-            </div>
-          </div>
+         
 
           {/* OFFER 1: ₹50 OFF */}
           <Link
-            href="/offers"
-            onClick={() => setOpen(false)}
-            className="block rounded-xl border border-[#e8d9a7] bg-[var(--secondary-light)] p-3 transition-all hover:shadow-md"
-          >
-            <div className="flex items-center gap-3">
-              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[var(--primary)] text-[var(--secondary)] shadow-sm">
-                <Tag className="h-4 w-4" />
-              </div>
-              <div className="min-w-0">
-                <h3 className="text-[14px] font-bold leading-5 text-[#c17b00]">
-                  ₹50 OFF
-                </h3>
-                <p className="mt-0.5 text-[11px] leading-[16px] text-slate-600">
-                  On your first 3 bookings with SBS Taxi
-                </p>
-              </div>
-            </div>
-          </Link>
+  href="/offers"
+  onClick={() => setOpen(false)}
+  className="
+    block
+    rounded-xl
+    border
+    border-[#d8e5f2]
+    bg-white
+    p-3
+    transition-all
+    duration-200
+    hover:-translate-y-0.5
+    hover:border-[#0047ab]/30
+    hover:shadow-md
+  "
+>
+  <div className="flex items-center gap-3">
+    
+    {/* ICON */}
+    <div
+      className="
+        flex
+        h-8
+        w-8
+        shrink-0
+        items-center
+        justify-center
+        rounded-full
+        bg-[var(--primary)]
+        text-[var(--secondary)]
+        shadow-sm
+      "
+    >
+      <User className="h-4 w-4" />
+    </div>
+
+    {/* CONTENT */}
+    <div className="min-w-0 flex-1 ">
+      
+      <div className="flex items-center   gap-2">
+        <h3
+          className="
+            text-[14px]
+            font-bold
+            leading-5
+            text-[#0047ab]
+          "
+        >
+          ₹50 OFF
+        </h3>
+
+        <span
+          className="
+            rounded-full
+            bg-[var(--primary)]
+            px-1.5
+            py-0.5
+            text-[8px]
+            font-bold
+            uppercase
+            tracking-wide
+            !text-[var(--text-primary)]
+          "
+        >
+          NEW USER
+        </span>
+      </div>
+
+      <p
+        className="
+          mt-0.5
+          text-[11px]
+          leading-[16px]
+          text-slate-600
+        "
+      >
+        On your first 3 bookings
+      </p>
+
+      <p
+        className="
+          mt-1
+          text-[10px]
+          font-semibold
+          text-[#0047ab]
+        "
+      >
+        Coupon : SBSNEW50
+      </p>
+    </div>
+  </div>
+</Link>
+
 
           {/* OFFER 2: ₹20 OFF */}
-          <Link
-            href="/offers"
-            onClick={() => setOpen(false)}
-            className="block rounded-xl border border-[#e8d9a7] bg-[var(--secondary-light)] p-3 transition-all hover:shadow-md"
-          >
-            <div className="flex items-center gap-3">
-              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[var(--primary)] text-[var(--secondary)] shadow-sm">
-                <Percent className="h-4 w-4" />
-              </div>
-              <div className="min-w-0">
-                <h3 className="text-[14px] font-bold leading-5 text-[#c17b00]">
-                  ₹20 OFF
-                </h3>
-                <p className="mt-0.5 text-[11px] leading-[16px] text-slate-600">
-                  On every booking after your first 3 rides
-                </p>
-              </div>
-            </div>
-          </Link>
+        <Link
+  href="/offers"
+  onClick={() => setOpen(false)}
+  className="
+    block
+    rounded-xl
+    border
+    border-[#d8e5f2]
+    bg-white
+    p-3
+    transition-all
+    duration-200
+    hover:-translate-y-0.5
+    hover:border-[#0047ab]/30
+    hover:shadow-md
+  "
+>
+  <div className="flex items-center gap-3">
+    
+    {/* ICON */}
+    <div
+      className="
+        flex
+        h-8
+        w-8
+        shrink-0
+        items-center
+        justify-center
+        rounded-full
+        bg-[var(--primary)]
+        text-[var(--secondary)]
+        shadow-sm
+      "
+    >
+      <CarFront className="h-4 w-4" />
+    </div>
 
+    {/* CONTENT */}
+    <div className="min-w-0 flex-1">
+      
+      <div className="flex items-center bg[var(--primary)] gap-2">
+        <h3
+          className="
+            text-[14px]
+            font-bold
+            leading-5
+            text-[#0047ab]
+          "
+        >
+          ₹20 OFF
+        </h3>
+
+        <span
+          className="
+            rounded-full
+            bg-[var(--primary)]
+            px-1.5
+            py-0.5
+            text-[8px]
+            font-bold
+            uppercase
+            tracking-wide
+            !text-[var(--text-primary)]
+          "
+        >
+          REGULAR OFFER
+        </span>
+      </div>
+
+      <p
+        className="
+          mt-0.5
+          text-[11px]
+          leading-[16px]
+          text-slate-600
+        "
+      >
+       On Every Booking
+After First 3 Bookings
+      </p>
+
+      <p
+        className="
+          mt-1
+          text-[10px]
+          font-semibold
+          text-[#0047ab]
+        "
+      >
+        Coupon : SBSREGULAR20
+      </p>
+    </div>
+  </div>
+</Link>
+
+
+          <Link
+  href="/offers"
+  onClick={() => setOpen(false)}
+  className="
+    block
+    rounded-xl
+    border
+    border-[#d8e5f2]
+    bg-white
+    p-3
+    transition-all
+    duration-200
+    hover:-translate-y-0.5
+    hover:border-[#0047ab]/30
+    hover:shadow-md
+  "
+>
+  <div className="flex items-center gap-3">
+    
+    {/* ICON */}
+    <div
+      className="
+        flex
+        h-8
+        w-8
+        shrink-0
+        items-center
+        justify-center
+        rounded-full
+        bg-[var(--primary)]
+        text-[var(--secondary)]
+        shadow-sm
+      "
+    >
+      <BriefcaseBusiness className="h-4 w-4" />
+    </div>
+
+    {/* CONTENT */}
+    <div className="min-w-0 flex-1">
+      
+      <div className="flex items-center bg[var(--primary)] gap-2">
+        <h3
+          className="
+            text-[14px]
+            font-bold
+            leading-5
+            text-[#0047ab]
+          "
+        >
+          ₹10 OFF
+        </h3>
+
+        <span
+          className="
+            rounded-full
+            bg-[var(--primary)]
+            px-1.5
+            py-0.5
+            text-[8px]
+            font-bold
+            uppercase
+            tracking-wide
+            !text-[var(--text-primary)]
+          "
+        >
+          WEEKEND OFFER
+        </span>
+      </div>
+
+      <p
+        className="
+          mt-0.5
+          text-[11px]
+          leading-[16px]
+          text-slate-600
+        "
+      >
+        On Outstation Trips (Round Trip)
+
+      </p>
+
+      <p
+        className="
+          mt-1
+          text-[10px]
+          font-semibold
+          text-[#0047ab]
+        "
+      >
+        Coupon : SBSWEEKEND10
+      </p>
+    </div>
+  </div>
+</Link>
           {/* BOOK BUTTON */}
           <Link
             href="/booking"

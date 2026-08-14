@@ -175,7 +175,7 @@ export default function PrivacyPolicyPage() {
       {/* =====================================================
           INTRODUCTION
       ====================================================== */}
-      <section className="w-full bg-[var(--primary-light)]">
+      <section className="w-full bg-[var(--primary)]">
         <div className="mx-auto max-w-7xl px-5 py-10 sm:px-8 sm:py-14 lg:px-8">
 
           <div
@@ -213,7 +213,7 @@ export default function PrivacyPolicyPage() {
               <ShieldCheck
                 size={26}
                 strokeWidth={2}
-                className="text-[var(--primary)]"
+                className="text-[var(--primary)] !bg-[var(--secondary)]/15"
               />
             </div>
 
@@ -412,12 +412,12 @@ export default function PrivacyPolicyPage() {
                             rounded-xl
                             border
                             border-[var(--primary)]/5
-                            bg-[var(--primary-light)]
+                            bg-[var(--primary)]
                             px-4
                             py-3
                             text-sm
                             leading-7
-                            text-[var(--primary)]/80
+                            !text-[var(--text-primary)]/80
                             sm:px-5
                             sm:py-4
                             sm:text-base
@@ -440,7 +440,7 @@ export default function PrivacyPolicyPage() {
       {/* =====================================================
           CONTACT US
       ====================================================== */}
-      <section className="w-full bg-[var(--primary-light)] py-14 sm:py-16">
+      <section className="w-full bg-[var(--primary)] py-14 sm:py-16">
         <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-8">
 
           <div
@@ -519,7 +519,7 @@ export default function PrivacyPolicyPage() {
                     rounded-xl
                     p-2
                     text-sm
-                    !text-white
+                    !text-[var(--text-primary)]
                     transition-colors
                     hover:bg-white/5
                     hover:text-white
@@ -567,7 +567,7 @@ export default function PrivacyPolicyPage() {
                     rounded-xl
                     p-2
                     text-sm
-                    !text-white
+                    !text-[var(--text-primary)]
                     transition-colors
                     hover:bg-white/5
                     hover:text-white
@@ -591,7 +591,7 @@ export default function PrivacyPolicyPage() {
                     <Phone
                       size={19}
                       className="
-                        text-[var(--secondary)]
+                        text-[var(--text-secondary)])]
                         transition-colors
                         group-hover:text-white
                       "
