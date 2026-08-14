@@ -81,7 +81,7 @@ export default function BenefitsBar() {
           overflow-hidden
           rounded-xl
           border
-          bg-white
+          !bg-[var(--secondary)]
           shadow-sm
           divide-y
           sm:grid-cols-2
@@ -132,7 +132,7 @@ export default function BenefitsBar() {
                   border
                   border-primary-light
                   bg-primary-light
-                  text-primary
+                  text-[var(--secondary)]
                 "
               >
                 <Icon size={26} />

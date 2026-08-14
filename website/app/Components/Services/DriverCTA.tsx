@@ -111,7 +111,7 @@ export default function DriverCTA() {
               <div className="rounded-2xl bg-[var(--primary-light)] p-5">
                 <h4 className="text-xl font-extrabold text-[var(--primary)] sm:text-2xl">
                   SBS Taxi is hiring Drivers in{" "}
-                  <span className="text-[var(--secondary-dark)]">
+                  <span className="text-[var(--secondary)]">
                     ERODE!
                   </span>
                 </h4>
@@ -274,17 +274,17 @@ export default function DriverCTA() {
               {/* VACANCIES + LOCATION */}
               <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
 
-                <div className="rounded-2xl bg-[var(--secondary)] p-5">
+                <div className="rounded-2xl bg-[var(--primary)] p-5">
                   <div className="flex items-center gap-3">
 
                     <BadgeCheck className="h-7 w-7 text-[var(--primary)]" />
 
                     <div>
-                      <p className="text-sm font-extrabold uppercase text-[var(--primary)]">
+                      <p className="text-sm font-extrabold uppercase  text-[var(--secondary)]">
                         Limited Vacancies
                       </p>
 
-                      <p className="mt-1 text-xs font-semibold text-black/70">
+                      <p className="mt-1 text-xs font-semibold text-[var(--secondary)]">
                         Available now!
                       </p>
                     </div>
@@ -324,12 +324,12 @@ export default function DriverCTA() {
                   justify-center
                   gap-2
                   rounded-xl
-                  bg-[var(--secondary)]
+                  bg-[var(--primary)]
                   px-6
                   py-3.5
                   text-sm
                   font-bold
-                  text-black
+                  !text-[var(--secondary)]
                   transition-all
                   duration-300
                   hover:gap-3
@@ -624,19 +624,19 @@ export default function DriverCTA() {
                     <ShieldCheck className="h-5 w-5" />
                   </div>
 
-                  <h4 className="text-xl font-extrabold text-[var(--primary)]">
+                  <h4 className="text-xl font-extrabold !text-[var(--secondary)]">
                     Driver Declaration
                   </h4>
 
                 </div>
 
 
-                <p className="mt-4 text-sm leading-6 text-slate-700">
+                <p className="mt-4 text-sm leading-6 text-slate-700 !text-[var(--secondary)]">
                   I hereby declare that all the information and documents
                   submitted are true and valid.
                 </p>
 
-                <p className="mt-2 text-sm leading-6 text-slate-700">
+                <p className="mt-2 text-sm leading-6 text-slate-700 !text-[var(--secondary)]">
                   I agree to follow all SBS Taxi policies, traffic rules, and
                   customer service standards.
                 </p>
@@ -645,7 +645,7 @@ export default function DriverCTA() {
                 <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2">
 
                   <div>
-                    <p className="text-sm font-bold text-[var(--primary)]">
+                    <p className="text-sm font-bold text-[var(--secondary)]">
                       Driver Signature:
                     </p>
 
@@ -653,7 +653,7 @@ export default function DriverCTA() {
                   </div>
 
                   <div>
-                    <p className="text-sm font-bold text-[var(--primary)]">
+                    <p className="text-sm font-bold text-[var(--secondary)]">
                       Date:
                     </p>
 

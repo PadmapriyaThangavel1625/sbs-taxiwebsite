@@ -1,4 +1,3 @@
-
 import { ArrowRight } from "lucide-react";
 
 interface OfferCardProps {
@@ -30,16 +29,39 @@ export default function OfferCard({
   isEnquire,
   illustrationType,
 }: OfferCardProps) {
-  const backgroundStyle = bgGradient || headerBg || "bg-primary";
+  const backgroundStyle =
+    bgGradient || headerBg || "bg-[var(--primary)]";
 
   return (
-    <div className="flex h-full flex-col overflow-hidden rounded-xl border bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
+    <div
+      className="
+        group
+        flex
+        h-full
+        flex-col
+        overflow-hidden
+        rounded-xl
+        border
+        border-gray-100
+        bg-white
+        shadow-sm
 
-      {/* Top Banner */}
+        transition-all
+        duration-300
+
+        hover:-translate-y-1
+        hover:shadow-lg
+      "
+    >
+      {/* =====================================================
+          TOP BANNER
+      ====================================================== */}
+
       <div
         className={`
           ${backgroundStyle}
           ${textColor}
+
           relative
           flex
           min-h-[175px]
@@ -47,59 +69,75 @@ export default function OfferCard({
           justify-between
           overflow-hidden
           p-5
+
           sm:min-h-[185px]
         `}
       >
         <div>
-          {/* Tag */}
+          {/* =================================================
+              TAG
+          ================================================== */}
+
           <span
             className={`
               ${tagBg}
+
               mb-3
               inline-block
               rounded-md
               px-2.5
               py-1
+
               text-[9px]
               font-extrabold
               uppercase
               tracking-wider
+
               shadow-sm
             `}
           >
             {tag}
           </span>
 
-          {/* Title */}
+          {/* =================================================
+              TITLE
+          ================================================== */}
+
           <h3
             className="
               mb-1
+              font-[var(--font-jakarta)]
               text-3xl
               font-extrabold
               tracking-tight
-              font-[var(--font-jakarta)]
             "
           >
             {title}
           </h3>
 
-          {/* Description */}
+          {/* =================================================
+              DESCRIPTION
+          ================================================== */}
+
           <p
             className="
               max-w-[75%]
               whitespace-pre-line
+              font-[var(--font-jakarta)]
               text-xs
               font-medium
               leading-relaxed
               opacity-90
-              font-[var(--font-jakarta)]
             "
           >
             {description}
           </p>
         </div>
 
-        {/* Illustration */}
+        {/* ===================================================
+            ILLUSTRATION
+        ==================================================== */}
+
         <div
           className="
             pointer-events-none
@@ -107,9 +145,17 @@ export default function OfferCard({
             bottom-3
             right-3
             opacity-90
+
+            transition-transform
+            duration-300
+
+            group-hover:scale-105
           "
         >
-          {/* Gift */}
+          {/* =================================================
+              GIFT
+          ================================================== */}
+
           {illustrationType === "gift" && (
             <div
               className="
@@ -127,8 +173,24 @@ export default function OfferCard({
                 shadow-xl
               "
             >
-              <div className="absolute top-0 h-full w-4 bg-secondary" />
-              <div className="absolute h-4 w-full bg-secondary" />
+              <div
+                className="
+                  absolute
+                  top-0
+                  h-full
+                  w-4
+                  bg-[var(--secondary)]
+                "
+              />
+
+              <div
+                className="
+                  absolute
+                  h-4
+                  w-full
+                  bg-[var(--secondary)]
+                "
+              />
 
               <div
                 className="
@@ -138,13 +200,16 @@ export default function OfferCard({
                   w-6
                   rounded-full
                   border-2
-                  border-secondary
+                  border-[var(--secondary)]
                 "
               />
             </div>
           )}
 
-          {/* Coupon */}
+          {/* =================================================
+              COUPON
+          ================================================== */}
+
           {illustrationType === "coupon" && (
             <div
               className="
@@ -168,10 +233,20 @@ export default function OfferCard({
             </div>
           )}
 
-          {/* Luggage */}
+          {/* =================================================
+              LUGGAGE
+          ================================================== */}
+
           {illustrationType === "luggage" && (
             <div className="flex items-end gap-1">
-              <div className="h-4 w-5 rounded-t-full bg-secondary" />
+              <div
+                className="
+                  h-4
+                  w-5
+                  rounded-t-full
+                  bg-[var(--secondary)]
+                "
+              />
 
               <div
                 className="
@@ -185,12 +260,23 @@ export default function OfferCard({
                   shadow-md
                 "
               >
-                <div className="absolute top-2 h-1 w-full bg-blue-800" />
+                <div
+                  className="
+                    absolute
+                    top-2
+                    h-1
+                    w-full
+                    bg-blue-800
+                  "
+                />
               </div>
             </div>
           )}
 
-          {/* Briefcase */}
+          {/* =================================================
+              BRIEFCASE
+          ================================================== */}
+
           {illustrationType === "briefcase" && (
             <div className="flex items-end gap-1">
               <div
@@ -227,7 +313,7 @@ export default function OfferCard({
                     items-center
                     justify-center
                     rounded-full
-                    bg-secondary
+                    bg-[var(--secondary)]
                     text-[8px]
                     font-bold
                     text-black
@@ -241,25 +327,45 @@ export default function OfferCard({
         </div>
       </div>
 
-      {/* Promo Code / Body */}
-      <div className="flex min-h-[62px] items-center justify-between bg-white p-4 text-xs">
+      {/* =====================================================
+          PROMO CODE / BODY
+      ====================================================== */}
+
+      <div
+        className="
+          flex
+          min-h-[62px]
+          items-center
+          justify-between
+          bg-white
+          p-4
+          text-xs
+        "
+      >
         {isEnquire ? (
           <p
             className="
+              whitespace-pre-line
               py-1
+              font-[var(--font-jakarta)]
               text-[11px]
               font-medium
               leading-snug
               text-muted
-              whitespace-pre-line
-              font-[var(--font-jakarta)]
             "
           >
             {customBody}
           </p>
         ) : (
           <div className="flex w-full items-center gap-2">
-            <span className="text-[11px] font-medium text-muted font-[var(--font-jakarta)]">
+            <span
+              className="
+                font-[var(--font-jakarta)]
+                text-[11px]
+                font-medium
+                text-muted
+              "
+            >
               Use Code
             </span>
 
@@ -268,15 +374,16 @@ export default function OfferCard({
                 rounded-md
                 border
                 border-dashed
-                border-primary
-                bg-primary-light
+                border-[var(--primary)]
+                bg-[var(--primary-light)]
                 px-3
                 py-1
+
+                font-[var(--font-jakarta)]
                 text-xs
                 font-bold
                 tracking-wider
-                text-primary
-                font-[var(--font-jakarta)]
+                text-[var(--secondary)]
               "
             >
               {code}
@@ -285,7 +392,10 @@ export default function OfferCard({
         )}
       </div>
 
-      {/* Footer */}
+      {/* =====================================================
+          FOOTER
+      ====================================================== */}
+
       <div
         className="
           border-t
@@ -302,16 +412,28 @@ export default function OfferCard({
             items-center
             justify-center
             gap-1.5
+
+            font-[var(--font-jakarta)]
             text-xs
             font-bold
-            text-primary
+            text-[var(--primary)]
+
             transition-all
+            duration-300
+
             hover:gap-2.5
-            font-[var(--font-jakarta)]
           "
         >
           {actionText}
-          <ArrowRight size={14} />
+
+          <ArrowRight
+            size={14}
+            className="
+              transition-transform
+              duration-300
+              group-hover:translate-x-1
+            "
+          />
         </a>
       </div>
     </div>

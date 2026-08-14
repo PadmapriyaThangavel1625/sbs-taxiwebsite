@@ -245,6 +245,7 @@ export default function SBSTaxiOverview() {
                       w-24
                       items-center
                       justify-center
+                      !bg-[var(--secondary)]
                       rounded-full
                       ${service.iconBg}
                       transition-transform
@@ -331,7 +332,7 @@ export default function SBSTaxiOverview() {
                         items-center
                         justify-center
                         rounded-2xl
-                        bg-[var(--primary-light)]
+                        bg-[var(--secondary-light)]
                         transition-all
                         duration-300
                         group-hover:bg-[var(--secondary)]

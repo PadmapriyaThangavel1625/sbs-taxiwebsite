@@ -106,7 +106,7 @@ export default function Features() {
                     justify-center
                     rounded-xl
                     bg-[var(--primary-light)]
-                    text-[var(--primary)]
+                    text-[var(--secondary)]
                   "
                 >
                   <Icon className="h-6 w-6" />

@@ -3,7 +3,6 @@ import FeatureCards from "@/app/Components/Contacts/FeatureCards";
 import ContactForm from "@/app/Components/Contacts/ContactForm";
 import ContactInfo from "@/app/Components/Contacts/ContactInfo";
 import MapSection from "@/app/Components/MapSection";
-import BottomCTA from "@/app/Components/BottomCTA";
 
 export default function ContactPage() {
   return (
@@ -16,17 +15,47 @@ export default function ContactPage() {
       <HeroSection />
 
       {/* =====================================================
-          FEATURES + CONTACT FORM
+          FEATURES
+          SINGLE ROW
       ====================================================== */}
 
       <section
         className="
           w-full
           bg-white
-          py-12
-          sm:py-16
-          lg:py-20
-          xl:py-24
+          py-8
+          sm:py-10
+          lg:py-12
+        "
+      >
+        <div
+          className="
+            mx-auto
+            w-full
+            max-w-7xl
+            px-4
+            sm:px-6
+            lg:px-8
+          "
+        >
+          <FeatureCards />
+        </div>
+      </section>
+
+      {/* =====================================================
+          CONTACT INFO + CONTACT FORM
+          TWO COLUMNS
+      ====================================================== */}
+
+      <section
+        className="
+          w-full
+          border-y
+          border-[var(--border)]
+          bg-slate-50/60
+          py-10
+          sm:py-14
+          lg:py-16
         "
       >
         <div
@@ -43,100 +72,45 @@ export default function ContactPage() {
             className="
               grid
               grid-cols-1
-              items-start
+              items-stretch
               gap-8
-              lg:grid-cols-12
+
+              lg:grid-cols-2
               lg:gap-10
+
               xl:gap-12
             "
           >
+            {/* =================================================
+                CONTACT INFORMATION
+            ================================================== */}
 
-            {/* FEATURES */}
-
-            <div className="lg:col-span-6">
-              <FeatureCards />
+            <div className="w-full">
+              <ContactInfo />
             </div>
 
-            {/* CONTACT FORM */}
+            {/* =================================================
+                CONTACT FORM
+            ================================================== */}
 
-            <div className="lg:col-span-6">
+            <div className="w-full">
               <ContactForm />
             </div>
-
           </div>
         </div>
       </section>
 
       {/* =====================================================
-          CONTACT INFORMATION
-      ====================================================== */}
-
-      <section
-        className="
-          w-full
-          border-y
-          border-[var(--border)]
-          bg-slate-50/60
-          py-12
-          sm:py-16
-          lg:py-20
-          xl:py-24
-        "
-      >
-        <div
-          className="
-            mx-auto
-            w-full
-            max-w-7xl
-            px-4
-            sm:px-6
-            lg:px-8
-          "
-        >
-          <ContactInfo />
-        </div>
-      </section>
-
-      {/* =====================================================
-          BOTTOM CTA
+          MAP
       ====================================================== */}
 
       <section
         className="
           w-full
           bg-white
-          py-12
-          sm:py-16
-          lg:py-20
-          xl:py-24
-        "
-      >
-        <div
-          className="
-            mx-auto
-            w-full
-            max-w-7xl
-            px-4
-            sm:px-6
-            lg:px-8
-          "
-        >
-          <BottomCTA />
-        </div>
-      </section>
-
-      {/* =====================================================
-          MAP
-          MAP IS BELOW BOTTOM CTA
-      ====================================================== */}
-
-      <section
-        className="
-          w-full
-          bg-slate-50
-          pb-12
-          sm:pb-16
-          lg:pb-20
+          py-10
+          sm:py-14
+          lg:py-16
         "
       >
         <div

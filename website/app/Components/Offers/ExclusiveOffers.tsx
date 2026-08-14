@@ -62,23 +62,55 @@ export default function ExclusiveOffers() {
         section-bg
         w-full
         py-8
+
         sm:py-10
+
         md:py-12
+
         lg:py-14
       "
     >
-      <div className="container-custom">
+      {/* =====================================================
+          SAME WIDTH STRUCTURE
+      ====================================================== */}
 
-        {/* Heading */}
-        <div className="mb-6 text-center sm:mb-8 md:mb-9">
+      <div
+        className="
+          mx-auto
+          w-full
+          max-w-7xl
+          px-4
+
+          sm:px-6
+
+          lg:px-8
+        "
+      >
+        {/* ===================================================
+            HEADING
+        ==================================================== */}
+
+        <div
+          className="
+            mb-6
+            text-center
+
+            sm:mb-8
+
+            md:mb-9
+          "
+        >
           <h2
             className="
               text-xl
               font-bold
               leading-tight
               text-heading
+
               sm:text-2xl
+
               md:text-3xl
+
               lg:text-[32px]
             "
           >
@@ -92,23 +124,30 @@ export default function ExclusiveOffers() {
               h-1
               w-10
               rounded-full
-              bg-secondary
+              bg-[var(--secondary)]
+
               sm:mt-3
               sm:w-12
             "
           />
         </div>
 
-        {/* Offers Grid */}
+        {/* ===================================================
+            OFFERS GRID
+        ==================================================== */}
+
         <div
           className="
             grid
             grid-cols-1
             gap-4
+
             sm:grid-cols-2
             sm:gap-5
+
             lg:grid-cols-4
             lg:gap-5
+
             xl:gap-6
           "
         >
@@ -119,7 +158,6 @@ export default function ExclusiveOffers() {
             />
           ))}
         </div>
-
       </div>
     </section>
   );

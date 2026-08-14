@@ -1,4 +1,3 @@
-
 "use client";
 
 import Image from "next/image";
@@ -76,17 +75,47 @@ const vehicles = [
 
 export default function VehiclePricing() {
   return (
-    <section className="section-bg py-10 sm:py-12 lg:py-16 font-[var(--font-jakarta)]">
-      <div className="container-custom">
+    <section
+      className="
+        section-bg
+        w-full
+        py-10
+        font-[var(--font-jakarta)]
 
-        {/* Vehicle Grid */}
+        sm:py-12
+
+        lg:py-16
+      "
+    >
+      {/* =====================================================
+          SAME WIDTH STRUCTURE AS HERO / NAVBAR
+      ====================================================== */}
+
+      <div
+        className="
+          mx-auto
+          w-full
+          max-w-7xl
+          px-4
+
+          sm:px-6
+
+          lg:px-8
+        "
+      >
+        {/* ===================================================
+            VEHICLE GRID
+        ==================================================== */}
+
         <div
           className="
             grid
             grid-cols-1
             items-stretch
             gap-5
+
             sm:grid-cols-2
+
             lg:grid-cols-3
             lg:gap-8
           "
@@ -95,30 +124,39 @@ export default function VehiclePricing() {
             <div
               key={vehicle.name}
               className="
+                group
                 flex
                 h-full
                 flex-col
                 rounded-2xl
                 border
+                border-gray-100
                 bg-white
                 p-5
                 shadow-sm
+
                 transition-all
                 duration-300
+
                 hover:-translate-y-2
+                hover:border-[var(--secondary)]
                 hover:shadow-xl
+
                 sm:p-6
               "
             >
-              {/* Badge */}
+              {/* =================================================
+                  VEHICLE BADGE
+              ================================================== */}
+
               <div>
                 <span
                   className="
                     inline-flex
                     rounded-full
-                    bg-primary
+                    bg-[var(--primary)]
                     px-4
-                    py-1
+                    py-1.5
                     text-xs
                     font-semibold
                     text-white
@@ -128,8 +166,20 @@ export default function VehiclePricing() {
                 </span>
               </div>
 
-              {/* Image */}
-              <div className="relative mt-5 h-40 w-full sm:h-44">
+              {/* =================================================
+                  VEHICLE IMAGE
+              ================================================== */}
+
+              <div
+                className="
+                  relative
+                  mt-5
+                  h-40
+                  w-full
+
+                  sm:h-44
+                "
+              >
                 <Image
                   src={vehicle.image}
                   alt={vehicle.name}
@@ -139,12 +189,27 @@ export default function VehiclePricing() {
                     (max-width: 1024px) 50vw,
                     33vw
                   "
-                  className="object-contain"
+                  className="
+                    object-contain
+                    transition-transform
+                    duration-500
+                    group-hover:scale-105
+                  "
                 />
               </div>
 
-              {/* Vehicle Models */}
-              <h3 className="mt-5 text-xl font-bold text-heading">
+              {/* =================================================
+                  VEHICLE MODELS
+              ================================================== */}
+
+              <h3
+                className="
+                  mt-5
+                  text-xl
+                  font-bold
+                  text-[var(--primary)]
+                "
+              >
                 Available Vehicles
               </h3>
 
@@ -165,7 +230,10 @@ export default function VehiclePricing() {
                 ))}
               </ul>
 
-              {/* Specs */}
+              {/* =================================================
+                  SPECS
+              ================================================== */}
+
               <div
                 className="
                   mt-5
@@ -173,42 +241,68 @@ export default function VehiclePricing() {
                   grid-cols-2
                   gap-3
                   border-t
+                  border-gray-100
                   pt-5
                   text-sm
                   text-muted
                 "
               >
+                {/* Seats */}
+
                 <div className="flex items-center gap-2">
                   <Users
                     size={18}
-                    className="shrink-0 text-primary"
+                    className="
+                      shrink-0
+                      text-[var(--primary)]
+                    "
                   />
 
                   <span>{vehicle.seat}</span>
                 </div>
 
+                {/* Bags */}
+
                 <div className="flex items-center gap-2">
                   <Briefcase
                     size={18}
-                    className="shrink-0 text-primary"
+                    className="
+                      shrink-0
+                      text-[var(--primary)]
+                    "
                   />
 
                   <span>{vehicle.bag}</span>
                 </div>
               </div>
 
-              {/* Price */}
+              {/* =================================================
+                  PRICE
+              ================================================== */}
+
               <div className="mt-5">
                 <p className="text-sm text-muted">
                   Starting From
                 </p>
 
-                <h3 className="mt-1 text-2xl font-bold text-primary sm:text-3xl">
+                <h3
+                  className="
+                    mt-1
+                    text-2xl
+                    font-bold
+                    text-[var(--primary)]
+
+                    sm:text-3xl
+                  "
+                >
                   {vehicle.price}
                 </h3>
               </div>
 
-              {/* Button */}
+              {/* =================================================
+                  BOOK BUTTON
+              ================================================== */}
+
               <Link
                 href={`/booking?vehicle=${encodeURIComponent(
                   vehicle.name
@@ -221,35 +315,55 @@ export default function VehiclePricing() {
                   justify-center
                   gap-2
                   rounded-lg
-                  bg-primary
+
+                  bg-[var(--primary)]
+
                   px-5
                   py-3
+
                   font-semibold
                   !text-white
-                  transition
-                  hover:bg-primary-dark
+
+                  transition-all
+                  duration-300
+
+                  hover:bg-[var(--primary-dark)]
+                  hover:gap-3
                 "
               >
                 Book a Ride
-                <ArrowRight size={18} />
+
+                <ArrowRight
+                  size={18}
+                  className="
+                    transition-transform
+                    duration-300
+                    group-hover:translate-x-1
+                  "
+                />
               </Link>
             </div>
           ))}
         </div>
 
-        {/* Note */}
+        {/* =====================================================
+            NOTE
+        ====================================================== */}
+
         <div
           className="
             mt-8
             rounded-xl
             border
-            border-primary
-            bg-primary-light
+            border-[var(--primary)]
+            bg-[var(--primary-light)]
+            !text-[var(--secondary)]
             p-4
             text-center
             text-sm
             leading-6
             text-muted
+
             sm:mt-10
           "
         >
@@ -261,7 +375,6 @@ export default function VehiclePricing() {
           parking, permit and state taxes (if applicable) are
           extra.
         </div>
-
       </div>
     </section>
   );

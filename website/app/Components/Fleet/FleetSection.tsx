@@ -291,49 +291,49 @@ export default function FleetSection() {
               >
 
                 {/* Capacity */}
-                <div className="flex flex-col items-center justify-center">
+                <div className="flex flex-col items-center !text-[var(--secondary)] justify-center">
                   <Users
                     size={22}
-                    className="text-primary"
+                    className="text-primary !text-[var(--secondary)]"
                   />
 
                   <p className="mt-1 text-xs text-muted">
                     Capacity
                   </p>
 
-                  <p className="mt-1 text-sm font-semibold text-primary">
+                  <p className="mt-1 text-sm font-semibold !text-[var(--secondary)]">
                     {selectedCar.seat}
                   </p>
                 </div>
 
                 {/* Luggage */}
-                <div className="flex flex-col items-center justify-center">
+                <div className="flex flex-col items-center !text-[var(--secondary)] justify-center">
                   <Luggage
                     size={22}
-                    className="text-primary"
+                    className="!text-[var(--secondary)]"
                   />
 
                   <p className="mt-1 text-xs text-muted">
                     Luggage
                   </p>
 
-                  <p className="mt-1 text-sm font-semibold text-primary">
+                  <p className="mt-1 text-sm font-semibold !text-[var(--secondary)]">
                     {selectedCar.bags}
                   </p>
                 </div>
 
                 {/* Climate */}
-                <div className="flex flex-col items-center justify-center">
+                <div className="flex flex-col items-center !text-[var(--secondary)] justify-center">
                   <Snowflake
                     size={22}
-                    className="text-primary"
+                    className="!text-[var(--secondary)]"
                   />
 
                   <p className="mt-1 text-xs text-muted">
                     Climate
                   </p>
 
-                  <p className="mt-1 text-sm font-semibold text-primary">
+                  <p className="mt-1 text-sm font-semibold !text-[var(--secondary)]">
                     AC Included
                   </p>
                 </div>

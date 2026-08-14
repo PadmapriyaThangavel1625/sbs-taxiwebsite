@@ -96,7 +96,7 @@ export default function Values() {
                     w-12 h-12
                     rounded-full
                     bg-[var(--primary-light)]
-                    text-[var(--primary)]
+                    text-[var(--secondary)]
                     flex items-center justify-center
                   "
                 >

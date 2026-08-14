@@ -33,113 +33,137 @@ export default function FeaturesBar() {
     <section className="mb-7 w-full sm:mb-9 lg:mb-10">
       <div
         className="
-          container-custom
-          grid
+          mx-auto
           w-full
-          grid-cols-1
-          gap-4
-          rounded-xl
-          bg-white
-          p-4
-          shadow-sm
+          max-w-7xl
+          px-4
 
-          sm:grid-cols-2
-          sm:gap-5
-          sm:p-5
+          sm:px-6
 
-          md:p-6
-
-          lg:grid-cols-4
-          lg:gap-5
+          lg:px-8
         "
       >
-        {features.map((feature) => {
-          const Icon = feature.icon;
+        {/* =====================================================
+            FEATURES CONTAINER
+        ====================================================== */}
 
-          return (
-            <div
-              key={feature.title}
-              className="
-                flex
-                items-center
-                gap-3
-                rounded-lg
-                px-1
-                py-2
+        <div
+          className="
+            grid
+            w-full
+            grid-cols-1
+            gap-4
+            rounded-xl
+            bg-white
+            p-4
+            shadow-sm
 
-                sm:gap-4
-                sm:px-2
-                sm:py-3
-              "
-            >
-              {/* Icon */}
+            sm:grid-cols-2
+            sm:gap-5
+            sm:p-5
+
+            md:p-6
+
+            lg:grid-cols-4
+            lg:gap-5
+          "
+        >
+          {features.map((feature) => {
+            const Icon = feature.icon;
+
+            return (
               <div
+                key={feature.title}
                 className="
                   flex
-                  h-10
-                  w-10
-                  shrink-0
                   items-center
-                  justify-center
+                  gap-3
                   rounded-lg
-                  bg-primary-light
+                  px-1
+                  py-2
 
-                  sm:h-11
-                  sm:w-11
-
-                  md:h-12
-                  md:w-12
+                  sm:gap-4
+                  sm:px-2
+                  sm:py-3
                 "
               >
-                <Icon
-                  size={21}
-                  strokeWidth={1.8}
+                {/* =================================================
+                    ICON
+                ================================================== */}
+
+                <div
                   className="
-                    text-primary
-                    sm:h-[22px]
-                    sm:w-[22px]
-                    md:h-6
-                    md:w-6
-                  "
-                />
-              </div>
+                    flex
+                    h-10
+                    w-10
+                    shrink-0
+                    items-center
+                    justify-center
+                    rounded-lg
+                    bg-[var(--primary-light)]
 
-              {/* Content */}
-              <div className="min-w-0">
-                <h4
-                  className="
-                    mb-0.5
-                    text-[12px]
-                    font-bold
-                    leading-5
-                    text-heading
+                    sm:h-11
+                    sm:w-11
 
-                    sm:text-[13px]
-
-                    md:text-sm
+                    md:h-12
+                    md:w-12
                   "
                 >
-                  {feature.title}
-                </h4>
+                  <Icon
+                    size={21}
+                    strokeWidth={1.8}
+                    className="
+                      text-[var(--secondary)]
 
-                <p
-                  className="
-                    text-[10px]
-                    leading-4
-                    text-muted
+                      sm:h-[22px]
+                      sm:w-[22px]
 
-                    sm:text-[11px]
-                    sm:leading-5
+                      md:h-6
+                      md:w-6
+                    "
+                  />
+                </div>
 
-                    md:text-xs
-                  "
-                >
-                  {feature.description}
-                </p>
+                {/* =================================================
+                    CONTENT
+                ================================================== */}
+
+                <div className="min-w-0">
+                  <h4
+                    className="
+                      mb-0.5
+                      text-[12px]
+                      font-bold
+                      leading-5
+                      text-heading
+
+                      sm:text-[13px]
+
+                      md:text-sm
+                    "
+                  >
+                    {feature.title}
+                  </h4>
+
+                  <p
+                    className="
+                      text-[10px]
+                      leading-4
+                      text-muted
+
+                      sm:text-[11px]
+                      sm:leading-5
+
+                      md:text-xs
+                    "
+                  >
+                    {feature.description}
+                  </p>
+                </div>
               </div>
-            </div>
-          );
-        })}
+            );
+          })}
+        </div>
       </div>
     </section>
   );

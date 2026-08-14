@@ -104,7 +104,7 @@ export default function FeatureCards() {
                   justify-center
                   rounded-xl
                   bg-[var(--primary-light)]
-                  text-[var(--primary)]
+                  !text-[var(--secondary)]
                   transition-all
                   duration-300
                   group-hover:scale-105

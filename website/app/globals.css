@@ -8,16 +8,19 @@
   --background: #FFFFFF;
   --foreground: #171717;
 
-  /* Brand Colors */
-  --primary: #0D6EFD;
-  --primary-dark: #0F1E48;
-  --primary-light: #4e81e6;
-  --primary-foreground: #FFFFFF;
+  /* SBS Taxi Brand */
+  --primary: #1E3A8A;
+  --primary-dark: #162B63;
+  --primary-light: #3B82F6;
 
-  --secondary:  #ffffff;
-  --secondary-dark: #74726e;
-  --secondary-light: #ceccc8;
-  --secondary-foreground: #171717;
+  --secondary: #FACC15;
+  --secondary-dark: #EAB308;
+  --secondary-light: #FDE047;
+
+  /* Text */
+  --text-primary: #111827;
+  --text-secondary: #6B7280;
+  --text-muted: #9CA3AF;
 
   /* Neutral Colors */
   --white: #FFFFFF;
@@ -27,12 +30,6 @@
   --surface-secondary: #F8FAFC;
   --surface-tertiary: #EEF2F7;
 
-  /* Text Colors */
-  --text-primary: #2D3230;
-  --text-secondary: #4B5563;
-  --text-tertiary: #6B7280;
-  --text-muted: #94A3B8;
-  --text-inverse: #FFFFFF;
 
   /* Gray Scale */
   --gray-50: #F9FAFB;

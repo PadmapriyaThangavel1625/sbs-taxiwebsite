@@ -36,7 +36,7 @@ const items = [
 
 export default function BenefitsBar() {
   return (
-    <section className="w-full px-3 sm:px-4">
+    <section className="w-full px-3 !mb-7 sm:px-4">
       <div
         className="
           mx-auto
@@ -103,7 +103,7 @@ export default function BenefitsBar() {
                   justify-center
                   rounded-full
                   bg-[var(--primary-light)]
-                  text-[var(--primary)]
+                  text-[var(--secondary)]
                 "
               >
                 {item.icon}

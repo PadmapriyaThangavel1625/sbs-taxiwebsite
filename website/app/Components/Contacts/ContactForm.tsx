@@ -450,23 +450,7 @@ export default function ContactForm() {
       ====================================================== */}
 
       <div className="mb-7">
-        <span
-          className="
-            inline-flex
-            items-center
-            rounded-full
-            bg-[var(--primary-light)]
-            px-3
-            py-1
-            text-[11px]
-            font-bold
-            uppercase
-            tracking-wider
-            text-[var(--primary)]
-          "
-        >
-          Contact Us
-        </span>
+        
 
         <h2
           id="contact-form-title"

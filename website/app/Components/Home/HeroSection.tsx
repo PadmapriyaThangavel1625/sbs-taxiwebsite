@@ -21,22 +21,8 @@ const container: Variants = {
   hidden: {},
   show: {
     transition: {
-      staggerChildren: 0.15,
-    },
-  },
-};
-
-const fadeUp: Variants = {
-  hidden: {
-    opacity: 0,
-    y: 30,
-  },
-  show: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      duration: 0.6,
-      ease: "easeOut",
+      staggerChildren: 0.12,
+      delayChildren: 0.15,
     },
   },
 };
@@ -44,13 +30,43 @@ const fadeUp: Variants = {
 const fadeLeft: Variants = {
   hidden: {
     opacity: 0,
-    x: 40,
+    x: -30,
   },
   show: {
     opacity: 1,
     x: 0,
     transition: {
       duration: 0.7,
+      ease: "easeOut",
+    },
+  },
+};
+
+const fadeRight: Variants = {
+  hidden: {
+    opacity: 0,
+    x: 30,
+  },
+  show: {
+    opacity: 1,
+    x: 0,
+    transition: {
+      duration: 0.7,
+      ease: "easeOut",
+    },
+  },
+};
+
+const fadeUp: Variants = {
+  hidden: {
+    opacity: 0,
+    y: 20,
+  },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.65,
       ease: "easeOut",
     },
   },
@@ -65,554 +81,575 @@ export default function HeroSection() {
     <section className="relative w-full overflow-hidden">
 
       {/* =================================================
-          HERO BACKGROUND
-          
-          Static background:
-          - No zoom
-          - No scale animation
-          - No transform animation
-      ================================================== */}
-
-      <div
-        className="
-          absolute
-          inset-0
-          z-0
-          overflow-hidden
-
-          [&_*]:!transform-none
-          [&_*]:!scale-100
-          [&_*]:!transition-none
-        "
-      >
-        <HeroSlider />
-      </div>
-
-      {/* =================================================
-          LIGHT OVERLAY
-
-          Fixed opacity - no animation
-      ================================================== */}
-
-      <div
-        className="
-          pointer-events-none
-          absolute
-          inset-0
-          z-10
-          bg-white/20
-        "
-      />
-
-      {/* =================================================
-          HERO CONTAINER
+          BACKGROUND
       ================================================== */}
 
       <div
         className="
           relative
-          z-20
-          mx-auto
+          h-[760px]
           w-full
-          max-w-7xl
-          px-4
-          sm:px-6
-          lg:px-8
+
+          sm:h-[700px]
+
+          md:h-[680px]
+
+          lg:h-[650px]
+
+          xl:h-[670px]
         "
       >
+        {/* Background Slider */}
         <div
           className="
-            grid
-            min-h-[calc(100vh-72px)]
-            grid-cols-1
-            items-center
-            gap-8
-            py-8
+            absolute
+            inset-0
+            z-0
+            overflow-hidden
 
-            sm:gap-10
-            sm:py-10
-
-            md:gap-12
-            md:py-12
-
-            lg:min-h-[600px]
-            lg:grid-cols-[minmax(0,1fr)_380px]
-            lg:gap-8
-            lg:py-10
-
-            xl:grid-cols-[minmax(0,1fr)_400px]
-            xl:gap-10
-
-            2xl:min-h-[680px]
-            2xl:grid-cols-[minmax(0,1fr)_420px]
-            2xl:gap-12
+            [&_*]:!transform-none
+            [&_*]:!scale-100
+            [&_*]:!transition-none
           "
         >
+          <HeroSlider />
+        </div>
 
-          {/* =================================================
-              LEFT CONTENT
-          ================================================== */}
+        {/* Overall overlay */}
+        <div
+          className="
+            pointer-events-none
+            absolute
+            inset-0
+            z-[1]
+            bg-black/10
+          "
+        />
 
-          <motion.div
-            variants={container}
-            initial="hidden"
-            animate="show"
+        {/* =================================================
+            LEFT DARK GRADIENT
+        ================================================== */}
+
+        <div
+          className="
+            pointer-events-none
+            absolute
+            inset-y-0
+            left-0
+            z-[2]
+            w-full
+
+            bg-gradient-to-r
+            from-[#071a35]/95
+            via-[#071a35]/75
+            to-transparent
+
+            sm:w-[82%]
+            md:w-[76%]
+            lg:w-[72%]
+          "
+        />
+
+        {/* Bottom gradient */}
+        <div
+          className="
+            pointer-events-none
+            absolute
+            inset-x-0
+            bottom-0
+            z-[2]
+            h-40
+            bg-gradient-to-t
+            from-black/45
+            to-transparent
+          "
+        />
+
+        {/* =================================================
+            MAIN CONTENT
+        ================================================== */}
+
+        <div
+          className="
+            relative
+            z-10
+            mx-auto
+            flex
+            h-full
+            w-full
+            max-w-7xl
+            items-center
+            px-4
+
+            sm:px-6
+            lg:px-8
+          "
+        >
+          <div
             className="
-              flex
+              grid
               w-full
-              flex-col
+              grid-cols-1
               items-center
-              text-center
+              gap-8
 
-              lg:items-start
-              lg:justify-center
-              lg:text-left
+              lg:grid-cols-[minmax(0,1fr)_380px]
+              lg:gap-10
+
+              xl:grid-cols-[minmax(0,1fr)_400px]
+              xl:gap-12
             "
           >
 
             {/* =================================================
-                HEADING
-            ================================================== */}
-
-            <motion.h1
-              variants={fadeUp}
-              className="
-                w-full
-                max-w-[680px]
-                text-[28px]
-                font-extrabold
-                leading-[1.12]
-                tracking-[-0.02em]
-                !text-[var(--primary)]
-
-                sm:text-[34px]
-
-                md:text-[40px]
-
-                lg:text-[46px]
-                lg:leading-[1.1]
-
-                xl:text-[52px]
-
-                2xl:text-[58px]
-
-                !font-bold
-              "
-            >
-              One Brand.
-              <br />
-
-              <span className="!text-[var(--primary)] font-bold">
-                One Fare.
-              </span>
-
-              <br />
-
-              One Trusted Service.
-            </motion.h1>
-
-            {/* =================================================
-                DESCRIPTION
-            ================================================== */}
-
-            <motion.p
-              variants={fadeUp}
-              className="
-                mt-4
-                w-full
-                max-w-[560px]
-                text-[13px]
-                font-semibold
-                leading-6
-                text-[var(--muted)]
-
-                sm:text-sm
-
-                md:text-[15px]
-                md:leading-7
-
-                lg:mt-5
-                lg:text-base
-              "
-            >
-              Book your ride anytime, anywhere with SBS Taxi.
-              Safe rides, affordable fares and happy journeys!
-            </motion.p>
-
-            {/* =================================================
-                TRUST CARDS
+                LEFT CONTENT
             ================================================== */}
 
             <motion.div
-              variants={fadeUp}
+              variants={container}
+              initial="hidden"
+              animate="show"
               className="
-                mt-6
-                grid
+                flex
                 w-full
-                max-w-[580px]
-                grid-cols-3
-                overflow-hidden
-                rounded-xl
-                bg-white
-                shadow-lg
+                flex-col
+                items-center
+                text-center
+
+                lg:items-start
+                lg:text-left
               "
             >
 
-              {/* =================================================
-                  24/7
-              ================================================== */}
-
+              {/* Label */}
               <motion.div
-                whileHover={{
-                  y: -3,
-                  scale: 1.02,
-                }}
+                variants={fadeLeft}
                 className="
-                  flex
-                  min-h-[72px]
+                  mb-4
+                  inline-flex
                   items-center
-                  justify-center
                   gap-2
-                  px-2
-                  py-3
-                  text-center
-                  transition
-                  sm:gap-3
-                  sm:px-3
+                  font-[var(--font-jakarta)]
+                  text-sm
+                  font-bold
+                  uppercase
+                  tracking-[0.16em]
+                  text-[var(--secondary)]
+
+                  sm:text-base
                 "
               >
-                <motion.div
-                  whileHover={{
-                    rotate: 360,
-                    scale: 1.15,
-                  }}
-                  transition={{
-                    duration: 0.6,
-                  }}
+                <span
                   className="
-                    flex
-                    h-8
+                    h-[2px]
                     w-8
-                    shrink-0
-                    items-center
-                    justify-center
                     rounded-full
-                    border-2
-                    border-[var(--primary)]
-                    text-[var(--primary)]
-                    sm:h-9
-                    sm:w-9
-                  "
-                >
-                  <CheckCircle2 size={17} />
-                </motion.div>
-
-                <div className="text-left">
-                  <p className="text-[11px] font-bold text-[var(--primary)] sm:text-[13px]">
-                    24/7
-                  </p>
-
-                  <p className="text-[10px] leading-4 text-[var(--muted)] sm:text-[12px]">
-                    Taxi Service
-                  </p>
-                </div>
-              </motion.div>
-
-              {/* =================================================
-                  NO HIDDEN CHARGES
-              ================================================== */}
-
-              <div className="relative">
-
-                <div
-                  className="
-                    absolute
-                    left-0
-                    top-1/2
-                    h-10
-                    w-px
-                    -translate-y-1/2
-                    bg-gray-200
+                    bg-[var(--secondary)]
                   "
                 />
 
+                SBS Taxi
+              </motion.div>
+
+              {/* Heading */}
+              <motion.h1
+                variants={fadeLeft}
+                className="
+                  w-full
+                  max-w-[650px]
+                  font-[family-name:var(--font-instrument)]
+                  text-4xl
+                  font-normal
+                  leading-[1.05]
+                  tracking-tight
+                  !text-white
+
+                  sm:text-5xl
+
+                  md:text-[52px]
+
+                  lg:text-[58px]
+
+                  xl:text-[64px]
+                "
+              >
+                One Brand.
+                <br />
+
+                <span className="text-[var(--secondary)]">
+                  One Fare.
+                </span>
+
+                <br />
+
+                One Trusted Service.
+              </motion.h1>
+
+              {/* Description */}
+              <motion.p
+                variants={fadeUp}
+                className="
+                  mt-5
+                  w-full
+                  max-w-[560px]
+                  font-[var(--font-jakarta)]
+                  text-sm
+                  font-normal
+                  leading-6
+                  text-white/85
+
+                  sm:text-base
+                  sm:leading-7
+                "
+              >
+                Book your ride anytime, anywhere with SBS Taxi.
+                Safe rides, affordable fares and happy journeys!
+              </motion.p>
+
+              {/* =================================================
+                  FEATURES
+              ================================================== */}
+
+              <motion.div
+                variants={container}
+                className="
+                  mt-8
+                  grid
+                  w-full
+                  max-w-[620px]
+                  grid-cols-3
+                  gap-x-3
+                  gap-y-5
+
+                  sm:mt-9
+                  sm:gap-x-0
+                "
+              >
+
+                {/* 24/7 */}
                 <motion.div
-                  whileHover={{
-                    y: -3,
-                    scale: 1.02,
-                  }}
+                  variants={fadeUp}
+                  whileHover={{ y: -3 }}
                   className="
+                    relative
                     flex
-                    min-h-[72px]
                     items-center
-                    justify-center
-                    gap-2
-                    px-2
-                    py-3
-                    text-center
-                    transition
-                    sm:gap-3
-                    sm:px-3
+                    gap-2.5
+                    pr-3
+                  "
+                >
+                  <motion.div
+                    whileHover={{
+                      rotate: 360,
+                      scale: 1.1,
+                    }}
+                    transition={{ duration: 0.6 }}
+                    className="
+                      flex
+                      h-9
+                      w-9
+                      shrink-0
+                      items-center
+                      justify-center
+                      rounded-full
+                      border
+                      border-white/25
+                      bg-white/10
+                      text-[var(--secondary)]
+                      backdrop-blur-sm
+                    "
+                  >
+                    <CheckCircle2 size={18} />
+                  </motion.div>
+
+                  <div className="text-left">
+                    <p
+                      className="
+                        whitespace-nowrap
+                        font-[var(--font-jakarta)]
+                        text-[11px]
+                        font-semibold
+                        text-white
+                        sm:text-xs
+                      "
+                    >
+                      24/7
+                    </p>
+
+                    <p
+                      className="
+                        whitespace-nowrap
+                        text-[9px]
+                        text-white/60
+                        sm:text-[10px]
+                      "
+                    >
+                      Taxi Service
+                    </p>
+                  </div>
+                </motion.div>
+
+                {/* No Hidden Charges */}
+                <motion.div
+                  variants={fadeUp}
+                  whileHover={{ y: -3 }}
+                  className="
+                    relative
+                    flex
+                    items-center
+                    gap-2.5
+                    border-l
+                    border-white/20
+                    px-3
                   "
                 >
                   <motion.div
                     whileHover={{
                       rotate: 10,
-                      scale: 1.15,
+                      scale: 1.1,
                     }}
-                    className="shrink-0"
+                    className="
+                      flex
+                      h-9
+                      w-9
+                      shrink-0
+                      items-center
+                      justify-center
+                      text-[var(--secondary)]
+                    "
                   >
-                    <ShieldCheck
-                      size={24}
-                      className="text-[var(--primary)] sm:h-7 sm:w-7"
-                    />
+                    <ShieldCheck size={24} />
                   </motion.div>
 
                   <div className="text-left">
-                    <p className="text-[11px] font-bold text-[var(--heading)] sm:text-[13px]">
+                    <p
+                      className="
+                        whitespace-nowrap
+                        font-[var(--font-jakarta)]
+                        text-[11px]
+                        font-semibold
+                        text-white
+                        sm:text-xs
+                      "
+                    >
                       No Hidden
                     </p>
 
-                    <p className="text-[10px] leading-4 text-[var(--muted)] sm:text-[12px]">
+                    <p
+                      className="
+                        whitespace-nowrap
+                        text-[9px]
+                        text-white/60
+                        sm:text-[10px]
+                      "
+                    >
                       Charges
                     </p>
                   </div>
                 </motion.div>
-              </div>
 
-              {/* =================================================
-                  VERIFIED DRIVERS
-              ================================================== */}
-
-              <div className="relative">
-
-                <div
-                  className="
-                    absolute
-                    left-0
-                    top-1/2
-                    h-10
-                    w-px
-                    -translate-y-1/2
-                    bg-gray-200
-                  "
-                />
-
+                {/* Verified Drivers */}
                 <motion.div
-                  whileHover={{
-                    y: -3,
-                    scale: 1.02,
-                  }}
+                  variants={fadeUp}
+                  whileHover={{ y: -3 }}
                   className="
+                    relative
                     flex
-                    min-h-[72px]
                     items-center
-                    justify-center
-                    gap-2
-                    px-2
-                    py-3
-                    text-center
-                    transition
-                    sm:gap-3
-                    sm:px-3
+                    gap-2.5
+                    border-l
+                    border-white/20
+                    px-3
                   "
                 >
                   <motion.div
                     whileHover={{
                       rotate: -10,
-                      scale: 1.15,
+                      scale: 1.1,
                     }}
-                    className="shrink-0"
+                    className="
+                      flex
+                      h-9
+                      w-9
+                      shrink-0
+                      items-center
+                      justify-center
+                      text-[var(--secondary)]
+                    "
                   >
-                    <UserCheck
-                      size={24}
-                      className="text-[var(--primary)] sm:h-7 sm:w-7"
-                    />
+                    <UserCheck size={24} />
                   </motion.div>
 
                   <div className="text-left">
-                    <p className="text-[11px] font-bold text-[var(--heading)] sm:text-[13px]">
+                    <p
+                      className="
+                        whitespace-nowrap
+                        font-[var(--font-jakarta)]
+                        text-[11px]
+                        font-semibold
+                        text-white
+                        sm:text-xs
+                      "
+                    >
                       Verified
                     </p>
 
-                    <p className="text-[10px] leading-4 text-[var(--muted)] sm:text-[12px]">
+                    <p
+                      className="
+                        whitespace-nowrap
+                        text-[9px]
+                        text-white/60
+                        sm:text-[10px]
+                      "
+                    >
                       Drivers
                     </p>
                   </div>
                 </motion.div>
-              </div>
-            </motion.div>
-
-            {/* =================================================
-                BUTTONS
-            ================================================== */}
-
-            <motion.div
-              variants={fadeUp}
-              className="
-                mt-6
-                flex
-                w-full
-                flex-col
-                items-center
-                justify-center
-                gap-3
-
-                sm:w-auto
-                sm:flex-row
-                sm:flex-wrap
-
-                lg:justify-start
-              "
-            >
+              </motion.div>
 
               {/* =================================================
-                  BOOK NOW
+                  BUTTONS
               ================================================== */}
 
               <motion.div
-                whileHover={{
-                  scale: 1.03,
-                }}
-                whileTap={{
-                  scale: 0.97,
-                }}
-                className="w-full sm:w-auto"
+                variants={fadeUp}
+                className="
+                  mt-7
+                  flex
+                  w-full
+                  flex-col
+                  items-center
+                  gap-3
+
+                  sm:w-auto
+                  sm:flex-row
+
+                  lg:justify-start
+                "
               >
-                <Link
-                  href="/booking"
+
+                {/* Book Ride */}
+                <motion.div
+                  whileHover={{ scale: 1.03 }}
+                  whileTap={{ scale: 0.97 }}
+                  className="w-full sm:w-auto"
+                >
+                  <Link
+                    href="/booking"
+                    className="
+                      flex
+                      w-full
+                      items-center
+                      justify-center
+                      gap-3
+                      rounded-lg
+                      bg-[var(--secondary)]
+                      px-7
+                      py-3.5
+                      text-sm
+                      font-bold
+                      shadow-md
+                      transition
+
+                      hover:bg-[var(--secondary-dark)]
+
+                      sm:w-auto
+                    "
+                  >
+                    <span className="text-black">
+                      Book a Ride
+                    </span>
+
+                    <motion.div
+                      animate={{ x: [0, 5, 0] }}
+                      transition={{
+                        repeat: Infinity,
+                        duration: 1.5,
+                      }}
+                    >
+                      <ArrowRight
+                        size={18}
+                        className="text-black"
+                      />
+                    </motion.div>
+                  </Link>
+                </motion.div>
+
+                {/* WhatsApp */}
+                <motion.a
+                  whileHover={{ scale: 1.03 }}
+                  whileTap={{ scale: 0.97 }}
+                  href="https://wa.me/9843544844"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="
                     flex
                     w-full
                     items-center
                     justify-center
-                    gap-3
+                    gap-2.5
                     rounded-lg
-                    bg-[var(--secondary)]
-                    px-7
+                    border
+                    border-[#25D366]
+                    bg-white
+                    px-5
                     py-3.5
                     text-sm
                     font-bold
-                    text-white
-                    shadow-md
+                    text-[var(--heading)]
+                    shadow-sm
                     transition
-
-                    hover:bg-[var(--secondary-dark)]
+                    hover:bg-gray-50
 
                     sm:w-auto
                   "
-                >
-                  <span className="text-black">
-                    Book a Ride
-                  </span>
-
-                  <motion.div
-                    animate={{
-                      x: [0, 5, 0],
-                    }}
-                    transition={{
-                      repeat: Infinity,
-                      duration: 1.5,
-                    }}
-                  >
-                    <ArrowRight size={18} />
-                  </motion.div>
-                </Link>
-              </motion.div>
-
-              {/* =================================================
-                  WHATSAPP
-              ================================================== */}
-
-              <motion.a
-                whileHover={{
-                  scale: 1.03,
-                }}
-                whileTap={{
-                  scale: 0.97,
-                }}
-                href="https://wa.me/9843544844"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="
-                  flex
-                  w-full
-                  items-center
-                  justify-center
-                  gap-2.5
-                  rounded-lg
-                  border
-                  border-[#25D366]
-                  bg-white
-                  px-5
-                  py-3.5
-                  text-sm
-                  font-bold
-                  text-[var(--heading)]
-                  shadow-sm
-                  transition
-
-                  hover:bg-gray-50
-
-                  sm:w-auto
-                "
-              >
-                <motion.div
-                  animate={{
-                    scale: [1, 1.15, 1],
-                  }}
-                  transition={{
-                    repeat: Infinity,
-                    duration: 1.6,
-                  }}
                 >
                   <MessageCircle
                     size={20}
                     className="text-[#25D366]"
                   />
-                </motion.div>
 
-                Chat on WhatsApp
-              </motion.a>
+                  Chat on WhatsApp
+                </motion.a>
+              </motion.div>
             </motion.div>
-          </motion.div>
 
-          {/* =================================================
-              BOOKING FORM
-          ================================================== */}
+            {/* =================================================
+                BOOKING FORM
+            ================================================== */}
 
-          <motion.div
-            variants={fadeLeft}
-            initial="hidden"
-            animate="show"
-            className="
-              flex
-              w-full
-              justify-center
-
-              lg:justify-end
-            "
-          >
-            <div
+            <motion.div
+              variants={fadeRight}
+              initial="hidden"
+              animate="show"
               className="
+                flex
                 w-full
-                max-w-[400px]
+                justify-center
 
-                sm:max-w-[420px]
-
-                md:max-w-[440px]
-
-                lg:max-w-[380px]
-
-                xl:max-w-[400px]
-
-                2xl:max-w-[420px]
+                lg:justify-end
               "
             >
-              <BookRideForm />
-            </div>
-          </motion.div>
+              <div
+                className="
+                  w-full
+                  max-w-[390px]
 
+                  sm:max-w-[410px]
+
+                  md:max-w-[430px]
+
+                  lg:max-w-[380px]
+
+                  xl:max-w-[400px]
+                "
+              >
+                <BookRideForm />
+              </div>
+            </motion.div>
+
+          </div>
         </div>
       </div>
     </section>

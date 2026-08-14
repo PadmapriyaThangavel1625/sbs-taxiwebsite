@@ -5,7 +5,6 @@ import {
   ShieldCheck,
   Clock3,
   CreditCard,
-  Route,
 } from "lucide-react";
 import Image from "next/image";
 import { motion, Variants } from "framer-motion";
@@ -18,7 +17,7 @@ const container: Variants = {
   hidden: {},
   show: {
     transition: {
-      staggerChildren: 0.1,
+      staggerChildren: 0.12,
       delayChildren: 0.15,
     },
   },
@@ -27,7 +26,7 @@ const container: Variants = {
 const fadeLeft: Variants = {
   hidden: {
     opacity: 0,
-    x: -25,
+    x: -30,
   },
   show: {
     opacity: 1,
@@ -42,13 +41,13 @@ const fadeLeft: Variants = {
 const fadeUp: Variants = {
   hidden: {
     opacity: 0,
-    y: 15,
+    y: 20,
   },
   show: {
     opacity: 1,
     y: 0,
     transition: {
-      duration: 0.6,
+      duration: 0.65,
       ease: "easeOut",
     },
   },
@@ -77,12 +76,7 @@ const perks = [
   {
     icon: CreditCard,
     title: "Online Payments",
-    description: "No extra payment charges",
-  },
-  {
-    icon: Route,
-    title: "First 200 KM Toll Free",
-    description: "More value on your journey",
+    description: "Easy & secure payments",
   },
 ];
 
@@ -92,164 +86,198 @@ const perks = [
 
 export default function PricingHero() {
   return (
-    <section
-      className="
-        relative
-        w-full
-        overflow-hidden
-        font-[var(--font-jakarta)]
-      "
-    >
-      {/* =====================================================
+    <section className="relative w-full overflow-hidden">
+      {/* ======================================================
           HERO CONTAINER
-      ====================================================== */}
+      ======================================================= */}
 
-      <motion.div
-        initial={{
-          opacity: 0,
-        }}
-        animate={{
-          opacity: 1,
-        }}
-        transition={{
-          duration: 1,
-        }}
+      <div
         className="
           relative
-          min-h-[650px]
+          h-[650px]
           w-full
-          overflow-hidden
 
-          sm:min-h-[520px]
+          sm:h-[590px]
 
-          md:min-h-[480px]
+          md:h-[600px]
 
-          lg:min-h-[450px]
+          lg:h-[620px]
+
+          xl:h-[630px]
         "
       >
-        {/* ===================================================
+        {/* ====================================================
             BACKGROUND IMAGE
-        ==================================================== */}
+        ===================================================== */}
 
         <Image
           src="/images/car2.png"
-          alt="SBS Taxi pricing"
+          alt="SBS Taxi Pricing"
           fill
           priority
           sizes="100vw"
           className="
             object-cover
+            object-[68%_center]
 
-            object-[62%_center]
-
-            sm:object-[58%_center]
+            sm:object-[62%_center]
 
             md:object-center
-
-            lg:object-center
           "
         />
 
-        {/* ===================================================
-            DARK GRADIENT OVERLAY
+        {/* ====================================================
+            OVERALL OVERLAY
+        ===================================================== */}
 
-            Helps text remain readable without making
-            the entire image dark.
-        ==================================================== */}
+        <div className="absolute inset-0 bg-black/10" />
+
+        {/* ====================================================
+            LEFT CONTENT GRADIENT
+        ===================================================== */}
 
         <div
           className="
             absolute
-            inset-0
+            inset-y-0
+            left-0
+            w-full
+
             bg-gradient-to-r
-            from-black/70
-            via-black/45
-            to-black/10
+            from-[#071a35]/95
+            via-[#071a35]/75
+            to-transparent
+
+            sm:w-[80%]
+
+            md:w-[74%]
+
+            lg:w-[70%]
           "
         />
 
-        {/* Bottom subtle darkening */}
+        {/* ====================================================
+            BOTTOM GRADIENT
+        ===================================================== */}
 
         <div
           className="
             absolute
             inset-x-0
             bottom-0
-            h-40
+            h-44
             bg-gradient-to-t
-            from-black/45
+            from-black/40
             to-transparent
           "
         />
 
-        {/* ===================================================
+        {/* ====================================================
             CONTENT
-        ==================================================== */}
+        ===================================================== */}
 
         <motion.div
           variants={container}
           initial="hidden"
           animate="show"
-          className="
-            absolute
-            inset-0
-            z-10
-          "
+          className="absolute inset-0 z-10"
         >
           <div
             className="
               mx-auto
               flex
-              min-h-[620px]
+              h-full
               w-full
               max-w-7xl
               items-center
               px-4
-              py-12
+              mt-3
 
-              sm:min-h-[520px]
+              sm:mt-8
+
+              md:mt-10
+
+              lg:mt-12
+
               sm:px-6
 
-              md:min-h-[480px]
-
-              lg:min-h-[450px]
               lg:px-8
             "
           >
             <div
               className="
                 w-full
-                max-w-[850px]
+                max-w-[700px]
+                pt-6
+                font-[var(--font-jakarta)]
+
+                sm:pt-0
               "
             >
-             
+              {/* =================================================
+                  PRICING LABEL
+              ================================================== */}
+
+              <motion.div
+                variants={fadeLeft}
+                className="
+                  mb-4
+                  inline-flex
+                  items-center
+                  gap-2
+
+                  font-[var(--font-jakarta)]
+                  text-sm
+                  font-bold
+                  uppercase
+                  tracking-[0.16em]
+
+                  text-[var(--secondary)]
+
+                  sm:text-base
+                "
+              >
+                <span
+                  className="
+                    h-[2px]
+                    w-8
+                    rounded-full
+                    bg-[var(--secondary)]
+                  "
+                />
+
+                Our Pricing
+              </motion.div>
 
               {/* =================================================
-                  HEADING
+                  MAIN HEADING
               ================================================== */}
 
               <motion.h1
                 variants={fadeLeft}
                 className="
-                  max-w-[760px]
-                  font-[var(--font-jakarta)]
+                  max-w-[650px]
+
+                  font-[family-name:var(--font-instrument)]
+
                   text-4xl
-                  font-extrabold
-                  leading-[1.08]
+                  font-normal
+                  leading-[1.05]
                   tracking-tight
                   !text-white
-                  drop-shadow-lg
 
                   sm:text-5xl
 
-                  md:text-5xl
+                  md:text-[52px]
 
-                  lg:text-[52px]
+                  lg:text-[58px]
                 "
               >
-                Simple &{" "}
+                Simple Pricing.
+                <br />
+
                 <span className="text-[var(--secondary)]">
-                  Transparent Pricing
+                  No Surprises.
                 </span>
               </motion.h1>
 
@@ -260,11 +288,13 @@ export default function PricingHero() {
               <motion.p
                 variants={fadeUp}
                 className="
-                  mt-4
-                  max-w-[600px]
+                  mt-5
+                  max-w-[550px]
+
                   font-[var(--font-jakarta)]
+
                   text-sm
-                  font-medium
+                  font-normal
                   leading-6
                   text-white/85
 
@@ -272,9 +302,9 @@ export default function PricingHero() {
                   sm:leading-7
                 "
               >
-                No hidden charges. No surprises. Just honest pricing
-                for a comfortable, safe and reliable journey with SBS
-                Taxi.
+                Enjoy clear and transparent fares with SBS Taxi.
+                No hidden charges, no unexpected fees — just honest
+                pricing for a comfortable and reliable journey.
               </motion.p>
 
               {/* =================================================
@@ -285,21 +315,22 @@ export default function PricingHero() {
                 variants={container}
                 className="
                   mt-8
+
                   grid
                   grid-cols-2
-                  gap-3
+                  gap-x-6
+                  gap-y-5
 
                   sm:mt-9
                   sm:grid-cols-2
-                  sm:gap-4
+                  sm:gap-x-8
 
-                  md:grid-cols-3
-
-                  lg:grid-cols-5
-                  lg:gap-3
+                  lg:grid-cols-4
+                  lg:gap-x-0
+                  lg:gap-y-0
                 "
               >
-                {perks.map((item) => {
+                {perks.map((item, index) => {
                   const Icon = item.icon;
 
                   return (
@@ -307,115 +338,107 @@ export default function PricingHero() {
                       key={item.title}
                       variants={fadeUp}
                       whileHover={{
-                        y: -4,
+                        y: -3,
                       }}
                       transition={{
                         duration: 0.25,
                       }}
-                      className="
-                        group
+                      className={`
                         relative
                         flex
-                        min-h-[82px]
                         items-center
-                        gap-3
-                        overflow-hidden
-                        rounded-xl
-                        border
-                        border-white/20
-                        bg-white/[0.08]
-                        px-3
-                        py-3
-                        backdrop-blur-md
-                        transition-all
-                        duration-300
-                        hover:border-white/35
-                        hover:bg-white/[0.14]
+                        gap-2.5
+                        pr-4
 
-                        sm:min-h-[88px]
-                        sm:px-3.5
+                        sm:px-5
 
-                        lg:min-h-[94px]
-                      "
+                        ${
+                          index === 0
+                            ? "sm:pl-0"
+                            : ""
+                        }
+
+                        ${
+                          index % 2 === 0
+                            ? "sm:border-r sm:border-white/20"
+                            : ""
+                        }
+
+                        lg:border-r
+                        lg:border-white/20
+
+                        ${
+                          index === perks.length - 1
+                            ? "lg:border-r-0"
+                            : ""
+                        }
+                      `}
                     >
-                      {/* =================================================
-                          SUBTLE HOVER GLOW
-                      ================================================== */}
-
-                      <div
-                        className="
-                          pointer-events-none
-                          absolute
-                          inset-0
-                          bg-gradient-to-br
-                          from-white/[0.08]
-                          via-transparent
-                          to-transparent
-                          opacity-0
-                          transition-opacity
-                          duration-300
-                          group-hover:opacity-100
-                        "
-                      />
-
                       {/* =================================================
                           ICON
                       ================================================== */}
 
-                      <div
+                      <motion.div
+                        whileHover={{
+                          scale: 1.08,
+                        }}
+                        transition={{
+                          duration: 0.2,
+                        }}
                         className="
-                          relative
-                          z-10
                           flex
-                          h-9
-                          w-9
+                          h-8
+                          w-8
                           shrink-0
                           items-center
                           justify-center
-                          rounded-lg
+                          rounded-full
+
                           border
-                          border-white/20
+                          border-white/25
+
                           bg-white/10
+
+                          text-[var(--secondary)]
+
                           backdrop-blur-sm
 
-                          sm:h-10
-                          sm:w-10
+                          sm:h-9
+                          sm:w-9
                         "
                       >
                         <Icon
                           aria-hidden="true"
                           className="
-                            h-[18px]
-                            w-[18px]
-                            text-[var(--secondary)]
+                            h-4
+                            w-4
 
-                            sm:h-5
-                            sm:w-5
+                            sm:h-[17px]
+                            sm:w-[17px]
                           "
-                          strokeWidth={2}
                         />
-                      </div>
+                      </motion.div>
 
                       {/* =================================================
                           TEXT
                       ================================================== */}
 
-                      <div
-                        className="
-                          relative
-                          z-10
-                          min-w-0
-                        "
-                      >
+                      <div className="min-w-0">
                         <p
                           className="
+                            whitespace-nowrap
+
                             font-[var(--font-jakarta)]
+
                             text-[10px]
-                            font-bold
+                            font-semibold
                             leading-4
+
                             text-white
 
                             sm:text-[11px]
+
+                            lg:text-xs
                           "
                         >
                           {item.title}
@@ -424,14 +447,19 @@ export default function PricingHero() {
                         <p
                           className="
                             mt-0.5
+
+                            whitespace-nowrap
+
                             font-[var(--font-jakarta)]
+
                             text-[8px]
-                            font-medium
-                            leading-3.5
-                            !text-white/90
+                            font-normal
+                            leading-3
+
+                            text-white/60
 
                             sm:text-[9px]
-                            sm:leading-4
+                            sm:leading-3.5
                           "
                         >
                           {item.description}
@@ -444,7 +472,7 @@ export default function PricingHero() {
             </div>
           </div>
         </motion.div>
-      </motion.div>
+      </div>
     </section>
   );
 }

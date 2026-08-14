@@ -6,9 +6,12 @@ import {
   Clock,
   CreditCard,
   Route,
-  Star,
 } from "lucide-react";
 import { motion, Variants } from "framer-motion";
+
+/* ============================================================
+   ANIMATIONS
+============================================================ */
 
 const container: Variants = {
   hidden: {},
@@ -38,17 +41,21 @@ const fadeLeft: Variants = {
 const fadeUp: Variants = {
   hidden: {
     opacity: 0,
-    y: 15,
+    y: 20,
   },
   show: {
     opacity: 1,
     y: 0,
     transition: {
-      duration: 0.6,
+      duration: 0.65,
       ease: "easeOut",
     },
   },
 };
+
+/* ============================================================
+   FEATURES
+============================================================ */
 
 const features = [
   {
@@ -73,38 +80,118 @@ const features = [
   },
 ];
 
+/* ============================================================
+   COMPONENT
+============================================================ */
+
 export default function OffersHero() {
   return (
     <section className="relative w-full overflow-hidden">
-      {/* Background Image */}
-      <motion.div
-        initial={{
-          opacity: 0,
-          scale: 1.03,
-        }}
-        animate={{
-          opacity: 1,
-          scale: 1,
-        }}
-        transition={{
-          duration: 1.2,
-          ease: "easeOut",
-        }}
-        className="relative h-[500px] w-full"
+      {/* ======================================================
+          HERO CONTAINER
+      ======================================================= */}
+
+      <div
+        className="
+          relative
+          h-[650px]
+          w-full
+
+          sm:h-[590px]
+
+          md:h-[600px]
+
+          lg:h-[620px]
+
+          xl:h-[630px]
+        "
       >
-        <Image
-          src="/images/car6.png"
-          alt="SBS Taxi Offers"
-          fill
-          priority
-          sizes="100vw"
-          className="object-cover object-center"
+        {/* ====================================================
+            BACKGROUND IMAGE
+        ===================================================== */}
+
+        <motion.div
+          initial={{
+            opacity: 0,
+            scale: 1.03,
+          }}
+          animate={{
+            opacity: 1,
+            scale: 1,
+          }}
+          transition={{
+            duration: 1.2,
+            ease: "easeOut",
+          }}
+          className="absolute inset-0"
+        >
+          <Image
+            src="/images/car6.png"
+            alt="SBS Taxi Offers"
+            fill
+            priority
+            sizes="100vw"
+            className="
+              object-cover
+              object-[68%_center]
+
+              sm:object-[62%_center]
+
+              md:object-center
+            "
+          />
+        </motion.div>
+
+        {/* ====================================================
+            OVERALL OVERLAY
+        ===================================================== */}
+
+        <div className="absolute inset-0 bg-black/10" />
+
+        {/* ====================================================
+            LEFT CONTENT GRADIENT
+        ===================================================== */}
+
+        <div
+          className="
+            absolute
+            inset-y-0
+            left-0
+            w-full
+
+            bg-gradient-to-r
+            from-[#071a35]/95
+            via-[#071a35]/75
+            to-transparent
+
+            sm:w-[80%]
+
+            md:w-[74%]
+
+            lg:w-[70%]
+          "
         />
 
-        {/* Light Overlay */}
-        <div className="absolute inset-0 bg-black/15" />
+        {/* ====================================================
+            BOTTOM GRADIENT
+        ===================================================== */}
 
-        {/* Content */}
+        <div
+          className="
+            absolute
+            inset-x-0
+            bottom-0
+            h-44
+            bg-gradient-to-t
+            from-black/40
+            to-transparent
+          "
+        />
+
+        {/* ====================================================
+            CONTENT
+        ===================================================== */}
+
         <motion.div
           variants={container}
           initial="hidden"
@@ -120,87 +207,143 @@ export default function OffersHero() {
               max-w-7xl
               items-center
               px-4
+              mt-3
+
+              sm:mt-8
+
+              md:mt-10
+
+              lg:mt-12
+
               sm:px-6
+
               lg:px-8
             "
           >
-            <div className="w-full max-w-[600px] font-[var(--font-jakarta)]">
+            <div
+              className="
+                w-full
+                max-w-[700px]
+                pt-6
+                font-[var(--font-jakarta)]
 
-              {/* Heading */}
+                sm:pt-0
+              "
+            >
+              {/* =================================================
+                  OFFERS LABEL
+              ================================================== */}
+
+              <motion.div
+                variants={fadeLeft}
+                className="
+                  mb-4
+                  inline-flex
+                  items-center
+                  gap-2
+
+                  font-[var(--font-jakarta)]
+                  text-sm
+                  font-bold
+                  uppercase
+                  tracking-[0.16em]
+
+                  text-[var(--secondary)]
+
+                  sm:text-base
+                "
+              >
+                <span
+                  className="
+                    h-[2px]
+                    w-8
+                    rounded-full
+                    bg-[var(--secondary)]
+                  "
+                />
+
+                Special Offers
+              </motion.div>
+
+              {/* =================================================
+                  MAIN HEADING
+              ================================================== */}
+
               <motion.h1
                 variants={fadeLeft}
                 className="
-                  !font-[var(--font-jakarta)]
-                  text-3xl
-                  !font-extrabold
-                  leading-tight
+                  max-w-[650px]
+
+                  font-[family-name:var(--font-instrument)]
+
+                  text-4xl
+                  font-normal
+                  leading-[1.05]
                   tracking-tight
                   !text-white
 
-                  sm:text-4xl
+                  sm:text-5xl
 
-                  lg:text-5xl
+                  md:text-[52px]
+
+                  lg:text-[58px]
                 "
               >
-                Best Offers for You!
+                More Savings.
+                <br />
+
+                <span className="text-[var(--secondary)]">
+                  More Happy Journeys.
+                </span>
               </motion.h1>
 
-              {/* Subtitle */}
-              <motion.h2
-                variants={fadeUp}
-                className="
-                  mt-2
-                  !font-[var(--font-jakarta)]
-                  text-base
-                  font-bold
-                  leading-tight
-                  text-secondary
+              {/* =================================================
+                  DESCRIPTION
+              ================================================== */}
 
-                  sm:text-lg
-
-                  lg:text-xl
-                "
-              >
-                More Savings. More Rides. More Happy Journeys.
-              </motion.h2>
-
-              {/* Description */}
               <motion.p
                 variants={fadeUp}
                 className="
-                  mt-3
-                  max-w-[500px]
-                  !font-[var(--font-jakarta)]
+                  mt-5
+                  max-w-[560px]
+
+                  font-[var(--font-jakarta)]
+
                   text-sm
-                  font-medium
+                  font-normal
                   leading-6
-                  text-white
+                  text-white/85
 
                   sm:text-base
-                  sm:leading-6
-
-                  lg:text-base
+                  sm:leading-7
                 "
               >
-                Enjoy exciting discounts and exclusive benefits on
-                <br className="hidden sm:block" />
-                every ride with SBS Taxi.
+                Enjoy exciting discounts and exclusive benefits
+                on every ride with SBS Taxi. Get more value from
+                every journey with our special offers.
               </motion.p>
 
-              {/* Features */}
+              {/* =================================================
+                  FEATURES - 2 COLUMN GRID
+              ================================================== */}
+
               <motion.div
                 variants={container}
                 className="
-                  mt-7
-                  inline-flex
-                  max-w-full
-                  flex-wrap
-                  overflow-hidden
-                  rounded-xl
-                  border
-                  border-white/25
-                  bg-black/20
-                  backdrop-blur-[3px]
+                  mt-8
+
+                  grid
+                  grid-cols-2
+                  gap-x-6
+                  gap-y-5
+
+                  sm:mt-9
+                  sm:grid-cols-2
+                  sm:gap-x-8
+
+                  lg:grid-cols-4
+                  lg:gap-x-0
+                  lg:gap-y-0
                 "
               >
                 {features.map((feature, index) => {
@@ -217,70 +360,122 @@ export default function OffersHero() {
                         duration: 0.25,
                       }}
                       className={`
+                        relative
                         flex
-                        min-w-[140px]
                         items-center
                         gap-2.5
-                        px-4
-                        py-3
+                        pr-4
 
-                        sm:min-w-[150px]
-
-                        lg:min-w-[155px]
+                        sm:px-5
 
                         ${
-                          index !== features.length - 1
-                            ? "border-r border-white/25"
+                          index === 0
+                            ? "sm:pl-0"
+                            : ""
+                        }
+
+                        ${
+                          index % 2 === 0
+                            ? "sm:border-r sm:border-white/20"
+                            : ""
+                        }
+
+                        lg:border-r
+                        lg:border-white/20
+
+                        ${
+                          index === features.length - 1
+                            ? "lg:border-r-0"
                             : ""
                         }
                       `}
                     >
-                      {/* Icon */}
+                      {/* =================================================
+                          ICON
+                      ================================================== */}
+
                       <motion.div
                         whileHover={{
-                          scale: 1.1,
-                          rotate: 5,
+                          scale: 1.08,
+                        }}
+                        transition={{
+                          duration: 0.2,
                         }}
                         className="
                           flex
-                          h-9
-                          w-9
+                          h-8
+                          w-8
                           shrink-0
                           items-center
                           justify-center
-                          rounded-lg
-                          bg-[var(--primary)]
+                          rounded-full
+
+                          border
+                          border-white/25
+
+                          bg-white/10
+
+                          text-[var(--secondary)]
+
+                          backdrop-blur-sm
+
+                          sm:h-9
+                          sm:w-9
                         "
                       >
-                        <Icon className="h-5 w-5 text-[var(--secondary)]" />
+                        <Icon
+                          aria-hidden="true"
+                          className="
+                            h-4
+                            w-4
+
+                            sm:h-[17px]
+                            sm:w-[17px]
+                          "
+                        />
                       </motion.div>
 
-                      {/* Text */}
-                      <div className="leading-tight">
-                        <h4
+                      {/* =================================================
+                          TEXT
+                      ================================================== */}
+
+                      <div className="min-w-0">
+                        <p
                           className="
                             whitespace-nowrap
-                            !font-[var(--font-jakarta)]
-                            text-[11px]
-                            !font-bold
-                            !text-white
+
+                            font-[var(--font-jakarta)]
+
+                            text-[10px]
+                            font-semibold
+                            leading-4
+
+                            text-white
+
+                            sm:text-[11px]
 
                             lg:text-xs
                           "
                         >
                           {feature.title}
-                        </h4>
+                        </p>
 
                         <p
                           className="
-                            mt-1
-                            whitespace-nowrap
-                            !font-[var(--font-jakarta)]
-                            text-[9px]
-                            font-medium
-                            text-white/85
+                            mt-0.5
 
-                            lg:text-[10px]
+                            whitespace-nowrap
+
+                            font-[var(--font-jakarta)]
+
+                            text-[8px]
+                            font-normal
+                            leading-3
+
+                            text-white/60
+
+                            sm:text-[9px]
+                            sm:leading-3.5
                           "
                         >
                           {feature.description}
@@ -293,9 +488,7 @@ export default function OffersHero() {
             </div>
           </div>
         </motion.div>
-
-       
-      </motion.div>
+      </div>
     </section>
   );
 }

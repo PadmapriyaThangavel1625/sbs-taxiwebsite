@@ -29,7 +29,7 @@ export default function ContactInfo() {
             font-bold
             uppercase
             tracking-wider
-            text-[var(--primary)]
+            text-[var(--secondary)]
           "
         >
           Contact Us
@@ -107,7 +107,7 @@ export default function ContactInfo() {
               justify-center
               rounded-xl
               bg-[var(--primary-light)]
-              text-[var(--primary)]
+              text-[var(--secondary)]
               transition-transform
               duration-300
               group-hover:scale-105
@@ -135,7 +135,7 @@ export default function ContactInfo() {
                   h-4
                   w-4
                   shrink-0
-                  text-[var(--muted)]
+                  text-[var(--secondary)]
                   opacity-0
                   transition-all
                   duration-300
@@ -206,7 +206,7 @@ export default function ContactInfo() {
               justify-center
               rounded-xl
               bg-[var(--primary-light)]
-              text-[var(--primary)]
+              !text-[var(--secondary)]
               transition-transform
               duration-300
               group-hover:scale-105
@@ -305,7 +305,7 @@ export default function ContactInfo() {
               justify-center
               rounded-xl
               bg-[var(--primary-light)]
-              text-[var(--primary)]
+              text-[var(--secondary)]
               transition-transform
               duration-300
               group-hover:scale-105
@@ -405,7 +405,7 @@ export default function ContactInfo() {
               justify-center
               rounded-xl
               bg-[var(--primary-light)]
-              text-[var(--primary)]
+              text-[var(--secondary)]
               transition-transform
               duration-300
               group-hover:scale-105

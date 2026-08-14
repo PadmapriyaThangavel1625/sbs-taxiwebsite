@@ -35,7 +35,7 @@ export default function WhyTravel() {
   return (
     <div className="rounded-2xl bg-blue-50 p-6 shadow-sm sm:p-7">
       {/* Heading */}
-      <h2 className="mb-6 w-fit border-b-4 border-yellow-400 pb-1 text-xl font-bold text-gray-900 sm:text-2xl">
+      <h2 className="!mb-6 w-fit border-b-4 border-yellow-400 pb-1 text-xl font-bold text-gray-900 sm:text-2xl">
         Why Travel with SBS Taxi?
       </h2>
 

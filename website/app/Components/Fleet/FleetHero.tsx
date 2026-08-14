@@ -2,13 +2,23 @@
 
 import Image from "next/image";
 import { motion, Variants } from "framer-motion";
+import {
+  ShieldCheck,
+  UsersRound,
+  IndianRupee,
+  CarFront,
+} from "lucide-react";
+
+/* ============================================================
+   ANIMATIONS
+============================================================ */
 
 const container: Variants = {
   hidden: {},
   show: {
     transition: {
-      staggerChildren: 0.15,
-      delayChildren: 0.2,
+      staggerChildren: 0.12,
+      delayChildren: 0.15,
     },
   },
 };
@@ -16,13 +26,13 @@ const container: Variants = {
 const fadeLeft: Variants = {
   hidden: {
     opacity: 0,
-    x: -40,
+    x: -30,
   },
   show: {
     opacity: 1,
     x: 0,
     transition: {
-      duration: 0.8,
+      duration: 0.7,
       ease: "easeOut",
     },
   },
@@ -31,83 +41,75 @@ const fadeLeft: Variants = {
 const fadeUp: Variants = {
   hidden: {
     opacity: 0,
-    y: 25,
+    y: 20,
   },
   show: {
     opacity: 1,
     y: 0,
     transition: {
-      duration: 0.7,
+      duration: 0.65,
       ease: "easeOut",
     },
   },
 };
 
-const fadeScale: Variants = {
-  hidden: {
-    opacity: 0,
-    scale: 0.8,
-  },
-  show: {
-    opacity: 1,
-    scale: 1,
-    transition: {
-      duration: 0.6,
-      ease: "easeOut",
-    },
-  },
-};
+/* ============================================================
+   FEATURES
+============================================================ */
 
 const features = [
   {
-    icon: "🛡️",
-    title: "Safe & Sanitized",
-    description: "100% Safe Rides",
+    icon: CarFront,
+    title: "Wide Fleet",
+    description: "Cars for every journey",
   },
   {
-    icon: "👨‍✈️",
-    title: "Professional Drivers",
-    description: "Verified & Trained",
+    icon: ShieldCheck,
+    title: "Well Maintained",
+    description: "Clean & reliable vehicles",
   },
   {
-    icon: "₹",
-    title: "Transparent Pricing",
-    description: "No Hidden Charges",
+    icon: IndianRupee,
+    title: "Affordable Fares",
+    description: "Transparent pricing",
+  },
+  {
+    icon: UsersRound,
+    title: "Comfortable Rides",
+    description: "Travel with confidence",
   },
 ];
 
+/* ============================================================
+   COMPONENT
+============================================================ */
+
 export default function FleetHero() {
   return (
-    <section className="relative mb-6 w-full overflow-hidden sm:mb-8">
-      {/* =====================================================
-          BACKGROUND IMAGE
-      ====================================================== */}
-      <motion.div
-        initial={{
-          opacity: 0,
-          scale: 1.02,
-        }}
-        animate={{
-          opacity: 1,
-          scale: 1,
-        }}
-        transition={{
-          duration: 1.4,
-          ease: "easeOut",
-        }}
+    <section className="relative w-full overflow-hidden">
+      {/* ======================================================
+          HERO IMAGE
+      ======================================================= */}
+
+      <div
         className="
           relative
-          !h-[700px]
+          h-[650px]
           w-full
-          overflow-hidden
 
-          sm:h-[300px]
+          sm:h-[590px]
 
-          md:h-[280px]
+          md:h-[600px]
 
-          lg:h-[215px]
+          lg:h-[620px]
+
+          xl:h-[630px]
         "
       >
+        {/* ====================================================
+            BACKGROUND IMAGE
+        ===================================================== */}
+
         <Image
           src="/images/car3.png"
           alt="SBS Taxi Fleet"
@@ -116,211 +118,311 @@ export default function FleetHero() {
           sizes="100vw"
           className="
             object-cover
+            object-[68%_center]
 
-            object-center
-
-            sm:object-[55%_center]
+            sm:object-[62%_center]
 
             md:object-center
           "
         />
 
-        {/* =================================================
-            OVERLAY
-        ================================================== */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 1 }}
-          className="absolute inset-0 bg-black/15"
+        {/* ====================================================
+            OVERALL OVERLAY
+        ===================================================== */}
+
+        <div className="absolute inset-0 bg-black/10" />
+
+        {/* ====================================================
+            LEFT CONTENT GRADIENT
+        ===================================================== */}
+
+        <div
+          className="
+            absolute
+            inset-y-0
+            left-0
+            w-full
+
+            bg-gradient-to-r
+            from-[#071a35]/95
+            via-[#071a35]/75
+            to-transparent
+
+            sm:w-[80%]
+
+            md:w-[74%]
+
+            lg:w-[70%]
+          "
         />
 
-        {/* =================================================
+        {/* ====================================================
+            BOTTOM GRADIENT
+        ===================================================== */}
+
+        <div
+          className="
+            absolute
+            inset-x-0
+            bottom-0
+            h-44
+            bg-gradient-to-t
+            from-black/40
+            to-transparent
+          "
+        />
+
+        {/* ====================================================
             CONTENT
-        ================================================== */}
+        ===================================================== */}
+
         <motion.div
           variants={container}
           initial="hidden"
           animate="show"
-          className="absolute inset-0 z-10 flex items-center"
+          className="absolute inset-0 z-10"
         >
           <div
             className="
               mx-auto
+              flex
+              h-full
               w-full
               max-w-7xl
+              items-center
               px-4
+              mt-3
+
+              sm:mt-8
+
+              md:mt-10
+
+              lg:mt-12
 
               sm:px-6
 
               lg:px-8
             "
           >
-            <div className="flex items-center">
-              <div
+            <div
+              className="
+                w-full
+                max-w-[570px]
+                pt-6
+                font-[var(--font-jakarta)]
+
+                sm:pt-0
+              "
+            >
+              {/* =================================================
+                  FLEET LABEL
+              ================================================== */}
+
+              <motion.div
+                variants={fadeLeft}
                 className="
-                  w-full
-                  max-w-[600px]
-                  text-left
+                  mb-4
+                  inline-flex
+                  items-center
+                  gap-2
 
-                  /* MOBILE */
-                  pt-4
+                  font-[var(--font-jakarta)]
+                  text-sm
+                  font-bold
+                  uppercase
+                  tracking-[0.16em]
 
-                  sm:pt-0
+                  text-[var(--secondary)]
+
+                  sm:text-base
                 "
               >
-                {/* =================================================
-                    HEADING
-                ================================================== */}
-                <motion.h1
-                  variants={fadeLeft}
+                <span
                   className="
-                    font-[var(--font-jakarta)]
-                    text-3xl
-                    font-extrabold
-                    leading-tight
-                    tracking-tight
-                    !text-white
-
-                    sm:text-4xl
-
-                    lg:text-5xl
+                    h-[2px]
+                    w-8
+                    rounded-full
+                    bg-[var(--secondary)]
                   "
-                >
-                  Our Fleet
-                </motion.h1>
+                />
 
-                {/* =================================================
-                    SUBTITLE
-                ================================================== */}
-                <motion.p
-                  variants={fadeUp}
-                  className="
-                    mt-2
-                    font-[var(--font-jakarta)]
-                    text-lg
-                    font-bold
-                    leading-tight
-                    !text-white
+                Our Fleet
+              </motion.div>
 
-                    sm:mt-3
-                    sm:text-lg
+              {/* =================================================
+                  MAIN HEADING
+              ================================================== */}
 
-                    lg:text-xl
-                  "
-                >
-                  Premium cars. Best comfort. Affordable fares.
-                </motion.p>
+              <motion.h1
+                variants={fadeLeft}
+                className="
+                  max-w-[560px]
 
-                {/* =================================================
-                    DESCRIPTION
-                ================================================== */}
-                <motion.p
-                  variants={fadeUp}
-                  className="
-                    mt-3
-                    max-w-[550px]
-                    font-[var(--font-jakarta)]
-                    text-sm
-                    text-white
-                    font-medium
-                    leading-5
-                    text-[var(--primary)]
+                  font-[family-name:var(--font-instrument)]
 
-                    sm:mt-4
-                    sm:text-sm
-                    sm:leading-6
+                  text-4xl
+                  font-normal
+                  leading-[1.05]
+                  tracking-tight
+                  !text-white
 
-                    lg:text-base
-                    lg:leading-7
-                  "
-                >
-                  Choose from our wide range of well-maintained vehicles
-                  <br className="hidden sm:block" />
-                  that suits your travel needs and budget.
-                </motion.p>
+                  sm:text-5xl
 
-                {/* =================================================
-                    FEATURES
-                ================================================== */}
-                <motion.div
-                  variants={container}
-                  className="
-                    mt-6
-                    grid
-                    grid-cols-1
-                    gap-3
+                  md:text-[52px]
 
-                    sm:flex
-                    sm:flex-wrap
-                    sm:items-center
-                    sm:gap-x-6
-                    sm:gap-y-4
+                  lg:text-[58px]
+                "
+              >
+                Premium Cars.
+                <br />
 
-                    lg:mt-8
-                    lg:gap-x-10
-                  "
-                >
-                  {features.map((feature) => (
+                <span className="text-[var(--secondary)]">
+                  Every Journey.
+                </span>
+              </motion.h1>
+
+              {/* =================================================
+                  DESCRIPTION
+              ================================================== */}
+
+              <motion.p
+                variants={fadeUp}
+                className="
+                  mt-5
+                  max-w-[520px]
+
+                  font-[var(--font-jakarta)]
+
+                  text-sm
+                  font-normal
+                  leading-6
+                  text-white/85
+
+                  sm:text-base
+                  sm:leading-7
+                "
+              >
+                Choose from our wide range of well-maintained vehicles
+                designed to provide safety, comfort and a smooth travel
+                experience for every journey.
+              </motion.p>
+
+              {/* =================================================
+                  PREMIUM FEATURES
+              ================================================== */}
+
+              <motion.div
+                variants={container}
+                className="
+                  mt-8
+
+                  grid
+                  grid-cols-2
+                  gap-x-6
+                  gap-y-5
+
+                  sm:mt-9
+                  sm:grid-cols-4
+                  sm:gap-x-0
+                  sm:gap-y-0
+                "
+              >
+                {features.map((feature, index) => {
+                  const Icon = feature.icon;
+
+                  return (
                     <motion.div
                       key={feature.title}
                       variants={fadeUp}
                       whileHover={{
-                        y: -5,
+                        y: -3,
                       }}
                       transition={{
                         duration: 0.25,
                       }}
-                      className="flex items-center gap-3"
+                      className={`
+                        relative
+                        flex
+                        items-center
+                        gap-2.5
+                        pr-4
+
+                        sm:px-5
+
+                        ${
+                          index === 0
+                            ? "sm:pl-0"
+                            : ""
+                        }
+
+                        ${
+                          index !== features.length - 1
+                            ? "sm:border-r sm:border-white/20"
+                            : ""
+                        }
+                      `}
                     >
                       {/* ICON */}
+
                       <motion.div
-                        variants={fadeScale}
                         whileHover={{
-                          scale: 1.12,
-                          rotate: 6,
+                          scale: 1.08,
                         }}
                         transition={{
-                          duration: 0.25,
+                          duration: 0.2,
                         }}
                         className="
                           flex
-                          h-9
-                          w-9
+                          h-8
+                          w-8
                           shrink-0
                           items-center
                           justify-center
                           rounded-full
-                          border-2
-                          border-[var(--secondary)]
-                          bg-[var(--primary)]
-                          text-sm
-                          text-white
+
+                          border
+                          border-white/25
+
+                          bg-white/10
+
+                          text-[var(--secondary)]
+
+                          backdrop-blur-sm
 
                           sm:h-9
                           sm:w-9
-
-                          lg:h-10
-                          lg:w-10
-                          lg:text-base
                         "
                       >
-                        {feature.icon}
+                        <Icon
+                          aria-hidden="true"
+                          className="
+                            h-4
+                            w-4
+
+                            sm:h-[17px]
+                            sm:w-[17px]
+                          "
+                        />
                       </motion.div>
 
-                      {/* FEATURE TEXT */}
-                      <div className="whitespace-nowrap">
+                      {/* TEXT */}
+
+                      <div className="min-w-0">
                         <p
                           className="
+                            whitespace-nowrap
+
                             font-[var(--font-jakarta)]
-                            text-xs
-                            font-bold
-                            leading-tight
-                            text-[var(--secondary)]
 
-                            sm:text-xs
+                            text-[10px]
+                            font-semibold
+                            leading-4
 
-                            lg:text-sm
+                            text-white
+
+                            sm:text-[11px]
+
+                            lg:text-xs
                           "
                         >
                           {feature.title}
@@ -328,29 +430,33 @@ export default function FleetHero() {
 
                         <p
                           className="
-                            mt-1
+                            mt-0.5
+
+                            whitespace-nowrap
+
                             font-[var(--font-jakarta)]
-                            text-[10px]
-                            font-medium
-                            leading-tight
-                            text-white/85
+
+                            text-[8px]
+                            font-normal
+                            leading-3
+
+                            text-white/60
 
                             sm:text-[9px]
-
-                            lg:text-[11px]
+                            sm:leading-3.5
                           "
                         >
                           {feature.description}
                         </p>
                       </div>
                     </motion.div>
-                  ))}
-                </motion.div>
-              </div>
+                  );
+                })}
+              </motion.div>
             </div>
           </div>
         </motion.div>
-      </motion.div>
+      </div>
     </section>
   );
 }
