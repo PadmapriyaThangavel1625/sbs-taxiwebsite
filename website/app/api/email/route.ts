@@ -93,8 +93,6 @@ export async function POST(request: Request) {
 
     /* ============================================================
        SIMPLE BOOKING
-       
-       Name + Email + Pickup + Drop + Date + Time + Vehicle
     ============================================================ */
 
     if (
@@ -184,8 +182,6 @@ export async function POST(request: Request) {
                 "
               >
 
-                <!-- HEADER -->
-
                 <div
                   style="
                     background:#1A365D;
@@ -194,6 +190,7 @@ export async function POST(request: Request) {
                     text-align:center;
                   "
                 >
+
                   <h1
                     style="
                       margin:0;
@@ -213,17 +210,10 @@ export async function POST(request: Request) {
                   >
                     New Ride Booking Request
                   </p>
+
                 </div>
 
-                <!-- CONTENT -->
-
-                <div
-                  style="
-                    padding:28px;
-                  "
-                >
-
-                  <!-- CUSTOMER DETAILS -->
+                <div style="padding:28px;">
 
                   <h2
                     style="
@@ -239,9 +229,7 @@ export async function POST(request: Request) {
                     width="100%"
                     cellpadding="0"
                     cellspacing="0"
-                    style="
-                      border-collapse:collapse;
-                    "
+                    style="border-collapse:collapse;"
                   >
 
                     <tr>
@@ -289,8 +277,6 @@ export async function POST(request: Request) {
 
                   </table>
 
-                  <!-- TRIP DETAILS -->
-
                   <h2
                     style="
                       margin:25px 0 15px;
@@ -305,9 +291,7 @@ export async function POST(request: Request) {
                     width="100%"
                     cellpadding="0"
                     cellspacing="0"
-                    style="
-                      border-collapse:collapse;
-                    "
+                    style="border-collapse:collapse;"
                   >
 
                     <tr>
@@ -417,8 +401,6 @@ export async function POST(request: Request) {
                     </tr>
 
                   </table>
-
-                  <!-- STATUS -->
 
                   <div
                     style="
@@ -613,10 +595,12 @@ export async function POST(request: Request) {
           <html>
             <head>
               <meta charset="UTF-8" />
+
               <meta
                 name="viewport"
                 content="width=device-width, initial-scale=1.0"
               />
+
               <title>SBS Taxi Temple Tour</title>
             </head>
 
@@ -640,8 +624,6 @@ export async function POST(request: Request) {
                 "
               >
 
-                <!-- HEADER -->
-
                 <div
                   style="
                     background:#1A365D;
@@ -660,21 +642,13 @@ export async function POST(request: Request) {
                     SBS <span style="color:#facc15;">TAXI</span>
                   </h1>
 
-                  <p
-                    style="
-                      margin:8px 0 0;
-                    "
-                  >
+                  <p style="margin:8px 0 0;">
                     New Temple Tour Booking
                   </p>
 
                 </div>
 
-                <div
-                  style="
-                    padding:28px;
-                  "
-                >
+                <div style="padding:28px;">
 
                   <h2
                     style="
@@ -702,9 +676,7 @@ export async function POST(request: Request) {
 
                   <p>
                     <strong>Passengers:</strong>
-                    ${escapeHtml(
-                      passengers || 1
-                    )}
+                    ${escapeHtml(passengers || 1)}
                   </p>
 
                   <p>
@@ -714,16 +686,12 @@ export async function POST(request: Request) {
 
                   <p>
                     <strong>Seater:</strong>
-                    ${escapeHtml(
-                      seats || "-"
-                    )}
+                    ${escapeHtml(seats || "-")}
                   </p>
 
                   <p>
                     <strong>Trip Package:</strong>
-                    ${escapeHtml(
-                      tripPackage || "-"
-                    )}
+                    ${escapeHtml(tripPackage || "-")}
                   </p>
 
                   <h2
@@ -733,8 +701,7 @@ export async function POST(request: Request) {
                       margin-top:28px;
                     "
                   >
-                    Selected Temples /
-                    Destinations
+                    Selected Temples / Destinations
                   </h2>
 
                   <table
@@ -748,12 +715,7 @@ export async function POST(request: Request) {
                   >
 
                     <thead>
-
-                      <tr
-                        style="
-                          background:#eff6ff;
-                        "
-                      >
+                      <tr style="background:#eff6ff;">
 
                         <th
                           style="
@@ -785,7 +747,6 @@ export async function POST(request: Request) {
                         </th>
 
                       </tr>
-
                     </thead>
 
                     <tbody>
@@ -819,10 +780,7 @@ export async function POST(request: Request) {
                       font-size:18px;
                     "
                   >
-                    <strong>
-                      Total Fare:
-                    </strong>
-
+                    <strong>Total Fare:</strong>
                     ${formatCurrency(totalFare)}
                   </div>
 
@@ -861,25 +819,6 @@ export async function POST(request: Request) {
 
     /* ============================================================
        NORMAL TAXI BOOKING
-       
-       Includes:
-       - Passenger Name
-       - People
-       - Babies
-       - Elderly
-       - Pickup
-       - Drop
-       - Trip Type
-       - Date
-       - Time
-       - Round Trip
-       - VEHICLE TYPE ✅
-       - Vehicle
-       - Model
-       - Seats
-       - Price
-       - Payment Method
-       - Preferences
     ============================================================ */
 
     if (
@@ -898,10 +837,6 @@ export async function POST(request: Request) {
         date,
         time,
         isRoundTrip,
-
-        /* ======================================================
-           VEHICLE INFORMATION
-        ====================================================== */
 
         vehicleType,
         vehicle,
@@ -999,10 +934,6 @@ export async function POST(request: Request) {
               "
             >
 
-              <!-- ==================================================
-                   MAIN CONTAINER
-              =================================================== -->
-
               <div
                 style="
                   max-width:720px;
@@ -1016,10 +947,6 @@ export async function POST(request: Request) {
                     rgba(15,23,42,.08);
                 "
               >
-
-                <!-- ==================================================
-                     HEADER
-                =================================================== -->
 
                 <div
                   style="
@@ -1038,11 +965,7 @@ export async function POST(request: Request) {
                     "
                   >
                     SBS
-                    <span
-                      style="
-                        color:#facc15;
-                      "
-                    >
+                    <span style="color:#facc15;">
                       TAXI
                     </span>
                   </h1>
@@ -1075,19 +998,7 @@ export async function POST(request: Request) {
 
                 </div>
 
-                <!-- ==================================================
-                     CONTENT
-                =================================================== -->
-
-                <div
-                  style="
-                    padding:28px;
-                  "
-                >
-
-                  <!-- =================================================
-                       BOOKING STATUS
-                  ================================================== -->
+                <div style="padding:28px;">
 
                   <div
                     style="
@@ -1123,10 +1034,6 @@ export async function POST(request: Request) {
 
                   </div>
 
-                  <!-- =================================================
-                       PASSENGER DETAILS
-                  ================================================== -->
-
                   <h2
                     style="
                       margin:0 0 15px;
@@ -1148,14 +1055,12 @@ export async function POST(request: Request) {
                   >
 
                     <tr>
-
                       <td
                         style="
                           padding:11px 0;
                           color:#64748b;
                           width:42%;
-                          border-bottom:
-                            1px solid #f1f5f9;
+                          border-bottom:1px solid #f1f5f9;
                         "
                       >
                         Passenger Name
@@ -1166,25 +1071,19 @@ export async function POST(request: Request) {
                           padding:11px 0;
                           font-weight:bold;
                           color:#0f172a;
-                          border-bottom:
-                            1px solid #f1f5f9;
+                          border-bottom:1px solid #f1f5f9;
                         "
                       >
-                        ${escapeHtml(
-                          passengerName
-                        )}
+                        ${escapeHtml(passengerName)}
                       </td>
-
                     </tr>
 
                     <tr>
-
                       <td
                         style="
                           padding:11px 0;
                           color:#64748b;
-                          border-bottom:
-                            1px solid #f1f5f9;
+                          border-bottom:1px solid #f1f5f9;
                         "
                       >
                         Total People
@@ -1194,25 +1093,19 @@ export async function POST(request: Request) {
                         style="
                           padding:11px 0;
                           font-weight:bold;
-                          border-bottom:
-                            1px solid #f1f5f9;
+                          border-bottom:1px solid #f1f5f9;
                         "
                       >
-                        ${escapeHtml(
-                          people || 1
-                        )}
+                        ${escapeHtml(people || 1)}
                       </td>
-
                     </tr>
 
                     <tr>
-
                       <td
                         style="
                           padding:11px 0;
                           color:#64748b;
-                          border-bottom:
-                            1px solid #f1f5f9;
+                          border-bottom:1px solid #f1f5f9;
                         "
                       >
                         Babies
@@ -1222,19 +1115,14 @@ export async function POST(request: Request) {
                         style="
                           padding:11px 0;
                           font-weight:bold;
-                          border-bottom:
-                            1px solid #f1f5f9;
+                          border-bottom:1px solid #f1f5f9;
                         "
                       >
-                        ${escapeHtml(
-                          babies || 0
-                        )}
+                        ${escapeHtml(babies || 0)}
                       </td>
-
                     </tr>
 
                     <tr>
-
                       <td
                         style="
                           padding:11px 0;
@@ -1250,18 +1138,11 @@ export async function POST(request: Request) {
                           font-weight:bold;
                         "
                       >
-                        ${escapeHtml(
-                          elderly || 0
-                        )}
+                        ${escapeHtml(elderly || 0)}
                       </td>
-
                     </tr>
 
                   </table>
-
-                  <!-- =================================================
-                       TRIP DETAILS
-                  ================================================== -->
 
                   <h2
                     style="
@@ -1284,14 +1165,12 @@ export async function POST(request: Request) {
                   >
 
                     <tr>
-
                       <td
                         style="
                           padding:11px 0;
                           color:#64748b;
                           width:42%;
-                          border-bottom:
-                            1px solid #f1f5f9;
+                          border-bottom:1px solid #f1f5f9;
                         "
                       >
                         Pickup Location
@@ -1301,23 +1180,19 @@ export async function POST(request: Request) {
                         style="
                           padding:11px 0;
                           font-weight:bold;
-                          border-bottom:
-                            1px solid #f1f5f9;
+                          border-bottom:1px solid #f1f5f9;
                         "
                       >
                         ${escapeHtml(pickup)}
                       </td>
-
                     </tr>
 
                     <tr>
-
                       <td
                         style="
                           padding:11px 0;
                           color:#64748b;
-                          border-bottom:
-                            1px solid #f1f5f9;
+                          border-bottom:1px solid #f1f5f9;
                         "
                       >
                         Drop Location
@@ -1327,23 +1202,19 @@ export async function POST(request: Request) {
                         style="
                           padding:11px 0;
                           font-weight:bold;
-                          border-bottom:
-                            1px solid #f1f5f9;
+                          border-bottom:1px solid #f1f5f9;
                         "
                       >
                         ${escapeHtml(drop)}
                       </td>
-
                     </tr>
 
                     <tr>
-
                       <td
                         style="
                           padding:11px 0;
                           color:#64748b;
-                          border-bottom:
-                            1px solid #f1f5f9;
+                          border-bottom:1px solid #f1f5f9;
                         "
                       >
                         Trip Type
@@ -1353,25 +1224,19 @@ export async function POST(request: Request) {
                         style="
                           padding:11px 0;
                           font-weight:bold;
-                          border-bottom:
-                            1px solid #f1f5f9;
+                          border-bottom:1px solid #f1f5f9;
                         "
                       >
-                        ${escapeHtml(
-                          tripType || "-"
-                        )}
+                        ${escapeHtml(tripType || "-")}
                       </td>
-
                     </tr>
 
                     <tr>
-
                       <td
                         style="
                           padding:11px 0;
                           color:#64748b;
-                          border-bottom:
-                            1px solid #f1f5f9;
+                          border-bottom:1px solid #f1f5f9;
                         "
                       >
                         Pickup Date
@@ -1381,23 +1246,19 @@ export async function POST(request: Request) {
                         style="
                           padding:11px 0;
                           font-weight:bold;
-                          border-bottom:
-                            1px solid #f1f5f9;
+                          border-bottom:1px solid #f1f5f9;
                         "
                       >
                         ${escapeHtml(date)}
                       </td>
-
                     </tr>
 
                     <tr>
-
                       <td
                         style="
                           padding:11px 0;
                           color:#64748b;
-                          border-bottom:
-                            1px solid #f1f5f9;
+                          border-bottom:1px solid #f1f5f9;
                         "
                       >
                         Pickup Time
@@ -1407,17 +1268,14 @@ export async function POST(request: Request) {
                         style="
                           padding:11px 0;
                           font-weight:bold;
-                          border-bottom:
-                            1px solid #f1f5f9;
+                          border-bottom:1px solid #f1f5f9;
                         "
                       >
                         ${escapeHtml(time)}
                       </td>
-
                     </tr>
 
                     <tr>
-
                       <td
                         style="
                           padding:11px 0;
@@ -1435,14 +1293,9 @@ export async function POST(request: Request) {
                       >
                         ${isRoundTrip ? "Yes" : "No"}
                       </td>
-
                     </tr>
 
                   </table>
-
-                  <!-- =================================================
-                       VEHICLE DETAILS
-                  ================================================== -->
 
                   <h2
                     style="
@@ -1468,22 +1321,16 @@ export async function POST(request: Request) {
                       width="100%"
                       cellpadding="0"
                       cellspacing="0"
-                      style="
-                        border-collapse:collapse;
-                      "
+                      style="border-collapse:collapse;"
                     >
 
-                      <!-- VEHICLE TYPE -->
-
                       <tr>
-
                         <td
                           style="
                             padding:12px 0;
                             color:#64748b;
                             width:42%;
-                            border-bottom:
-                              1px solid #e2e8f0;
+                            border-bottom:1px solid #e2e8f0;
                           "
                         >
                           Vehicle Type
@@ -1494,27 +1341,19 @@ export async function POST(request: Request) {
                             padding:12px 0;
                             font-weight:bold;
                             color:#1A365D;
-                            border-bottom:
-                              1px solid #e2e8f0;
+                            border-bottom:1px solid #e2e8f0;
                           "
                         >
-                          ${escapeHtml(
-                            vehicleType
-                          )}
+                          ${escapeHtml(vehicleType)}
                         </td>
-
                       </tr>
 
-                      <!-- VEHICLE -->
-
                       <tr>
-
                         <td
                           style="
                             padding:12px 0;
                             color:#64748b;
-                            border-bottom:
-                              1px solid #e2e8f0;
+                            border-bottom:1px solid #e2e8f0;
                           "
                         >
                           Vehicle
@@ -1524,27 +1363,19 @@ export async function POST(request: Request) {
                           style="
                             padding:12px 0;
                             font-weight:bold;
-                            border-bottom:
-                              1px solid #e2e8f0;
+                            border-bottom:1px solid #e2e8f0;
                           "
                         >
-                          ${escapeHtml(
-                            vehicle
-                          )}
+                          ${escapeHtml(vehicle)}
                         </td>
-
                       </tr>
 
-                      <!-- MODEL -->
-
                       <tr>
-
                         <td
                           style="
                             padding:12px 0;
                             color:#64748b;
-                            border-bottom:
-                              1px solid #e2e8f0;
+                            border-bottom:1px solid #e2e8f0;
                           "
                         >
                           Model
@@ -1554,27 +1385,19 @@ export async function POST(request: Request) {
                           style="
                             padding:12px 0;
                             font-weight:bold;
-                            border-bottom:
-                              1px solid #e2e8f0;
+                            border-bottom:1px solid #e2e8f0;
                           "
                         >
-                          ${escapeHtml(
-                            model || "-"
-                          )}
+                          ${escapeHtml(model || "-")}
                         </td>
-
                       </tr>
 
-                      <!-- SEATS -->
-
                       <tr>
-
                         <td
                           style="
                             padding:12px 0;
                             color:#64748b;
-                            border-bottom:
-                              1px solid #e2e8f0;
+                            border-bottom:1px solid #e2e8f0;
                           "
                         >
                           Seats
@@ -1584,21 +1407,14 @@ export async function POST(request: Request) {
                           style="
                             padding:12px 0;
                             font-weight:bold;
-                            border-bottom:
-                              1px solid #e2e8f0;
+                            border-bottom:1px solid #e2e8f0;
                           "
                         >
-                          ${escapeHtml(
-                            seats || "-"
-                          )}
+                          ${escapeHtml(seats || "-")}
                         </td>
-
                       </tr>
 
-                      <!-- PRICE -->
-
                       <tr>
-
                         <td
                           style="
                             padding:12px 0;
@@ -1615,20 +1431,13 @@ export async function POST(request: Request) {
                             color:#166534;
                           "
                         >
-                          ${escapeHtml(
-                            price || "-"
-                          )}
+                          ${escapeHtml(price || "-")}
                         </td>
-
                       </tr>
 
                     </table>
 
                   </div>
-
-                  <!-- =================================================
-                       PAYMENT METHOD
-                  ================================================== -->
 
                   <h2
                     style="
@@ -1651,14 +1460,8 @@ export async function POST(request: Request) {
                       margin-bottom:25px;
                     "
                   >
-                    ${escapeHtml(
-                      paymentMethod
-                    )}
+                    ${escapeHtml(paymentMethod)}
                   </div>
-
-                  <!-- =================================================
-                       PREFERENCES
-                  ================================================== -->
 
                   <h2
                     style="
@@ -1683,10 +1486,6 @@ export async function POST(request: Request) {
                     ${preferenceText}
                   </div>
 
-                  <!-- =================================================
-                       ACTION
-                  ================================================== -->
-
                   <div
                     style="
                       padding:18px;
@@ -1696,11 +1495,7 @@ export async function POST(request: Request) {
                     "
                   >
 
-                    <strong
-                      style="
-                        color:#9a3412;
-                      "
-                    >
+                    <strong style="color:#9a3412;">
                       Action Required
                     </strong>
 
@@ -1720,10 +1515,6 @@ export async function POST(request: Request) {
                   </div>
 
                 </div>
-
-                <!-- ==================================================
-                     FOOTER
-                =================================================== -->
 
                 <div
                   style="
@@ -1788,6 +1579,7 @@ export async function POST(request: Request) {
 
     /* ============================================================
        CONTACT FORM
+       MESSAGE IS OPTIONAL
     ============================================================ */
 
     const {
@@ -1802,6 +1594,17 @@ export async function POST(request: Request) {
 
     /* ==========================================================
        VALIDATION
+
+       REQUIRED:
+       - Name
+       - Phone
+       - Email
+       - Pickup
+       - Drop
+       - Subject
+
+       OPTIONAL:
+       - Message
     ========================================================== */
 
     if (
@@ -1810,8 +1613,7 @@ export async function POST(request: Request) {
       !email ||
       !pickup ||
       !drop ||
-      !subject ||
-      !message
+      !subject
     ) {
       return NextResponse.json(
         {
@@ -1822,6 +1624,16 @@ export async function POST(request: Request) {
         { status: 400 }
       );
     }
+
+    /* ==========================================================
+       OPTIONAL MESSAGE
+    ========================================================== */
+
+    const contactMessage =
+      message &&
+      String(message).trim()
+        ? escapeHtml(message)
+        : "No message provided.";
 
     /* ==========================================================
        SEND CONTACT EMAIL
@@ -1846,6 +1658,7 @@ export async function POST(request: Request) {
         <html>
 
           <head>
+
             <meta charset="UTF-8" />
 
             <meta
@@ -1856,6 +1669,7 @@ export async function POST(request: Request) {
             <title>
               SBS Taxi Enquiry
             </title>
+
           </head>
 
           <body
@@ -1988,7 +1802,7 @@ export async function POST(request: Request) {
                     line-height:1.6;
                   "
                 >
-                  ${escapeHtml(message)}
+                  ${contactMessage}
                 </div>
 
               </div>

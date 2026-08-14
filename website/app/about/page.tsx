@@ -12,7 +12,7 @@ export default function AboutPage() {
       <HeroSection />
       <BottomCTA />
 
-      <Features />
+      
 
       <section className="about-main-section">
         <div className="about-main-grid">

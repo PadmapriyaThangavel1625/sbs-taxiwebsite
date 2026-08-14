@@ -1,12 +1,19 @@
 "use client";
 
 import Image from "next/image";
+
 import {
   Users,
   Luggage,
   Snowflake,
-  CheckCircle2,
+  ArrowRight,
 } from "lucide-react";
+
+import { motion } from "framer-motion";
+
+/* =========================================================
+   TYPES
+========================================================= */
 
 export interface Fleet {
   name: string;
@@ -18,10 +25,11 @@ export interface Fleet {
   price: string;
 }
 
-interface Props extends Fleet {
-  onSelect: () => void;
-  isSelected: boolean;
-}
+interface Props extends Fleet {}
+
+/* =========================================================
+   COMPONENT
+========================================================= */
 
 export default function FleetCard({
   name,
@@ -31,54 +39,90 @@ export default function FleetCard({
   seat,
   bags,
   price,
-  onSelect,
-  isSelected,
 }: Props) {
   return (
-    <div
-      className={`
+    <motion.div
+      whileHover={{
+        y: -4,
+      }}
+      transition={{
+        duration: 0.25,
+        ease: "easeOut",
+      }}
+      className="
         flex
         h-full
         min-h-[390px]
         w-full
         flex-col
         justify-between
-        rounded-xl
+        overflow-hidden
+        rounded-2xl
         border
+        border-[var(--border)]
         bg-white
         p-4
         shadow-sm
-        transition-all
-        duration-200
-        hover:-translate-y-1
+        transition-shadow
+        duration-300
         hover:shadow-lg
-        ${
-          isSelected
-            ? "border-primary ring-2 ring-primary/30"
-            : "border-gray-200"
-        }
-      `}
+        sm:p-5
+      "
     >
-      {/* ================================
-          Top Section
-      ================================= */}
+      {/* =====================================================
+          TOP SECTION
+      ====================================================== */}
+
       <div>
-        {/* Fleet Name */}
+        {/* Vehicle Name */}
+
         <div className="flex items-center justify-between gap-2">
-          <h2 className="text-base font-bold text-heading">
+          <h2
+            className="
+              font-[family-name:var(--font-jakarta)]
+              text-base
+              font-bold
+              text-[var(--text-primary)]
+            "
+          >
             {name}
           </h2>
 
-          {isSelected && (
-            <CheckCircle2
-              size={20}
-              className="shrink-0 text-primary"
-            />
-          )}
+          <span
+            className="
+              rounded-full
+              bg-[var(--secondary)]
+              px-2.5
+              py-1
+              font-[family-name:var(--font-jakarta)]
+              text-[10px]
+              font-semibold
+              text-[var(--text-primary)]
+            "
+          >
+            {type}
+          </span>
         </div>
 
-        {/* Vehicle Image */}
-        <div className="relative mt-4 h-32 w-full sm:h-36">
+        {/* =================================================
+            VEHICLE IMAGE
+        ================================================== */}
+
+        <motion.div
+          whileHover={{
+            scale: 1.04,
+          }}
+          transition={{
+            duration: 0.4,
+          }}
+          className="
+            relative
+            mt-5
+            h-32
+            w-full
+            sm:h-36
+          "
+        >
           <Image
             src={image}
             alt={name}
@@ -88,112 +132,235 @@ export default function FleetCard({
               (max-width: 1024px) 50vw,
               33vw
             "
-            className="object-contain"
+            className="
+              object-contain
+              transition-transform
+              duration-500
+            "
           />
-        </div>
+        </motion.div>
 
-        {/* Vehicle Type */}
-        <h3 className="mt-3 font-bold text-heading">
+        {/* =================================================
+            VEHICLE TYPE
+        ================================================== */}
+
+        <h3
+          className="
+            mt-4
+            font-[family-name:var(--font-instrument)]
+            text-xl
+            font-normal
+            text-[var(--text-primary)]
+          "
+        >
           {type}
         </h3>
 
-        {/* Vehicle Description */}
-        <p className="mt-1 line-clamp-2 text-sm leading-5 text-muted">
+        {/* =================================================
+            VEHICLE DESCRIPTION
+        ================================================== */}
+
+        <p
+          className="
+            mt-1
+            line-clamp-2
+            font-[family-name:var(--font-jakarta)]
+            text-sm
+            leading-5
+            text-[var(--text-secondary)]
+          "
+        >
           {vehicles}
         </p>
       </div>
 
-      {/* ================================
-          Bottom Section
-      ================================= */}
+      {/* =====================================================
+          BOTTOM SECTION
+      ====================================================== */}
+
       <div>
-        {/* Features */}
+        {/* =================================================
+            FEATURES
+        ================================================== */}
+
         <div
           className="
-            mt-4
+            mt-5
             grid
             grid-cols-3
             gap-2
+            rounded-xl
+            border
+            border-[var(--border)]
+            bg-[var(--secondary-light)]
+            p-3
             text-center
-            text-xs
-            text-muted
-            sm:text-sm
           "
         >
           {/* Seats */}
-          <div className="flex flex-col items-center gap-1">
+
+          <div
+            className="
+              flex
+              flex-col
+              items-center
+              gap-1
+            "
+          >
             <Users
               size={18}
-              className="text-primary"
+              className="text-[var(--primary)]"
             />
 
-            <span>{seat}</span>
+            <span
+              className="
+                font-[family-name:var(--font-jakarta)]
+                text-[10px]
+                text-[var(--text-secondary)]
+                sm:text-xs
+              "
+            >
+              {seat}
+            </span>
           </div>
 
           {/* Bags */}
-          <div className="flex flex-col items-center gap-1">
+
+          <div
+            className="
+              flex
+              flex-col
+              items-center
+              gap-1
+            "
+          >
             <Luggage
               size={18}
-              className="text-primary"
+              className="text-[var(--primary)]"
             />
 
-            <span>{bags}</span>
+            <span
+              className="
+                font-[family-name:var(--font-jakarta)]
+                text-[10px]
+                text-[var(--text-secondary)]
+                sm:text-xs
+              "
+            >
+              {bags}
+            </span>
           </div>
 
           {/* AC */}
-          <div className="flex flex-col items-center gap-1">
+
+          <div
+            className="
+              flex
+              flex-col
+              items-center
+              gap-1
+            "
+          >
             <Snowflake
               size={18}
-              className="text-primary"
+              className="text-[var(--primary)]"
             />
 
-            <span>AC</span>
+            <span
+              className="
+                font-[family-name:var(--font-jakarta)]
+                text-[10px]
+                text-[var(--text-secondary)]
+                sm:text-xs
+              "
+            >
+              AC
+            </span>
           </div>
         </div>
 
-        {/* Price */}
-        <h2 className="mt-4 text-xl font-bold text-primary">
-          ₹{price}
-          <span className="text-sm font-normal text-muted">
-            {" "}
-            / km
-          </span>
-        </h2>
+        {/* =================================================
+            PRICE
+        ================================================== */}
 
-        {/* Button */}
+        <div className="mt-4">
+          <span
+            className="
+              font-[family-name:var(--font-jakarta)]
+              text-[10px]
+              text-[var(--text-secondary)]
+            "
+          >
+            Starting from
+          </span>
+
+          <h2
+            className="
+              mt-0.5
+              font-[family-name:var(--font-instrument)]
+              text-2xl
+              font-normal
+              text-[var(--primary)]
+            "
+          >
+            ₹{price}
+
+            <span
+              className="
+                font-[family-name:var(--font-jakarta)]
+                text-sm
+                font-normal
+                text-[var(--text-secondary)]
+              "
+            >
+              {" "}
+              / km
+            </span>
+          </h2>
+        </div>
+
+        {/* =================================================
+            VIEW DETAILS BUTTON
+        ================================================== */}
+
         <button
           type="button"
-          onClick={onSelect}
-          className={`
+          className="
+            group
             mt-3
             flex
             w-full
             items-center
             justify-center
             gap-2
-            rounded-lg
-            border
+            rounded-xl
+            bg-[var(--primary)]
             px-4
-            py-2
+            py-2.5
+            font-[family-name:var(--font-jakarta)]
+            text-sm
             font-semibold
+            text-[var(--text-primary)]
+            shadow-sm
             transition-all
-            duration-200
-            ${
-              isSelected
-                ? "border-primary bg-primary text-white"
-                : "border-primary text-primary hover:bg-primary hover:text-white"
-            }
-          `}
+            duration-300
+            hover:-translate-y-0.5
+            hover:bg-[var(--primary-dark)]
+            hover:shadow-md
+          "
         >
-          {isSelected && (
-            <CheckCircle2 size={18} />
-          )}
+          View Details
 
-          {isSelected
-            ? "Selected Details"
-            : "View Details"}
+          <ArrowRight
+            size={16}
+            className="
+              transition-transform
+              duration-300
+              group-hover:translate-x-1
+            "
+          />
         </button>
       </div>
-    </div>
+    </motion.div>
   );
 }

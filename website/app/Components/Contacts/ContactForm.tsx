@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useEffect, useRef, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import {
   AlertCircle,
   CarFront,
@@ -22,36 +22,45 @@ import {
 const MAX_MESSAGE_LENGTH = 1000;
 const REQUEST_TIMEOUT = 15000;
 
+/* ============================================================
+   INPUT STYLE
+============================================================ */
+
 const inputClassName = `
   w-full
   rounded-xl
   border
   border-[var(--border)]
-  bg-[var(--background)]
+  bg-white
   px-4
   py-3
   text-sm
-  text-[var(--text)]
+  text-[var(--text-secondary)]
   outline-none
-  placeholder:text-[var(--muted)]
+  placeholder:text-[var(--text-secondary)]
   transition-all
   duration-200
   focus:border-[var(--primary)]
-  focus:bg-white
   focus:ring-4
   focus:ring-[var(--primary)]/10
   disabled:cursor-not-allowed
   disabled:opacity-60
 `;
 
+/* ============================================================
+   LABEL STYLE
+============================================================ */
+
 const labelClassName = `
   mb-2
   flex
   items-center
   gap-1.5
+  font-[family-name:var(--font-jakarta)]
   text-xs
   font-semibold
-  text-[var(--text)]
+  tracking-wide
+  text-[var(--text-secondary)]
 `;
 
 /* ============================================================
@@ -76,8 +85,6 @@ interface ApiResponse {
 ============================================================ */
 
 export default function ContactForm() {
-  const formRef = useRef<HTMLFormElement>(null);
-
   const [loading, setLoading] = useState(false);
 
   const [status, setStatus] = useState<FormStatus>({
@@ -105,7 +112,7 @@ export default function ContactForm() {
   }, [status.message]);
 
   /* ==========================================================
-     STATUS HELPER
+     ERROR
   ========================================================== */
 
   function showError(message: string) {
@@ -116,6 +123,10 @@ export default function ContactForm() {
 
     setLoading(false);
   }
+
+  /* ==========================================================
+     SUCCESS
+  ========================================================== */
 
   function showSuccess(message: string) {
     setStatus({
@@ -144,9 +155,9 @@ export default function ContactForm() {
 
     setLoading(true);
 
-    /* ==========================================================
+    /* ========================================================
        FORM DATA
-    ========================================================== */
+    ======================================================== */
 
     const formData = new FormData(form);
 
@@ -154,12 +165,12 @@ export default function ContactForm() {
       formData.get("name") || ""
     ).trim();
 
-    const phone = String(
-      formData.get("phone") || ""
-    ).trim();
-
     const email = String(
       formData.get("email") || ""
+    ).trim();
+
+    const phone = String(
+      formData.get("phone") || ""
     ).trim();
 
     const pickup = String(
@@ -178,19 +189,31 @@ export default function ContactForm() {
       formData.get("subject") || ""
     ).trim();
 
+    /* Message is OPTIONAL */
+
     const message = String(
       formData.get("message") || ""
     ).trim();
 
-    /* ==========================================================
+    /* ========================================================
        VALIDATION
-    ========================================================== */
+    ======================================================== */
 
     /* NAME */
 
     if (name.length < 2) {
+      showError("Please enter a valid name.");
+      return;
+    }
+
+    /* EMAIL */
+
+    const emailRegex =
+      /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!emailRegex.test(email)) {
       showError(
-        "Please enter a valid name."
+        "Please enter a valid email address."
       );
       return;
     }
@@ -206,18 +229,6 @@ export default function ContactForm() {
     ) {
       showError(
         "Please enter a valid phone number."
-      );
-      return;
-    }
-
-    /* EMAIL */
-
-    const emailRegex =
-      /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-    if (!emailRegex.test(email)) {
-      showError(
-        "Please enter a valid email address."
       );
       return;
     }
@@ -240,7 +251,7 @@ export default function ContactForm() {
       return;
     }
 
-    /* VEHICLE TYPE */
+    /* VEHICLE */
 
     if (!vehicleType) {
       showError(
@@ -258,18 +269,10 @@ export default function ContactForm() {
       return;
     }
 
-    /* MESSAGE */
-
-    if (message.length < 10) {
-      showError(
-        "Please provide at least 10 characters in your message."
-      );
-      return;
-    }
+    /* MESSAGE OPTIONAL */
 
     if (
-      message.length >
-      MAX_MESSAGE_LENGTH
+      message.length > MAX_MESSAGE_LENGTH
     ) {
       showError(
         `Message cannot exceed ${MAX_MESSAGE_LENGTH} characters.`
@@ -277,14 +280,14 @@ export default function ContactForm() {
       return;
     }
 
-    /* ==========================================================
+    /* ========================================================
        REQUEST DATA
-    ========================================================== */
+    ======================================================== */
 
     const data = {
       name,
-      phone,
       email,
+      phone,
       pickup,
       drop,
       vehicleType,
@@ -292,9 +295,9 @@ export default function ContactForm() {
       message,
     };
 
-    /* ==========================================================
+    /* ========================================================
        ABORT CONTROLLER
-    ========================================================== */
+    ======================================================== */
 
     const controller =
       new AbortController();
@@ -303,9 +306,9 @@ export default function ContactForm() {
       controller.abort();
     }, REQUEST_TIMEOUT);
 
-    /* ==========================================================
-       SEND REQUEST
-    ========================================================== */
+    /* ========================================================
+       SEND
+    ======================================================== */
 
     try {
       const response = await fetch(
@@ -324,10 +327,6 @@ export default function ContactForm() {
         }
       );
 
-      /* ========================================================
-         PARSE RESPONSE
-      ======================================================== */
-
       let result: ApiResponse = {};
 
       try {
@@ -336,9 +335,9 @@ export default function ContactForm() {
         result = {};
       }
 
-      /* ========================================================
+      /* ======================================================
          SERVER ERROR
-      ======================================================== */
+      ====================================================== */
 
       if (!response.ok) {
         throw new Error(
@@ -348,9 +347,9 @@ export default function ContactForm() {
         );
       }
 
-      /* ========================================================
+      /* ======================================================
          API SUCCESS CHECK
-      ======================================================== */
+      ====================================================== */
 
       if (result.success === false) {
         throw new Error(
@@ -359,26 +358,22 @@ export default function ContactForm() {
         );
       }
 
-      /* ========================================================
+      /* ======================================================
          SUCCESS
-      ======================================================== */
+      ====================================================== */
 
       showSuccess(
         result.message ||
           "Your enquiry has been sent successfully. Our SBS Taxi team will contact you shortly."
       );
 
-      /* ========================================================
-         RESET FORM
-      ======================================================== */
+      /* ======================================================
+         RESET
+      ====================================================== */
 
       form.reset();
 
       setMessageLength(0);
-
-      /* ========================================================
-         SCROLL STATUS INTO VIEW
-      ======================================================== */
 
       window.setTimeout(() => {
         document
@@ -396,9 +391,9 @@ export default function ContactForm() {
         error
       );
 
-      /* ========================================================
-         TIMEOUT ERROR
-      ======================================================== */
+      /* ======================================================
+         TIMEOUT
+      ====================================================== */
 
       if (
         error instanceof DOMException &&
@@ -411,9 +406,9 @@ export default function ContactForm() {
         return;
       }
 
-      /* ========================================================
+      /* ======================================================
          NORMAL ERROR
-      ======================================================== */
+      ====================================================== */
 
       showError(
         error instanceof Error
@@ -435,386 +430,383 @@ export default function ContactForm() {
       aria-labelledby="contact-form-title"
       className="
         w-full
+        overflow-hidden
         rounded-3xl
         border
         border-[var(--border)]
         bg-white
-        p-5
         shadow-sm
-        sm:p-7
-        lg:p-8
       "
     >
       {/* =====================================================
-          HEADER
+          TOP LINE
       ====================================================== */}
 
-      <div className="mb-7">
-        
+      <div
+        className="
+          h-[3px]
+          w-full
+          bg-[var(--primary)]
+        "
+      />
 
-        <h2
-          id="contact-form-title"
-          className="
-            mt-3
-            font-[family-name:var(--font-instrument)]
-            text-2xl
-            font-normal
-            tracking-tight
-            text-[var(--text)]
-            sm:text-3xl
-          "
-        >
-          Send Us a Message
-        </h2>
-
-        <p
-          className="
-            mt-2
-            max-w-xl
-            text-sm
-            leading-6
-            text-[var(--muted)]
-          "
-        >
-          Have a question, booking request, or
-          feedback? Fill out the form below and
-          our SBS Taxi team will get back to you
-          shortly.
-        </p>
-      </div>
-
-      {/* =====================================================
-          FORM
-      ====================================================== */}
-
-      <form
-        ref={formRef}
-        onSubmit={handleSubmit}
-        noValidate
-        className="space-y-5"
-      >
-        {/* ===================================================
-            NAME + PHONE
-        ==================================================== */}
-
-        <div
-          className="
-            grid
-            grid-cols-1
-            gap-5
-            sm:grid-cols-2
-          "
-        >
-          {/* NAME */}
-
-          <div>
-            <label
-              htmlFor="name"
-              className={labelClassName}
-            >
-              <User
-                aria-hidden="true"
-                className="
-                  h-3.5
-                  w-3.5
-                  text-[var(--primary)]
-                "
-              />
-
-              Your Name
-
-              <span
-                aria-hidden="true"
-                className="text-[var(--primary)]"
-              >
-                *
-              </span>
-            </label>
-
-            <input
-              id="name"
-              name="name"
-              type="text"
-              placeholder="Enter your name"
-              required
-              minLength={2}
-              maxLength={80}
-              autoComplete="name"
-              disabled={loading}
-              className={inputClassName}
-            />
-          </div>
-
-          {/* PHONE */}
-
-          <div>
-            <label
-              htmlFor="phone"
-              className={labelClassName}
-            >
-              <Phone
-                aria-hidden="true"
-                className="
-                  h-3.5
-                  w-3.5
-                  text-[var(--primary)]
-                "
-              />
-
-              Phone Number
-
-              <span
-                aria-hidden="true"
-                className="text-[var(--primary)]"
-              >
-                *
-              </span>
-            </label>
-
-            <input
-              id="phone"
-              name="phone"
-              type="tel"
-              placeholder="+91 98435 44844"
-              required
-              maxLength={20}
-              inputMode="tel"
-              autoComplete="tel"
-              disabled={loading}
-              className={inputClassName}
-            />
-          </div>
-        </div>
+      <div className="p-5 sm:p-7 lg:p-8">
 
         {/* ===================================================
-            EMAIL
+            HEADER
         ==================================================== */}
 
-        <div>
-          <label
-            htmlFor="email"
-            className={labelClassName}
+        <div className="mb-7">
+
+          <h2
+            id="contact-form-title"
+            className="
+              font-[family-name:var(--font-instrument)]
+              text-2xl
+              font-normal
+              tracking-tight
+              text-[var(--text-secondary)]
+              sm:text-3xl
+            "
           >
-            <Mail
-              aria-hidden="true"
-              className="
-                h-3.5
-                w-3.5
-                text-[var(--primary)]
-              "
-            />
+            Send Us a Message
+          </h2>
 
-            Email Address
-
-            <span
-              aria-hidden="true"
-              className="text-[var(--primary)]"
-            >
-              *
-            </span>
-          </label>
-
-          <input
-            id="email"
-            name="email"
-            type="email"
-            placeholder="Enter your email address"
-            required
-            maxLength={120}
-            autoComplete="email"
-            disabled={loading}
-            className={inputClassName}
-          />
+          <p
+            className="
+              mt-2
+              max-w-xl
+              font-[family-name:var(--font-jakarta)]
+              text-sm
+              leading-6
+              text-[var(--text-secondary)]
+            "
+          >
+            Questions about bookings, pricing, or
+            our taxi services? We're here to help.
+          </p>
         </div>
 
         {/* ===================================================
-            PICKUP + DROP
+            FORM
         ==================================================== */}
 
-        <div
-          className="
-            grid
-            grid-cols-1
-            gap-5
-            sm:grid-cols-2
-          "
+        <form
+          onSubmit={handleSubmit}
+          noValidate
+          className="space-y-5"
         >
-          {/* PICKUP */}
 
-          <div>
-            <label
-              htmlFor="pickup"
-              className={labelClassName}
-            >
-              <MapPin
-                aria-hidden="true"
-                className="
-                  h-3.5
-                  w-3.5
-                  text-[var(--primary)]
-                "
-              />
+          {/* =================================================
+              NAME + EMAIL
+          ================================================= */}
 
-              Pickup Location
+          <div
+            className="
+              grid
+              grid-cols-1
+              gap-5
+              sm:grid-cols-2
+            "
+          >
 
-              <span
-                aria-hidden="true"
-                className="text-[var(--primary)]"
+            {/* NAME */}
+
+            <div>
+              <label
+                htmlFor="name"
+                className={labelClassName}
               >
-                *
-              </span>
-            </label>
+                <User
+                  className="
+                    h-3.5
+                    w-3.5
+                    text-[var(--primary)]
+                  "
+                />
 
-            <input
-              id="pickup"
-              name="pickup"
-              type="text"
-              placeholder="Enter pickup location"
-              required
-              minLength={2}
-              maxLength={200}
-              disabled={loading}
-              className={inputClassName}
-            />
-          </div>
+                Name
 
-          {/* DROP */}
+                <span className="text-[var(--primary)]">
+                  *
+                </span>
+              </label>
 
-          <div>
-            <label
-              htmlFor="drop"
-              className={labelClassName}
-            >
-              <MapPin
-                aria-hidden="true"
-                className="
-                  h-3.5
-                  w-3.5
-                  text-[var(--primary)]
-                "
-              />
-
-              Drop Location
-
-              <span
-                aria-hidden="true"
-                className="text-[var(--primary)]"
-              >
-                *
-              </span>
-            </label>
-
-            <input
-              id="drop"
-              name="drop"
-              type="text"
-              placeholder="Enter drop location"
-              required
-              minLength={2}
-              maxLength={200}
-              disabled={loading}
-              className={inputClassName}
-            />
-          </div>
-        </div>
-
-        {/* ===================================================
-            VEHICLE TYPE + SERVICE
-        ==================================================== */}
-
-        <div
-          className="
-            grid
-            grid-cols-1
-            gap-5
-            sm:grid-cols-2
-          "
-        >
-          {/* VEHICLE TYPE */}
-
-          <div>
-            <label
-              htmlFor="vehicleType"
-              className={labelClassName}
-            >
-              <CarFront
-                aria-hidden="true"
-                className="
-                  h-3.5
-                  w-3.5
-                  text-[var(--primary)]
-                "
-              />
-
-              Vehicle Type
-
-              <span
-                aria-hidden="true"
-                className="text-[var(--primary)]"
-              >
-                *
-              </span>
-            </label>
-
-            <div className="relative">
-              <select
-                id="vehicleType"
-                name="vehicleType"
+              <input
+                id="name"
+                name="name"
+                type="text"
+                placeholder="Your Name"
                 required
-                defaultValue=""
+                minLength={2}
+                maxLength={80}
+                autoComplete="name"
                 disabled={loading}
-                className={`
-                  ${inputClassName}
-                  appearance-none
-                  pr-11
-                `}
+                className={inputClassName}
+              />
+            </div>
+
+            {/* EMAIL */}
+
+            <div>
+              <label
+                htmlFor="email"
+                className={labelClassName}
               >
-                <option value="" disabled>
-                  Select vehicle type
-                </option>
+                <Mail
+                  className="
+                    h-3.5
+                    w-3.5
+                    text-[var(--primary)]
+                  "
+                />
 
-                <option value="SBS MINI">
-                  SBS MINI
-                </option>
+                Email Address
 
-                <option value="SBS SEDAN">
-                  SBS SEDAN
-                </option>
+                <span className="text-[var(--primary)]">
+                  *
+                </span>
+              </label>
 
-                <option value="SBS VAN">
-                  SBS VAN
-                </option>
-
-                <option value="SBS SUV">
-                  SBS SUV
-                </option>
-              </select>
-
-              <ChevronDown
-                aria-hidden="true"
-                className="
-                  pointer-events-none
-                  absolute
-                  right-4
-                  top-1/2
-                  h-4
-                  w-4
-                  -translate-y-1/2
-                  text-[var(--muted)]
-                "
+              <input
+                id="email"
+                name="email"
+                type="email"
+                placeholder="Your Email Address"
+                required
+                maxLength={120}
+                autoComplete="email"
+                disabled={loading}
+                className={inputClassName}
               />
             </div>
           </div>
 
-          {/* SERVICE */}
+          {/* =================================================
+              PHONE + PICKUP
+          ================================================= */}
+
+          <div
+            className="
+              grid
+              grid-cols-1
+              gap-5
+              sm:grid-cols-2
+            "
+          >
+
+            {/* PHONE */}
+
+            <div>
+              <label
+                htmlFor="phone"
+                className={labelClassName}
+              >
+                <Phone
+                  className="
+                    h-3.5
+                    w-3.5
+                    text-[var(--primary)]
+                  "
+                />
+
+                Phone Number
+
+                <span className="text-[var(--primary)]">
+                  *
+                </span>
+              </label>
+
+              <input
+                id="phone"
+                name="phone"
+                type="tel"
+                placeholder="Your Phone Number"
+                required
+                maxLength={20}
+                inputMode="tel"
+                autoComplete="tel"
+                disabled={loading}
+                className={inputClassName}
+              />
+            </div>
+
+            {/* PICKUP */}
+
+            <div>
+              <label
+                htmlFor="pickup"
+                className={labelClassName}
+              >
+                <MapPin
+                  className="
+                    h-3.5
+                    w-3.5
+                    text-[var(--primary)]
+                  "
+                />
+
+                Pickup Location
+
+                <span className="text-[var(--primary)]">
+                  *
+                </span>
+              </label>
+
+              <input
+                id="pickup"
+                name="pickup"
+                type="text"
+                placeholder="Pickup Location"
+                required
+                minLength={2}
+                maxLength={200}
+                disabled={loading}
+                className={inputClassName}
+              />
+            </div>
+          </div>
+
+          {/* =================================================
+              DROP + VEHICLE
+          ================================================= */}
+
+          <div
+            className="
+              grid
+              grid-cols-1
+              gap-5
+              sm:grid-cols-2
+            "
+          >
+
+            {/* DROP */}
+
+            <div>
+              <label
+                htmlFor="drop"
+                className={labelClassName}
+              >
+                <MapPin
+                  className="
+                    h-3.5
+                    w-3.5
+                    text-[var(--primary)]
+                  "
+                />
+
+                Drop Location
+
+                <span className="text-[var(--primary)]">
+                  *
+                </span>
+              </label>
+
+              <input
+                id="drop"
+                name="drop"
+                type="text"
+                placeholder="Drop Location"
+                required
+                minLength={2}
+                maxLength={200}
+                disabled={loading}
+                className={inputClassName}
+              />
+            </div>
+
+            {/* VEHICLE */}
+
+            <div>
+              <label
+                htmlFor="vehicleType"
+                className={labelClassName}
+              >
+                <CarFront
+                  className="
+                    h-3.5
+                    w-3.5
+                    text-[var(--primary)]
+                  "
+                />
+
+                Vehicle Type
+
+                <span className="text-[var(--primary)]">
+                  *
+                </span>
+              </label>
+
+              <div className="relative">
+
+                <select
+                  id="vehicleType"
+                  name="vehicleType"
+                  required
+                  defaultValue=""
+                  disabled={loading}
+                  className={`
+                    ${inputClassName}
+                    appearance-none
+                    pr-11
+                  `}
+                >
+                  <option value="" disabled>
+                    Select Vehicle
+                  </option>
+
+                  <option value="SBS MINI">
+                    SBS MINI
+                  </option>
+
+                  <option value="SBS SEDAN">
+                    SBS SEDAN
+                  </option>
+
+                  <option value="SBS VAN">
+                    SBS VAN
+                  </option>
+
+                  <option value="SBS SUV">
+                    SBS SUV
+                  </option>
+
+                  <option value="SBS MUV">
+                    SBS MUV
+                  </option>
+
+                  <option value="SBS MUV+">
+                    SBS MUV+
+                  </option>
+                </select>
+
+                <ChevronDown
+                  className="
+                    pointer-events-none
+                    absolute
+                    right-4
+                    top-1/2
+                    h-4
+                    w-4
+                    -translate-y-1/2
+                    text-[var(--text-secondary)]
+                  "
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* =================================================
+              SERVICE REQUIRED
+          ================================================= */}
 
           <div>
+
             <label
               htmlFor="subject"
               className={labelClassName}
             >
               <MessageSquare
-                aria-hidden="true"
                 className="
                   h-3.5
                   w-3.5
@@ -824,15 +816,13 @@ export default function ContactForm() {
 
               Service Required
 
-              <span
-                aria-hidden="true"
-                className="text-[var(--primary)]"
-              >
+              <span className="text-[var(--primary)]">
                 *
               </span>
             </label>
 
             <div className="relative">
+
               <select
                 id="subject"
                 name="subject"
@@ -846,7 +836,7 @@ export default function ContactForm() {
                 `}
               >
                 <option value="" disabled>
-                  Select a service
+                  Select Service
                 </option>
 
                 <option value="Local City Rides">
@@ -887,7 +877,6 @@ export default function ContactForm() {
               </select>
 
               <ChevronDown
-                aria-hidden="true"
                 className="
                   pointer-events-none
                   absolute
@@ -896,239 +885,229 @@ export default function ContactForm() {
                   h-4
                   w-4
                   -translate-y-1/2
-                  text-[var(--muted)]
+                  text-[var(--text-secondary)]
                 "
               />
             </div>
           </div>
-        </div>
 
-        {/* ===================================================
-            MESSAGE
-        ==================================================== */}
+          {/* =================================================
+              MESSAGE - OPTIONAL
+          ================================================= */}
 
-        <div>
-          <div
-            className="
-              mb-2
-              flex
-              items-center
-              justify-between
-            "
-          >
-            <label
-              htmlFor="message"
-              className={`
-                ${labelClassName}
-                mb-0
-              `}
+          <div>
+
+            <div
+              className="
+                mb-2
+                flex
+                items-center
+                justify-between
+              "
             >
-              <MessageSquare
-                aria-hidden="true"
-                className="
-                  h-3.5
-                  w-3.5
-                  text-[var(--primary)]
-                "
-              />
 
-              Message
+              <label
+                htmlFor="message"
+                className={`
+                  ${labelClassName}
+                  mb-0
+                `}
+              >
+                <MessageSquare
+                  className="
+                    h-3.5
+                    w-3.5
+                    text-[var(--primary)]
+                  "
+                />
+
+                Message
+
+                <span
+                  className="
+                    ml-1
+                    font-normal
+                    normal-case
+                    text-[var(--text-secondary)]
+                  "
+                >
+                  (Optional)
+                </span>
+              </label>
 
               <span
-                aria-hidden="true"
-                className="text-[var(--primary)]"
+                className="
+                  text-[10px]
+                  text-[var(--text-secondary)]
+                "
               >
-                *
+                {messageLength}/{MAX_MESSAGE_LENGTH}
               </span>
-            </label>
+            </div>
 
-            <span
+            <textarea
+              id="message"
+              name="message"
+              rows={5}
+              placeholder="Tell us about your travel requirements..."
+              maxLength={MAX_MESSAGE_LENGTH}
+              disabled={loading}
+              onChange={(e) =>
+                setMessageLength(
+                  e.target.value.length
+                )
+              }
               className={`
-                text-[10px]
+                ${inputClassName}
+                resize-none
+                leading-6
+              `}
+            />
+          </div>
+
+          {/* =================================================
+              STATUS
+          ================================================= */}
+
+          {status.message && (
+            <div
+              id="contact-form-status"
+              role="alert"
+              aria-live="polite"
+              className={`
+                flex
+                items-start
+                gap-3
+                rounded-xl
+                border
+                p-4
+                text-sm
                 ${
-                  messageLength >
-                  MAX_MESSAGE_LENGTH * 0.9
-                    ? "font-semibold text-orange-500"
-                    : "text-[var(--muted)]"
+                  status.type === "success"
+                    ? `
+                      border-green-200
+                      bg-green-50
+                      text-green-700
+                    `
+                    : `
+                      border-red-200
+                      bg-red-50
+                      text-red-700
+                    `
                 }
               `}
             >
-              {messageLength}/
-              {MAX_MESSAGE_LENGTH}
-            </span>
-          </div>
+              {status.type === "success" ? (
+                <CheckCircle2
+                  className="
+                    mt-0.5
+                    h-5
+                    w-5
+                    shrink-0
+                  "
+                />
+              ) : (
+                <AlertCircle
+                  className="
+                    mt-0.5
+                    h-5
+                    w-5
+                    shrink-0
+                  "
+                />
+              )}
 
-          <textarea
-            id="message"
-            name="message"
-            rows={5}
-            placeholder="Tell us about your travel requirements..."
-            required
-            minLength={10}
-            maxLength={MAX_MESSAGE_LENGTH}
-            disabled={loading}
-            onChange={(e) =>
-              setMessageLength(
-                e.target.value.length
-              )
-            }
-            className={`
-              ${inputClassName}
-              resize-none
-              leading-6
-            `}
-          />
-        </div>
-
-        {/* ===================================================
-            STATUS
-        ==================================================== */}
-
-        {status.message && (
-          <div
-            id="contact-form-status"
-            role="alert"
-            aria-live="polite"
-            className={`
-              flex
-              items-start
-              gap-3
-              rounded-xl
-              border
-              p-4
-              text-sm
-              ${
-                status.type === "success"
-                  ? `
-                    border-green-200
-                    bg-green-50
-                    text-green-700
-                  `
-                  : `
-                    border-red-200
-                    bg-red-50
-                    text-red-700
-                  `
-              }
-            `}
-          >
-            {status.type === "success" ? (
-              <CheckCircle2
-                aria-hidden="true"
-                className="
-                  mt-0.5
-                  h-5
-                  w-5
-                  shrink-0
-                "
-              />
-            ) : (
-              <AlertCircle
-                aria-hidden="true"
-                className="
-                  mt-0.5
-                  h-5
-                  w-5
-                  shrink-0
-                "
-              />
-            )}
-
-            <p className="leading-5">
-              {status.message}
-            </p>
-          </div>
-        )}
-
-        {/* ===================================================
-            SUBMIT BUTTON
-        ==================================================== */}
-
-        <button
-          type="submit"
-          disabled={loading}
-          aria-disabled={loading}
-          className="
-            group
-            flex
-            w-full
-            items-center
-            justify-center
-            gap-2.5
-            rounded-xl
-            bg-[var(--primary)]
-            px-5
-            py-3.5
-            text-sm
-            font-bold
-            text-white
-            shadow-md
-            shadow-[var(--primary)]/20
-            transition-all
-            duration-300
-            hover:-translate-y-0.5
-            hover:bg-[var(--primary-dark)]
-            hover:shadow-lg
-            focus:outline-none
-            focus:ring-4
-            focus:ring-[var(--primary)]/20
-            disabled:cursor-not-allowed
-            disabled:translate-y-0
-            disabled:opacity-60
-          "
-        >
-          {loading ? (
-            <>
-              <Loader2
-                aria-hidden="true"
-                className="
-                  h-4
-                  w-4
-                  animate-spin
-                "
-              />
-
-              <span>
-                Sending...
-              </span>
-            </>
-          ) : (
-            <>
-              <Send
-                aria-hidden="true"
-                className="
-                  h-4
-                  w-4
-                  transition-transform
-                  duration-300
-                  group-hover:translate-x-0.5
-                "
-              />
-
-              <span>
-                Send Message
-              </span>
-            </>
+              <p className="leading-5">
+                {status.message}
+              </p>
+            </div>
           )}
-        </button>
 
-        {/* ===================================================
-            PRIVACY NOTE
-        ==================================================== */}
+          {/* =================================================
+              SUBMIT
+          ================================================= */}
 
-        <p
-          className="
-            text-center
-            text-[11px]
-            leading-5
-            text-[var(--muted)]
-          "
-        >
-          We respect your privacy and will only
-          use your information to respond to your
-          enquiry.
-        </p>
-      </form>
+          <button
+            type="submit"
+            disabled={loading}
+            className="
+              group
+              flex
+              w-full
+              items-center
+              justify-center
+              gap-2.5
+              rounded-xl
+              bg-[var(--primary)]
+              px-5
+              py-3.5
+              font-[family-name:var(--font-jakarta)]
+              text-sm
+              font-bold
+              text-white
+              shadow-md
+              transition-all
+              duration-300
+              hover:-translate-y-0.5
+              hover:bg-[var(--primary-dark)]
+              hover:shadow-lg
+              focus:outline-none
+              focus:ring-4
+              focus:ring-[var(--primary)]/20
+              disabled:cursor-not-allowed
+              disabled:translate-y-0
+              disabled:opacity-60
+            "
+          >
+            {loading ? (
+              <>
+                <Loader2
+                  className="
+                    h-4
+                    w-4
+                    animate-spin
+                  "
+                />
+
+                Sending...
+              </>
+            ) : (
+              <>
+                <Send
+                  className="
+                    h-4
+                    w-4
+                    transition-transform
+                    duration-300
+                    group-hover:translate-x-0.5
+                  "
+                />
+
+                Send Message
+              </>
+            )}
+          </button>
+
+          {/* =================================================
+              PRIVACY
+          ================================================= */}
+
+          <p
+            className="
+              text-center
+              font-[family-name:var(--font-jakarta)]
+              text-[11px]
+              leading-5
+              text-[var(--text-secondary)]
+            "
+          >
+            We respect your privacy and will only
+            use your information to respond to your
+            enquiry.
+          </p>
+
+        </form>
+      </div>
     </section>
   );
 }

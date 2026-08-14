@@ -4,22 +4,39 @@ import Link from "next/link";
 import { Menu, X } from "lucide-react";
 import { useState } from "react";
 import { usePathname } from "next/navigation";
-import Logo from "@/app/Components/Logo";
 
-const navLinks = [
-  { name: "Home", href: "/" },
-  { name: "About Us", href: "/about" },
-  { name: "Services", href: "/services" },
-  { name: "Fleet", href: "/fleet" },
-  { name: "Pricing", href: "/pricing" },
-  { name: "Destinations", href: "/destinations" },
-  { name: "Offers", href: "/offers" },
-  { name: "Contact Us", href: "/contacts" },
-];
+import Logo from "@/app/Components/Logo";
+import { SBS_TAXI_CONFIG } from "@/config/sbsTaxiConfig";
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
+
+  /* =========================================================
+     CONFIG
+  ========================================================= */
+
+  const navbar = SBS_TAXI_CONFIG.navbar;
+
+  /* =========================================================
+     ACTIVE LINK
+  ========================================================= */
+
+  const isLinkActive = (href: string) => {
+    if (href === "/") {
+      return pathname === "/";
+    }
+
+    return pathname === href || pathname.startsWith(`${href}/`);
+  };
+
+  /* =========================================================
+     CLOSE MOBILE MENU
+  ========================================================= */
+
+  const closeMenu = () => {
+    setOpen(false);
+  };
 
   return (
     <header
@@ -34,7 +51,9 @@ export default function Navbar() {
         shadow-sm
       "
     >
-      {/* NAVBAR INNER */}
+      {/* =====================================================
+          NAVBAR CONTAINER
+      ====================================================== */}
 
       <div
         className="
@@ -49,69 +68,83 @@ export default function Navbar() {
           lg:px-8
         "
       >
-        {/* LOGO */}
+        {/* ===================================================
+            LOGO
+        ==================================================== */}
 
         <Link
           href="/"
-          className="flex shrink-0 items-center"
-          onClick={() => setOpen(false)}
+          onClick={closeMenu}
+          aria-label="SBS Taxi Home"
+          className="
+            flex
+            shrink-0
+            items-center
+          "
         >
           <Logo variant="footer" />
         </Link>
 
-        {/* DESKTOP NAVIGATION */}
+        {/* ===================================================
+            DESKTOP NAVIGATION
+        ==================================================== */}
 
-        <nav className="hidden items-center gap-6 lg:flex xl:gap-8">
-          {navLinks.map((link) => {
-            const isActive =
-              pathname === link.href ||
-              (link.href !== "/" &&
-                pathname.startsWith(`${link.href}/`));
+        <nav
+          aria-label="Main navigation"
+          className="
+            hidden
+            items-center
+            gap-6
+            lg:flex
+            xl:gap-8
+          "
+        >
+          {navbar.links.map((link) => {
+            const active = isLinkActive(link.href);
 
             return (
               <Link
-                key={link.name}
+                key={link.href}
                 href={link.href}
+                aria-current={active ? "page" : undefined}
                 className={`
                   group
                   relative
                   whitespace-nowrap
                   py-2
+                  font-[family-name:var(--font-jakarta)]
                   text-[15px]
-                  !text-white
                   font-medium
                   transition-colors
                   duration-200
                   ${
-                    isActive
-                      ? "text-[var(--secondary)]"
-                      : "text-white hover:text-[var(--secondary)]"
+                    active
+                      ? "!text-[var(--secondary)]"
+                      : "!text-[var(--text-primary)] !hover:text-[var(--secondary)]"
                   }
                 `}
-                style={{
-                  fontFamily: "var(--font-jakarta)",
-                }}
               >
                 {link.name}
 
-                {/* UNDERLINE */}
+                {/* =================================================
+                    ACTIVE / HOVER INDICATOR
+                ================================================== */}
 
                 <span
                   className={`
                     absolute
                     bottom-0
-                    left-0
+                    left-1/2
                     h-[2px]
-                    w-full
-                    origin-left
+                    -translate-x-1/2
                     rounded-full
                     bg-[var(--secondary)]
-                    transition-transform
-                    duration-200
+                    transition-all
+                    duration-300
                     ${
-                      isActive
-                        ? "scale-x-100"
-                        : "scale-x-0 group-hover:scale-x-100"
+                      active
+                        ? "w-full opacity-100"
+                        : "w-0 opacity-0 group-hover:w-full group-hover:opacity-100"
                     }
                   `}
                 />
@@ -119,16 +152,22 @@ export default function Navbar() {
             );
           })}
 
-          {/* BOOK A RIDE */}
+          {/* =================================================
+              DESKTOP BOOK A RIDE
+          ================================================== */}
 
           <Link
-            href="/booking"
+            href={navbar.booking.href}
             className="
               ml-1
+              inline-flex
+              items-center
+              justify-center
               rounded-lg
               bg-[var(--secondary)]
               px-5
               py-3
+              font-[family-name:var(--font-jakarta)]
               text-[14px]
               font-bold
               text-black
@@ -139,15 +178,14 @@ export default function Navbar() {
               hover:bg-[var(--secondary-dark)]
               hover:shadow-md
             "
-            style={{
-              fontFamily: "var(--font-jakarta)",
-            }}
           >
-            Book a Ride
+            {navbar.booking.name}
           </Link>
         </nav>
 
-        {/* MOBILE MENU BUTTON */}
+        {/* ===================================================
+            MOBILE MENU BUTTON
+        ==================================================== */}
 
         <button
           type="button"
@@ -159,15 +197,20 @@ export default function Navbar() {
             items-center
             justify-center
             rounded-lg
-            text-white
-            transition-all
+            text-[var(--text-primary)]
+            transition-colors
             duration-200
             hover:bg-white/10
             hover:text-[var(--secondary)]
             lg:hidden
           "
-          aria-label={open ? "Close menu" : "Open menu"}
+          aria-label={
+            open
+              ? "Close navigation menu"
+              : "Open navigation menu"
+          }
           aria-expanded={open}
+          aria-controls="mobile-navigation"
         >
           {open ? (
             <X className="h-6 w-6" />
@@ -177,9 +220,12 @@ export default function Navbar() {
         </button>
       </div>
 
-      {/* MOBILE MENU */}
+      {/* =====================================================
+          MOBILE NAVIGATION
+      ====================================================== */}
 
       <div
+        id="mobile-navigation"
         className={`
           absolute
           left-0
@@ -188,11 +234,10 @@ export default function Navbar() {
           overflow-hidden
           border-t
           border-white/10
-          bg-[var(--primary)]
-          !text-white
+          !bg-[var(--primary)]
           shadow-lg
           transition-all
-          duration-200
+          duration-300
           lg:hidden
           ${
             open
@@ -201,49 +246,60 @@ export default function Navbar() {
           }
         `}
       >
-        <div className="mx-auto max-w-7xl px-4 py-3 sm:px-6">
-          {/* MOBILE LINKS */}
+        <div
+          className="
+            mx-auto
+            max-w-7xl
+            px-4
+            py-3
+            sm:px-6
+          "
+        >
+          {/* =================================================
+              MOBILE LINKS
+          ================================================== */}
 
-          <div className="flex flex-col">
-            {navLinks.map((link) => {
-              const isActive =
-                pathname === link.href ||
-                (link.href !== "/" &&
-                  pathname.startsWith(`${link.href}/`));
+          <nav
+            aria-label="Mobile navigation"
+            className="flex flex-col"
+          >
+            {navbar.links.map((link) => {
+              const active = isLinkActive(link.href);
 
               return (
                 <Link
-                  key={link.name}
+                  key={link.href}
                   href={link.href}
-                  onClick={() => setOpen(false)}
+                  onClick={closeMenu}
+                  aria-current={active ? "page" : undefined}
                   className={`
                     border-b
                     border-white/10
                     py-3.5
+                    font-[family-name:var(--font-jakarta)]
                     text-sm
                     transition-colors
                     duration-200
                     ${
-                      isActive
-                        ? "font-bold text-[var(--secondary)]"
-                        : "font-medium text-white hover:text-[var(--secondary)]"
+                      active
+                        ? "font-bold !text-[var(--secondary)]"
+                        : "font-medium !text-[var(--text-primary)] !hover:text-[var(--secondary)]"
                     }
                   `}
-                  style={{
-                    fontFamily: "var(--font-jakarta)",
-                  }}
                 >
                   {link.name}
                 </Link>
               );
             })}
-          </div>
+          </nav>
 
-          {/* MOBILE BOOK BUTTON */}
+          {/* =================================================
+              MOBILE BOOK A RIDE
+          ================================================== */}
 
           <Link
-            href="/booking"
-            onClick={() => setOpen(false)}
+            href={navbar.booking.href}
+            onClick={closeMenu}
             className="
               mt-4
               flex
@@ -254,18 +310,19 @@ export default function Navbar() {
               bg-[var(--secondary)]
               px-5
               py-3
+              font-[family-name:var(--font-jakarta)]
               text-sm
               font-bold
               text-black
+              shadow-sm
               transition-all
               duration-200
+              hover:-translate-y-0.5
               hover:bg-[var(--secondary-dark)]
+              hover:shadow-md
             "
-            style={{
-              fontFamily: "var(--font-jakarta)",
-            }}
           >
-            Book a Ride
+            {navbar.booking.name}
           </Link>
         </div>
       </div>

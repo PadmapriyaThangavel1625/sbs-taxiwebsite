@@ -13,12 +13,12 @@ export default function OffersPage() {
       <OffersHero />
       <BottomCTA />
 
-      <section className="container-custom py-8 sm:py-10 lg:py-12">
+      <section className="container-custom py-8  !px-2 sm:py-10 lg:py-12">
         <ExclusiveOffers />
 
-        <AppDownload />
+    
 
-        <FeaturesBar />
+        
       </section>
 
     </main>

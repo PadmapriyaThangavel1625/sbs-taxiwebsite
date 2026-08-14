@@ -18,9 +18,10 @@
   --secondary-light: #FDE047;
 
   /* Text */
-  --text-primary: #111827;
-  --text-secondary: #6B7280;
-  --text-muted: #9CA3AF;
+  --text-primary: #ffffff;
+  --text-secondary: #000000;
+  --text-third: #e9f2fd;
+  --text-muted: #b3a9a9;
 
   /* Neutral Colors */
   --white: #FFFFFF;

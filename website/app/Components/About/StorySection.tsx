@@ -1,16 +1,17 @@
-
 "use client";
 
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
+import { SBS_TAXI_CONFIG } from "@/config/sbsTaxiConfig";
 
 export default function StorySection() {
   return (
     <section className="w-full py-12 sm:py-16 lg:py-20">
       <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-2 lg:gap-16">
+
           {/* Left Content */}
           <motion.div
             initial={{ opacity: 0, x: -40 }}
@@ -27,20 +28,20 @@ export default function StorySection() {
                 font-[family-name:var(--font-instrument)]
                 text-3xl
                 font-normal
-                text-[var(--text)]
+                text-[var(--text-secondary)]
+                !mb-6
                 md:text-4xl
               "
             >
               Our Story
             </h2>
-
             <div
               className="
                 space-y-4
                 font-[family-name:var(--font-jakarta)]
                 text-base
                 leading-relaxed
-                text-[var(--muted)]
+                text-[var(--text-secondary)]
               "
             >
               <p>
@@ -67,14 +68,14 @@ export default function StorySection() {
                 inline-flex
                 items-center
                 rounded-xl
-                bg-[var(--primary)]
+                bg-[var(--secondary)]
                 px-6
                 py-3
                 font-[family-name:var(--font-jakarta)]
-                !text-white
+                !text-[var(--text-secondary)]
                 transition-all
                 duration-300
-                hover:bg-[var(--primary-dark)]
+                hover:bg-[var(--secondary-dark)]
                 hover:shadow-lg
               "
             >
@@ -95,37 +96,38 @@ export default function StorySection() {
 
           {/* Right Image */}
           <motion.div
-  initial={{ opacity: 0, x: 40, scale: 0.97 }}
-  whileInView={{ opacity: 1, x: 0, scale: 1 }}
-  viewport={{ once: true, amount: 0.2 }}
-  transition={{
-    duration: 0.8,
-    ease: [0.22, 1, 0.36, 1],
-  }}
-  className="
-    relative
-    w-full
-    aspect-[1536/910]
-    overflow-hidden
-    rounded-2xl
-    shadow-lg
-    bg-slate-100
-  "
->
-  <Image
-    src="/images/offers.webp"
-    alt="SBS Taxi Drivers Team"
-    fill
-    priority
-    sizes="(max-width: 1024px) 100vw, 50vw"
-    className="
-      object-contain
-      transition-transform
-      duration-700
-      hover:scale-105
-    "
-  />
-</motion.div>
+            initial={{ opacity: 0, x: 40, scale: 0.97 }}
+            whileInView={{ opacity: 1, x: 0, scale: 1 }}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{
+              duration: 0.8,
+              ease: [0.22, 1, 0.36, 1],
+            }}
+            className="
+              relative
+              w-full
+              aspect-[1536/910]
+              overflow-hidden
+              rounded-2xl
+              shadow-lg
+              bg-slate-100
+            "
+          >
+            <Image
+                src={SBS_TAXI_CONFIG.story.image}
+                alt={SBS_TAXI_CONFIG.story.imageAlt}
+                fill
+                priority
+                sizes="(max-width: 1024px) 100vw, 50vw"
+                className="
+                  object-contain
+                  transition-transform
+                  duration-700
+                  hover:scale-105
+                "
+              />
+          </motion.div>
+
         </div>
       </div>
     </section>

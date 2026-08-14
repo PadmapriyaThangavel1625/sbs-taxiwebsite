@@ -9,8 +9,52 @@ import {
   MapPin,
   Tag,
 } from "lucide-react";
+import { usePathname } from "next/navigation";
+
+const items = [
+  {
+    name: "Home",
+    href: "/",
+    icon: Home,
+  },
+  {
+    name: "Services",
+    href: "/services",
+    icon: BriefcaseBusiness,
+  },
+  {
+    name: "Fleet",
+    href: "/fleet",
+    icon: CarFront,
+  },
+  {
+    name: "Pricing",
+    href: "/pricing",
+    icon: IndianRupee,
+  },
+  {
+    name: "Destinations",
+    href: "/destinations",
+    icon: MapPin,
+  },
+  {
+    name: "Offers",
+    href: "/offers",
+    icon: Tag,
+  },
+];
 
 export default function BottomBar() {
+  const pathname = usePathname();
+
+  const isActive = (href: string) => {
+    if (href === "/") {
+      return pathname === "/";
+    }
+
+    return pathname === href || pathname.startsWith(`${href}/`);
+  };
+
   return (
     <nav
       className="
@@ -22,8 +66,8 @@ export default function BottomBar() {
         border-t
         border-white/10
         bg-[var(--primary)]
-        md:hidden
         font-[var(--font-jakarta)]
+        md:hidden
       "
     >
       <div
@@ -35,245 +79,103 @@ export default function BottomBar() {
           bg-[var(--primary)]
         "
       >
-        {/* HOME */}
-        <Link
-          href="/"
-          className="
-            group
-            flex
-            flex-col
-            items-center
-            justify-center
-            gap-1
-            !text-white
-            transition-colors
-            duration-200
-            hover:text-[var(--secondary)]
-            active:text-[var(--secondary)]
-          "
-        >
-          <Home
-            className="
-              h-5
-              w-5
-              transition-colors
-              duration-200
-              group-hover:text-[var(--secondary)]
-            "
-          />
+        {items.map((item) => {
+          const Icon = item.icon;
+          const active = isActive(item.href);
 
-          <span
-            className="
-              text-[10px]
-              font-medium
-              transition-colors
-              duration-200
-              group-hover:text-[var(--secondary)]
-            "
-          >
-            Home
-          </span>
-        </Link>
+          return (
+            <Link
+              key={item.href}
+              href={item.href}
+              aria-current={active ? "page" : undefined}
+              className={`
+                group
+                relative
+                flex
+                flex-col
+                items-center
+                justify-center
+                gap-1
+                transition-colors
+                duration-200
+                ${
+                  active
+                    ? "text-[var(--secondary)]"
+                    : "text-[var(--text-primary)] hover:text-[var(--secondary)]"
+                }
+              `}
+            >
+              {/* =================================================
+                  ACTIVE TOP INDICATOR
+              ================================================== */}
 
-        {/* SERVICES */}
-        <Link
-          href="/services"
-          className="
-            group
-            flex
-            flex-col
-            items-center
-            justify-center
-            gap-1
-            !text-white
-            transition-colors
-            duration-200
-            hover:text-[var(--secondary)]
-            active:text-[var(--secondary)]
-          "
-        >
-          <BriefcaseBusiness
-            className="
-              h-5
-              w-5
-              transition-colors
-              duration-200
-              group-hover:text-[var(--secondary)]
-            "
-          />
+              <span
+                className={`
+                  absolute
+                  -top-[1px]
+                  left-1/2
+                  h-[3px]
+                  -translate-x-1/2
+                  rounded-b-full
+                  bg-[var(--secondary)]
+                  transition-all
+                  duration-300
+                  ${
+                    active
+                      ? "w-12 opacity-100"
+                      : "w-0 opacity-0"
+                  }
+                `}
+              />
 
-          <span
-            className="
-              text-[10px]
-              font-medium
-              transition-colors
-              duration-200
-              group-hover:text-[var(--secondary)]
-            "
-          >
-            Services
-          </span>
-        </Link>
+              {/* =================================================
+                  ICON
+              ================================================== */}
 
-        {/* FLEET */}
-        <Link
-          href="/fleet"
-          className="
-            group
-            flex
-            flex-col
-            items-center
-            justify-center
-            gap-1
-            !text-white
-            transition-colors
-            duration-200
-            hover:text-[var(--secondary)]
-            active:text-[var(--secondary)]
-          "
-        >
-          <CarFront
-            className="
-              h-5
-              w-5
-              transition-colors
-              duration-200
-              group-hover:text-[var(--secondary)]
-            "
-          />
+              <Icon
+                className={`
+                  h-5
+                  w-5
+                  transition-all
+                  duration-200
 
-          <span
-            className="
-              text-[10px]
-              font-medium
-              transition-colors
-              duration-200
-              group-hover:text-[var(--secondary)]
-            "
-          >
-            Fleet
-          </span>
-        </Link>
+                  sm:h-[21px]
+                  sm:w-[21px]
 
-        {/* PRICING */}
-        <Link
-          href="/pricing"
-          className="
-            group
-            flex
-            flex-col
-            items-center
-            justify-center
-            gap-1
-            !text-white
-            transition-colors
-            duration-200
-            hover:text-[var(--secondary)]
-            active:text-[var(--secondary)]
-          "
-        >
-          <IndianRupee
-            className="
-              h-5
-              w-5
-              transition-colors
-              duration-200
-              group-hover:text-[var(--secondary)]
-            "
-          />
+                  ${
+                    active
+                      ? "scale-110 text-[var(--secondary)]"
+                      : "text-[var(--text-primary)] group-hover:scale-110 group-hover:text-[var(--secondary)]"
+                  }
+                `}
+                strokeWidth={active ? 2.2 : 1.9}
+              />
 
-          <span
-            className="
-              text-[10px]
-              font-medium
-              transition-colors
-              duration-200
-              group-hover:text-[var(--secondary)]
-            "
-          >
-            Pricing
-          </span>
-        </Link>
+              {/* =================================================
+                  LABEL
+              ================================================== */}
 
-        {/* DESTINATIONS */}
-        <Link
-          href="/destinations"
-          className="
-            group
-            flex
-            flex-col
-            items-center
-            justify-center
-            gap-1
-            !text-white
-            transition-colors
-            duration-200
-            hover:text-[var(--secondary)]
-            active:text-[var(--secondary)]
-          "
-        >
-          <MapPin
-            className="
-              h-5
-              w-5
-              transition-colors
-              duration-200
-              group-hover:text-[var(--secondary)]
-            "
-          />
+              <span
+                className={`
+                  text-[10px]
+                  leading-none
+                  transition-colors
+                  duration-200
 
-          <span
-            className="
-              text-[10px]
-              font-medium
-              transition-colors
-              duration-200
-              group-hover:text-[var(--secondary)]
-            "
-          >
-            Destinations
-          </span>
-        </Link>
+                  sm:text-[10px]
 
-        {/* OFFERS */}
-        <Link
-          href="/offers"
-          className="
-            group
-            flex
-            flex-col
-            items-center
-            justify-center
-            gap-1
-            !text-white
-            transition-colors
-            duration-200
-            hover:text-[var(--secondary)]
-            active:text-[var(--secondary)]
-          "
-        >
-          <Tag
-            className="
-              h-5
-              w-5
-              transition-colors
-              duration-200
-              group-hover:text-[var(--secondary)]
-            "
-          />
-
-          <span
-            className="
-              text-[10px]
-              font-medium
-              transition-colors
-              duration-200
-              group-hover:text-[var(--secondary)]
-            "
-          >
-            Offers
-          </span>
-        </Link>
+                  ${
+                    active
+                      ? "font-bold text-[var(--secondary)]"
+                      : "font-medium text-[var(--text-primary)] group-hover:text-[var(--secondary)]"
+                  }
+                `}
+              >
+                {item.name}
+              </span>
+            </Link>
+          );
+        })}
       </div>
     </nav>
   );

@@ -1,3 +1,4 @@
+"use client";
 
 import {
   Users,
@@ -6,6 +7,7 @@ import {
   Star,
   Lightbulb,
 } from "lucide-react";
+import { motion, type Variants, type Easing } from "framer-motion";
 
 const values = [
   {
@@ -35,6 +37,37 @@ const values = [
   },
 ];
 
+const customEase: Easing = [0.22, 1, 0.36, 1];
+
+const containerVariants: Variants = {
+  hidden: {
+    opacity: 0,
+  },
+  show: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.12,
+    },
+  },
+};
+
+const cardVariants: Variants = {
+  hidden: {
+    opacity: 0,
+    y: 40,
+    scale: 0.95,
+  },
+  show: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: {
+      duration: 0.6,
+      ease: customEase,
+    },
+  },
+};
+
 export default function Values() {
   return (
     <section
@@ -54,7 +87,25 @@ export default function Values() {
         "
       >
         {/* Heading */}
-        <div className="text-center">
+        <motion.div
+          initial={{
+            opacity: 0,
+            y: 25,
+          }}
+          whileInView={{
+            opacity: 1,
+            y: 0,
+          }}
+          viewport={{
+            once: true,
+            amount: 0.3,
+          }}
+          transition={{
+            duration: 0.7,
+            ease: customEase,
+          }}
+          className="text-center"
+        >
           <h2
             className="
               font-[family-name:var(--font-instrument)]
@@ -66,17 +117,36 @@ export default function Values() {
           >
             Our Values
           </h2>
-        </div>
+        </motion.div>
 
         {/* Values Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="show"
+          viewport={{
+            once: true,
+            amount: 0.2,
+          }}
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6"
+        >
           {values.map((val, idx) => {
             const Icon = val.icon;
 
             return (
-              <div
+              <motion.div
                 key={idx}
+                variants={cardVariants}
+                whileHover={{
+                  y: -6,
+                  scale: 1.02,
+                  transition: {
+                    duration: 0.25,
+                    ease: "easeOut",
+                  },
+                }}
                 className="
+                  group
                   bg-white
                   p-6
                   rounded-2xl
@@ -86,50 +156,118 @@ export default function Values() {
                   items-center
                   text-center
                   space-y-4
-                  hover:shadow-md
+                  hover:shadow-xl
                   transition-shadow
+                  duration-300
                 "
               >
                 {/* Icon */}
-                <div
+                <motion.div
+                  initial={{
+                    opacity: 0,
+                    scale: 0.5,
+                    rotate: -10,
+                  }}
+                  whileInView={{
+                    opacity: 1,
+                    scale: 1,
+                    rotate: 0,
+                  }}
+                  viewport={{
+                    once: true,
+                    amount: 0.3,
+                  }}
+                  transition={{
+                    type: "spring",
+                    stiffness: 220,
+                    damping: 14,
+                    delay: 0.2,
+                  }}
+                  whileHover={{
+                    scale: 1.1,
+                    rotate: 4,
+                    transition: {
+                      type: "spring",
+                      stiffness: 300,
+                      damping: 12,
+                    },
+                  }}
                   className="
                     w-12 h-12
                     rounded-full
-                    bg-[var(--primary-light)]
-                    text-[var(--secondary)]
+                    bg-[var(--secondary)]
+                    text-[var(--primary)]
                     flex items-center justify-center
+                    shadow-sm
+                    group-hover:shadow-md
+                    transition-shadow
+                    duration-300
                   "
                 >
                   <Icon className="w-6 h-6" />
-                </div>
+                </motion.div>
 
                 {/* Title */}
-                <h3
+                <motion.h3
+                  initial={{
+                    opacity: 0,
+                    y: 10,
+                  }}
+                  whileInView={{
+                    opacity: 1,
+                    y: 0,
+                  }}
+                  viewport={{
+                    once: true,
+                    amount: 0.3,
+                  }}
+                  transition={{
+                    duration: 0.4,
+                    delay: 0.3,
+                    ease: customEase,
+                  }}
                   className="
                     font-[family-name:var(--font-instrument)]
                     font-normal
-                    text-[var(--text)]
+                    text-[var(--text-primary)]
                     text-base
                   "
                 >
                   {val.title}
-                </h3>
+                </motion.h3>
 
                 {/* Description */}
-                <p
+                <motion.p
+                  initial={{
+                    opacity: 0,
+                    y: 10,
+                  }}
+                  whileInView={{
+                    opacity: 1,
+                    y: 0,
+                  }}
+                  viewport={{
+                    once: true,
+                    amount: 0.3,
+                  }}
+                  transition={{
+                    duration: 0.4,
+                    delay: 0.4,
+                    ease: customEase,
+                  }}
                   className="
                     font-[family-name:var(--font-jakarta)]
-                    text-[var(--muted)]
+                    text-[var(--text-secondary)]
                     text-xs
                     leading-relaxed
                   "
                 >
                   {val.description}
-                </p>
-              </div>
+                </motion.p>
+              </motion.div>
             );
           })}
-        </div>
+        </motion.div>
       </div>
     </section>
   );

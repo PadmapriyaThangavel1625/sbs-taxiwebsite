@@ -52,11 +52,6 @@ export default function Page() {
           BENEFITS
           Same left/right alignment as Navbar
       ====================================================== */}
-      <section className="w-full px-4 sm:px-6 lg:px-8">
-        <div className="mx-auto w-full max-w-7xl">
-          <BenefitsBar />
-        </div>
-      </section>
 
       {/* =====================================================
           BOTTOM CTA

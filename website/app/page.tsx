@@ -1,22 +1,43 @@
 import HeroSection from "@/app/Components/Home/HeroSection";
-import TrustBadges from "@/app/Components/Home/TrustBadges";
+
 import FleetSection from "@/app/Components/Home/FleetSection";
 import TaxiGallery from "@/app/Components/Home/TaxiGallery";
 import BottomCTA from "./Components/BottomCTA";
 
 export default function Home() {
   return (
-    <main style={{ fontFamily: "var(--font-jakarta)" }}>
-      {/* ================= HERO ================= */}
-      <HeroSection />
-      <BottomCTA />
+    <main
+      className="
+        w-full
+        pb-[90px]
+        md:pb-0
+      "
+      style={{
+        fontFamily: "var(--font-jakarta)",
+      }}
+    >
+      {/* HERO */}
+      <section className="relative z-10 w-full">
+        <HeroSection />
+      </section>
 
-      {/* ================= TRUST BADGES ================= */}
-      <TrustBadges />
+      {/* BOTTOM CTA */}
+      <section className="relative z-20 w-full">
+        <BottomCTA />
+      </section>
 
-      {/* ================= FLEET ================= */}
-      <FleetSection />
-      <TaxiGallery />
+      {/* TRUST BADGES */}
+    
+
+      {/* FLEET */}
+      <section className="relative z-10 w-full">
+        <FleetSection />
+      </section>
+
+      {/* GALLERY */}
+      <section className="relative z-10 w-full">
+        <TaxiGallery />
+      </section>
     </main>
   );
 }

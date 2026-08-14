@@ -19,7 +19,7 @@ export default function ServicesPage() {
       {/* Services */}
       <section className="section-bg py-8 sm:py-10 lg:py-12">
         <div className="container-custom">
-          <ServicesGrid />
+          
           <SBSTaxiOverview />
           <DriverCTA />
 

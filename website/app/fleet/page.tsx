@@ -14,17 +14,18 @@ export default function FleetPage() {
       <BottomCTA />
 
       {/* Benefits */}
-      <section className="section-bg py-6 sm:py-8 lg:py-10">
-        <div className="container-custom">
-          <BenefitsBar />
-        </div>
-      </section>
+      
 
       {/* Fleet */}
       <FleetSection />
 
       {/* Offers */}
       <OffersBanner />
+      <section className="section-bg py-6 sm:py-8 lg:py-10">
+        <div className="container-custom">
+          <BenefitsBar />
+        </div>
+      </section>
     </main>
   );
 }

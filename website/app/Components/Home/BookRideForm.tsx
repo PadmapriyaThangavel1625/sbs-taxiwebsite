@@ -1,7 +1,6 @@
-
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import Logo from "../Logo";
 import {
@@ -16,12 +15,41 @@ import {
 export default function BookRideForm() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [pickup, setPickup] = useState("");
+
+  // Default pickup location
+  const [pickup, setPickup] = useState("SBS Technologies");
+
   const [drop, setDrop] = useState("");
+
+  // Date & time
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
-  const [vehicle, setVehicle] = useState("");
+
+  // Default vehicle
+  const [vehicle, setVehicle] = useState("SBS Mini");
+
   const [sending, setSending] = useState(false);
+
+  // Get today's date and current time
+  useEffect(() => {
+    const now = new Date();
+
+    // Today's date
+    const today = [
+      now.getFullYear(),
+      String(now.getMonth() + 1).padStart(2, "0"),
+      String(now.getDate()).padStart(2, "0"),
+    ].join("-");
+
+    // Current time
+    const currentTime = [
+      String(now.getHours()).padStart(2, "0"),
+      String(now.getMinutes()).padStart(2, "0"),
+    ].join(":");
+
+    setDate(today);
+    setTime(currentTime);
+  }, []);
 
   const handleBookRide = async () => {
     if (
@@ -66,13 +94,35 @@ export default function BookRideForm() {
 
       toast.success("🎉 Booking request sent successfully!");
 
+      // Reset customer details
       setName("");
       setEmail("");
-      setPickup("");
+
+      // Restore default pickup
+      setPickup("SBS Technologies");
+
+      // Clear drop
       setDrop("");
-      setDate("");
-      setTime("");
-      setVehicle("");
+
+      // Restore today's date and current time
+      const now = new Date();
+
+      const today = [
+        now.getFullYear(),
+        String(now.getMonth() + 1).padStart(2, "0"),
+        String(now.getDate()).padStart(2, "0"),
+      ].join("-");
+
+      const currentTime = [
+        String(now.getHours()).padStart(2, "0"),
+        String(now.getMinutes()).padStart(2, "0"),
+      ].join(":");
+
+      setDate(today);
+      setTime(currentTime);
+
+      // Restore default vehicle
+      setVehicle("SBS Mini");
     } catch (error) {
       console.error("Booking error:", error);
 
@@ -91,7 +141,6 @@ export default function BookRideForm() {
       {/* Header */}
       <div className="bg-primary px-5 py-5 text-white sm:px-6">
         <Logo variant="footer" />
-        
 
         <p className="mt-1 text-xs !text-white/80 sm:text-sm">
           Enter your trip details to book a taxi.
@@ -294,7 +343,6 @@ export default function BookRideForm() {
               onChange={(e) => setVehicle(e.target.value)}
               className="w-full min-w-0 appearance-none bg-transparent text-sm text-[var(--text)] outline-none"
             >
-              <option value="">Choose your vehicle</option>
               <option value="SBS Mini">SBS Mini</option>
               <option value="SBS Sedan">SBS Sedan</option>
               <option value="SBS Van">SBS Van</option>

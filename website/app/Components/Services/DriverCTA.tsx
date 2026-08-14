@@ -108,15 +108,15 @@ export default function DriverCTA() {
             <div className="p-6 sm:p-8">
 
               {/* MAIN MESSAGE */}
-              <div className="rounded-2xl bg-[var(--primary-light)] p-5">
-                <h4 className="text-xl font-extrabold text-[var(--primary)] sm:text-2xl">
+              <div className="rounded-2xl bg-[var(--primary)] p-5">
+                <h4 className="text-xl font-extrabold !text-[var(--text-primary)] sm:text-2xl">
                   SBS Taxi is hiring Drivers in{" "}
                   <span className="text-[var(--secondary)]">
                     ERODE!
                   </span>
                 </h4>
 
-                <p className="mt-3 text-sm leading-6 text-slate-600 sm:text-base">
+                <p className="mt-3 text-sm leading-6 !text-[var(--text-primary)] sm:text-base">
                   Start earning with a trusted fleet partner.
                 </p>
               </div>
@@ -387,11 +387,11 @@ export default function DriverCTA() {
                     SBS Taxi
                   </p>
 
-                  <h3 className="mt-1 text-3xl font-extrabold !text-white sm:text-4xl">
+                  <h3 className="mt-1 text-3xl font-extrabold !text-[var(--text-primary)] sm:text-4xl">
                     Driver Documents
                   </h3>
 
-                  <p className="mt-2 text-sm text-blue-100">
+                  <p className="mt-2 text-sm text-[var(--text-primary)] sm:text-base">
                     Your Documents. Our Trust. Better Rides Together.
                   </p>
 
@@ -616,11 +616,11 @@ export default function DriverCTA() {
 
 
               {/* DRIVER DECLARATION */}
-              <div className="mt-8 rounded-2xl bg-[var(--primary-light)] p-5">
+              <div className="mt-8 rounded-2xl bg-[var(--primary)] p-5">
 
                 <div className="flex items-center gap-3">
 
-                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--primary)] text-white">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--secondary)] text-[var(--primary)]">
                     <ShieldCheck className="h-5 w-5" />
                   </div>
 

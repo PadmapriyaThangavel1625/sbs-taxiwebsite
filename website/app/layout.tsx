@@ -1,6 +1,8 @@
-
 import type { Metadata } from "next";
-import { Plus_Jakarta_Sans, Instrument_Serif } from "next/font/google";
+import {
+  Plus_Jakarta_Sans,
+  Instrument_Serif,
+} from "next/font/google";
 
 import "leaflet/dist/leaflet.css";
 import "./globals.css";
@@ -13,11 +15,10 @@ import Footer from "@/app/Components/Footer";
 import LimitedOffer from "@/app/Components/Home/LimitedOffer";
 import BottomBar from "@/app/Components/BottomBar";
 import ChatBox from "@/app/Components/ChatBox";
-import MapSection from "@/app/Components/MapSection";
 
-/* =========================
+/* =========================================================
    FONTS
-========================= */
+========================================================= */
 
 const jakarta = Plus_Jakarta_Sans({
   variable: "--font-jakarta",
@@ -32,9 +33,9 @@ const instrumentSerif = Instrument_Serif({
   display: "swap",
 });
 
-/* =========================
+/* =========================================================
    METADATA
-========================= */
+========================================================= */
 
 export const metadata: Metadata = {
   title: "SBS TAXI - Safe. Reliable. Anytime.",
@@ -42,9 +43,9 @@ export const metadata: Metadata = {
     "SBS Taxi - One Brand. One Fare. One Trusted Service.",
 };
 
-/* =========================
+/* =========================================================
    ROOT LAYOUT
-========================= */
+========================================================= */
 
 export default function RootLayout({
   children,
@@ -56,37 +57,53 @@ export default function RootLayout({
       <body
         className={`${jakarta.variable} ${instrumentSerif.variable}`}
       >
-        {/* ================= HEADER ================= */}
+        {/* ===================================================
+            HEADER
+        ==================================================== */}
 
         <div className="sticky top-0 z-[100] w-full">
+          {/* PROMOTIONAL BAR */}
+
           <PromotionalTopBar />
+
+          {/* NAVBAR */}
+
           <Navbar />
         </div>
 
-        {/* ================= PAGE CONTENT ================= */}
+        {/* ===================================================
+            PAGE CONTENT
+        ==================================================== */}
 
         <main>{children}</main>
 
-        {/* ================= LIMITED OFFER ================= */}
+        {/* ===================================================
+            LIMITED OFFER
+        ==================================================== */}
 
         <LimitedOffer />
 
-        {/* ================= CHAT BOX ================= */}
+        {/* ===================================================
+            CHAT BOX
+        ==================================================== */}
 
         <ChatBox />
 
-        {/* ================= BOTTOM BAR ================= */}
+        {/* ===================================================
+            BOTTOM BAR
+        ==================================================== */}
 
         <BottomBar />
 
-        {/* ================= MAP ================= */}
-
-       
-        {/* ================= FOOTER ================= */}
+        {/* ===================================================
+            FOOTER
+        ==================================================== */}
 
         <Footer />
 
-        {/* ================= TOAST ================= */}
+        {/* ===================================================
+            TOAST
+        ==================================================== */}
 
         <Toaster
           position="top-right"
@@ -94,12 +111,14 @@ export default function RootLayout({
           gutter={10}
           toastOptions={{
             duration: 3000,
+
             style: {
               background: "#ffffff",
               color: "#111827",
               borderRadius: "10px",
               border: "1px solid #e5e7eb",
-              boxShadow: "0 8px 24px rgba(0,0,0,0.12)",
+              boxShadow:
+                "0 8px 24px rgba(0,0,0,0.12)",
             },
 
             success: {

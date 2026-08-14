@@ -2,15 +2,15 @@
 
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import { SBS_TAXI_CONFIG } from "@/config/sbsTaxiConfig";
 
 const images = [
-  
-  "/images/service.webp",
-  "/images/fleet.webp",
-  "/images/destination.webp",
-  "/images/offers.webp",
-  "/images/airport.webp",
-  "/images/corporate.webp",
+  SBS_TAXI_CONFIG.images.service,
+  SBS_TAXI_CONFIG.images.fleet,
+  SBS_TAXI_CONFIG.images.destination,
+  SBS_TAXI_CONFIG.images.offers,
+  SBS_TAXI_CONFIG.images.airport,
+  SBS_TAXI_CONFIG.images.corporate,
 ];
 
 export default function TaxiGallery() {
@@ -88,10 +88,8 @@ export default function TaxiGallery() {
                   alt={`SBS Taxi Gallery ${index + 1}`}
                   fill
                   priority={index === 0}
-                  sizes="100vw"
-                  className="
-                    object-cover
-                  "
+                  sizes="(max-width: 640px) 100vw, 1280px"
+                  className="object-cover"
                 />
               </div>
             ))}
@@ -108,10 +106,11 @@ export default function TaxiGallery() {
           <div className="absolute bottom-5 left-1/2 z-10 flex -translate-x-1/2 gap-2">
             {images.map((_, index) => (
               <button
-                key={index}
+                key={`gallery-dot-${index}`}
                 type="button"
                 onClick={() => setCurrent(index)}
                 aria-label={`Go to image ${index + 1}`}
+                aria-current={index === current}
                 className={`h-2.5 rounded-full transition-all duration-300 ${
                   index === current
                     ? "w-8 bg-yellow-400"

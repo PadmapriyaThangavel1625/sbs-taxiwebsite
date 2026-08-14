@@ -81,7 +81,7 @@ export default function BenefitsBar() {
           overflow-hidden
           rounded-xl
           border
-          !bg-[var(--secondary)]
+          !bg-[var(--primary)]
           shadow-sm
           divide-y
           sm:grid-cols-2
@@ -131,8 +131,8 @@ export default function BenefitsBar() {
                   rounded-full
                   border
                   border-primary-light
-                  bg-primary-light
-                  text-[var(--secondary)]
+                  !bg-[var(--secondary)]
+                  text-[var(--primary)]
                 "
               >
                 <Icon size={26} />
@@ -140,11 +140,11 @@ export default function BenefitsBar() {
 
               {/* Text */}
               <div className="min-w-0">
-                <h3 className="text-sm font-bold text-heading">
+                <h3 className="text-sm font-bold !text-[var(--text-primary)]">
                   {item.title}
                 </h3>
 
-                <p className="mt-1 text-xs leading-5 text-muted">
+                <p className="mt-1 text-xs leading-5 !text-[var(--text-primary)]">
                   {item.desc}
                 </p>
               </div>

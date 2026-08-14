@@ -1,79 +1,24 @@
 "use client";
 
-import { useState } from "react";
-import { motion, Variants } from "framer-motion";
-import Image from "next/image";
-import Link from "next/link";
+import { motion, Variants, Easing } from "framer-motion";
 
-import {
-  Users,
-  Luggage,
-  Snowflake,
-} from "lucide-react";
+import { SBS_TAXI_CONFIG } from "@/config/sbsTaxiConfig";
 
 import FleetCard, { Fleet } from "./FleetCard";
 
-const cars: Fleet[] = [
-  {
-    name: "SBS MINI",
-    type: "Hatchback",
-    vehicles: "Maruti Suzuki Baleno, Toyota Glanza, Wagon R",
-    image: "/vehicle/mini.png",
-    seat: "4 Seats",
-    bags: "2 Bags",
-    price: "12",
-  },
-  {
-    name: "SBS SEDAN",
-    type: "Sedan",
-    vehicles: "Maruti Suzuki Dzire, Hyundai Aura, Xpres-T EV",
-    image: "/vehicle/sedan.png",
-    seat: "4 Seats",
-    bags: "3 Bags",
-    price: "12.50",
-  },
-  {
-    name: "SBS VAN",
-    type: "Van",
-    vehicles: "Maruti Suzuki Eeco",
-    image: "/vehicle/van.png",
-    seat: "6 Seats",
-    bags: "4 Bags",
-    price: "14",
-  },
-  {
-    name: "SBS SUV",
-    type: "SUV",
-    vehicles: "Mahindra Xylo, Chevrolet Tavera",
-    image: "/vehicle/suv.png",
-    seat: "6 Seats",
-    bags: "4 Bags",
-    price: "17",
-  },
-  {
-    name: "SBS MUV",
-    type: "MUV",
-    vehicles: "Maruti Suzuki Ertiga, Kia Carens",
-    image: "/vehicle/muv.png",
-    seat: "7 Seats",
-    bags: "5 Bags",
-    price: "18",
-  },
-  {
-    name: "SBS MUV+",
-    type: "MUV+",
-    vehicles: "Toyota Innova",
-    image: "/vehicle/muv-plus.png",
-    seat: "7 Seats",
-    bags: "5 Bags",
-    price: "19",
-  },
-];
+/* =========================================================
+   ANIMATION
+========================================================= */
+
+const customEase: Easing = [0.22, 1, 0.36, 1];
 
 const containerVariants: Variants = {
-  hidden: {},
+  hidden: {
+    opacity: 0,
+  },
 
   show: {
+    opacity: 1,
     transition: {
       staggerChildren: 0.12,
     },
@@ -84,30 +29,115 @@ const cardVariants: Variants = {
   hidden: {
     opacity: 0,
     y: 40,
+    scale: 0.97,
   },
 
   show: {
     opacity: 1,
     y: 0,
+    scale: 1,
     transition: {
       duration: 0.6,
-      ease: "easeOut",
+      ease: customEase,
     },
   },
 };
 
+/* =========================================================
+   FLEET DATA FROM CONFIG
+========================================================= */
+
+const cars: Fleet[] = [
+  {
+    name: SBS_TAXI_CONFIG.vehicles.mini.name,
+    type: SBS_TAXI_CONFIG.vehicles.mini.type,
+    vehicles: SBS_TAXI_CONFIG.vehicles.mini.description,
+    image: SBS_TAXI_CONFIG.vehicles.mini.image,
+    seat: `${SBS_TAXI_CONFIG.vehicles.mini.seats} Seats`,
+    bags: `${SBS_TAXI_CONFIG.vehicles.mini.luggage} Bags`,
+    price: SBS_TAXI_CONFIG.vehicles.mini.price,
+  },
+
+  {
+    name: SBS_TAXI_CONFIG.vehicles.sedan.name,
+    type: SBS_TAXI_CONFIG.vehicles.sedan.type,
+    vehicles: SBS_TAXI_CONFIG.vehicles.sedan.description,
+    image: SBS_TAXI_CONFIG.vehicles.sedan.image,
+    seat: `${SBS_TAXI_CONFIG.vehicles.sedan.seats} Seats`,
+    bags: `${SBS_TAXI_CONFIG.vehicles.sedan.luggage} Bags`,
+    price: SBS_TAXI_CONFIG.vehicles.sedan.price,
+  },
+
+  {
+    name: SBS_TAXI_CONFIG.vehicles.van.name,
+    type: SBS_TAXI_CONFIG.vehicles.van.type,
+    vehicles: SBS_TAXI_CONFIG.vehicles.van.description,
+    image: SBS_TAXI_CONFIG.vehicles.van.image,
+    seat: `${SBS_TAXI_CONFIG.vehicles.van.seats} Seats`,
+    bags: `${SBS_TAXI_CONFIG.vehicles.van.luggage} Bags`,
+    price: SBS_TAXI_CONFIG.vehicles.van.price,
+  },
+
+  {
+    name: SBS_TAXI_CONFIG.vehicles.suv.name,
+    type: SBS_TAXI_CONFIG.vehicles.suv.type,
+    vehicles: SBS_TAXI_CONFIG.vehicles.suv.description,
+    image: SBS_TAXI_CONFIG.vehicles.suv.image,
+    seat: `${SBS_TAXI_CONFIG.vehicles.suv.seats} Seats`,
+    bags: `${SBS_TAXI_CONFIG.vehicles.suv.luggage} Bags`,
+    price: SBS_TAXI_CONFIG.vehicles.suv.price,
+  },
+
+  {
+    name: SBS_TAXI_CONFIG.vehicles.muv.name,
+    type: SBS_TAXI_CONFIG.vehicles.muv.type,
+    vehicles: SBS_TAXI_CONFIG.vehicles.muv.description,
+    image: SBS_TAXI_CONFIG.vehicles.muv.image,
+    seat: `${SBS_TAXI_CONFIG.vehicles.muv.seats} Seats`,
+    bags: `${SBS_TAXI_CONFIG.vehicles.muv.luggage} Bags`,
+    price: SBS_TAXI_CONFIG.vehicles.muv.price,
+  },
+
+  {
+    name: SBS_TAXI_CONFIG.vehicles.muvPlus.name,
+    type: SBS_TAXI_CONFIG.vehicles.muvPlus.type,
+    vehicles: SBS_TAXI_CONFIG.vehicles.muvPlus.description,
+    image: SBS_TAXI_CONFIG.vehicles.muvPlus.image,
+    seat: `${SBS_TAXI_CONFIG.vehicles.muvPlus.seats} Seats`,
+    bags: `${SBS_TAXI_CONFIG.vehicles.muvPlus.luggage} Bags`,
+    price: SBS_TAXI_CONFIG.vehicles.muvPlus.price,
+  },
+];
+
+/* =========================================================
+   COMPONENT
+========================================================= */
+
 export default function FleetSection() {
-  const [selectedCar, setSelectedCar] = useState<Fleet>(cars[0]);
-
   return (
-    <section className="section-bg py-10 sm:py-12 lg:py-16">
+    <section
+      className="
+        section-bg
+        w-full
+        py-10
+        sm:py-12
+        lg:py-16
+      "
+    >
+      <div
+        className="
+          mx-auto
+          w-full
+          max-w-7xl
+          px-4
+          sm:px-6
+          lg:px-8
+        "
+      >
+        {/* =====================================================
+            HEADING
+        ====================================================== */}
 
-      {/* Same container alignment as Navbar */}
-      <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
-
-        {/* =====================================
-            Heading
-        ====================================== */}
         <motion.div
           initial={{
             opacity: 0,
@@ -119,25 +149,53 @@ export default function FleetSection() {
           }}
           viewport={{
             once: true,
+            amount: 0.3,
           }}
           transition={{
             duration: 0.7,
+            ease: customEase,
           }}
-          className="mb-10 text-center sm:mb-12 lg:mb-14"
+          className="
+            mb-10
+            text-center
+            sm:mb-12
+            lg:mb-14
+          "
         >
-          <h2 className="text-2xl font-bold text-heading sm:text-3xl lg:text-4xl">
+          <h2
+            className="
+              font-[family-name:var(--font-instrument)]
+              text-2xl
+              font-normal
+              text-[var(--text-primary)]
+              sm:text-3xl
+              lg:text-4xl
+            "
+          >
             Choose Your Perfect Ride
           </h2>
 
-          <p className="mx-auto mt-3 max-w-2xl text-sm leading-6 text-muted sm:text-base">
-            Choose from our well-maintained fleet of hatchbacks, sedans,
-            SUVs, vans and premium vehicles for every journey.
+          <p
+            className="
+              mx-auto
+              mt-3
+              max-w-2xl
+              font-[family-name:var(--font-jakarta)]
+              text-sm
+              leading-6
+              text-[var(--text-secondary)]
+              sm:text-base
+            "
+          >
+            Choose from our well-maintained fleet of hatchbacks,
+            sedans, SUVs, vans and premium vehicles for every journey.
           </p>
         </motion.div>
 
-        {/* =====================================
-            Fleet Cards
-        ====================================== */}
+        {/* =====================================================
+            FLEET CARDS
+        ====================================================== */}
+
         <motion.div
           variants={containerVariants}
           initial="hidden"
@@ -162,247 +220,18 @@ export default function FleetSection() {
               variants={cardVariants}
               className="h-full"
               whileHover={{
-                y: -10,
-                transition: {
-                  duration: 0.25,
-                },
+                y: -8,
+                scale: 1.01,
+              }}
+              transition={{
+                duration: 0.25,
+                ease: "easeOut",
               }}
             >
-              <FleetCard
-                {...car}
-                onSelect={() => setSelectedCar(car)}
-                isSelected={selectedCar.name === car.name}
-              />
+              <FleetCard {...car} />
             </motion.div>
           ))}
         </motion.div>
-
-        {/* =====================================
-            Selected Vehicle Details
-        ====================================== */}
-        <motion.div
-          key={selectedCar.name}
-          initial={{
-            opacity: 0,
-            y: 30,
-          }}
-          animate={{
-            opacity: 1,
-            y: 0,
-          }}
-          transition={{
-            duration: 0.5,
-          }}
-          className="
-            mt-10
-            overflow-hidden
-            rounded-2xl
-            border
-            border-gray-200
-            bg-white
-            p-5
-            shadow-md
-            sm:mt-12
-            sm:p-6
-            lg:mt-16
-            lg:p-8
-          "
-        >
-          <div className="grid grid-cols-1 items-center gap-8 lg:grid-cols-2">
-
-            {/* =====================================
-                Vehicle Image
-            ====================================== */}
-            <div
-              className="
-                relative
-                h-56
-                w-full
-                overflow-hidden
-                rounded-xl
-                border
-                border-primary-light
-                bg-primary-light
-                p-4
-                sm:h-64
-              "
-            >
-              <Image
-                src={selectedCar.image}
-                alt={selectedCar.name}
-                fill
-                sizes="(max-width: 1024px) 100vw, 50vw"
-                className="object-contain"
-              />
-            </div>
-
-            {/* =====================================
-                Vehicle Details
-            ====================================== */}
-            <div>
-
-              {/* Label */}
-              <span
-                className="
-                  inline-flex
-                  rounded-full
-                  bg-primary
-                  px-3
-                  py-1
-                  text-xs
-                  font-semibold
-                  text-white
-                "
-              >
-                {selectedCar.name} Details
-              </span>
-
-              {/* Type */}
-              <h3 className="mt-3 text-2xl font-bold text-heading sm:text-3xl">
-                {selectedCar.type}
-              </h3>
-
-              {/* Models */}
-              <p className="mt-2 text-sm leading-6 text-muted sm:text-base">
-                <strong className="text-heading">
-                  Fleet Models:
-                </strong>{" "}
-                {selectedCar.vehicles}
-              </p>
-
-              {/* =====================================
-                  Features
-              ====================================== */}
-              <div
-                className="
-                  my-5
-                  grid
-                  grid-cols-1
-                  gap-3
-                  rounded-xl
-                  border
-                  border-primary-light
-                  bg-primary-light
-                  p-4
-                  sm:my-6
-                  sm:grid-cols-3
-                  sm:gap-4
-                "
-              >
-
-                {/* Capacity */}
-                <div className="flex flex-col items-center !text-[var(--secondary)] justify-center">
-                  <Users
-                    size={22}
-                    className="text-primary !text-[var(--secondary)]"
-                  />
-
-                  <p className="mt-1 text-xs text-muted">
-                    Capacity
-                  </p>
-
-                  <p className="mt-1 text-sm font-semibold !text-[var(--secondary)]">
-                    {selectedCar.seat}
-                  </p>
-                </div>
-
-                {/* Luggage */}
-                <div className="flex flex-col items-center !text-[var(--secondary)] justify-center">
-                  <Luggage
-                    size={22}
-                    className="!text-[var(--secondary)]"
-                  />
-
-                  <p className="mt-1 text-xs text-muted">
-                    Luggage
-                  </p>
-
-                  <p className="mt-1 text-sm font-semibold !text-[var(--secondary)]">
-                    {selectedCar.bags}
-                  </p>
-                </div>
-
-                {/* Climate */}
-                <div className="flex flex-col items-center !text-[var(--secondary)] justify-center">
-                  <Snowflake
-                    size={22}
-                    className="!text-[var(--secondary)]"
-                  />
-
-                  <p className="mt-1 text-xs text-muted">
-                    Climate
-                  </p>
-
-                  <p className="mt-1 text-sm font-semibold !text-[var(--secondary)]">
-                    AC Included
-                  </p>
-                </div>
-
-              </div>
-
-              {/* =====================================
-                  Fare + Button
-              ====================================== */}
-              <div
-                className="
-                  flex
-                  flex-col
-                  gap-4
-                  border-t
-                  border-gray-200
-                  pt-4
-                  sm:flex-row
-                  sm:items-center
-                  sm:justify-between
-                "
-              >
-
-                {/* Fare */}
-                <div>
-                  <p className="text-xs text-muted">
-                    Fare Rate
-                  </p>
-
-                  <h2 className="mt-1 text-2xl font-bold text-primary">
-                    ₹{selectedCar.price}
-
-                    <span className="text-sm font-normal text-muted">
-                      {" "}
-                      / km
-                    </span>
-                  </h2>
-                </div>
-
-                {/* Book Button */}
-                <Link
-                  href="/booking"
-                  className="
-                    inline-flex
-                    w-full
-                    items-center
-                    justify-center
-                    rounded-xl
-                    bg-primary
-                    px-6
-                    py-3
-                    font-semibold
-                    !text-white
-                    shadow-md
-                    transition
-                    duration-200
-                    hover:bg-primary-dark
-                    sm:w-auto
-                  "
-                >
-                  Book a Ride
-                </Link>
-
-              </div>
-            </div>
-
-          </div>
-        </motion.div>
-
       </div>
     </section>
   );

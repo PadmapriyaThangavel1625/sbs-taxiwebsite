@@ -43,10 +43,6 @@ export default function PricingPage() {
           {/* Vehicle Cards */}
           <VehicleCards />
 
-          {/* Benefits */}
-          <div className="mt-10 sm:mt-12">
-            <BenefitsBar />
-          </div>
         </div>
       </section>
 

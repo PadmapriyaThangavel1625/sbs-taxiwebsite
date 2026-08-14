@@ -69,7 +69,7 @@ export default function LimitedOffer() {
         {/* CONTENT */}
         <div className="space-y-2.5 bg-[#fffdf4] p-3.5">
           {/* OFFER */}
-          <div className="rounded-xl border border-[#e8d9a7] bg-[#fff8df] p-3">
+          <div className="rounded-xl border border-[#e8d9a7] bg-[var(--secondary-light)] p-3">
             <div className="flex gap-2.5">
               <Sparkles className="mt-0.5 h-4 w-4 shrink-0 text-[#d89200]" />
 

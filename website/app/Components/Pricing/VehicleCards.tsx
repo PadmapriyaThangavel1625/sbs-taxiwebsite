@@ -8,70 +8,19 @@ import {
   ArrowRight,
 } from "lucide-react";
 
-const vehicles = [
-  {
-    name: "SBS MINI",
-    cars: [
-      "Maruti Suzuki Baleno",
-      "Toyota Glanza",
-      "Maruti Suzuki Wagon R",
-    ],
-    seat: "4 Seats",
-    bag: "2 Bags",
-    price: "₹12 / km",
-    image: "/vehicle/mini.png",
-  },
-  {
-    name: "SBS SEDAN",
-    cars: [
-      "Maruti Suzuki Dzire",
-      "Hyundai Aura",
-      "Tata Xpres-T Electric Taxi",
-    ],
-    seat: "4 Seats",
-    bag: "3 Bags",
-    price: "₹12.50 / km",
-    image: "/vehicle/sedan.png",
-  },
-  {
-    name: "SBS VAN",
-    cars: ["Maruti Suzuki Eeco"],
-    seat: "6 Seats",
-    bag: "4 Bags",
-    price: "₹14 / km",
-    image: "/vehicle/van.png",
-  },
-  {
-    name: "SBS SUV",
-    cars: [
-      "Mahindra Xylo",
-      "Chevrolet Tavera",
-    ],
-    seat: "6 Seats",
-    bag: "4 Bags",
-    price: "₹17 / km",
-    image: "/vehicle/suv.png",
-  },
-  {
-    name: "SBS MUV",
-    cars: [
-      "Maruti Suzuki Ertiga",
-      "Kia Carens",
-    ],
-    seat: "7 Seats",
-    bag: "5 Bags",
-    price: "₹18 / km",
-    image: "/vehicle/muv.png",
-  },
-  {
-    name: "SBS MUV+",
-    cars: ["Toyota Innova"],
-    seat: "7 Seats",
-    bag: "5 Bags",
-    price: "₹19 / km",
-    image: "/vehicle/muv-plus.png",
-  },
-];
+import { SBS_TAXI_CONFIG } from "@/config/sbsTaxiConfig";
+
+/* =========================================================
+   VEHICLE DATA FROM CONFIG
+========================================================= */
+
+const vehicles = Object.values(
+  SBS_TAXI_CONFIG.vehicles
+);
+
+/* =========================================================
+   COMPONENT
+========================================================= */
 
 export default function VehiclePricing() {
   return (
@@ -81,14 +30,12 @@ export default function VehiclePricing() {
         w-full
         py-10
         font-[var(--font-jakarta)]
-
         sm:py-12
-
         lg:py-16
       "
     >
       {/* =====================================================
-          SAME WIDTH STRUCTURE AS HERO / NAVBAR
+          SAME WIDTH STRUCTURE
       ====================================================== */}
 
       <div
@@ -97,9 +44,7 @@ export default function VehiclePricing() {
           w-full
           max-w-7xl
           px-4
-
           sm:px-6
-
           lg:px-8
         "
       >
@@ -113,9 +58,7 @@ export default function VehiclePricing() {
             grid-cols-1
             items-stretch
             gap-5
-
             sm:grid-cols-2
-
             lg:grid-cols-3
             lg:gap-8
           "
@@ -130,18 +73,15 @@ export default function VehiclePricing() {
                 flex-col
                 rounded-2xl
                 border
-                border-gray-100
+                border-[var(--border)]
                 bg-white
                 p-5
                 shadow-sm
-
                 transition-all
                 duration-300
-
                 hover:-translate-y-2
                 hover:border-[var(--secondary)]
                 hover:shadow-xl
-
                 sm:p-6
               "
             >
@@ -157,9 +97,10 @@ export default function VehiclePricing() {
                     bg-[var(--primary)]
                     px-4
                     py-1.5
+                    font-[var(--font-jakarta)]
                     text-xs
                     font-semibold
-                    text-white
+                    !text-[var(--text-primary)]
                   "
                 >
                   {vehicle.name}
@@ -168,6 +109,7 @@ export default function VehiclePricing() {
 
               {/* =================================================
                   VEHICLE IMAGE
+                  FROM SBS_TAXI_CONFIG
               ================================================== */}
 
               <div
@@ -176,7 +118,6 @@ export default function VehiclePricing() {
                   mt-5
                   h-40
                   w-full
-
                   sm:h-44
                 "
               >
@@ -205,30 +146,31 @@ export default function VehiclePricing() {
               <h3
                 className="
                   mt-5
-                  text-xl
-                  font-bold
-                  text-[var(--primary)]
+                  font-[family-name:var(--font-instrument)]
+                  text-2xl
+                  font-normal
+                  text-[var(--text-primary)]
                 "
               >
-                Available Vehicles
+                {vehicle.type}
               </h3>
 
-              <ul
+              {/* =================================================
+                  DESCRIPTION
+              ================================================== */}
+
+              <p
                 className="
-                  mt-3
-                  min-h-[72px]
-                  space-y-1
+                  mt-2
+                  min-h-[48px]
+                  font-[var(--font-jakarta)]
                   text-sm
                   leading-5
-                  text-muted
+                  text-[var(--text-secondary)]
                 "
               >
-                {vehicle.cars.map((car) => (
-                  <li key={car}>
-                    • {car}
-                  </li>
-                ))}
-              </ul>
+                {vehicle.description}
+              </p>
 
               {/* =================================================
                   SPECS
@@ -241,15 +183,22 @@ export default function VehiclePricing() {
                   grid-cols-2
                   gap-3
                   border-t
-                  border-gray-100
+                  border-[var(--border)]
                   pt-5
+                  font-[var(--font-jakarta)]
                   text-sm
-                  text-muted
+                  text-[var(--text-secondary)]
                 "
               >
                 {/* Seats */}
 
-                <div className="flex items-center gap-2">
+                <div
+                  className="
+                    flex
+                    items-center
+                    gap-2
+                  "
+                >
                   <Users
                     size={18}
                     className="
@@ -258,12 +207,20 @@ export default function VehiclePricing() {
                     "
                   />
 
-                  <span>{vehicle.seat}</span>
+                  <span>
+                    {vehicle.seats} Seats
+                  </span>
                 </div>
 
-                {/* Bags */}
+                {/* Luggage */}
 
-                <div className="flex items-center gap-2">
+                <div
+                  className="
+                    flex
+                    items-center
+                    gap-2
+                  "
+                >
                   <Briefcase
                     size={18}
                     className="
@@ -272,7 +229,9 @@ export default function VehiclePricing() {
                     "
                   />
 
-                  <span>{vehicle.bag}</span>
+                  <span>
+                    {vehicle.luggage} Bags
+                  </span>
                 </div>
               </div>
 
@@ -281,21 +240,26 @@ export default function VehiclePricing() {
               ================================================== */}
 
               <div className="mt-5">
-                <p className="text-sm text-muted">
+                <p
+                  className="
+                    font-[var(--font-jakarta)]
+                    text-sm
+                    text-[var(--text-secondary)]
+                  "
+                >
                   Starting From
                 </p>
 
                 <h3
                   className="
                     mt-1
-                    text-2xl
-                    font-bold
+                    font-[family-name:var(--font-instrument)]
+                    text-3xl
+                    font-normal
                     text-[var(--primary)]
-
-                    sm:text-3xl
                   "
                 >
-                  {vehicle.price}
+                  {vehicle.rate}
                 </h3>
               </div>
 
@@ -315,20 +279,19 @@ export default function VehiclePricing() {
                   justify-center
                   gap-2
                   rounded-lg
-
                   bg-[var(--primary)]
-
                   px-5
                   py-3
-
+                  font-[var(--font-jakarta)]
+                  text-sm
                   font-semibold
-                  !text-white
-
+                  !text-[var(--text-primary)]
                   transition-all
                   duration-300
-
+                  hover:-translate-y-0.5
                   hover:bg-[var(--primary-dark)]
                   hover:gap-3
+                  hover:shadow-md
                 "
               >
                 Book a Ride
@@ -355,20 +318,19 @@ export default function VehiclePricing() {
             mt-8
             rounded-xl
             border
-            border-[var(--primary)]
-            bg-[var(--primary-light)]
-            !text-[var(--secondary)]
+            border-[var(--secondary)]
+            bg-[var(--secondary)]
             p-4
             text-center
+            font-[var(--font-jakarta)]
             text-sm
             leading-6
-            text-muted
-
+            text-[var(--text-secondary)]
             sm:mt-10
           "
         >
-          <strong className="text-heading">
-            Note:
+          <strong className="text-[var(--text-primary)] !mr:2">
+            Note  : 
           </strong>{" "}
           Prices mentioned are starting rates per kilometer.
           Applicable for local and outstation trips. Toll,

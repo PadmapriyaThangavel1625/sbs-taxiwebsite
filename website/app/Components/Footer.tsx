@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
+
 import {
   Phone,
   MapPin,
@@ -10,58 +11,18 @@ import {
   Clock3,
   Mail,
 } from "lucide-react";
+
 import Logo from "@/app/Components/Logo";
+import { SBS_TAXI_CONFIG } from "@/config/sbsTaxiConfig";
 
 /* =====================================================
-   SOCIAL MEDIA LINKS
+   FOOTER CONFIG
 ===================================================== */
 
-const socialLinks = [
-  {
-    label: "Facebook",
-    href: "https://www.facebook.com/YOUR_FACEBOOK_ID",
-    mark: "f",
-  },
-  {
-    label: "Instagram",
-    href: "https://www.instagram.com/YOUR_INSTAGRAM_ID",
-    mark: "◎",
-  },
-  {
-    label: "LinkedIn",
-    href: "https://www.linkedin.com/in/YOUR_LINKEDIN_ID",
-    mark: "in",
-  },
-  {
-    label: "YouTube",
-    href: "https://www.youtube.com/@YOUR_YOUTUBE_ID",
-    mark: "▶",
-  },
-];
-
-/* =====================================================
-   NAVIGATION
-===================================================== */
-
-const exploreLinks = [
-  { href: "/", label: "Home" },
-  { href: "/about", label: "About Us" },
-  { href: "/services", label: "Services" },
-  { href: "/fleet", label: "Our Fleet" },
-  { href: "/pricing", label: "Pricing" },
-  { href: "/destinations", label: "Destinations" },
-  { href: "/offers", label: "Offers" },
-  { href: "/contacts", label: "Contact Us" },
-];
-
-const services = [
-  "Local City Rides",
-  "Airport Transfers",
-  "Outstation Trips",
-  "One Way Trips",
-  "Round Trips",
-  "Corporate Trips",
-];
+const footer = SBS_TAXI_CONFIG.footer;
+const contact = SBS_TAXI_CONFIG.contact;
+const address = SBS_TAXI_CONFIG.address;
+const images = SBS_TAXI_CONFIG.images;
 
 /* =====================================================
    FOOTER
@@ -74,7 +35,7 @@ export default function Footer() {
         bg-[var(--primary)]
         pb-16
         font-[var(--font-jakarta)]
-        text-white
+        text-[var(--text-primary)]
         md:pb-0
       "
     >
@@ -82,79 +43,120 @@ export default function Footer() {
           MAIN FOOTER
       ================================================== */}
 
-      <div className="mx-auto max-w-7xl px-5 py-10 sm:px-8 lg:px-8 lg:py-14">
-        <div className="grid grid-cols-1 gap-10 lg:grid-cols-12 lg:gap-8">
-
+      <div
+        className="
+          mx-auto
+          max-w-7xl
+          px-5
+          py-10
+          sm:px-8
+          lg:px-8
+          lg:py-14
+        "
+      >
+        <div
+          className="
+            grid
+            grid-cols-1
+            gap-10
+            lg:grid-cols-12
+            lg:gap-8
+          "
+        >
           {/* =================================================
               COLUMN 1 — COMPANY
           ================================================== */}
 
           <div className="lg:col-span-3">
-            <Logo variant="footer" />
+            {/* LOGO */}
 
-            <p className="mt-6 max-w-[300px] text-[15px] leading-7 text-blue-100/80 lg:text-sm">
-              Comfortable rides, professional drivers, and transparent fares
-              for every journey. Travel with confidence wherever the road
-              takes you.
+            <Link href="/" aria-label={SBS_TAXI_CONFIG.company.name}>
+              <Logo variant="footer" />
+            </Link>
+
+            {/* DESCRIPTION */}
+
+            <p
+              className="
+                mt-6
+                max-w-[300px]
+                text-[15px]
+                leading-7
+                text-[var(--text-third)]
+                lg:text-sm
+              "
+            >
+              {footer.description}
             </p>
 
-            {/* Trust Items */}
-            <div className="mt-7 space-y-4">
+            {/* TRUST ITEMS */}
 
-              {/* Safe & Reliable */}
+            <div className="mt-7 space-y-4">
+              {/* SAFE & RELIABLE */}
+
               <div className="flex items-center gap-3">
                 <div
                   className="
-                    flex h-10 w-10 shrink-0
-                    items-center justify-center
-                    rounded-lg bg-white/10
+                    flex
+                    h-10
+                    w-10
+                    shrink-0
+                    items-center
+                    justify-center
+                    rounded-lg
+                    bg-[var(--secondary)]
                   "
                 >
                   <ShieldCheck
                     size={19}
                     strokeWidth={2}
-                    className="text-[var(--secondary)]"
+                    className="text-[var(--primary)]"
                   />
                 </div>
 
                 <div>
-                  <p className="text-sm font-semibold text-white">
-                    Safe & Reliable
+                  <p className="text-sm font-semibold text-[var(--text-primary)]">
+                    {footer.trust.safe.title}
                   </p>
 
-                  <p className="mt-0.5 text-xs text-blue-100/60">
-                    Trusted taxi service
+                  <p className="mt-0.5 text-xs text-[var(--text-third)]/60">
+                    {footer.trust.safe.description}
                   </p>
                 </div>
               </div>
 
-              {/* Available 24/7 */}
+              {/* AVAILABLE 24/7 */}
+
               <div className="flex items-center gap-3">
                 <div
                   className="
-                    flex h-10 w-10 shrink-0
-                    items-center justify-center
-                    rounded-lg bg-white/10
+                    flex
+                    h-10
+                    w-10
+                    shrink-0
+                    items-center
+                    justify-center
+                    rounded-lg
+                    bg-[var(--secondary)]
                   "
                 >
                   <Clock3
                     size={19}
                     strokeWidth={2}
-                    className="text-[var(--secondary)]"
+                    className="text-[var(--primary)]"
                   />
                 </div>
 
                 <div>
-                  <p className="text-sm font-semibold text-white">
-                    Available 24/7
+                  <p className="text-sm font-semibold text-[var(--text-primary)]">
+                    {footer.trust.available.title}
                   </p>
 
-                  <p className="mt-0.5 text-xs text-blue-100/60">
-                    Book your ride anytime
+                  <p className="mt-0.5 text-xs text-[var(--text-third)]/60">
+                    {footer.trust.available.description}
                   </p>
                 </div>
               </div>
-
             </div>
           </div>
 
@@ -181,49 +183,68 @@ export default function Footer() {
               aria-label="Services"
               className="flex flex-col gap-4"
             >
-              {services.map((service) => (
+              {footer.serviceLinks.map((service, index) => (
                 <Link
-                  key={service}
-                  href="/services"
+                  key={`${service.name}-${service.href}-${index}`}
+                  href={service.href}
                   className="
-                    group flex items-center gap-3
-                    text-sm text-blue-100/75
-                    transition-colors duration-200
-                    hover:text-white
+                    group
+                    flex
+                    items-center
+                    gap-3
+                    text-sm
+                    text-[var(--text-primary)]
+                    transition-colors
+                    duration-200
+                    hover:[var(--secondary)]
                   "
                 >
+                  {/* DOT */}
+
                   <span
                     className="
-                      h-1.5 w-1.5 shrink-0
+                      h-1.5
+                      w-1.5
+                      shrink-0
                       rounded-full
+                      !text-[var(--text-primary)]
                       bg-[var(--secondary)]
                     "
                   />
 
-                  <span>{service}</span>
+                  {/* SERVICE NAME */}
+
+                  <span>{service.name}</span>
                 </Link>
               ))}
             </nav>
 
-            {/* Booking Button */}
+            {/* BOOKING BUTTON */}
+
             <Link
-              href="/booking"
+              href={SBS_TAXI_CONFIG.booking.href}
               className="
-                mt-8 inline-flex items-center gap-2
+                mt-8
+                inline-flex
+                items-center
+                gap-2
                 rounded-lg
                 bg-[var(--secondary)]
-                px-5 py-3
-                text-sm font-bold
-                text-black
+                px-5
+                py-3
+                text-sm
+                font-bold
+                !text-[var(--text-secondary)]
                 shadow-sm
-                transition-all duration-200
+                transition-all
+                duration-200
                 hover:-translate-y-0.5
                 hover:bg-[var(--secondary-dark)]
                 hover:shadow-md
               "
             >
-              <span className="text-black">
-                Book a Ride
+              <span>
+                {SBS_TAXI_CONFIG.booking.name}
               </span>
 
               <ArrowUpRight
@@ -256,24 +277,31 @@ export default function Footer() {
               aria-label="Explore"
               className="flex flex-col gap-4"
             >
-              {exploreLinks.map((item) => (
+              {footer.exploreLinks.map((item) => (
                 <Link
                   key={item.href}
                   href={item.href}
                   className="
-                    group flex items-center gap-2
-                    text-sm text-blue-100/75
-                    transition-colors duration-200
-                    hover:text-white
+                    group
+                    flex
+                    items-center
+                    gap-2
+                    text-sm
+                    text-[var(--text-primary)]
+                    transition-colors
+                    duration-200
+                    hover:text-[var(--secondary)]
                   "
                 >
-                  <span>{item.label}</span>
+                  <span>{item.name}</span>
 
                   <ArrowUpRight
                     size={14}
                     className="
-                      -translate-x-1 opacity-0
-                      transition-all duration-200
+                      -translate-x-1
+                      opacity-0
+                      transition-all
+                      duration-200
                       group-hover:translate-x-0
                       group-hover:opacity-100
                       group-hover:text-[var(--secondary)]
@@ -285,12 +313,12 @@ export default function Footer() {
           </div>
 
           {/* =================================================
-              COLUMN 4 — CONTACT + SOCIAL
+              COLUMN 4 — CONTACT
           ================================================== */}
 
           <div className="lg:col-span-4">
+            {/* CONTACT HEADING */}
 
-            {/* Contact Heading */}
             <h3
               className="
                 !mb-4
@@ -305,102 +333,155 @@ export default function Footer() {
               Contact Us
             </h3>
 
-            {/* ADDRESS */}
+            {/* =================================================
+                ADDRESS
+            ================================================== */}
+
             <div className="flex items-start gap-3">
               <div
                 className="
-                  flex h-10 w-10 shrink-0
-                  items-center justify-center
-                  rounded-lg bg-white/10
+                  flex
+                  h-10
+                  w-10
+                  shrink-0
+                  items-center
+                  justify-center
+                  rounded-lg
+                  bg-[var(--secondary)]
                 "
               >
                 <MapPin
                   size={19}
                   strokeWidth={2}
-                  className="text-[var(--secondary)]"
+                  className="text-[var(--primary)]"
                 />
               </div>
 
               <div className="pt-0.5">
-                <p className="mt-0.5 text-xs leading-5 text-white/60">
-                  1/166, Vallalar Street,
+                <p className="text-xs leading-5 text-[var(--text-primary)]">
+                  {address.line1}
                   <br />
-                  Municipal Colony Road,
+
+                  {address.line2}
                   <br />
-                  Erode, Tamil Nadu - 638004
+
+                  {address.city},{" "}
+                  {address.state} -{" "}
+                  {address.pincode}
                 </p>
               </div>
             </div>
 
-            {/* CALL */}
+            {/* =================================================
+                CUSTOMER CARE
+            ================================================== */}
+
             <a
-              href="tel:9843544844"
-              aria-label="Call SBS Taxi"
+              href={contact.phoneHref}
+              aria-label={`Call ${SBS_TAXI_CONFIG.company.name}`}
               className="
-                group mt-5 flex items-center gap-3
-                rounded-lg py-1
-                transition-colors duration-200
+                group
+                mt-5
+                flex
+                items-center
+                gap-3
+                rounded-lg
+                py-1
+                transition-colors
+                duration-200
                 hover:bg-white/[0.03]
               "
             >
               <div
                 className="
-                  flex h-10 w-10 shrink-0
-                  items-center justify-center
-                  rounded-lg bg-white/10
-                  transition-colors duration-200
-                  group-hover:bg-white/15
+                  flex
+                  h-10
+                  w-10
+                  shrink-0
+                  items-center
+                  justify-center
+                  rounded-lg
+                  bg-[var(--secondary)]
+                  transition-colors
+                  duration-200
+                  group-hover:bg-[var(--secondary-dark)]
                 "
               >
                 <Phone
                   size={18}
                   strokeWidth={2}
-                  className="text-[var(--secondary)]"
+                  className="text-[var(--primary)]"
                 />
               </div>
 
               <div>
-                <p className="mt-0.5 text-xs text-white/60">
-                  98435 44844
+                <p className="text-[11px] text-[var(--text-primary)]">
+                  Customer Care
+                </p>
+
+                <p className="mt-0.5 text-xs text-[var(--text-primary)]">
+                  {contact.customerCare}
                 </p>
               </div>
             </a>
 
-            {/* EMAIL */}
+            {/* =================================================
+                EMAIL
+            ================================================== */}
+
             <a
-              href="mailto:hr@sbstechnologies.in"
-              aria-label="Email SBS Taxi"
+              href={contact.hrEmailHref}
+              aria-label={`Email ${SBS_TAXI_CONFIG.company.name}`}
               className="
-                group mt-5 flex items-center gap-3
-                rounded-lg py-1
-                transition-colors duration-200
+                group
+                mt-5
+                flex
+                items-center
+                gap-3
+                rounded-lg
+                py-1
+                transition-colors
+                duration-200
                 hover:bg-white/[0.03]
               "
             >
               <div
                 className="
-                  flex h-10 w-10 shrink-0
-                  items-center justify-center
-                  rounded-lg bg-white/10
-                  transition-colors duration-200
-                  group-hover:bg-white/15
+                  flex
+                  h-10
+                  w-10
+                  shrink-0
+                  items-center
+                  justify-center
+                  rounded-lg
+                  bg-[var(--secondary)]
+                  transition-colors
+                  duration-200
+                  group-hover:bg-[var(--secondary-dark)]
                 "
               >
                 <Mail
                   size={18}
                   strokeWidth={2}
-                  className="text-[var(--secondary)]"
+                  className="text-[var(--primary)]"
                 />
               </div>
 
               <div className="min-w-0">
-                <p className="mt-0.5 break-all text-xs text-white/60">
-                  hr@sbstechnologies.in
+                <p className="text-[11px] text-[var(--text-primary)]">
+                  Email
+                </p>
+
+                <p className="mt-0.5 break-all text-xs text-[var(--text-primary)]">
+                  {contact.hrEmail}
                 </p>
               </div>
             </a>
 
-            {/* SOCIAL MEDIA */}
+            {/* =================================================
+                SOCIAL MEDIA
+            ================================================== */}
+
             <div className="mt-7">
               <p
                 className="
@@ -409,32 +490,38 @@ export default function Footer() {
                   font-semibold
                   uppercase
                   tracking-[0.15em]
-                  text-blue-100/60
+                  text-[var(--text-primary)]
                 "
               >
                 Follow Us
               </p>
 
               <div className="flex items-center gap-3">
-                {socialLinks.map((social) => (
+                {footer.socialLinks.map((social, index) => (
                   <Link
-                    key={social.label}
+                    key={`${social.label}-${index}`}
                     href={social.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    aria-label={`Follow SBS Taxi on ${social.label}`}
+                    aria-label={`Follow ${SBS_TAXI_CONFIG.company.name} on ${social.label}`}
                     className="
-                      group flex h-11 w-11
-                      items-center justify-center
+                      group
+                      flex
+                      h-11
+                      w-11
+                      items-center
+                      justify-center
                       rounded-xl
-                      border border-white/10
+                      border
+                      border-white/10
                       bg-white/5
-                      text-white/80
-                      transition-all duration-200
+                      text-[var(--text-primary)]
+                      transition-all
+                      duration-200
                       hover:-translate-y-1
                       hover:border-[var(--secondary)]
-                      hover:bg-[var(--secondary)]
-                      hover:text-black
+                      hover:bg-[var(--secondary-dark)]
+                      hover:text-[var(--primary)]
                     "
                   >
                     <span
@@ -442,8 +529,8 @@ export default function Footer() {
                         social.label === "LinkedIn"
                           ? "text-sm font-extrabold"
                           : social.label === "YouTube"
-                          ? "text-sm"
-                          : "text-lg font-bold"
+                            ? "text-sm"
+                            : "text-lg font-bold"
                       }
                     >
                       {social.mark}
@@ -452,7 +539,6 @@ export default function Footer() {
                 ))}
               </div>
             </div>
-
           </div>
         </div>
       </div>
@@ -480,12 +566,11 @@ export default function Footer() {
             lg:px-8
           "
         >
-
           {/* =================================================
               MADE IN INDIA
           ================================================== */}
 
-          <div className="flex items-center gap-2 text-blue-100/60">
+          <div className="flex items-center gap-2 text-[var(--text-primary)]">
             <Image
               src="/flag.jpg"
               alt="Indian Flag"
@@ -495,7 +580,7 @@ export default function Footer() {
             />
 
             <span className="text-xs font-medium sm:text-sm">
-              Made in India
+              {footer.madeInIndia}
             </span>
           </div>
 
@@ -503,78 +588,91 @@ export default function Footer() {
               COPYRIGHT
           ================================================== */}
 
-          <p className="text-center text-xs text-blue-100/50 sm:text-sm">
-            © {new Date().getFullYear()} SBS Taxi. All Rights Reserved.
+          <p className="text-center text-xs text-[var(--text-primary)] sm:text-sm">
+            © {new Date().getFullYear()}{" "}
+            {footer.copyright}
           </p>
 
           {/* =================================================
-              PRIVACY POLICY + TERMS + POWERED BY
+              PRIVACY / TERMS / POWERED BY
           ================================================== */}
 
-          <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4">
+          <div
+            className="
+              flex
+              flex-wrap
+              items-center
+              justify-center
+              gap-3
+              sm:gap-4
+            "
+          >
+            {/* PRIVACY POLICY */}
 
-            {/* Privacy Policy */}
             <Link
-              href="/privacy-policy"
+              href={footer.privacy.href}
               className="
                 text-xs
                 font-medium
-                text-blue-100/65
+                text-[var(--text-primary)]
                 transition-colors
                 duration-200
                 hover:text-[var(--secondary)]
                 sm:text-sm
               "
             >
-              Privacy Policy
+              {footer.privacy.name}
             </Link>
 
-            {/* Divider */}
+            {/* DIVIDER */}
+
             <span className="h-4 w-px bg-white/15" />
 
-            {/* Terms & Conditions */}
+            {/* TERMS */}
+
             <Link
-              href="/terms-and-conditions"
+              href={footer.terms.href}
               className="
                 text-xs
                 font-medium
-                text-blue-100/65
+                text-[var(--text-primary)]
                 transition-colors
                 duration-200
                 hover:text-[var(--secondary)]
                 sm:text-sm
               "
             >
-              Terms & Conditions
+              {footer.terms.name}
             </Link>
 
-            {/* Divider */}
+            {/* DIVIDER */}
+
             <span className="h-4 w-px bg-white/15" />
 
-            {/* Powered By */}
+            {/* POWERED BY */}
+
             <div className="flex items-center gap-1.5">
-              <span className="text-[10px] font-light text-blue-100/50 sm:text-xs">
-                Powered by
+              <span className="text-[10px] font-light text-[var(--text-primary)] sm:text-xs">
+                {footer.poweredBy.label}
               </span>
 
               <Link
-                href="https://sbstechnologies.in/"
+                href={footer.poweredBy.href}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="
                   text-xs
                   font-semibold
-                  text-blue-100/70
+                  text-[var(--text-primary)]
                   transition-colors
                   duration-200
                   hover:text-[var(--secondary)]
                   sm:text-sm
                 "
               >
-                SBS Technologies
+                {footer.poweredBy.name}
               </Link>
             </div>
-
           </div>
         </div>
       </div>

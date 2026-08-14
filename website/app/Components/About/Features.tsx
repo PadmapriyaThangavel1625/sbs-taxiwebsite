@@ -105,8 +105,8 @@ export default function Features() {
                     items-center
                     justify-center
                     rounded-xl
-                    bg-[var(--primary-light)]
-                    text-[var(--secondary)]
+                    bg-[var(--secondary)]
+                    text-[var(--primary)]
                   "
                 >
                   <Icon className="h-6 w-6" />
@@ -119,7 +119,7 @@ export default function Features() {
                       font-[family-name:var(--font-instrument)]
                       text-sm
                       font-bold
-                      text-[var(--text)]
+                      text-[var(--text-primary)]
                     "
                   >
                     {feature.title}
@@ -131,7 +131,7 @@ export default function Features() {
                       font-[family-name:var(--font-jakarta)]
                       text-xs
                       leading-5
-                      text-[var(--muted)]
+                      text-[var(--text-muted)]
                     "
                   >
                     {feature.description}

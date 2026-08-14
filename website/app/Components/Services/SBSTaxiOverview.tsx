@@ -241,8 +241,8 @@ export default function SBSTaxiOverview() {
                     className={`
                       mx-auto
                       flex
-                      h-24
-                      w-24
+                      !h-10
+                      !w-10
                       items-center
                       justify-center
                       !bg-[var(--secondary)]
@@ -254,9 +254,10 @@ export default function SBSTaxiOverview() {
                     `}
                   >
                     <Icon
-                      size={46}
+                      size={20}
                       strokeWidth={1.7}
                       className="text-[var(--primary)]"
+                      
                     />
                   </div>
 

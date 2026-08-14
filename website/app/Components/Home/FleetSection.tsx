@@ -3,53 +3,61 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { motion, Variants } from "framer-motion";
+
 import VehicleCard from "./VehicleCard";
+import { SBS_TAXI_CONFIG } from "@/config/sbsTaxiConfig";
+
+/* =====================================================
+   FLEET DATA
+
+   Main vehicle information comes from config.
+   Type, seats and luggage are display information.
+===================================================== */
 
 const vehicles = [
   {
-    name: "SBS Mini",
+    ...SBS_TAXI_CONFIG.vehicles.mini,
     type: "Hatchback",
-    image: "/vehicle/mini.png",
     seats: 4,
     luggage: 2,
     price: "12",
   },
+
   {
-    name: "SBS Sedan",
+    ...SBS_TAXI_CONFIG.vehicles.sedan,
     type: "Sedan",
-    image: "/vehicle/sedan.png",
     seats: 4,
     luggage: 3,
     price: "12.50",
   },
+
   {
-    name: "SBS Van",
+    ...SBS_TAXI_CONFIG.vehicles.van,
     type: "Van",
-    image: "/vehicle/van.png",
     seats: 7,
     luggage: 4,
     price: "14",
   },
+
   {
-    name: "SBS SUV",
+    ...SBS_TAXI_CONFIG.vehicles.suv,
     type: "SUV",
-    image: "/vehicle/suv.png",
     seats: 6,
     luggage: 4,
     price: "17",
   },
+
   {
-    name: "SBS MUV",
+    ...SBS_TAXI_CONFIG.vehicles.muv,
     type: "MUV",
-    image: "/vehicle/muv.png",
     seats: 7,
     luggage: 5,
     price: "18",
   },
+
   {
-    name: "SBS MUV+",
+    ...SBS_TAXI_CONFIG.vehicles.muvPlus,
     type: "Innova",
-    image: "/vehicle/muv-plus.png",
     seats: 7,
     luggage: 5,
     price: "19",
@@ -62,6 +70,7 @@ const vehicles = [
 
 const container: Variants = {
   hidden: {},
+
   show: {
     transition: {
       staggerChildren: 0.12,
@@ -79,12 +88,15 @@ const item: Variants = {
     y: 40,
     scale: 0.95,
   },
+
   show: {
     opacity: 1,
     y: 0,
     scale: 1,
+
     transition: {
       duration: 0.45,
+      ease: [0.16, 1, 0.3, 1],
     },
   },
 };
@@ -95,22 +107,20 @@ const item: Variants = {
 
 export default function FleetSection() {
   return (
-    <section className="w-full bg-[var(--background)] py-10 sm:py-12 md:py-16 lg:py-20">
+    <section
+      className="
+        w-full
+        bg-[var(--background)]
+        py-10
+        sm:py-12
+        md:py-16
+        lg:py-20
+      "
+    >
       {/* =================================================
-          SAME CONTAINER AS NAVBAR + HERO + TRUST BADGES
-
-          Left edge:
-          Navbar Logo
-          Hero Content
-          Trust Badges
-          Fleet Content
-
-          Right edge:
-          Navbar Book a Ride
-          Hero Booking Form
-          Trust Badges
-          Fleet Button
+          MAIN CONTAINER
       ================================================== */}
+
       <div
         className="
           mx-auto
@@ -124,6 +134,7 @@ export default function FleetSection() {
         {/* =================================================
             HEADER
         ================================================== */}
+
         <motion.div
           initial={{
             opacity: 0,
@@ -135,9 +146,11 @@ export default function FleetSection() {
           }}
           viewport={{
             once: true,
+            amount: 0.2,
           }}
           transition={{
             duration: 0.5,
+            ease: [0.16, 1, 0.3, 1],
           }}
           className="
             mb-8
@@ -154,10 +167,18 @@ export default function FleetSection() {
           {/* =================================================
               HEADING
           ================================================== */}
+
           <div className="max-w-2xl">
-            {/* Small Label */}
+            {/* SMALL LABEL */}
+
             <div className="mb-2 flex items-center gap-2">
-              <span className="text-lg sm:text-xl">
+              <span
+                className="
+                  text-lg
+                  sm:text-xl
+                "
+                aria-hidden="true"
+              >
                 🚕
               </span>
 
@@ -171,12 +192,16 @@ export default function FleetSection() {
 
                   sm:text-xs
                 "
+                style={{
+                  fontFamily: "var(--font-jakarta)",
+                }}
               >
                 Our Fleet
               </span>
             </div>
 
-            {/* Main Heading */}
+            {/* MAIN HEADING */}
+
             <h2
               className="
                 text-2xl
@@ -190,11 +215,15 @@ export default function FleetSection() {
 
                 lg:text-[38px]
               "
+              style={{
+                fontFamily: "var(--font-jakarta)",
+              }}
             >
               Choose Your Perfect Ride
             </h2>
 
-            {/* Description */}
+            {/* DESCRIPTION */}
+
             <p
               className="
                 mt-2
@@ -205,12 +234,16 @@ export default function FleetSection() {
 
                 sm:text-base
               "
+              style={{
+                fontFamily: "var(--font-jakarta)",
+              }}
             >
               Comfortable, reliable and well-maintained vehicles
               for every journey.
             </p>
 
-            {/* Yellow Line */}
+            {/* SECONDARY COLOR LINE */}
+
             <div
               className="
                 mt-3
@@ -227,6 +260,7 @@ export default function FleetSection() {
           {/* =================================================
               DESKTOP BUTTON
           ================================================== */}
+
           <Link
             href="/fleet"
             className="
@@ -239,23 +273,26 @@ export default function FleetSection() {
               rounded-xl
               border
               border-gray-200
-              bg-white
+              bg-[var(--secondary)]
               px-5
               py-3
               text-sm
               font-semibold
-              text-[var(--primary)]
+              text-[var(--text-secondary)]
               shadow-sm
               transition-all
               duration-200
 
               hover:-translate-y-0.5
-              hover:border-[var(--primary)]
-              hover:bg-[var(--primary-light)]
+              hover:border-[var(--secondary)]
+              hover:bg-[var(--secondary-dark)]
               hover:shadow-md
 
               sm:flex
             "
+            style={{
+              fontFamily: "var(--font-jakarta)",
+            }}
           >
             View All Fleet
 
@@ -273,6 +310,7 @@ export default function FleetSection() {
         {/* =================================================
             FLEET CARDS
         ================================================== */}
+
         <motion.div
           variants={container}
           initial="hidden"
@@ -308,13 +346,21 @@ export default function FleetSection() {
               whileHover={{
                 y: -8,
                 scale: 1.02,
-                transition: {
-                  duration: 0.25,
-                },
+              }}
+              transition={{
+                duration: 0.25,
+                ease: "easeOut",
               }}
               className="w-full"
             >
-              <VehicleCard {...vehicle} />
+              <VehicleCard
+                name={vehicle.name}
+                type={vehicle.type}
+                image={vehicle.image}
+                seats={vehicle.seats}
+                luggage={vehicle.luggage}
+                price={vehicle.price}
+              />
             </motion.div>
           ))}
         </motion.div>
@@ -322,6 +368,7 @@ export default function FleetSection() {
         {/* =================================================
             MOBILE BUTTON
         ================================================== */}
+
         <motion.div
           initial={{
             opacity: 0,
@@ -336,6 +383,7 @@ export default function FleetSection() {
           }}
           transition={{
             delay: 0.4,
+            duration: 0.4,
           }}
           className="
             mt-7
@@ -346,42 +394,47 @@ export default function FleetSection() {
           "
         >
           <Link
-            href="/fleet"
-            className="
-              group
-              inline-flex
-              items-center
-              justify-center
-              gap-2
-              rounded-xl
-              border
-              border-gray-200
-              bg-white
-              px-6
-              py-3
-              text-sm
-              font-semibold
-              text-[var(--primary)]
-              shadow-sm
-              transition-all
-              duration-200
+  href="/fleet"
+  className="
+    group
+    inline-flex
+    items-center
+    justify-center
+    gap-2
+    rounded-xl
+    border
+    border-[var(--secondary)]
+    !bg-[var(--secondary)]
+    px-6
+    py-3
+    text-sm
+    font-semibold
+    text-[var(--text-secondary)]
+    shadow-sm
+    transition-all
+    duration-200
 
-              hover:border-[var(--primary)]
-              hover:bg-[var(--primary-light)]
-              hover:shadow-md
-            "
-          >
-            View All Fleet
+    hover:-translate-y-0.5
+    hover:border-[var(--secondary-dark)]
+    hover:bg-[var(--secondary-dark)]
+    hover:shadow-md
+  "
+  style={{
+    fontFamily: "var(--font-jakarta)",
+  }}
+>
+  View All Fleet
 
-            <ArrowRight
-              size={16}
-              className="
-                transition-transform
-                duration-200
-                group-hover:translate-x-1
-              "
-            />
-          </Link>
+  <ArrowRight
+    size={16}
+    className="
+      text-[var(--text-secondary)]
+      transition-transform
+      duration-200
+      group-hover:translate-x-1
+    "
+  />
+</Link>
         </motion.div>
       </div>
     </section>
