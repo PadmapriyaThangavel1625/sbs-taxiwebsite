@@ -1,5 +1,6 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
@@ -13,6 +14,24 @@ import {
 import { SBS_TAXI_CONFIG } from "@/config/sbsTaxiConfig";
 
 // =====================================================
+// LEAFLET MAP - CLIENT ONLY
+// =====================================================
+
+const DestinationRouteMap = dynamic(
+  () => import("./DestinationRouteMap"),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="flex h-[500px] w-full items-center justify-center rounded-2xl bg-gray-100">
+        <div className="text-sm text-gray-500">
+          Loading map...
+        </div>
+      </div>
+    ),
+  }
+);
+
+// =====================================================
 // TYPES
 // =====================================================
 
@@ -20,6 +39,8 @@ type Spot = {
   name: string;
   description: string;
   image: string;
+  lat: number;
+  lng: number;
 };
 
 type Destination = {
@@ -28,6 +49,21 @@ type Destination = {
   price: string;
   image: string;
   spots: readonly Spot[];
+  route: {
+    start: {
+      lat: number;
+      lng: number;
+    };
+    destination: {
+      lat: number;
+      lng: number;
+    };
+    touristPlaces: Array<{
+      name: string;
+      lat: number;
+      lng: number;
+    }>;
+  };
 };
 
 // =====================================================
@@ -45,21 +81,26 @@ export default function DestinationCards() {
   const [selectedCity, setSelectedCity] =
     useState<Destination | null>(null);
 
-  const [slideIndex, setSlideIndex] = useState<number>(0);
+  const [slideIndex, setSlideIndex] =
+    useState<number>(0);
 
   // =====================================================
   // SELECT CITY
   // =====================================================
 
-  const handleCityClick = (city: Destination) => {
+  const handleCityClick = (
+    city: Destination
+  ) => {
     setSelectedCity(city);
     setSlideIndex(0);
 
     setTimeout(() => {
-      document.getElementById("city-spots")?.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-      });
+      document
+        .getElementById("city-spots")
+        ?.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
     }, 100);
   };
 
@@ -73,7 +114,9 @@ export default function DestinationCards() {
     setSlideIndex((current) => {
       const next = current + 1;
 
-      if (next >= selectedCity.spots.length) {
+      if (
+        next >= selectedCity.spots.length
+      ) {
         return 0;
       }
 
@@ -92,7 +135,9 @@ export default function DestinationCards() {
       const previous = current - 1;
 
       if (previous < 0) {
-        return selectedCity.spots.length - 1;
+        return (
+          selectedCity.spots.length - 1
+        );
       }
 
       return previous;
@@ -143,9 +188,7 @@ export default function DestinationCards() {
               text-2xl
               font-bold
               text-gray-900
-
               sm:text-3xl
-
               md:text-4xl
             "
           >
@@ -160,12 +203,11 @@ export default function DestinationCards() {
               text-sm
               leading-6
               text-gray-600
-
               sm:text-base
             "
           >
-            Choose your destination to view popular tourist
-            places and cab fare details.
+            Choose your destination to view tourist
+            places, route map and cab fare details.
           </p>
         </div>
 
@@ -178,169 +220,155 @@ export default function DestinationCards() {
             grid
             grid-cols-1
             gap-5
-
             sm:grid-cols-2
             sm:gap-6
-
             lg:grid-cols-3
-
             xl:grid-cols-4
           "
         >
-          {destinations.map((destination) => (
-            <div
-              key={destination.name}
-              className="
-                group
-                overflow-hidden
-                rounded-2xl
-                bg-white
-                shadow-md
-
-                transition
-                duration-300
-
-                hover:-translate-y-1
-                hover:shadow-xl
-              "
-            >
-              {/* =================================================
-                  DESTINATION IMAGE
-              ================================================== */}
-
+          {destinations.map(
+            (destination) => (
               <div
+                key={destination.name}
                 className="
-                  relative
-                  h-48
-                  w-full
+                  group
                   overflow-hidden
-
-                  sm:h-52
+                  rounded-2xl
+                  bg-white
+                  shadow-md
+                  transition
+                  duration-300
+                  hover:-translate-y-1
+                  hover:shadow-xl
                 "
               >
-                <Image
-                  src={destination.image}
-                  alt={`${destination.name} taxi`}
-                  fill
-                  className="
-                    object-cover
-                    transition
-                    duration-500
-                    group-hover:scale-105
-                  "
-                  sizes="
-                    (max-width: 640px) 100vw,
-                    (max-width: 1024px) 50vw,
-                    (max-width: 1280px) 33vw,
-                    25vw
-                  "
-                />
+                {/* IMAGE */}
 
                 <div
                   className="
-                    absolute
-                    inset-0
-                    bg-gradient-to-t
-                    from-black/50
-                    via-transparent
-                    to-transparent
+                    relative
+                    h-48
+                    w-full
+                    overflow-hidden
+                    sm:h-52
                   "
-                />
-
-                <div className="absolute bottom-3 left-4">
-                  <span
+                >
+                  <Image
+                    src={destination.image}
+                    alt={`${destination.name} taxi`}
+                    fill
                     className="
-                      rounded-full
-                      bg-white/95
-                      px-3
-                      py-1
-                      text-xs
-                      font-semibold
-                      text-gray-800
-                      shadow
+                      object-cover
+                      transition
+                      duration-500
+                      group-hover:scale-105
                     "
-                  >
-                    {destination.km}
-                  </span>
-                </div>
-              </div>
+                    sizes="
+                      (max-width: 640px) 100vw,
+                      (max-width: 1024px) 50vw,
+                      (max-width: 1280px) 33vw,
+                      25vw
+                    "
+                  />
 
-              {/* =================================================
-                  CARD CONTENT
-              ================================================== */}
-
-              <div className="p-4 sm:p-5">
-                <h3
-                  className="
-                    text-xl
-                    font-bold
-                    text-gray-900
-                  "
-                >
-                  {destination.name}
-                </h3>
-
-                <div
-                  className="
-                    mt-3
-                    flex
-                    items-center
-                    justify-between
-                    gap-3
-                  "
-                >
-                  <span
+                  <div
                     className="
+                      absolute
+                      inset-0
+                      bg-gradient-to-t
+                      from-black/50
+                      via-transparent
+                      to-transparent
+                    "
+                  />
+
+                  <div className="absolute bottom-3 left-4">
+                    <span
+                      className="
+                        rounded-full
+                        bg-white/95
+                        px-3
+                        py-1
+                        text-xs
+                        font-semibold
+                        text-gray-800
+                        shadow
+                      "
+                    >
+                      {destination.km}
+                    </span>
+                  </div>
+                </div>
+
+                {/* CONTENT */}
+
+                <div className="p-4 sm:p-5">
+                  <h3 className="text-xl font-bold text-gray-900">
+                    {destination.name}
+                  </h3>
+
+                  <div
+                    className="
+                      mt-3
                       flex
                       items-center
-                      gap-1
-                      text-sm
-                      text-gray-500
+                      justify-between
+                      gap-3
                     "
                   >
-                    <MapPin size={16} />
+                    <span
+                      className="
+                        flex
+                        items-center
+                        gap-1
+                        text-sm
+                        text-gray-500
+                      "
+                    >
+                      <MapPin size={16} />
 
-                    {destination.km}
-                  </span>
+                      {destination.km}
+                    </span>
 
-                  <span
+                    <span
+                      className="
+                        text-lg
+                        font-bold
+                        text-[var(--primary)]
+                      "
+                    >
+                      ₹{destination.price}
+                    </span>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() =>
+                      handleCityClick(
+                        destination
+                      )
+                    }
                     className="
-                      text-lg
-                      font-bold
-                      text-[var(--primary)]
+                      mt-5
+                      w-full
+                      rounded-lg
+                      bg-[var(--primary)]
+                      px-4
+                      py-3
+                      text-sm
+                      font-semibold
+                      text-white
+                      transition
+                      hover:bg-[var(--primary-dark)]
+                      active:scale-[0.98]
                     "
                   >
-                    ₹{destination.price}
-                  </span>
+                    View Tourist Spots
+                  </button>
                 </div>
-
-                <button
-                  type="button"
-                  onClick={() =>
-                    handleCityClick(destination)
-                  }
-                  className="
-                    mt-5
-                    w-full
-                    rounded-lg
-                    bg-[var(--primary)]
-                    px-4
-                    py-3
-                    text-sm
-                    font-semibold
-                    text-white
-                    transition
-
-                    hover:bg-[var(--primary-dark)]
-
-                    active:scale-[0.98]
-                  "
-                >
-                  View Tourist Spots
-                </button>
               </div>
-            </div>
-          ))}
+            )
+          )}
         </div>
 
         {/* =====================================================
@@ -356,12 +384,11 @@ export default function DestinationCards() {
               rounded-2xl
               bg-white
               shadow-xl
-
               sm:mt-12
-
               md:mt-14
             "
           >
+
             {/* =================================================
                 HEADER
             ================================================== */}
@@ -372,10 +399,8 @@ export default function DestinationCards() {
                 px-5
                 py-7
                 text-[var(--secondary)]
-
                 sm:px-8
                 sm:py-8
-
                 md:px-10
               "
             >
@@ -389,7 +414,6 @@ export default function DestinationCards() {
                   uppercase
                   tracking-wider
                   text-[var(--secondary)]
-
                   sm:text-sm
                 "
               >
@@ -404,13 +428,11 @@ export default function DestinationCards() {
                   text-2xl
                   font-bold
                   !text-[var(--secondary)]
-
                   sm:text-3xl
-
                   md:text-4xl
                 "
               >
-                Tourist Places in {selectedCity.name}
+                {selectedCity.name} Tourist Route
               </h2>
 
               <p
@@ -418,20 +440,49 @@ export default function DestinationCards() {
                   mt-2
                   text-sm
                   text-[var(--secondary)]
-
                   sm:text-base
                 "
               >
-                Explore popular tourist attractions with SBS
-                Taxi.
+                Erode → {selectedCity.name} with all
+                popular tourist places.
               </p>
             </div>
 
             {/* =================================================
-                CONTENT
+                ROUTE MAP
             ================================================== */}
 
             <div className="p-5 sm:p-7 md:p-10">
+
+              <div className="mb-8">
+                <h3
+                  className="
+                    mb-2
+                    text-xl
+                    font-bold
+                    text-gray-900
+                    sm:text-2xl
+                  "
+                >
+                  Tourist Route Map
+                </h3>
+
+                <p className="mb-5 text-sm text-gray-500">
+                  Starting from Erode, view the selected
+                  destination and all tourist places on one map.
+                </p>
+
+                {/* IMPORTANT:
+                    slideIndex is passed to the map
+                */}
+
+                <DestinationRouteMap
+                  city={selectedCity}
+                  selectedSpotIndex={
+                    slideIndex
+                  }
+                />
+              </div>
 
               {/* =================================================
                   FARE INFORMATION
@@ -443,12 +494,9 @@ export default function DestinationCards() {
                   grid
                   grid-cols-1
                   gap-4
-
                   sm:grid-cols-3
                 "
               >
-                {/* DISTANCE */}
-
                 <div
                   className="
                     rounded-xl
@@ -482,8 +530,6 @@ export default function DestinationCards() {
                     {selectedCity.km}
                   </p>
                 </div>
-
-                {/* FARE */}
 
                 <div
                   className="
@@ -519,8 +565,6 @@ export default function DestinationCards() {
                   </p>
                 </div>
 
-                {/* DESTINATION */}
-
                 <div
                   className="
                     rounded-xl
@@ -555,7 +599,6 @@ export default function DestinationCards() {
                   flex
                   flex-col
                   gap-4
-
                   sm:flex-row
                   sm:items-center
                   sm:justify-between
@@ -567,7 +610,6 @@ export default function DestinationCards() {
                       text-xl
                       font-bold
                       text-gray-900
-
                       sm:text-2xl
                     "
                   >
@@ -592,7 +634,7 @@ export default function DestinationCards() {
                   <button
                     type="button"
                     onClick={previousSlide}
-                    aria-label="Previous tourist spot"
+                    aria-label="Previous tourist place"
                     className="
                       flex
                       h-10
@@ -605,7 +647,6 @@ export default function DestinationCards() {
                       bg-white
                       text-gray-700
                       transition
-
                       hover:border-[var(--primary)]
                       hover:bg-[var(--primary)]
                       hover:text-white
@@ -617,7 +658,7 @@ export default function DestinationCards() {
                   <button
                     type="button"
                     onClick={nextSlide}
-                    aria-label="Next tourist spot"
+                    aria-label="Next tourist place"
                     className="
                       flex
                       h-10
@@ -630,7 +671,6 @@ export default function DestinationCards() {
                       bg-white
                       text-gray-700
                       transition
-
                       hover:border-[var(--primary)]
                       hover:bg-[var(--primary)]
                       hover:text-white
@@ -659,143 +699,133 @@ export default function DestinationCards() {
                     }%)`,
                   }}
                 >
-                  {selectedCity.spots.map((spot) => (
-                    <div
-                      key={spot.name}
-                      className="
-                        w-full
-                        min-w-full
-                        shrink-0
-                        px-0.5
-                      "
-                    >
+                  {selectedCity.spots.map(
+                    (spot) => (
                       <div
+                        key={spot.name}
                         className="
-                          overflow-hidden
-                          rounded-2xl
-                          border
-                          border-gray-200
-                          bg-white
-                          shadow-sm
+                          w-full
+                          min-w-full
+                          shrink-0
+                          px-0.5
                         "
                       >
-                        {/* =================================================
-                            SPOT IMAGE
-                        ================================================== */}
-
                         <div
                           className="
-                            relative
-                            h-56
-                            w-full
-
-                            sm:h-64
-
-                            md:h-72
+                            overflow-hidden
+                            rounded-2xl
+                            border
+                            border-gray-200
+                            bg-white
+                            shadow-sm
                           "
                         >
-                          <Image
-                            src={spot.image}
-                            alt={spot.name}
-                            fill
-                            className="object-cover"
-                            sizes="
-                              (max-width: 640px) 100vw,
-                              (max-width: 1024px) 90vw,
-                              1000px
-                            "
-                          />
+                          {/* IMAGE */}
 
                           <div
                             className="
-                              absolute
-                              inset-x-0
-                              bottom-0
-                              bg-gradient-to-t
-                              from-black/80
-                              via-black/30
-                              to-transparent
-                              p-5
-                              pt-20
+                              relative
+                              h-56
+                              w-full
+                              sm:h-64
+                              md:h-72
                             "
                           >
-                            <h4
-                              className="
-                                text-xl
-                                font-bold
-                                text-white
-
-                                sm:text-2xl
-                              "
-                            >
-                              {spot.name}
-                            </h4>
-                          </div>
-                        </div>
-
-                        {/* =================================================
-                            SPOT CONTENT
-                        ================================================== */}
-
-                        <div className="p-5 sm:p-6">
-                          <div
-                            className="
-                              flex
-                              items-center
-                              gap-2
-                              text-sm
-                              text-gray-500
-                            "
-                          >
-                            <MapPin
-                              size={16}
-                              className="
-                                text-[var(--primary)]
+                            <Image
+                              src={spot.image}
+                              alt={spot.name}
+                              fill
+                              className="object-cover"
+                              sizes="
+                                (max-width: 640px) 100vw,
+                                (max-width: 1024px) 90vw,
+                                1000px
                               "
                             />
 
-                            {selectedCity.name}
+                            <div
+                              className="
+                                absolute
+                                inset-x-0
+                                bottom-0
+                                bg-gradient-to-t
+                                from-black/80
+                                via-black/30
+                                to-transparent
+                                p-5
+                                pt-20
+                              "
+                            >
+                              <h4
+                                className="
+                                  text-xl
+                                  font-bold
+                                  text-white
+                                  sm:text-2xl
+                                "
+                              >
+                                {spot.name}
+                              </h4>
+                            </div>
                           </div>
 
-                          <p
-                            className="
-                              mt-3
-                              text-sm
-                              leading-6
-                              text-gray-600
+                          {/* CONTENT */}
 
-                              sm:text-base
-                            "
-                          >
-                            {spot.description}
-                          </p>
+                          <div className="p-5 sm:p-6">
+                            <div
+                              className="
+                                flex
+                                items-center
+                                gap-2
+                                text-sm
+                                text-gray-500
+                              "
+                            >
+                              <MapPin
+                                size={16}
+                                className="text-[var(--primary)]"
+                              />
 
-                          <Link
-                            href="/booking"
-                            className="
-                              mt-5
-                              block
-                              w-full
-                              rounded-lg
-                              bg-[var(--secondary)]
-                              py-3
-                              text-center
-                              text-sm
-                              font-semibold
-                              text-white
-                              transition
+                              {selectedCity.name}
+                            </div>
 
-                              hover:bg-[var(--secondary-dark)]
+                            <p
+                              className="
+                                mt-3
+                                text-sm
+                                leading-6
+                                text-gray-600
+                                sm:text-base
+                              "
+                            >
+                              {spot.description}
+                            </p>
 
-                              active:scale-[0.98]
-                            "
-                          >
-                            Book Cab
-                          </Link>
+                            <Link
+                              href="/booking"
+                              className="
+                                mt-5
+                                block
+                                w-full
+                                rounded-lg
+                                bg-[var(--secondary)]
+                                py-3
+                                text-center
+                                text-sm
+                                font-semibold
+                                text-white
+                                transition
+                                hover:bg-[var(--secondary-dark)]
+                                active:scale-[0.98]
+                              "
+                            >
+                              Book Cab
+                            </Link>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
+                    )
+                  )}
                 </div>
               </div>
 
@@ -809,14 +839,13 @@ export default function DestinationCards() {
                   flex
                   justify-center
                   gap-3
-
                   sm:hidden
                 "
               >
                 <button
                   type="button"
                   onClick={previousSlide}
-                  aria-label="Previous tourist spot"
+                  aria-label="Previous tourist place"
                   className="
                     flex
                     h-11
@@ -829,9 +858,6 @@ export default function DestinationCards() {
                     bg-white
                     text-[var(--secondary)]
                     shadow-sm
-                    transition
-
-                    active:scale-95
                   "
                 >
                   <ChevronLeft size={20} />
@@ -840,7 +866,7 @@ export default function DestinationCards() {
                 <button
                   type="button"
                   onClick={nextSlide}
-                  aria-label="Next tourist spot"
+                  aria-label="Next tourist place"
                   className="
                     flex
                     h-11
@@ -853,9 +879,6 @@ export default function DestinationCards() {
                     bg-white
                     text-[var(--secondary)]
                     shadow-sm
-                    transition
-
-                    active:scale-95
                   "
                 >
                   <ChevronRight size={20} />
@@ -863,7 +886,7 @@ export default function DestinationCards() {
               </div>
 
               {/* =================================================
-                  SLIDE INDICATORS
+                  INDICATORS
               ================================================== */}
 
               <div
@@ -875,25 +898,28 @@ export default function DestinationCards() {
                   gap-2
                 "
               >
-                {selectedCity.spots.map((spot, index) => (
-                  <button
-                    type="button"
-                    key={spot.name}
-                    onClick={() => setSlideIndex(index)}
-                    aria-label={`Go to ${spot.name}`}
-                    className={`
-                      h-2
-                      rounded-full
-                      transition-all
-
-                      ${
-                        index === slideIndex
-                          ? "w-7 bg-[var(--primary)]"
-                          : "w-2 bg-[var(--primary-dark)]"
+                {selectedCity.spots.map(
+                  (spot, index) => (
+                    <button
+                      type="button"
+                      key={spot.name}
+                      onClick={() =>
+                        setSlideIndex(index)
                       }
-                    `}
-                  />
-                ))}
+                      aria-label={`Go to ${spot.name}`}
+                      className={`
+                        h-2
+                        rounded-full
+                        transition-all
+                        ${
+                          index === slideIndex
+                            ? "w-7 bg-[var(--primary)]"
+                            : "w-2 bg-[var(--primary-dark)]"
+                        }
+                      `}
+                    />
+                  )
+                )}
               </div>
 
               {/* =================================================
@@ -909,9 +935,7 @@ export default function DestinationCards() {
                   rounded-xl
                   bg-gray-50
                   p-5
-
                   sm:p-6
-
                   md:flex-row
                   md:items-center
                   md:justify-between
@@ -923,7 +947,6 @@ export default function DestinationCards() {
                       text-lg
                       font-bold
                       text-gray-900
-
                       sm:text-xl
                     "
                   >
@@ -936,7 +959,6 @@ export default function DestinationCards() {
                       mt-1
                       text-sm
                       text-gray-600
-
                       sm:text-base
                     "
                   >
@@ -958,11 +980,8 @@ export default function DestinationCards() {
                     font-semibold
                     text-white
                     transition
-
                     hover:bg-[var(--secondary-dark)]
-
                     active:scale-[0.98]
-
                     sm:w-auto
                   "
                 >

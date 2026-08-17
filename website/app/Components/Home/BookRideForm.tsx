@@ -16,32 +16,73 @@ export default function BookRideForm() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
 
-  // Default pickup location
   const [pickup, setPickup] = useState("SBS Technologies");
-
   const [drop, setDrop] = useState("");
 
-  // Date & time
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
 
-  // Default vehicle
   const [vehicle, setVehicle] = useState("SBS Mini");
 
   const [sending, setSending] = useState(false);
 
-  // Get today's date and current time
+  /* =====================================================
+     INPUT WRAPPER
+  ===================================================== */
+
+  const inputWrapper = () => `
+    flex
+    h-11
+    items-center
+    rounded-lg
+    border
+    border-gray-200
+    bg-gray-50
+    px-3
+    transition-all
+    duration-200
+    focus-within:border-gray-200
+    focus-within:outline-none
+    focus-within:ring-0
+    focus-within:ring-offset-0
+  `;
+
+  /* =====================================================
+     INPUT CLASS
+     Removes browser focus outlines/borders/rings completely
+  ===================================================== */
+
+  const inputClass = `
+    w-full
+    min-w-0
+    bg-transparent
+    text-sm
+    text-[var(--text)]
+    border-none
+    outline-none
+    ring-0
+    focus:border-none
+    focus:outline-none
+    focus:ring-0
+    focus-visible:border-none
+    focus-visible:outline-none
+    focus-visible:ring-0
+    placeholder:text-gray-400
+  `;
+
+  /* =====================================================
+     DATE / TIME
+  ===================================================== */
+
   useEffect(() => {
     const now = new Date();
 
-    // Today's date
     const today = [
       now.getFullYear(),
       String(now.getMonth() + 1).padStart(2, "0"),
       String(now.getDate()).padStart(2, "0"),
     ].join("-");
 
-    // Current time
     const currentTime = [
       String(now.getHours()).padStart(2, "0"),
       String(now.getMinutes()).padStart(2, "0"),
@@ -50,6 +91,10 @@ export default function BookRideForm() {
     setDate(today);
     setTime(currentTime);
   }, []);
+
+  /* =====================================================
+     BOOK RIDE
+  ===================================================== */
 
   const handleBookRide = async () => {
     if (
@@ -70,10 +115,13 @@ export default function BookRideForm() {
 
       const response = await fetch("/api/email", {
         method: "POST",
+
         headers: {
           "Content-Type": "application/json",
         },
+
         body: JSON.stringify({
+          bookingType: "simple-booking",
           name,
           email,
           pickup,
@@ -92,19 +140,17 @@ export default function BookRideForm() {
         );
       }
 
-      toast.success("🎉 Booking request sent successfully!");
+      toast.success(
+        "🎉 Booking request sent successfully!"
+      );
 
-      // Reset customer details
+      /* Reset */
+
       setName("");
       setEmail("");
-
-      // Restore default pickup
       setPickup("SBS Technologies");
-
-      // Clear drop
       setDrop("");
 
-      // Restore today's date and current time
       const now = new Date();
 
       const today = [
@@ -120,8 +166,6 @@ export default function BookRideForm() {
 
       setDate(today);
       setTime(currentTime);
-
-      // Restore default vehicle
       setVehicle("SBS Mini");
     } catch (error) {
       console.error("Booking error:", error);
@@ -138,7 +182,11 @@ export default function BookRideForm() {
 
   return (
     <div className="w-full overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-xl">
-      {/* Header */}
+
+      {/* =================================================
+          HEADER
+      ================================================= */}
+
       <div className="bg-primary px-5 py-5 text-white sm:px-6">
         <Logo variant="footer" />
 
@@ -147,13 +195,20 @@ export default function BookRideForm() {
         </p>
       </div>
 
-      {/* Form */}
+      {/* =================================================
+          FORM
+      ================================================= */}
+
       <div className="space-y-4 p-5 sm:p-6">
 
-        {/* Name & Email */}
+        {/* =================================================
+            NAME + EMAIL
+        ================================================= */}
+
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
 
-          {/* Name */}
+          {/* NAME */}
+
           <div>
             <label
               htmlFor="name"
@@ -162,7 +217,7 @@ export default function BookRideForm() {
               Your Name
             </label>
 
-            <div className="flex h-11 items-center rounded-lg border border-gray-200 bg-gray-50 px-3 transition focus-within:border-[var(--primary)] focus-within:bg-white focus-within:ring-2 focus-within:ring-[var(--primary)]/10">
+            <div className={inputWrapper()}>
               <User
                 size={18}
                 className="mr-2 shrink-0 text-[var(--muted)]"
@@ -176,12 +231,13 @@ export default function BookRideForm() {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 autoComplete="name"
-                className="w-full min-w-0 bg-transparent text-sm text-[var(--text)] outline-none placeholder:text-gray-400"
+                className={inputClass}
               />
             </div>
           </div>
 
-          {/* Email */}
+          {/* EMAIL */}
+
           <div>
             <label
               htmlFor="email"
@@ -190,7 +246,7 @@ export default function BookRideForm() {
               Email Address
             </label>
 
-            <div className="flex h-11 items-center rounded-lg border border-gray-200 bg-gray-50 px-3 transition focus-within:border-[var(--primary)] focus-within:bg-white focus-within:ring-2 focus-within:ring-[var(--primary)]/10">
+            <div className={inputWrapper()}>
               <Mail
                 size={18}
                 className="mr-2 shrink-0 text-[var(--muted)]"
@@ -204,16 +260,20 @@ export default function BookRideForm() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 autoComplete="email"
-                className="w-full min-w-0 bg-transparent text-sm text-[var(--text)] outline-none placeholder:text-gray-400"
+                className={inputClass}
               />
             </div>
           </div>
         </div>
 
-        {/* Pickup & Drop */}
+        {/* =================================================
+            PICKUP + DROP
+        ================================================= */}
+
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
 
-          {/* Pickup */}
+          {/* PICKUP */}
+
           <div>
             <label
               htmlFor="pickup"
@@ -222,7 +282,7 @@ export default function BookRideForm() {
               Pickup Location
             </label>
 
-            <div className="flex h-11 items-center rounded-lg border border-gray-200 bg-gray-50 px-3 transition focus-within:border-[var(--primary)] focus-within:bg-white focus-within:ring-2 focus-within:ring-[var(--primary)]/10">
+            <div className={inputWrapper()}>
               <MapPin
                 size={18}
                 className="mr-2 shrink-0 text-green-500"
@@ -236,12 +296,13 @@ export default function BookRideForm() {
                 value={pickup}
                 onChange={(e) => setPickup(e.target.value)}
                 autoComplete="street-address"
-                className="w-full min-w-0 bg-transparent text-sm text-[var(--text)] outline-none placeholder:text-gray-400"
+                className={inputClass}
               />
             </div>
           </div>
 
-          {/* Drop */}
+          {/* DROP */}
+
           <div>
             <label
               htmlFor="drop"
@@ -250,7 +311,7 @@ export default function BookRideForm() {
               Drop Location
             </label>
 
-            <div className="flex h-11 items-center rounded-lg border border-gray-200 bg-gray-50 px-3 transition focus-within:border-[var(--primary)] focus-within:bg-white focus-within:ring-2 focus-within:ring-[var(--primary)]/10">
+            <div className={inputWrapper()}>
               <MapPin
                 size={18}
                 className="mr-2 shrink-0 text-red-500"
@@ -264,16 +325,20 @@ export default function BookRideForm() {
                 value={drop}
                 onChange={(e) => setDrop(e.target.value)}
                 autoComplete="street-address"
-                className="w-full min-w-0 bg-transparent text-sm text-[var(--text)] outline-none placeholder:text-gray-400"
+                className={inputClass}
               />
             </div>
           </div>
         </div>
 
-        {/* Date & Time */}
+        {/* =================================================
+            DATE + TIME
+        ================================================= */}
+
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
 
-          {/* Date */}
+          {/* DATE */}
+
           <div>
             <label
               htmlFor="date"
@@ -282,14 +347,14 @@ export default function BookRideForm() {
               Date
             </label>
 
-            <div className="flex h-11 items-center rounded-lg border border-gray-200 bg-gray-50 px-3 transition focus-within:border-[var(--primary)] focus-within:bg-white focus-within:ring-2 focus-within:ring-[var(--primary)]/10">
+            <div className={inputWrapper()}>
               <input
                 id="date"
                 name="date"
                 type="date"
                 value={date}
                 onChange={(e) => setDate(e.target.value)}
-                className="w-full min-w-0 bg-transparent text-sm text-[var(--text)] outline-none"
+                className={inputClass}
               />
 
               <CalendarDays
@@ -299,7 +364,8 @@ export default function BookRideForm() {
             </div>
           </div>
 
-          {/* Time */}
+          {/* TIME */}
+
           <div>
             <label
               htmlFor="time"
@@ -308,14 +374,14 @@ export default function BookRideForm() {
               Time
             </label>
 
-            <div className="flex h-11 items-center rounded-lg border border-gray-200 bg-gray-50 px-3 transition focus-within:border-[var(--primary)] focus-within:bg-white focus-within:ring-2 focus-within:ring-[var(--primary)]/10">
+            <div className={inputWrapper()}>
               <input
                 id="time"
                 name="time"
                 type="time"
                 value={time}
                 onChange={(e) => setTime(e.target.value)}
-                className="w-full min-w-0 bg-transparent text-sm text-[var(--text)] outline-none"
+                className={inputClass}
               />
 
               <Clock3
@@ -326,7 +392,10 @@ export default function BookRideForm() {
           </div>
         </div>
 
-        {/* Vehicle */}
+        {/* =================================================
+            VEHICLE
+        ================================================= */}
+
         <div>
           <label
             htmlFor="vehicle"
@@ -335,20 +404,41 @@ export default function BookRideForm() {
             Select Vehicle
           </label>
 
-          <div className="flex h-11 items-center rounded-lg border border-gray-200 bg-gray-50 px-3 transition focus-within:border-[var(--primary)] focus-within:bg-white focus-within:ring-2 focus-within:ring-[var(--primary)]/10">
+          <div className={inputWrapper()}>
             <select
               id="vehicle"
               name="vehicle"
               value={vehicle}
               onChange={(e) => setVehicle(e.target.value)}
-              className="w-full min-w-0 appearance-none bg-transparent text-sm text-[var(--text)] outline-none"
+              className={`
+                ${inputClass}
+                appearance-none
+                cursor-pointer
+              `}
             >
-              <option value="SBS Mini">SBS Mini</option>
-              <option value="SBS Sedan">SBS Sedan</option>
-              <option value="SBS Van">SBS Van</option>
-              <option value="SBS SUV">SBS SUV</option>
-              <option value="SBS MUV">SBS MUV</option>
-              <option value="SBS MUV+">SBS MUV+</option>
+              <option value="SBS Mini">
+                SBS Mini
+              </option>
+
+              <option value="SBS Sedan">
+                SBS Sedan
+              </option>
+
+              <option value="SBS Van">
+                SBS Van
+              </option>
+
+              <option value="SBS SUV">
+                SBS SUV
+              </option>
+
+              <option value="SBS MUV">
+                SBS MUV
+              </option>
+
+              <option value="SBS MUV+">
+                SBS MUV+
+              </option>
             </select>
 
             <ChevronDown
@@ -358,7 +448,10 @@ export default function BookRideForm() {
           </div>
         </div>
 
-        {/* Button */}
+        {/* =================================================
+            BUTTON
+        ================================================= */}
+
         <button
           type="button"
           onClick={handleBookRide}
@@ -385,7 +478,7 @@ export default function BookRideForm() {
             sm:text-base
           "
         >
-          {sending ? "Sending Booking..." : "Book a Ride "}
+          {sending ? "Sending Booking..." : "Book a Ride"}
         </button>
       </div>
     </div>

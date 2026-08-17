@@ -1,29 +1,16 @@
 "use client";
 
-import Link from "next/link";
 import {
   ArrowRight,
   BarChart3,
   Bell,
   BriefcaseBusiness,
   CarFront,
-  CheckCircle2,
-  Clock3,
-  CreditCard,
-  FileText,
-  Headphones,
-  IndianRupee,
-  Map,
-  MapPin,
   Navigation,
-  Phone,
   Route,
-  ShieldCheck,
-  Smartphone,
   Star,
   UserCheck,
   UserRound,
-  Users,
   WalletCards,
 } from "lucide-react";
 
@@ -38,8 +25,6 @@ const services = [
     description:
       "Partner with SBS Taxi to expand your business with dependable transportation solutions, professional service and seamless booking support.",
     icon: BriefcaseBusiness,
-    bg: "bg-blue-50",
-    iconBg: "bg-blue-100",
   },
   {
     number: "02",
@@ -47,8 +32,6 @@ const services = [
     description:
       "Register your vehicles with SBS Taxi, increase fleet utilization, earn consistent income and manage your vehicles efficiently.",
     icon: CarFront,
-    bg: "bg-yellow-50",
-    iconBg: "bg-yellow-100",
   },
   {
     number: "03",
@@ -56,8 +39,6 @@ const services = [
     description:
       "Join our growing driver network with flexible working hours, attractive earning opportunities, reliable trip assignments and ongoing support.",
     icon: UserRound,
-    bg: "bg-emerald-50",
-    iconBg: "bg-emerald-100",
   },
   {
     number: "04",
@@ -65,8 +46,6 @@ const services = [
     description:
       "Enjoy priority bookings, dedicated customer support, comfortable rides and convenient corporate travel solutions with SBS Taxi.",
     icon: Star,
-    bg: "bg-purple-50",
-    iconBg: "bg-purple-100",
   },
 ];
 
@@ -126,161 +105,167 @@ const features = [
 ];
 
 /* =====================================================
-   BENEFITS
-===================================================== */
-
-const benefits = [
-  {
-    title: "Safe & Reliable",
-    description: "Professional and dependable rides",
-    icon: ShieldCheck,
-  },
-  {
-    title: "Transparent Pricing",
-    description: "Clear and honest fares",
-    icon: IndianRupee,
-  },
-  {
-    title: "Available 24/7",
-    description: "Support whenever you need us",
-    icon: Clock3,
-  },
-  {
-    title: "Trusted by Thousands",
-    description: "Growing customer network",
-    icon: Star,
-  },
-];
-
-/* =====================================================
-   SUPPORT ITEMS
-===================================================== */
-
-const supportItems = [
-  "Passenger assistance",
-  "Driver support",
-  "Fleet owner assistance",
-  "Business partner support",
-];
-
-/* =====================================================
-   COMPONENT
+   MAIN COMPONENT
 ===================================================== */
 
 export default function SBSTaxiOverview() {
   return (
     <main className="w-full overflow-hidden bg-white">
 
-
-
-           
-
       {/* =================================================
           SERVICES
       ================================================= */}
 
-      <section className="w-full bg-white py-14 sm:py-16 lg:py-20">
+      <section className="relative w-full bg-white py-16 sm:py-20 lg:py-24">
         <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-10">
 
-          <SectionHeading
-            label="OUR SERVICES"
-            title="Solutions Designed for Everyone"
-            description="Whether you are a passenger, business owner, fleet owner or driver, SBS Taxi provides convenient solutions to make every journey easier."
-          />
+          {/* Section Heading */}
+          <div className="mb-16 sm:mb-20 lg:mb-24">
+            <SectionHeading
+              label="OUR SERVICES"
+              title="Solutions Designed for Everyone"
+              description="Whether you are a passenger, business owner, fleet owner or driver, SBS Taxi provides convenient solutions to make every journey easier."
+            />
+          </div>
 
-          <div className="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4">
-
+          {/* Services Cards */}
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-4">
             {services.map((service) => {
               const Icon = service.icon;
 
               return (
                 <article
                   key={service.number}
-                  className={`
+                  className="
                     group
                     relative
+                    flex
+                    min-h-[350px]
+                    flex-col
                     overflow-hidden
-                    rounded-3xl
+                    rounded-[28px]
                     border
-                    border-black/5
-                    ${service.bg}
-                    p-6
-                    text-center
-                    shadow-sm
+                    border-[var(--border)]
+                    bg-white
+                    p-7
+                    shadow-[0_8px_30px_rgba(0,0,0,0.04)]
                     transition-all
                     duration-300
                     hover:-translate-y-2
-                    hover:shadow-xl
-                  `}
+                    hover:border-[var(--secondary)]
+                    hover:shadow-[0_20px_45px_rgba(0,0,0,0.08)]
+                  "
                 >
-
                   {/* Number */}
-                  <div
+                  <span
                     className="
                       absolute
-                      left-4
-                      top-4
-                      
-                      flex
-                      h-11
-                      w-11
-                      items-center
-                      justify-center
-                      rounded-full
-                      bg-white
-                      text-base
-                      font-extrabold
+                      right-6
+                      top-5
+                      font-[family-name:var(--font-instrument)]
+                      text-5xl
+                      font-normal
                       text-[var(--primary)]
-                      shadow-sm
+                      opacity-[0.06]
                     "
                   >
                     {service.number}
-                  </div>
+                  </span>
 
                   {/* Icon */}
                   <div
-                    className={`
-                      mx-auto
+                    className="
                       flex
-                      !h-10
-                      !w-10
-                      !mb-6
+                      h-14
+                      w-14
                       items-center
                       justify-center
-                      !bg-[var(--secondary)]
-                      rounded-full
-                      ${service.iconBg}
-                      transition-transform
+                      rounded-2xl
+                      bg-[var(--secondary)]
+                      text-[var(--primary)]
+                      shadow-sm
+                      transition-all
                       duration-300
-                      group-hover:scale-110
-                    `}
+                      group-hover:scale-105
+                    "
                   >
-                    <Icon
-                      size={20}
-                      strokeWidth={1.7}
-                      className="text-[var(--primary)]"
-                      
+                    <Icon size={25} strokeWidth={1.8} />
+                  </div>
+
+                  {/* Content */}
+                  <div className="mt-8 flex-1">
+                    <h3
+                      className="
+                        max-w-[235px]
+                        font-[family-name:var(--font-instrument)]
+                        text-xl
+                        font-normal
+                        leading-tight
+                        tracking-tight
+                        text-[var(--primary)]
+                      "
+                    >
+                      {service.title}
+                    </h3>
+
+                    <p
+                      className="
+                        mt-4
+                        text-sm
+                        leading-6
+                        text-[var(--text-secondary)]
+                      "
+                    >
+                      {service.description}
+                    </p>
+                  </div>
+
+                  {/* Learn More */}
+                  <div
+                    className="
+                      mt-8
+                      flex
+                      items-center
+                      gap-2
+                      text-xs
+                      font-bold
+                      uppercase
+                      tracking-[0.08em]
+                      text-[var(--primary)]
+                    "
+                  >
+                    Learn More
+
+                    <ArrowRight
+                      size={15}
+                      className="transition-transform duration-300 group-hover:translate-x-1"
                     />
                   </div>
 
-                  <h3 className="mt-6 min-h-[52px] text-lg font-extrabold leading-6 text-[var(--primary)]">
-                    {service.title}
-                  </h3>
-
-                  <p className="mt-4 text-sm leading-6 text-gray-600">
-                    {service.description}
-                  </p>
-
-                  <div className="mt-5 flex items-center justify-center gap-1 text-xs font-bold text-[var(--primary)]">
-                    Learn More
-                    <ArrowRight size={14} />
-                  </div>
-
+                  {/* Bottom Line */}
+                  <div
+                    className="
+                      absolute
+                      bottom-0
+                      left-8
+                      right-8
+                      h-[3px]
+                      origin-center
+                      scale-x-0
+                      rounded-full
+                      bg-[var(--secondary)]
+                      transition-transform
+                      duration-500
+                      group-hover:scale-x-100
+                    "
+                  />
                 </article>
               );
             })}
-
           </div>
+
+          {/* EXTRA SPACE BETWEEN OUR SERVICES AND FEATURES */}
+          <div className="h-28 sm:h-32 lg:h-40" />
         </div>
       </section>
 
@@ -288,88 +273,143 @@ export default function SBSTaxiOverview() {
           FEATURES
       ================================================= */}
 
-      <section className="w-full bg-gray-50 py-14 sm:py-16 lg:py-20">
+      <section className="relative w-full bg-[var(--background)] py-16 sm:py-20 lg:py-24">
         <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-10">
 
-          <SectionHeading
-            label="FEATURES"
-            title="Everything You Need in One Platform"
-            description="Powerful tools and smart technology help passengers, drivers, fleet owners and businesses manage transportation efficiently."
-          />
+          {/* Section Heading */}
+          <div className="mb-16 sm:mb-20 lg:mb-24">
+            <SectionHeading
+              label="FEATURES"
+              title="Everything You Need in One Platform"
+              description="Powerful tools and smart technology help passengers, drivers, fleet owners and businesses manage transportation efficiently."
+            />
+          </div>
 
-          <div className="mt-10 grid grid-cols-1 overflow-hidden rounded-3xl border border-gray-200 bg-white sm:grid-cols-2 lg:grid-cols-4">
-
+          {/* Features Grid */}
+          <div
+            className="
+              grid
+              grid-cols-1
+              overflow-hidden
+              rounded-[28px]
+              border
+              border-[var(--border)]
+              bg-white
+              shadow-[0_8px_35px_rgba(0,0,0,0.04)]
+              sm:grid-cols-2
+              lg:grid-cols-4
+            "
+          >
             {features.map((feature, index) => {
               const Icon = feature.icon;
 
               return (
                 <article
                   key={feature.title}
-                  className={`
+                  className="
                     group
-                    border-gray-200
-                    p-6
+                    relative
+                    min-h-[235px]
+                    border-b
+                    border-[var(--border)]
+                    p-7
                     transition-all
                     duration-300
-                    hover:bg-blue-50
-                    ${
-                      index < 4
-                        ? "border-b"
-                        : "border-b"
-                    }
-                    sm:nth-[odd]:border-r
+                    hover:bg-[var(--secondary)]/[0.06]
+                    lg:min-h-[250px]
                     lg:border-r
-                    lg:nth-[4n]:border-r-0
-                  `}
+                    lg:last:border-r-0
+                  "
                 >
+                  {/* Number */}
+                  <span
+                    className="
+                      absolute
+                      right-6
+                      top-5
+                      text-xs
+                      font-bold
+                      tracking-wider
+                      text-[var(--primary)]
+                      opacity-20
+                    "
+                  >
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
 
-                  <div className="flex items-start gap-4">
-
-                    {/* Icon */}
-                    <div
-                      className="
-                        flex
-                        h-14
-                        w-14
-                        shrink-0
-                        items-center
-                        justify-center
-                        rounded-2xl
-                        bg-[var(--secondary-light)]
-                        transition-all
-                        duration-300
-                        group-hover:bg-[var(--secondary)]
-                        group-hover:scale-105
-                      "
-                    >
-                      <Icon
-                        size={27}
-                        strokeWidth={1.8}
-                        className="text-[var(--primary)]"
-                      />
-                    </div>
-
-                    <div>
-                      <h3 className="text-sm font-extrabold leading-5 text-[var(--primary)] sm:text-base">
-                        {feature.title}
-                      </h3>
-
-                      <p className="mt-2 text-xs leading-5 text-gray-600 sm:text-sm sm:leading-6">
-                        {feature.description}
-                      </p>
-                    </div>
-
+                  {/* Icon */}
+                  <div
+                    className="
+                      flex
+                      h-14
+                      w-14
+                      items-center
+                      justify-center
+                      rounded-2xl
+                      bg-[var(--secondary)]
+                      text-[var(--primary)]
+                      shadow-sm
+                      transition-all
+                      duration-300
+                      group-hover:scale-105
+                    "
+                  >
+                    <Icon size={26} strokeWidth={1.8} />
                   </div>
 
+                  {/* Title */}
+                  <h3
+                    className="
+                      mt-7
+                      font-[family-name:var(--font-instrument)]
+                      text-xl
+                      font-normal
+                      leading-tight
+                      tracking-tight
+                      text-[var(--primary)]
+                    "
+                  >
+                    {feature.title}
+                  </h3>
+
+                  {/* Description */}
+                  <p
+                    className="
+                      mt-3
+                      text-sm
+                      leading-6
+                      text-[var(--text-secondary)]
+                    "
+                  >
+                    {feature.description}
+                  </p>
+
+                  {/* Bottom Line */}
+                  <div
+                    className="
+                      absolute
+                      bottom-0
+                      left-7
+                      right-7
+                      h-[2px]
+                      origin-left
+                      scale-x-0
+                      rounded-full
+                      bg-[var(--secondary)]
+                      transition-transform
+                      duration-500
+                      group-hover:scale-x-100
+                    "
+                  />
                 </article>
               );
             })}
-
           </div>
+
+          {/* Space after Features */}
+          <div className="h-16 sm:h-20 lg:h-24" />
         </div>
       </section>
-
-
     </main>
   );
 }
@@ -390,108 +430,64 @@ function SectionHeading({
   return (
     <div className="mx-auto max-w-4xl text-center">
 
+      {/* Label */}
       <div className="flex items-center gap-4">
-
-        <span className="hidden h-px flex-1 bg-[var(--primary)]/20 sm:block" />
+        <span className="hidden h-px flex-1 bg-[var(--primary)]/15 sm:block" />
 
         <span
           className="
             rounded-full
             bg-[var(--primary)]
-            px-6
+            px-5
             py-2
-            text-sm
-            font-extrabold
-            tracking-wide
+            text-[11px]
+            font-bold
+            tracking-[0.16em]
             text-white
-            sm:text-base
+            sm:px-6
+            sm:text-xs
           "
         >
           {label}
         </span>
 
-        <span className="hidden h-px flex-1 bg-[var(--primary)]/20 sm:block" />
-
+        <span className="hidden h-px flex-1 bg-[var(--primary)]/15 sm:block" />
       </div>
 
-      <h2 className="mt-5 text-2xl font-extrabold text-[var(--primary)] sm:text-3xl lg:text-4xl">
+      {/* SPACE AFTER BOTH LABELS */}
+      <div className="h-12 sm:h-14 lg:h-16" />
+
+      {/* Title */}
+      <h2
+        className="
+          font-[family-name:var(--font-instrument)]
+          text-3xl
+          font-normal
+          leading-tight
+          tracking-tight
+          text-[var(--primary)]
+          sm:text-4xl
+          lg:text-5xl
+        "
+      >
         {title}
       </h2>
 
-      <p className="mx-auto mt-4 max-w-3xl text-sm leading-7 text-gray-600 sm:text-base">
+      {/* Description */}
+      <p
+        className="
+          mx-auto
+          mt-6
+          max-w-3xl
+          text-sm
+          leading-7
+          text-[var(--text-secondary)]
+          sm:mt-7
+          sm:text-base
+        "
+      >
         {description}
       </p>
-
-    </div>
-  );
-}
-
-/* =====================================================
-   MINI BENEFIT
-===================================================== */
-
-function MiniBenefit({
-  icon: Icon,
-  text,
-}: {
-  icon: typeof ShieldCheck;
-  text: string;
-}) {
-  return (
-    <div className="flex items-center gap-2 rounded-xl border border-gray-100 bg-white/80 px-3 py-2 shadow-sm">
-      <Icon
-        size={17}
-        className="shrink-0 text-[var(--primary)]"
-      />
-
-      <span className="text-[11px] font-bold text-[var(--primary)] sm:text-xs">
-        {text}
-      </span>
-    </div>
-  );
-}
-
-/* =====================================================
-   SUPPORT ICON
-===================================================== */
-
-function SupportIcon({
-  icon: Icon,
-  label,
-  bg,
-}: {
-  icon: typeof Users;
-  label: string;
-  bg: string;
-}) {
-  return (
-    <div className="text-center">
-
-      <div
-        className={`
-          flex
-          h-24
-          w-24
-          items-center
-          justify-center
-          rounded-full
-          ${bg}
-          shadow-sm
-          sm:h-28
-          sm:w-28
-        `}
-      >
-        <Icon
-          size={48}
-          strokeWidth={1.5}
-          className="text-[var(--primary)]"
-        />
-      </div>
-
-      <p className="mt-3 text-xs font-extrabold text-[var(--primary)]">
-        {label}
-      </p>
-
     </div>
   );
 }

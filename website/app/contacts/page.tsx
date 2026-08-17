@@ -19,28 +19,6 @@ export default function ContactPage() {
           SINGLE ROW
       ====================================================== */}
 
-      <section
-        className="
-          w-full
-          bg-white
-          py-8
-          sm:py-10
-          lg:py-12
-        "
-      >
-        <div
-          className="
-            mx-auto
-            w-full
-            max-w-7xl
-            px-4
-            sm:px-6
-            lg:px-8
-          "
-        >
-          <FeatureCards />
-        </div>
-      </section>
 
       {/* =====================================================
           CONTACT INFO + CONTACT FORM

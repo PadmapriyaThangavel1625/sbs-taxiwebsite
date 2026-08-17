@@ -13,6 +13,7 @@ import {
   Phone,
   Send,
   User,
+  Users,
 } from "lucide-react";
 
 /* ============================================================
@@ -181,6 +182,10 @@ export default function ContactForm() {
       formData.get("drop") || ""
     ).trim();
 
+    const passengers = String(
+      formData.get("passengers") || ""
+    ).trim();
+
     const vehicleType = String(
       formData.get("vehicleType") || ""
     ).trim();
@@ -189,8 +194,6 @@ export default function ContactForm() {
       formData.get("subject") || ""
     ).trim();
 
-    /* Message is OPTIONAL */
-
     const message = String(
       formData.get("message") || ""
     ).trim();
@@ -198,8 +201,6 @@ export default function ContactForm() {
     /* ========================================================
        VALIDATION
     ======================================================== */
-
-    /* NAME */
 
     if (name.length < 2) {
       showError("Please enter a valid name.");
@@ -251,6 +252,23 @@ export default function ContactForm() {
       return;
     }
 
+    /* PASSENGERS */
+
+    const passengerCount =
+      Number(passengers);
+
+    if (
+      !passengers ||
+      !Number.isInteger(passengerCount) ||
+      passengerCount < 1 ||
+      passengerCount > 50
+    ) {
+      showError(
+        "Please select a valid number of passengers."
+      );
+      return;
+    }
+
     /* VEHICLE */
 
     if (!vehicleType) {
@@ -269,7 +287,7 @@ export default function ContactForm() {
       return;
     }
 
-    /* MESSAGE OPTIONAL */
+    /* MESSAGE */
 
     if (
       message.length > MAX_MESSAGE_LENGTH
@@ -285,11 +303,17 @@ export default function ContactForm() {
     ======================================================== */
 
     const data = {
+      bookingType: "contact-enquiry",
+
       name,
       email,
       phone,
+
       pickup,
       drop,
+
+      passengers: passengerCount,
+
       vehicleType,
       subject,
       message,
@@ -302,9 +326,10 @@ export default function ContactForm() {
     const controller =
       new AbortController();
 
-    const timeout = window.setTimeout(() => {
-      controller.abort();
-    }, REQUEST_TIMEOUT);
+    const timeout =
+      window.setTimeout(() => {
+        controller.abort();
+      }, REQUEST_TIMEOUT);
 
     /* ========================================================
        SEND
@@ -348,7 +373,7 @@ export default function ContactForm() {
       }
 
       /* ======================================================
-         API SUCCESS CHECK
+         API SUCCESS
       ====================================================== */
 
       if (result.success === false) {
@@ -391,9 +416,7 @@ export default function ContactForm() {
         error
       );
 
-      /* ======================================================
-         TIMEOUT
-      ====================================================== */
+      /* TIMEOUT */
 
       if (
         error instanceof DOMException &&
@@ -406,9 +429,7 @@ export default function ContactForm() {
         return;
       }
 
-      /* ======================================================
-         NORMAL ERROR
-      ====================================================== */
+      /* NORMAL ERROR */
 
       showError(
         error instanceof Error
@@ -438,17 +459,15 @@ export default function ContactForm() {
         shadow-sm
       "
     >
+
       {/* =====================================================
           TOP LINE
       ====================================================== */}
 
-      <div
-        className="
-          h-[3px]
-          w-full
-          bg-[var(--primary)]
-        "
-      />
+      <div className="flex h-[3px] w-full">
+  <div className="w-1/2 bg-[var(--primary)]" />
+  <div className="w-1/2 bg-[var(--secondary)]" />
+</div>
 
       <div className="p-5 sm:p-7 lg:p-8">
 
@@ -485,6 +504,7 @@ export default function ContactForm() {
             Questions about bookings, pricing, or
             our taxi services? We're here to help.
           </p>
+
         </div>
 
         {/* ===================================================
@@ -513,10 +533,12 @@ export default function ContactForm() {
             {/* NAME */}
 
             <div>
+
               <label
                 htmlFor="name"
                 className={labelClassName}
               >
+
                 <User
                   className="
                     h-3.5
@@ -530,6 +552,7 @@ export default function ContactForm() {
                 <span className="text-[var(--primary)]">
                   *
                 </span>
+
               </label>
 
               <input
@@ -544,15 +567,18 @@ export default function ContactForm() {
                 disabled={loading}
                 className={inputClassName}
               />
+
             </div>
 
             {/* EMAIL */}
 
             <div>
+
               <label
                 htmlFor="email"
                 className={labelClassName}
               >
+
                 <Mail
                   className="
                     h-3.5
@@ -566,6 +592,7 @@ export default function ContactForm() {
                 <span className="text-[var(--primary)]">
                   *
                 </span>
+
               </label>
 
               <input
@@ -579,7 +606,9 @@ export default function ContactForm() {
                 disabled={loading}
                 className={inputClassName}
               />
+
             </div>
+
           </div>
 
           {/* =================================================
@@ -598,10 +627,12 @@ export default function ContactForm() {
             {/* PHONE */}
 
             <div>
+
               <label
                 htmlFor="phone"
                 className={labelClassName}
               >
+
                 <Phone
                   className="
                     h-3.5
@@ -615,6 +646,7 @@ export default function ContactForm() {
                 <span className="text-[var(--primary)]">
                   *
                 </span>
+
               </label>
 
               <input
@@ -629,15 +661,18 @@ export default function ContactForm() {
                 disabled={loading}
                 className={inputClassName}
               />
+
             </div>
 
             {/* PICKUP */}
 
             <div>
+
               <label
                 htmlFor="pickup"
                 className={labelClassName}
               >
+
                 <MapPin
                   className="
                     h-3.5
@@ -651,6 +686,7 @@ export default function ContactForm() {
                 <span className="text-[var(--primary)]">
                   *
                 </span>
+
               </label>
 
               <input
@@ -664,11 +700,13 @@ export default function ContactForm() {
                 disabled={loading}
                 className={inputClassName}
               />
+
             </div>
+
           </div>
 
           {/* =================================================
-              DROP + VEHICLE
+              DROP + PASSENGERS
           ================================================= */}
 
           <div
@@ -683,10 +721,12 @@ export default function ContactForm() {
             {/* DROP */}
 
             <div>
+
               <label
                 htmlFor="drop"
                 className={labelClassName}
               >
+
                 <MapPin
                   className="
                     h-3.5
@@ -700,6 +740,7 @@ export default function ContactForm() {
                 <span className="text-[var(--primary)]">
                   *
                 </span>
+
               </label>
 
               <input
@@ -713,15 +754,179 @@ export default function ContactForm() {
                 disabled={loading}
                 className={inputClassName}
               />
+
             </div>
+
+            {/* PASSENGERS */}
+
+            <div>
+
+              <label
+                htmlFor="passengers"
+                className={labelClassName}
+              >
+
+                <Users
+                  className="
+                    h-3.5
+                    w-3.5
+                    text-[var(--primary)]
+                  "
+                />
+
+                Number of Passengers
+
+                <span className="text-[var(--primary)]">
+                  *
+                </span>
+
+              </label>
+
+              <div className="relative">
+
+                <select
+                  id="passengers"
+                  name="passengers"
+                  required
+                  defaultValue=""
+                  disabled={loading}
+                  className={`
+                    ${inputClassName}
+                    appearance-none
+                    pr-11
+                  `}
+                >
+
+                  <option
+                    value=""
+                    disabled
+                  >
+                    Select Passengers
+                  </option>
+
+                  <option value="1">
+                    1 Passenger
+                  </option>
+
+                  <option value="2">
+                    2 Passengers
+                  </option>
+
+                  <option value="3">
+                    3 Passengers
+                  </option>
+
+                  <option value="4">
+                    4 Passengers
+                  </option>
+
+                  <option value="5">
+                    5 Passengers
+                  </option>
+
+                  <option value="6">
+                    6 Passengers
+                  </option>
+
+                  <option value="7">
+                    7 Passengers
+                  </option>
+
+                  <option value="8">
+                    8 Passengers
+                  </option>
+
+                  <option value="9">
+                    9 Passengers
+                  </option>
+
+                  <option value="10">
+                    10 Passengers
+                  </option>
+
+                  <option value="11">
+                    11 Passengers
+                  </option>
+
+                  <option value="12">
+                    12 Passengers
+                  </option>
+
+                  <option value="13">
+                    13 Passengers
+                  </option>
+
+                  <option value="14">
+                    14 Passengers
+                  </option>
+
+                  <option value="15">
+                    15 Passengers
+                  </option>
+
+                  <option value="16">
+                    16 Passengers
+                  </option>
+
+                  <option value="17">
+                    17 Passengers
+                  </option>
+
+                  <option value="18">
+                    18 Passengers
+                  </option>
+
+                  <option value="19">
+                    19 Passengers
+                  </option>
+
+                  <option value="20">
+                    20 Passengers
+                  </option>
+
+                </select>
+
+                <ChevronDown
+                  className="
+                    pointer-events-none
+                    absolute
+                    right-4
+                    top-1/2
+                    h-4
+                    w-4
+                    -translate-y-1/2
+                    text-[var(--text-secondary)]
+                  "
+                />
+
+              </div>
+
+            </div>
+
+          </div>
+
+          {/* =================================================
+              VEHICLE + SERVICE
+          ================================================= */}
+
+          <div
+            className="
+              grid
+              grid-cols-1
+              gap-5
+              sm:grid-cols-2
+            "
+          >
 
             {/* VEHICLE */}
 
             <div>
+
               <label
                 htmlFor="vehicleType"
                 className={labelClassName}
               >
+
                 <CarFront
                   className="
                     h-3.5
@@ -735,6 +940,7 @@ export default function ContactForm() {
                 <span className="text-[var(--primary)]">
                   *
                 </span>
+
               </label>
 
               <div className="relative">
@@ -751,7 +957,11 @@ export default function ContactForm() {
                     pr-11
                   `}
                 >
-                  <option value="" disabled>
+
+                  <option
+                    value=""
+                    disabled
+                  >
                     Select Vehicle
                   </option>
 
@@ -778,6 +988,7 @@ export default function ContactForm() {
                   <option value="SBS MUV+">
                     SBS MUV+
                   </option>
+
                 </select>
 
                 <ChevronDown
@@ -792,107 +1003,117 @@ export default function ContactForm() {
                     text-[var(--text-secondary)]
                   "
                 />
+
               </div>
+
             </div>
-          </div>
 
-          {/* =================================================
-              SERVICE REQUIRED
-          ================================================= */}
+            {/* SERVICE */}
 
-          <div>
+            <div>
 
-            <label
-              htmlFor="subject"
-              className={labelClassName}
-            >
-              <MessageSquare
-                className="
-                  h-3.5
-                  w-3.5
-                  text-[var(--primary)]
-                "
-              />
-
-              Service Required
-
-              <span className="text-[var(--primary)]">
-                *
-              </span>
-            </label>
-
-            <div className="relative">
-
-              <select
-                id="subject"
-                name="subject"
-                required
-                defaultValue=""
-                disabled={loading}
-                className={`
-                  ${inputClassName}
-                  appearance-none
-                  pr-11
-                `}
+              <label
+                htmlFor="subject"
+                className={labelClassName}
               >
-                <option value="" disabled>
-                  Select Service
-                </option>
 
-                <option value="Local City Rides">
-                  Local City Rides
-                </option>
+                <MessageSquare
+                  className="
+                    h-3.5
+                    w-3.5
+                    text-[var(--primary)]
+                  "
+                />
 
-                <option value="Outstation Trips">
-                  Outstation Trips
-                </option>
+                Service Required
 
-                <option value="Airport Transfers">
-                  Airport Transfers
-                </option>
+                <span className="text-[var(--primary)]">
+                  *
+                </span>
 
-                <option value="One Way Trips">
-                  One Way Trips
-                </option>
+              </label>
 
-                <option value="Round Trips">
-                  Round Trips
-                </option>
+              <div className="relative">
 
-                <option value="Corporate Trips">
-                  Corporate Trips
-                </option>
+                <select
+                  id="subject"
+                  name="subject"
+                  required
+                  defaultValue=""
+                  disabled={loading}
+                  className={`
+                    ${inputClassName}
+                    appearance-none
+                    pr-11
+                  `}
+                >
 
-                <option value="Temple Tours">
-                  Temple Tours
-                </option>
+                  <option
+                    value=""
+                    disabled
+                  >
+                    Select Service
+                  </option>
 
-                <option value="General Enquiry">
-                  General Enquiry
-                </option>
+                  <option value="Local City Rides">
+                    Local City Rides
+                  </option>
 
-                <option value="Customer Support">
-                  Customer Support
-                </option>
-              </select>
+                  <option value="Outstation Trips">
+                    Outstation Trips
+                  </option>
 
-              <ChevronDown
-                className="
-                  pointer-events-none
-                  absolute
-                  right-4
-                  top-1/2
-                  h-4
-                  w-4
-                  -translate-y-1/2
-                  text-[var(--text-secondary)]
-                "
-              />
+                  <option value="Airport Transfers">
+                    Airport Transfers
+                  </option>
+
+                  <option value="One Way Trips">
+                    One Way Trips
+                  </option>
+
+                  <option value="Round Trips">
+                    Round Trips
+                  </option>
+
+                  <option value="Corporate Trips">
+                    Corporate Trips
+                  </option>
+
+                  <option value="Temple Tours">
+                    Temple Tours
+                  </option>
+
+                  <option value="General Enquiry">
+                    General Enquiry
+                  </option>
+
+                  <option value="Customer Support">
+                    Customer Support
+                  </option>
+
+                </select>
+
+                <ChevronDown
+                  className="
+                    pointer-events-none
+                    absolute
+                    right-4
+                    top-1/2
+                    h-4
+                    w-4
+                    -translate-y-1/2
+                    text-[var(--text-secondary)]
+                  "
+                />
+
+              </div>
+
             </div>
+
           </div>
 
           {/* =================================================
-              MESSAGE - OPTIONAL
+              MESSAGE
           ================================================= */}
 
           <div>
@@ -913,6 +1134,7 @@ export default function ContactForm() {
                   mb-0
                 `}
               >
+
                 <MessageSquare
                   className="
                     h-3.5
@@ -933,6 +1155,7 @@ export default function ContactForm() {
                 >
                   (Optional)
                 </span>
+
               </label>
 
               <span
@@ -943,6 +1166,7 @@ export default function ContactForm() {
               >
                 {messageLength}/{MAX_MESSAGE_LENGTH}
               </span>
+
             </div>
 
             <textarea
@@ -963,6 +1187,7 @@ export default function ContactForm() {
                 leading-6
               `}
             />
+
           </div>
 
           {/* =================================================
@@ -997,6 +1222,7 @@ export default function ContactForm() {
                 }
               `}
             >
+
               {status.type === "success" ? (
                 <CheckCircle2
                   className="
@@ -1020,6 +1246,7 @@ export default function ContactForm() {
               <p className="leading-5">
                 {status.message}
               </p>
+
             </div>
           )}
 
@@ -1059,6 +1286,7 @@ export default function ContactForm() {
               disabled:opacity-60
             "
           >
+
             {loading ? (
               <>
                 <Loader2
@@ -1086,6 +1314,7 @@ export default function ContactForm() {
                 Send Message
               </>
             )}
+
           </button>
 
           {/* =================================================

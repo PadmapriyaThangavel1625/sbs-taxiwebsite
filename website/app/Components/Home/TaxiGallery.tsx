@@ -38,7 +38,7 @@ export default function TaxiGallery() {
       <div className="mx-auto mb-10 max-w-3xl px-4 text-center">
 
         <span className="text-lg font-bold uppercase tracking-[0.2em] text-[var(--secondary)]">
-          Our Gallery
+          Our Fleet
         </span>
 
         <h2 className="mt-3 text-3xl font-extrabold text-[var(--primary)] sm:text-4xl lg:text-5xl">

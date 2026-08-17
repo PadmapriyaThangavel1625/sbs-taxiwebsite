@@ -20,12 +20,7 @@ export default function FleetPage() {
       <FleetSection />
 
       {/* Offers */}
-      
-      <section className="section-bg py-6 sm:py-8 lg:py-10 ">
-        <div className="container-custom">
-          <BenefitsBar />
-        </div>
-      </section>
+   
     </main>
   );
 }

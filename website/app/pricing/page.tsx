@@ -27,6 +27,21 @@ export default function PricingPage() {
             >
               Choose Your Ride
             </h2>
+             <p
+            className="
+              mx-auto
+              mt-3
+              max-w-2xl
+              font-[family-name:var(--font-jakarta)]
+              text-sm
+              leading-6
+              text-[var(--text-secondary)]
+              sm:text-base
+            "
+          >
+            Choose from our well-maintained fleet of hatchbacks,
+            sedans, SUVs, vans and premium vehicles for every journey.
+          </p>
 
             <div
               className="

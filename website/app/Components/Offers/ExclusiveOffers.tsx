@@ -61,93 +61,123 @@ export default function ExclusiveOffers() {
       className="
         section-bg
         w-full
-        py-8
-
-        sm:py-10
-
-        md:py-12
-
-        lg:py-14
+        py-10
+        sm:py-12
+        md:py-14
+        lg:py-16
       "
     >
-      {/* =====================================================
-          SAME WIDTH STRUCTURE
-      ====================================================== */}
-
       <div
         className="
           mx-auto
           w-full
           max-w-7xl
           px-4
-
           sm:px-6
-
           lg:px-8
         "
       >
         {/* ===================================================
-            HEADING
+            SECTION HEADING
         ==================================================== */}
-
         <div
           className="
-            mb-6
+            mb-8
             text-center
-
-            sm:mb-8
-
-            md:mb-9
+            sm:mb-10
+            md:mb-12
           "
         >
-          <h2
-            className="
-              text-xl
-              font-bold
-              leading-tight
-              text-heading
-
-              sm:text-2xl
-
-              md:text-3xl
-
-              lg:text-[32px]
-            "
-          >
-            Exclusive Offers
-          </h2>
-
+          {/* Label */}
           <div
             className="
-              mx-auto
-              mt-2
-              h-1
-              w-10
-              rounded-full
-              bg-[var(--secondary)]
-
-              sm:mt-3
-              sm:w-12
+              mb-4
+              flex
+              items-center
+              justify-center
+              gap-4
             "
-          />
+          >
+            <span
+              className="
+                h-px
+                w-16
+                bg-slate-300
+                sm:w-24
+                md:w-32
+              "
+            />
+
+            <span
+              className="
+                rounded-full
+                bg-[#24428f]
+                px-6
+                py-2
+                text-xs
+                font-bold
+                tracking-[0.12em]
+                text-white
+              "
+            >
+              EXCLUSIVE OFFERS
+            </span>
+
+            <span
+              className="
+                h-px
+                w-16
+                bg-slate-300
+                sm:w-24
+                md:w-32
+              "
+            />
+          </div>
+
+          {/* Main Heading */}
+          <h2
+            className="
+              font-serif
+              text-3xl
+              leading-tight
+              text-black
+              sm:text-4xl
+              md:text-5xl
+            "
+          >
+            Special Offers for Every Journey
+          </h2>
+
+          {/* Description */}
+          <p
+            className="
+              mx-auto
+              mt-5
+              max-w-3xl
+              text-sm
+              leading-7
+              text-gray-700
+              sm:text-base
+            "
+          >
+            Save more on your rides with exclusive discounts and
+            special offers designed to make every journey with SBS
+            Taxi more rewarding.
+          </p>
         </div>
 
         {/* ===================================================
             OFFERS GRID
         ==================================================== */}
-
         <div
           className="
             grid
             grid-cols-1
             gap-4
-
             sm:grid-cols-2
             sm:gap-5
-
             lg:grid-cols-4
             lg:gap-5
-
             xl:gap-6
           "
         >

@@ -2,18 +2,67 @@
 // SBS TAXI CONFIGURATION
 // =====================================================
 
+export type MapPoint = {
+  lat: number;
+  lng: number;
+};
+
+// =====================================================
+// DESTINATION SPOT
+// =====================================================
+
 export type DestinationSpot = {
   name: string;
   description: string;
   image: string;
+
+  // Tourist place coordinates
+  lat: number;
+  lng: number;
 };
+
+// =====================================================
+// DESTINATION ROUTE
+// =====================================================
+
+export type DestinationRoute = {
+  // Starting location
+  start: MapPoint;
+
+  // Main destination
+  destination: MapPoint;
+
+  // Tourist places inside destination
+  touristPlaces: Array<
+    MapPoint & {
+      name: string;
+    }
+  >;
+};
+
+// =====================================================
+// DESTINATION
+// =====================================================
 
 export type Destination = {
   name: string;
   km: string;
   price: string;
   image: string;
+
   spots: DestinationSpot[];
+
+  route: DestinationRoute;
+};
+
+// =====================================================
+// COMMON START LOCATION
+// SBS TAXI - ERODE
+// =====================================================
+
+const ERODE_LOCATION: MapPoint = {
+  lat: 11.341036,
+  lng: 77.717164,
 };
 
 // =====================================================
@@ -21,561 +70,1424 @@ export type Destination = {
 // =====================================================
 
 export const destinations: Destination[] = [
+  // ===================================================
+  // MADURAI
+  // ===================================================
+
   {
     name: "Madurai",
     km: "220 km",
     price: "2499",
+
     image:
       "https://images.unsplash.com/photo-1572146462570-2129a547e6dd?q=80&w=735&auto=format&fit=crop",
+
+    route: {
+      start: ERODE_LOCATION,
+
+      destination: {
+        lat: 9.9252,
+        lng: 78.1198,
+      },
+
+      touristPlaces: [
+        {
+          name: "Meenakshi Amman Temple",
+          lat: 9.9195,
+          lng: 78.1193,
+        },
+        {
+          name: "Thirumalai Nayakkar Palace",
+          lat: 9.9177,
+          lng: 78.1194,
+        },
+        {
+          name: "Gandhi Memorial Museum",
+          lat: 9.9328,
+          lng: 78.1367,
+        },
+        {
+          name: "Alagar Koyil",
+          lat: 10.095,
+          lng: 78.327,
+        },
+        {
+          name: "Thirupparankundram Temple",
+          lat: 9.8815,
+          lng: 78.0737,
+        },
+      ],
+    },
 
     spots: [
       {
         name: "Meenakshi Amman Temple",
+
         description:
           "A historic Hindu temple dedicated to Meenakshi and Sundareshwarar, famous for its colorful gopurams, detailed sculptures, and magnificent architecture.",
+
         image:
           "https://images.unsplash.com/photo-1692173248120-59547c3d4653?w=800&auto=format&fit=crop&q=80",
+
+        lat: 9.9195,
+        lng: 78.1193,
       },
+
       {
         name: "Thirumalai Nayakkar Palace",
+
         description:
           "A magnificent 17th-century palace known for its huge pillars, grand courtyard, beautiful arches, and impressive Indo-Saracenic architecture.",
+
         image:
           "https://media.istockphoto.com/id/1366764347/photo/madurai-tamil-nadu-india-wide-view-of-an-ancient-thirumalai-nayak-palace-sculptures-and.webp?a=1&b=1&s=800&w=0&k=20&c=MS1hZYiaIpUJtpMzLl7BP06bDTPShZAu-IU3PM92ILc=",
+
+        lat: 9.9177,
+        lng: 78.1194,
       },
+
       {
         name: "Gandhi Memorial Museum",
+
         description:
           "A historic museum in Madurai that preserves photographs, documents, and important artifacts connected with Mahatma Gandhi and India's freedom movement.",
+
         image:
           "https://media.istockphoto.com/id/1407795903/photo/thirumalai-naicker-palace-in-the-state-of-tamil-nadu-in-india.webp?a=1&b=1&s=800&w=0&k=20&c=rbdggBWNMrxJafYJfCchd6Lm6UNsFWIyfnf7K363WBM=",
+
+        lat: 9.9328,
+        lng: 78.1367,
       },
+
       {
         name: "Alagar Koyil",
+
         description:
           "A beautiful Vishnu temple located in the scenic Alagar Hills, surrounded by green forests and peaceful natural scenery.",
+
         image:
           "https://media.istockphoto.com/id/1645978111/photo/a-scene-of-a-very-famous-temple-tower-view-of-adi-kumbeswarar-temple-and-one-among-travel.webp?a=1&b=1&s=800&w=0&k=20&c=8rIVNYvXs3Yb-LBrSJxYwQd7UCPepI6H7HrL2PdP3v4=",
+
+        lat: 10.095,
+        lng: 78.327,
       },
+
       {
         name: "Thirupparankundram Temple",
+
         description:
           "An ancient rock-cut temple dedicated to Lord Murugan and one of the important Arupadai Veedu pilgrimage sites in Tamil Nadu.",
+
         image:
           "https://media.istockphoto.com/id/1393587939/photo/temples-of-tamil-nadu.webp?a=1&b=1&s=800&w=0&k=20&c=0mw5AKdaMu3AM3CNrAjKPtQmjkBjHWNDTHvcfiTGpxQ=",
+
+        lat: 9.8815,
+        lng: 78.0737,
       },
     ],
   },
+
+  // ===================================================
+  // KANYAKUMARI
+  // ===================================================
 
   {
     name: "Kanyakumari",
     km: "310 km",
     price: "3499",
+
     image:
       "https://images.unsplash.com/photo-1610902552120-c577dbde88a8?w=600&auto=format&fit=crop&q=60",
+
+    route: {
+      start: ERODE_LOCATION,
+
+      destination: {
+        lat: 8.0883,
+        lng: 77.5385,
+      },
+
+      touristPlaces: [
+        {
+          name: "Thiruvalluvar Statue",
+          lat: 8.0776,
+          lng: 77.5568,
+        },
+        {
+          name: "Vivekananda Rock Memorial",
+          lat: 8.0773,
+          lng: 77.551,
+        },
+        {
+          name: "Kanyakumari Beach",
+          lat: 8.079,
+          lng: 77.552,
+        },
+        {
+          name: "Bhagavathi Amman Temple",
+          lat: 8.078,
+          lng: 77.549,
+        },
+        {
+          name: "Sunset Point",
+          lat: 8.0789,
+          lng: 77.5385,
+        },
+      ],
+    },
 
     spots: [
       {
         name: "Thiruvalluvar Statue",
+
         description:
           "A massive statue dedicated to Tamil poet and philosopher Thiruvalluvar, standing on a rocky island near the Vivekananda Rock Memorial.",
+
         image:
           "https://images.unsplash.com/photo-1736319286940-5379b582256b?w=600&auto=format&fit=crop&q=60",
+
+        lat: 8.0776,
+        lng: 77.5568,
       },
+
       {
         name: "Vivekananda Rock Memorial",
+
         description:
           "A famous memorial located on a rocky island off the coast of Kanyakumari, associated with Swami Vivekananda and offering beautiful sea views.",
+
         image:
           "https://media.istockphoto.com/id/1301792905/photo/basava-statue-under-baldachin-at-sri-sangameshwar-temple-bagalkot-karnataka-india.webp?a=1&b=1&s=612x612&w=0&k=20&c=ffXm57peqpFdkBcjPGPpzlh3bW0IL4kolY9DRmUwqIA=",
+
+        lat: 8.0773,
+        lng: 77.551,
       },
+
       {
         name: "Kanyakumari Beach",
+
         description:
           "A popular coastal destination famous for spectacular sunrise and sunset views and the meeting of three major bodies of water.",
+
         image:
           "https://images.unsplash.com/photo-1728439910260-fab99499117a?w=600&auto=format&fit=crop&q=60",
+
+        lat: 8.079,
+        lng: 77.552,
       },
+
       {
         name: "Bhagavathi Amman Temple",
+
         description:
           "An important coastal temple dedicated to Goddess Bhagavathi Amman and one of the major spiritual attractions of Kanyakumari.",
+
         image:
           "https://images.unsplash.com/photo-1573352763925-82bd5dfc31d1?w=600&auto=format&fit=crop&q=60",
+
+        lat: 8.078,
+        lng: 77.549,
       },
+
       {
         name: "Sunset Point",
+
         description:
           "A popular location for watching the sun set over the sea, creating beautiful evening views along the Kanyakumari coastline.",
+
         image:
           "https://images.unsplash.com/photo-1589564974428-5766540caa67?w=600&auto=format&fit=crop&q=60",
+
+        lat: 8.0789,
+        lng: 77.5385,
       },
     ],
   },
+
+  // ===================================================
+  // COIMBATORE
+  // ===================================================
 
   {
     name: "Coimbatore",
     km: "150 km",
     price: "1999",
+
     image:
       "https://media.istockphoto.com/id/1499375304/photo/lord-shiva-112-feet-statue-in-velliangiri-hills-during-sunrise.webp?a=1&b=1&s=612x612&w=0&k=20&c=f58T-1cqjRv3dMelOWGXvlLMVcf1Zr6g5rbv7a4EYnI=",
+
+    route: {
+      start: ERODE_LOCATION,
+
+      destination: {
+        lat: 11.0168,
+        lng: 76.9558,
+      },
+
+      touristPlaces: [
+        {
+          name: "Marudamalai Temple",
+          lat: 11.0457,
+          lng: 76.8388,
+        },
+        {
+          name: "Isha Yoga Center",
+          lat: 10.972,
+          lng: 76.735,
+        },
+        {
+          name: "Gedee Car Museum",
+          lat: 11.0007,
+          lng: 76.967,
+        },
+        {
+          name: "VOC Park",
+          lat: 11.002,
+          lng: 76.967,
+        },
+        {
+          name: "Ukkadam Lake",
+          lat: 10.9905,
+          lng: 76.955,
+        },
+      ],
+    },
 
     spots: [
       {
         name: "Marudamalai Temple",
+
         description:
           "A popular hill temple dedicated to Lord Murugan, located on the western side of Coimbatore and surrounded by scenic hills.",
+
         image:
           "https://media.istockphoto.com/id/1150313896/photo/temple-india-marudhamalai-coimbatore-view.webp?a=1&b=1&s=612x612&w=0&k=20&c=Z9pUdbRTf5xTblA6GEA_K8Y4Qk__gI4oVxE-JJ1FQxc=",
+
+        lat: 11.0457,
+        lng: 76.8388,
       },
+
       {
         name: "Isha Yoga Center",
+
         description:
           "A well-known spiritual and meditation center near the Velliangiri Mountains, famous for the large Adiyogi statue.",
+
         image:
           "https://media.istockphoto.com/id/1476782272/photo/adiyogi.jpg?s=612x612&w=0&k=20&c=xr4KBWzw_LuBWLGdmVuXtR7logz_HFaz_bn4E5lwydU=",
+
+        lat: 10.972,
+        lng: 76.735,
       },
+
       {
         name: "Gedee Car Museum",
+
         description:
           "A fascinating museum featuring vintage, classic, and rare automobiles, making it a popular attraction for automobile enthusiasts.",
+
         image:
           "https://media.istockphoto.com/id/2175236646/photo/rangpur-bangladesh-august-26-2024-a-historical-building-side-view-of-bangladesh-named-tajhat.webp?a=1&b=1&s=612x612&w=0&k=20&c=TMJs9tk-6co0A1adcgdgdYvRHpGU7ynG2YpfLtSNL9Q=",
+
+        lat: 11.0007,
+        lng: 76.967,
       },
+
       {
         name: "VOC Park",
+
         description:
           "A family-friendly recreational park in Coimbatore with green spaces and entertainment areas.",
+
         image:
           "https://media.istockphoto.com/id/1202797282/photo/avenue-of-plane-tree-in-park.webp?a=1&b=1&s=612x612&w=0&k=20&c=E2bbR1AEruxG9HGgZ7v47wj_Ud6ZP-Y2V_bdDDFYbXE=",
+
+        lat: 11.002,
+        lng: 76.967,
       },
+
       {
         name: "Ukkadam Lake",
+
         description:
           "A peaceful urban lake that provides scenic views, greenery, and opportunities for bird watching and relaxation.",
+
         image:
           "https://media.istockphoto.com/id/2231611001/photo/aliyar-dam-a-popular-reservoir-near-pollachi-in-tamil-nadu-india-set-against-the-backdrop-of.jpg?s=612x612&w=0&k=20&c=p5En18WsWWJxftJa4MwWnt_sU51o5Kl1PzhWnw3gY7g=",
+
+        lat: 10.9905,
+        lng: 76.955,
       },
     ],
   },
+
+  // ===================================================
+  // COURTALLAM
+  // ===================================================
 
   {
     name: "Courtallam",
     km: "160 km",
     price: "1999",
+
     image:
       "https://images.unsplash.com/photo-1433086966358-54859d0ed716?auto=format&fit=crop&w=800&q=75",
+
+    route: {
+      start: ERODE_LOCATION,
+
+      destination: {
+        lat: 8.934,
+        lng: 77.274,
+      },
+
+      touristPlaces: [
+        {
+          name: "Courtallam Main Falls",
+          lat: 8.934,
+          lng: 77.275,
+        },
+        {
+          name: "Five Falls",
+          lat: 8.931,
+          lng: 77.287,
+        },
+        {
+          name: "Old Courtallam Falls",
+          lat: 8.937,
+          lng: 77.255,
+        },
+        {
+          name: "Shenbaga Devi Falls",
+          lat: 8.946,
+          lng: 77.263,
+        },
+        {
+          name: "Palaruvi Falls",
+          lat: 8.880,
+          lng: 77.135,
+        },
+      ],
+    },
 
     spots: [
       {
         name: "Courtallam Main Falls",
+
         description:
           "The most famous waterfall in Courtallam, surrounded by greenery and known as one of the region's major tourist attractions.",
+
         image:
           "https://media.istockphoto.com/id/2246633481/photo/hidden-waterfall-cascading-through-dense-forest.webp?a=1&b=1&s=612x612&w=0&k=20&c=talAhGSnMP4-TlWhLPq_xUKstw4XbpcdlMjIOmszUcw=",
+
+        lat: 8.934,
+        lng: 77.275,
       },
+
       {
         name: "Five Falls",
+
         description:
           "A spectacular waterfall where the water divides into five separate streams, making it one of Courtallam's most popular attractions.",
+
         image:
           "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=800&q=75",
+
+        lat: 8.931,
+        lng: 77.287,
       },
+
       {
         name: "Old Courtallam Falls",
+
         description:
           "A quieter waterfall surrounded by natural scenery, suitable for visitors looking for a peaceful experience.",
+
         image:
           "https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=800&q=75",
+
+        lat: 8.937,
+        lng: 77.255,
       },
+
       {
         name: "Shenbaga Devi Falls",
+
         description:
           "A scenic waterfall located in the forested hills of Courtallam and reached through a natural trekking route.",
+
         image:
           "https://images.unsplash.com/photo-1546587348-d12660c30c50?auto=format&fit=crop&w=800&q=75",
+
+        lat: 8.946,
+        lng: 77.263,
       },
+
       {
         name: "Palaruvi Falls",
+
         description:
           "A beautiful waterfall surrounded by dense greenery, popular with visitors looking for a refreshing nature experience.",
+
         image:
           "https://images.unsplash.com/photo-1513836279014-a89f7a76ae86?auto=format&fit=crop&w=800&q=75",
+
+        lat: 8.88,
+        lng: 77.135,
       },
     ],
   },
+
+  // ===================================================
+  // TIRUCHENDUR
+  // ===================================================
 
   {
     name: "Tiruchendur",
     km: "200 km",
     price: "2399",
+
     image:
       "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=75",
+
+    route: {
+      start: ERODE_LOCATION,
+
+      destination: {
+        lat: 8.497,
+        lng: 78.125,
+      },
+
+      touristPlaces: [
+        {
+          name: "Tiruchendur Murugan Temple",
+          lat: 8.497,
+          lng: 78.125,
+        },
+        {
+          name: "Tiruchendur Beach",
+          lat: 8.492,
+          lng: 78.125,
+        },
+        {
+          name: "Valli Cave",
+          lat: 8.495,
+          lng: 78.125,
+        },
+        {
+          name: "Manapadu Beach",
+          lat: 8.373,
+          lng: 78.037,
+        },
+        {
+          name: "Kulasekarapattinam",
+          lat: 8.385,
+          lng: 78.029,
+        },
+      ],
+    },
 
     spots: [
       {
         name: "Tiruchendur Murugan Temple",
+
         description:
           "A famous seaside temple dedicated to Lord Murugan and one of the six important Murugan pilgrimage temples.",
+
         image:
           "https://media.istockphoto.com/id/1330483974/photo/landscape-view-of-indian-temple-which-situated-on-rock-hill-with-sky-background.webp?a=1&b=1&s=612x612&w=0&k=20&c=oDly30Txr4egMN91sdPIHmht-XYLukrYa3NvFSOg1Ys=",
+
+        lat: 8.497,
+        lng: 78.125,
       },
+
       {
         name: "Tiruchendur Beach",
+
         description:
           "A beautiful beach next to the temple where visitors can enjoy sea views and the coastal atmosphere.",
+
         image:
           "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=75",
+
+        lat: 8.492,
+        lng: 78.125,
       },
+
       {
         name: "Valli Cave",
+
         description:
           "A small rock-cut shrine associated with Goddess Valli and the legends surrounding Lord Murugan.",
+
         image:
           "https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=800&q=75",
+
+        lat: 8.495,
+        lng: 78.125,
       },
+
       {
         name: "Manapadu Beach",
+
         description:
           "A scenic coastal village known for its beach, historic church, rocky coastline, and peaceful surroundings.",
+
         image:
           "https://images.unsplash.com/photo-1500375592092-40eb2168fd21?auto=format&fit=crop&w=800&q=75",
+
+        lat: 8.373,
+        lng: 78.037,
       },
+
       {
         name: "Kulasekarapattinam",
+
         description:
           "A coastal town famous for the Mutharamman Temple and its colorful annual Dasara celebrations.",
+
         image:
           "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=800&q=75",
+
+        lat: 8.385,
+        lng: 78.029,
       },
     ],
   },
+
+  // ===================================================
+  // TRICHY
+  // ===================================================
 
   {
     name: "Trichy",
     km: "330 km",
     price: "3399",
+
     image:
       "https://media.istockphoto.com/id/1393633075/photo/kanyakumari-tamil-nadu.webp?a=1&b=1&s=612x612&w=0&k=20&c=QEEPQ4qraAfgGk6BUZ72bmok5-2tZ36kFSCoZ2DfKOQ=",
+
+    route: {
+      start: ERODE_LOCATION,
+
+      destination: {
+        lat: 10.7905,
+        lng: 78.7047,
+      },
+
+      touristPlaces: [
+        {
+          name: "Rockfort Temple",
+          lat: 10.8261,
+          lng: 78.6957,
+        },
+        {
+          name: "Sri Ranganathaswamy Temple",
+          lat: 10.8624,
+          lng: 78.6871,
+        },
+        {
+          name: "Kallanai Dam",
+          lat: 10.8333,
+          lng: 78.815,
+        },
+        {
+          name: "Samayapuram Mariamman Temple",
+          lat: 10.946,
+          lng: 78.754,
+        },
+        {
+          name: "St. Joseph's Church",
+          lat: 10.823,
+          lng: 78.689,
+        },
+      ],
+    },
 
     spots: [
       {
         name: "Rockfort Temple",
+
         description:
           "A famous temple complex built on a massive rock formation and one of the best-known landmarks of Tiruchirappalli.",
+
         image:
           "https://images.unsplash.com/photo-1548013146-72479768bada?auto=format&fit=crop&w=800&q=75",
+
+        lat: 10.8261,
+        lng: 78.6957,
       },
+
       {
         name: "Sri Ranganathaswamy Temple",
+
         description:
           "A magnificent temple complex located on Srirangam island and one of the most important Vaishnavite pilgrimage centers in India.",
+
         image:
           "https://images.unsplash.com/photo-1524498250077-390f9e378fc0?auto=format&fit=crop&w=800&q=75",
+
+        lat: 10.8624,
+        lng: 78.6871,
       },
+
       {
         name: "Kallanai Dam",
+
         description:
           "An ancient Chola-era dam built across the Kaveri River and one of the oldest water-regulation structures still in use.",
+
         image:
           "https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=800&q=75",
+
+        lat: 10.8333,
+        lng: 78.815,
       },
+
       {
         name: "Samayapuram Mariamman Temple",
+
         description:
           "A major temple dedicated to Goddess Mariamman and an important spiritual destination near Trichy.",
+
         image:
           "https://images.unsplash.com/photo-1564507592333-c60657eea523?auto=format&fit=crop&w=800&q=75",
+
+        lat: 10.946,
+        lng: 78.754,
       },
+
       {
         name: "St. Joseph's Church",
+
         description:
           "A historic church known for its distinctive architecture and religious significance in Tiruchirappalli.",
+
         image:
           "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&w=800&q=75",
+
+        lat: 10.823,
+        lng: 78.689,
       },
     ],
   },
+
+  // ===================================================
+  // THANJAVUR
+  // ===================================================
 
   {
     name: "Thanjavur",
     km: "300 km",
     price: "3199",
+
     image:
       "https://images.unsplash.com/photo-1675677044118-3fd84f9deaf0?w=600&auto=format&fit=crop&q=60",
+
+    route: {
+      start: ERODE_LOCATION,
+
+      destination: {
+        lat: 10.787,
+        lng: 79.1378,
+      },
+
+      touristPlaces: [
+        {
+          name: "Brihadeeswarar Temple",
+          lat: 10.7828,
+          lng: 79.1318,
+        },
+        {
+          name: "Thanjavur Palace",
+          lat: 10.786,
+          lng: 79.136,
+        },
+        {
+          name: "Saraswathi Mahal Library",
+          lat: 10.785,
+          lng: 79.136,
+        },
+        {
+          name: "Gangaikonda Cholapuram",
+          lat: 11.204,
+          lng: 79.452,
+        },
+        {
+          name: "Schwartz Church",
+          lat: 10.787,
+          lng: 79.138,
+        },
+      ],
+    },
 
     spots: [
       {
         name: "Brihadeeswarar Temple",
+
         description:
           "A UNESCO World Heritage monument built during the Chola period and famous for its enormous vimana and magnificent stone architecture.",
+
         image:
           "https://images.unsplash.com/photo-1582510003544-4d00b7f74220?w=600&auto=format&fit=crop&q=60",
+
+        lat: 10.7828,
+        lng: 79.1318,
       },
+
       {
         name: "Thanjavur Palace",
+
         description:
           "A historic royal palace complex featuring courtyards, galleries, museums, and important artifacts from the Nayak and Maratha periods.",
+
         image:
           "https://media.istockphoto.com/id/1223785666/photo/old-maratha-palace-in-thanjavur-tamil-nadu-india.webp?a=1&b=1&s=612x612&w=0&k=20&c=3axkDWdk7D-SyuoQM_HcjfqN3wx6arl_s61vMjpPSKA=",
+
+        lat: 10.786,
+        lng: 79.136,
       },
+
       {
         name: "Saraswathi Mahal Library",
+
         description:
           "A historic library containing rare manuscripts, palm-leaf documents, books, and important records from the region's royal history.",
+
         image:
           "https://images.unsplash.com/photo-1521587760476-6c12a4b040da?auto=format&fit=crop&w=800&q=75",
+
+        lat: 10.785,
+        lng: 79.136,
       },
+
       {
         name: "Gangaikonda Cholapuram",
+
         description:
           "A historic Chola capital famous for its magnificent temple and remarkable examples of Chola architecture.",
+
         image:
           "https://images.unsplash.com/photo-1548013146-72479768bada?auto=format&fit=crop&w=800&q=75",
+
+        lat: 11.204,
+        lng: 79.452,
       },
+
       {
         name: "Schwartz Church",
+
         description:
           "A historic church in Thanjavur associated with Christian missionary Christian Friedrich Schwartz and the city's colonial history.",
+
         image:
           "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&w=800&q=75",
+
+        lat: 10.787,
+        lng: 79.138,
       },
     ],
   },
+
+  // ===================================================
+  // RAMESWARAM
+  // ===================================================
 
   {
     name: "Rameswaram",
     km: "350 km",
     price: "3999",
+
     image:
       "https://images.unsplash.com/photo-1706932642959-97cdde19ef0b?w=600&auto=format&fit=crop&q=60",
+
+    route: {
+      start: ERODE_LOCATION,
+
+      destination: {
+        lat: 9.2876,
+        lng: 79.3129,
+      },
+
+      touristPlaces: [
+        {
+          name: "Ramanathaswamy Temple",
+          lat: 9.2881,
+          lng: 79.3174,
+        },
+        {
+          name: "Pamban Bridge",
+          lat: 9.275,
+          lng: 79.2,
+        },
+        {
+          name: "Dhanushkodi",
+          lat: 9.176,
+          lng: 79.417,
+        },
+        {
+          name: "Ariyaman Beach",
+          lat: 9.275,
+          lng: 78.991,
+        },
+        {
+          name: "APJ Abdul Kalam Memorial",
+          lat: 9.285,
+          lng: 79.312,
+        },
+      ],
+    },
 
     spots: [
       {
         name: "Ramanathaswamy Temple",
+
         description:
           "A famous pilgrimage temple known for its exceptionally long corridors, detailed stone pillars, and sacred water wells.",
+
         image:
           "https://images.unsplash.com/photo-1741798037832-6c0c86a6262a?w=600&auto=format&fit=crop&q=60",
+
+        lat: 9.2881,
+        lng: 79.3174,
       },
+
       {
         name: "Pamban Bridge",
+
         description:
           "A famous bridge connecting mainland India with Rameswaram Island and offering spectacular views of the sea.",
+
         image:
           "https://images.unsplash.com/photo-1706932642959-97cdde19ef0b?w=600&auto=format&fit=crop&q=60",
+
+        lat: 9.275,
+        lng: 79.2,
       },
+
       {
         name: "Dhanushkodi",
+
         description:
           "A remote coastal destination at the tip of Rameswaram Island, known for its dramatic beaches and historic ruins.",
+
         image:
           "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=75",
+
+        lat: 9.176,
+        lng: 79.417,
       },
+
       {
         name: "Ariyaman Beach",
+
         description:
           "A peaceful beach destination with clear coastal scenery, suitable for relaxing away from busy tourist areas.",
+
         image:
           "https://images.unsplash.com/photo-1692700827093-f526f0b32923?w=600&auto=format&fit=crop&q=60",
+
+        lat: 9.275,
+        lng: 78.991,
       },
+
       {
         name: "APJ Abdul Kalam Memorial",
+
         description:
           "A memorial dedicated to former Indian President and scientist Dr. A.P.J. Abdul Kalam, showcasing his life and achievements.",
+
         image:
           "https://images.unsplash.com/photo-1564399579883-451a5d44ec08?auto=format&fit=crop&w=800&q=75",
+
+        lat: 9.285,
+        lng: 79.312,
       },
     ],
   },
+
+  // ===================================================
+  // OOTY
+  // ===================================================
 
   {
     name: "Ooty",
     km: "270 km",
     price: "2899",
+
     image:
       "https://images.unsplash.com/photo-1660918738010-295b09857f93?q=80&w=702&auto=format&fit=crop",
+
+    route: {
+      start: ERODE_LOCATION,
+
+      destination: {
+        lat: 11.4064,
+        lng: 76.6932,
+      },
+
+      touristPlaces: [
+        {
+          name: "Ooty Lake",
+          lat: 11.411,
+          lng: 76.691,
+        },
+        {
+          name: "Doddabetta Peak",
+          lat: 11.401,
+          lng: 76.735,
+        },
+        {
+          name: "Botanical Garden",
+          lat: 11.414,
+          lng: 76.707,
+        },
+        {
+          name: "Rose Garden",
+          lat: 11.413,
+          lng: 76.696,
+        },
+        {
+          name: "Pykara Lake",
+          lat: 11.462,
+          lng: 76.634,
+        },
+        {
+          name: "Nilgiri Mountain Railway",
+          lat: 11.406,
+          lng: 76.695,
+        },
+      ],
+    },
 
     spots: [
       {
         name: "Ooty Lake",
+
         description:
           "A scenic artificial lake surrounded by greenery and eucalyptus trees, popular for boating and relaxing walks.",
+
         image:
           "https://images.unsplash.com/photo-1711553186754-0cfbdfe38b8d?w=600&auto=format&fit=crop&q=60",
+
+        lat: 11.411,
+        lng: 76.691,
       },
+
       {
         name: "Doddabetta Peak",
+
         description:
           "The highest peak in the Nilgiri Hills, offering panoramic views of Ooty and the surrounding mountain landscape.",
+
         image:
           "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=800&q=75",
+
+        lat: 11.401,
+        lng: 76.735,
       },
+
       {
         name: "Botanical Garden",
+
         description:
           "A large landscaped garden containing a wide variety of plants, flowers, trees, and beautiful walking areas.",
+
         image:
           "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=800&q=75",
+
+        lat: 11.414,
+        lng: 76.707,
       },
+
       {
         name: "Rose Garden",
+
         description:
           "A beautiful terraced garden featuring a large collection of roses and colorful seasonal flowers.",
+
         image:
           "https://images.unsplash.com/photo-1497250681960-ef046c08a56e?auto=format&fit=crop&w=800&q=75",
+
+        lat: 11.413,
+        lng: 76.696,
       },
+
       {
         name: "Pykara Lake",
+
         description:
           "A scenic lake surrounded by Nilgiri forests and hills, known for boating and the nearby Pykara waterfalls.",
+
         image:
           "https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=800&q=75",
+
+        lat: 11.462,
+        lng: 76.634,
       },
+
       {
         name: "Nilgiri Mountain Railway",
+
         description:
           "A famous mountain railway offering a scenic journey through the Nilgiri Hills, tunnels, bridges, and lush valleys.",
+
         image:
           "https://images.unsplash.com/photo-1514565131-fce0801e5785?auto=format&fit=crop&w=800&q=75",
+
+        lat: 11.406,
+        lng: 76.695,
       },
     ],
   },
+
+  // ===================================================
+  // TIRUPATI
+  // ===================================================
 
   {
     name: "Tirupati",
     km: "450 km",
     price: "4799",
+
     image:
       "https://images.unsplash.com/photo-1733805569204-41768c7d8c0f?w=600&auto=format&fit=crop&q=60",
+
+    route: {
+      start: ERODE_LOCATION,
+
+      destination: {
+        lat: 13.6288,
+        lng: 79.4192,
+      },
+
+      touristPlaces: [
+        {
+          name: "Tirumala Venkateswara Temple",
+          lat: 13.6833,
+          lng: 79.347,
+        },
+        {
+          name: "Kapila Theertham",
+          lat: 13.634,
+          lng: 79.411,
+        },
+        {
+          name: "Sri Padmavathi Temple",
+          lat: 13.628,
+          lng: 79.451,
+        },
+        {
+          name: "Silathoranam",
+          lat: 13.683,
+          lng: 79.35,
+        },
+        {
+          name: "Akasa Ganga",
+          lat: 13.684,
+          lng: 79.349,
+        },
+      ],
+    },
 
     spots: [
       {
         name: "Tirumala Venkateswara Temple",
+
         description:
           "One of India's most important pilgrimage destinations, dedicated to Lord Venkateswara and located on the Tirumala Hills.",
+
         image:
           "https://images.unsplash.com/photo-1733805569204-41768c7d8c0f?w=600&auto=format&fit=crop&q=60",
+
+        lat: 13.6833,
+        lng: 79.347,
       },
+
       {
         name: "Kapila Theertham",
+
         description:
           "A scenic sacred waterfall and temple located at the foot of the Tirumala Hills and dedicated to Lord Shiva.",
+
         image:
           "https://images.unsplash.com/photo-1433086966358-54859d0ed716?auto=format&fit=crop&w=800&q=75",
+
+        lat: 13.634,
+        lng: 79.411,
       },
+
       {
         name: "Sri Padmavathi Temple",
+
         description:
           "A major temple dedicated to Goddess Padmavathi, the consort of Lord Venkateswara, located in Tiruchanoor.",
+
         image:
           "https://images.unsplash.com/photo-1524498250077-390f9e378fc0?auto=format&fit=crop&w=800&q=75",
+
+        lat: 13.628,
+        lng: 79.451,
       },
+
       {
         name: "Silathoranam",
+
         description:
           "A natural rock arch located in the Tirumala Hills and considered an interesting geological attraction.",
+
         image:
           "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=800&q=75",
+
+        lat: 13.683,
+        lng: 79.35,
       },
+
       {
         name: "Akasa Ganga",
+
         description:
           "A sacred natural waterfall in the Tirumala Hills and an important religious attraction for pilgrims.",
+
         image:
           "https://images.unsplash.com/photo-1433086966358-54859d0ed716?auto=format&fit=crop&w=800&q=75",
+
+        lat: 13.684,
+        lng: 79.349,
       },
     ],
   },
+
+  // ===================================================
+  // MUNNAR
+  // ===================================================
 
   {
     name: "Munnar",
     km: "260 km",
     price: "2799",
+
     image:
       "https://images.unsplash.com/photo-1637066742971-726bee8d9f56?w=600&auto=format&fit=crop&q=60",
+
+    route: {
+      start: ERODE_LOCATION,
+
+      destination: {
+        lat: 10.0889,
+        lng: 77.0595,
+      },
+
+      touristPlaces: [
+        {
+          name: "Munnar Tea Gardens",
+          lat: 10.0889,
+          lng: 77.0595,
+        },
+        {
+          name: "Eravikulam National Park",
+          lat: 10.154,
+          lng: 77.065,
+        },
+        {
+          name: "Mattupetty Dam",
+          lat: 10.104,
+          lng: 77.112,
+        },
+        {
+          name: "Echo Point",
+          lat: 10.039,
+          lng: 77.202,
+        },
+        {
+          name: "Top Station",
+          lat: 10.123,
+          lng: 77.248,
+        },
+      ],
+    },
 
     spots: [
       {
         name: "Munnar Tea Gardens",
+
         description:
           "Beautiful rolling hills covered with green tea plantations, creating one of the most recognizable landscapes around Munnar.",
+
         image:
           "https://plus.unsplash.com/premium_photo-1697730334419-fba83fe143b7?w=600&auto=format&fit=crop&q=60",
+
+        lat: 10.0889,
+        lng: 77.0595,
       },
+
       {
         name: "Eravikulam National Park",
+
         description:
           "A protected mountain park famous for the Nilgiri Tahr, grasslands, rolling hills, and seasonal Neelakurinji flowers.",
+
         image:
           "https://media.istockphoto.com/id/2222831805/photo/green-tea-tree-leaves-field-plant-in-camellia-sinensis-organic-farm-close-up-tree-tea.webp?a=1&b=1&s=612x612&w=0&k=20&c=WXTHH7J6h4LFSd-ALP0uyKqnCM5Aj0BMXtnWpKDAKL4=",
+
+        lat: 10.154,
+        lng: 77.065,
       },
+
       {
         name: "Mattupetty Dam",
+
         description:
           "A popular scenic destination surrounded by mountains, forests, and tea plantations, with boating available nearby.",
+
         image:
           "https://media.istockphoto.com/id/2222831805/photo/green-tea-tree-leaves-field-plant-in-camellia-sinensis-organic-farm-close-up-tree-tea.webp?a=1&b=1&s=612x612&w=0&k=20&c=WXTHH7J6h4LFSd-ALP0uyKqnCM5Aj0BMXtnWpKDAKL4=",
+
+        lat: 10.104,
+        lng: 77.112,
       },
+
       {
         name: "Echo Point",
+
         description:
           "A popular viewpoint where visitors can experience natural echoes across the surrounding mountain landscape.",
+
         image:
           "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=800&q=75",
+
+        lat: 10.039,
+        lng: 77.202,
       },
+
       {
         name: "Top Station",
+
         description:
           "A high-altitude viewpoint offering spectacular views of the Western Ghats and neighboring Tamil Nadu landscapes.",
+
         image:
           "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=800&q=75",
+
+        lat: 10.123,
+        lng: 77.248,
       },
     ],
   },
+
+  // ===================================================
+  // KODAIKANAL
+  // ===================================================
 
   {
     name: "Kodaikanal",
     km: "240 km",
     price: "2699",
+
     image:
       "https://images.unsplash.com/photo-1593692716621-1e228b0a9224?w=600&auto=format&fit=crop&q=60",
+
+    route: {
+      start: ERODE_LOCATION,
+
+      destination: {
+        lat: 10.2381,
+        lng: 77.4892,
+      },
+
+      touristPlaces: [
+        {
+          name: "Kodaikanal Lake",
+          lat: 10.2381,
+          lng: 77.4892,
+        },
+        {
+          name: "Coaker's Walk",
+          lat: 10.233,
+          lng: 77.489,
+        },
+        {
+          name: "Bryant Park",
+          lat: 10.232,
+          lng: 77.487,
+        },
+        {
+          name: "Pillar Rocks",
+          lat: 10.212,
+          lng: 77.524,
+        },
+        {
+          name: "Silver Cascade Falls",
+          lat: 10.286,
+          lng: 77.524,
+        },
+      ],
+    },
 
     spots: [
       {
         name: "Kodaikanal Lake",
+
         description:
           "A star-shaped artificial lake surrounded by green hills and one of the most popular attractions in Kodaikanal.",
+
         image:
           "https://images.unsplash.com/photo-1619020933389-e96f49742bce?w=600&auto=format&fit=crop&q=60",
+
+        lat: 10.2381,
+        lng: 77.4892,
       },
+
       {
         name: "Coaker's Walk",
+
         description:
           "A scenic walking path along the mountain edge offering beautiful views of valleys, hills, and clouds.",
+
         image:
           "https://images.unsplash.com/photo-1692792284356-f80113facd09?w=600&auto=format&fit=crop&q=60",
+
+        lat: 10.233,
+        lng: 77.489,
       },
+
       {
         name: "Bryant Park",
+
         description:
           "A well-maintained botanical garden famous for colorful flowers, ornamental plants, trees, and landscaped pathways.",
+
         image:
           "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=800&q=75",
+
+        lat: 10.232,
+        lng: 77.487,
       },
+
       {
         name: "Pillar Rocks",
+
         description:
           "Three impressive rock formations standing high above the surrounding green valleys and frequently covered in mist.",
+
         image:
           "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=800&q=75",
+
+        lat: 10.212,
+        lng: 77.524,
       },
+
       {
         name: "Silver Cascade Falls",
+
         description:
           "A popular waterfall located along the Kodaikanal road, formed from the overflow of Kodaikanal Lake.",
+
         image:
           "https://images.unsplash.com/photo-1433086966358-54859d0ed716?auto=format&fit=crop&w=800&q=75",
+
+        lat: 10.286,
+        lng: 77.524,
       },
     ],
   },
@@ -592,9 +1504,13 @@ export const SBS_TAXI_CONFIG = {
 
   company: {
     name: "SBS Taxi",
-    tagline: "One Brand. One Fare. One Trusted Service.",
+
+    tagline:
+      "One Brand. One Fare. One Trusted Service.",
+
     description:
       "SBS Taxi provides reliable, comfortable and affordable taxi services for local, outstation, airport and corporate travel.",
+
     established: "2016",
   },
 
@@ -622,6 +1538,7 @@ export const SBS_TAXI_CONFIG = {
 
     footerLogo: "/images/logo.png",
     footerFlag: "/images/flag.png",
+
     madeInIndia: "/images/made-in-india.png",
 
     hero: "/images/car5.png",
@@ -639,7 +1556,6 @@ export const SBS_TAXI_CONFIG = {
     destination: "/images/4.png",
     offers: "/images/5.png",
     airport: "/images/6.png",
-    
   },
 
   // =====================================================
@@ -648,14 +1564,38 @@ export const SBS_TAXI_CONFIG = {
 
   navbar: {
     links: [
-      { name: "Home", href: "/" },
-      { name: "About Us", href: "/about" },
-      { name: "Services", href: "/services" },
-      { name: "Fleet", href: "/fleet" },
-      { name: "Pricing", href: "/pricing" },
-      { name: "Destinations", href: "/destinations" },
-      { name: "Offers", href: "/offers" },
-      { name: "Contact Us", href: "/contacts" },
+      {
+        name: "Home",
+        href: "/",
+      },
+      {
+        name: "About Us",
+        href: "/about",
+      },
+      {
+        name: "Services",
+        href: "/services",
+      },
+      {
+        name: "Fleet",
+        href: "/fleet",
+      },
+      {
+        name: "Pricing",
+        href: "/pricing",
+      },
+      {
+        name: "Destinations",
+        href: "/destinations",
+      },
+      {
+        name: "Offers",
+        href: "/offers",
+      },
+      {
+        name: "Contact Us",
+        href: "/contacts",
+      },
     ],
 
     booking: {
@@ -993,6 +1933,7 @@ export const SBS_TAXI_CONFIG = {
 
   booking: {
     name: "Book a Ride",
+
     href: "/booking",
 
     tripTypes: [

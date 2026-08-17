@@ -84,10 +84,8 @@ export default function HeroSection() {
         w-full
         overflow-visible
 
-        /* MOBILE */
         min-h-0
 
-        /* DESKTOP */
         lg:min-h-[650px]
         xl:min-h-[670px]
       "
@@ -105,24 +103,35 @@ export default function HeroSection() {
           overflow-hidden
         "
       >
-        {/* Background Slider */}
+        {/* =================================================
+            BACKGROUND SLIDER + ZOOM ANIMATION
+        ================================================== */}
 
-        <div
+        <motion.div
           className="
             absolute
             inset-0
             z-0
             overflow-hidden
-
-            [&_*]:!transform-none
-            [&_*]:!scale-100
-            [&_*]:!transition-none
           "
+          animate={{
+            scale: [1, 1.06, 1],
+          }}
+          transition={{
+            duration: 14,
+            repeat: Infinity,
+            repeatType: "loop",
+            ease: "easeInOut",
+          }}
         >
-          <HeroSlider />
-        </div>
+          <div className="absolute inset-0">
+            <HeroSlider />
+          </div>
+        </motion.div>
 
-        {/* Overall Overlay */}
+        {/* =================================================
+            OVERALL OVERLAY
+        ================================================== */}
 
         <div
           className="

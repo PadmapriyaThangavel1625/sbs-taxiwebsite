@@ -2,27 +2,65 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
 import {
   Users,
   Briefcase,
+  ArrowLeft,
   ArrowRight,
+  MapPin,
 } from "lucide-react";
 
 import { SBS_TAXI_CONFIG } from "@/config/sbsTaxiConfig";
 
 /* =========================================================
-   VEHICLE DATA FROM CONFIG
+   VEHICLE DATA
 ========================================================= */
 
-const vehicles = Object.values(
-  SBS_TAXI_CONFIG.vehicles
-);
+const vehicles = Object.values(SBS_TAXI_CONFIG.vehicles);
 
 /* =========================================================
    COMPONENT
 ========================================================= */
 
 export default function VehiclePricing() {
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [destination, setDestination] = useState("");
+
+  const selectedVehicle = vehicles[activeIndex];
+
+  /* =========================================================
+     PREVIOUS VEHICLE
+  ========================================================= */
+
+  const previousVehicle = () => {
+    setActiveIndex((current) =>
+      current === 0 ? vehicles.length - 1 : current - 1
+    );
+  };
+
+  /* =========================================================
+     NEXT VEHICLE
+  ========================================================= */
+
+  const nextVehicle = () => {
+    setActiveIndex((current) =>
+      current === vehicles.length - 1 ? 0 : current + 1
+    );
+  };
+
+  /* =========================================================
+     BOOKING URL
+  ========================================================= */
+
+  const bookingUrl = destination
+    ? `/booking?vehicle=${encodeURIComponent(
+        selectedVehicle.name
+      )}&destination=${encodeURIComponent(destination)}`
+    : `/booking?vehicle=${encodeURIComponent(
+        selectedVehicle.name
+      )}`;
+
   return (
     <section
       className="
@@ -30,14 +68,11 @@ export default function VehiclePricing() {
         w-full
         py-10
         font-[var(--font-jakarta)]
+        text-[var(--text-secondary)]
         sm:py-12
         lg:py-16
       "
     >
-      {/* =====================================================
-          SAME WIDTH STRUCTURE
-      ====================================================== */}
-
       <div
         className="
           mx-auto
@@ -48,294 +83,590 @@ export default function VehiclePricing() {
           lg:px-8
         "
       >
-        {/* ===================================================
-            VEHICLE GRID
-        ==================================================== */}
+        {/* =====================================================
+            MAIN CARD
+        ===================================================== */}
 
         <div
           className="
-            grid
-            grid-cols-1
-            items-stretch
-            gap-5
-            sm:grid-cols-2
-            lg:grid-cols-3
-            lg:gap-8
+            w-full
+            overflow-hidden
+            rounded-[30px]
+            border
+            border-[var(--border)]
+            bg-white
+            shadow-[0_10px_40px_rgba(0,0,0,0.06)]
           "
         >
-          {vehicles.map((vehicle) => (
+          {/* ===================================================
+              LEFT + RIGHT
+          =================================================== */}
+
+          <div className="grid w-full grid-cols-1 lg:grid-cols-2">
+
+            {/* =================================================
+                LEFT SIDE
+            ================================================= */}
+
             <div
-              key={vehicle.name}
               className="
-                group
+                relative
                 flex
-                h-full
+                min-h-[700px]
                 flex-col
-                rounded-2xl
-                border
-                border-[var(--border)]
-                bg-white
-                p-5
-                shadow-sm
-                transition-all
-                duration-300
-                hover:-translate-y-2
-                hover:border-[var(--secondary)]
-                hover:shadow-xl
-                sm:p-6
+                bg-[var(--background)]
+                p-6
+                text-[var(--text-secondary)]
+                sm:min-h-[720px]
+                sm:p-10
+                lg:min-h-[760px]
+                lg:p-10
               "
             >
               {/* =================================================
-                  VEHICLE BADGE
-              ================================================== */}
+                  OUR FLEET
+              ================================================= */}
 
-              <div>
-                <span
+              <div className="w-full text-left">
+                <p
                   className="
-                    inline-flex
-                    rounded-full
-                    bg-[var(--primary)]
-                    px-4
-                    py-1.5
-                    font-[var(--font-jakarta)]
                     text-xs
-                    font-semibold
-                    !text-[var(--text-primary)]
+                    font-bold
+                    uppercase
+                    tracking-[0.16em]
+                    text-[var(--text-secondary)]
                   "
                 >
-                  {vehicle.name}
-                </span>
+                  OUR FLEET
+                </p>
+
+                <h2
+                  className="
+                    mt-2
+                    font-[family-name:var(--font-instrument)]
+                    text-3xl
+                    font-normal
+                    leading-tight
+                    text-[var(--text-secondary)]
+                    sm:text-4xl
+                  "
+                >
+                  Choose Your Ride
+                </h2>
               </div>
 
               {/* =================================================
-                  VEHICLE IMAGE
-                  FROM SBS_TAXI_CONFIG
-              ================================================== */}
+                  LEFT VEHICLE CONTENT
+              ================================================= */}
 
               <div
                 className="
                   relative
-                  mt-5
-                  h-40
-                  w-full
-                  sm:h-44
+                  mt-14
+                  flex
+                  flex-1
+                  flex-col
+                  sm:mt-16
+                  lg:mt-20
                 "
               >
-                <Image
-                  src={vehicle.image}
-                  alt={vehicle.name}
-                  fill
-                  sizes="
-                    (max-width: 640px) 100vw,
-                    (max-width: 1024px) 50vw,
-                    33vw
-                  "
-                  className="
-                    object-contain
-                    transition-transform
-                    duration-500
-                    group-hover:scale-105
-                  "
-                />
-              </div>
-
-              {/* =================================================
-                  VEHICLE MODELS
-              ================================================== */}
-
-              <h3
-                className="
-                  mt-5
-                  font-[family-name:var(--font-instrument)]
-                  text-2xl
-                  font-normal
-                  text-[var(--text-primary)]
-                "
-              >
-                {vehicle.type}
-              </h3>
-
-              {/* =================================================
-                  DESCRIPTION
-              ================================================== */}
-
-              <p
-                className="
-                  mt-2
-                  min-h-[48px]
-                  font-[var(--font-jakarta)]
-                  text-sm
-                  leading-5
-                  text-[var(--text-secondary)]
-                "
-              >
-                {vehicle.description}
-              </p>
-
-              {/* =================================================
-                  SPECS
-              ================================================== */}
-
-              <div
-                className="
-                  mt-5
-                  grid
-                  grid-cols-2
-                  gap-3
-                  border-t
-                  border-[var(--border)]
-                  pt-5
-                  font-[var(--font-jakarta)]
-                  text-sm
-                  text-[var(--text-secondary)]
-                "
-              >
-                {/* Seats */}
+                {/* =================================================
+                    CAR IMAGE
+                ================================================= */}
 
                 <div
                   className="
-                    flex
-                    items-center
-                    gap-2
+                    relative
+                    h-[230px]
+                    w-full
+                    sm:h-[270px]
+                    lg:h-[300px]
                   "
                 >
-                  <Users
-                    size={18}
+                  <Image
+                    src={selectedVehicle.image}
+                    alt={selectedVehicle.name}
+                    fill
+                    priority
+                    sizes="90vw"
                     className="
-                      shrink-0
-                      text-[var(--primary)]
+                      object-contain
+                      transition-all
+                      duration-500
                     "
                   />
-
-                  <span>
-                    {vehicle.seats} Seats
-                  </span>
                 </div>
 
-                {/* Luggage */}
+                {/* =================================================
+                    PREVIOUS BUTTON
+                ================================================= */}
+
+                <button
+                  type="button"
+                  onClick={previousVehicle}
+                  aria-label="Previous vehicle"
+                  className="
+                    absolute
+                    left-0
+                    top-[115px]
+                    z-20
+                    flex
+                    h-11
+                    w-11
+                    items-center
+                    justify-center
+                    rounded-full
+                    border
+                    border-[var(--border)]
+                    bg-white
+                    text-[var(--text-secondary)]
+                    shadow-md
+                    transition-all
+                    duration-300
+                    hover:scale-105
+                    hover:bg-[var(--primary)]
+                  "
+                >
+                  <ArrowLeft size={19} />
+                </button>
+
+                {/* =================================================
+                    NEXT BUTTON
+                ================================================= */}
+
+                <button
+                  type="button"
+                  onClick={nextVehicle}
+                  aria-label="Next vehicle"
+                  className="
+                    absolute
+                    right-0
+                    top-[115px]
+                    z-20
+                    flex
+                    h-11
+                    w-11
+                    items-center
+                    justify-center
+                    rounded-full
+                    border
+                    border-[var(--border)]
+                    bg-white
+                    text-[var(--text-secondary)]
+                    shadow-md
+                    transition-all
+                    duration-300
+                    hover:scale-105
+                    hover:bg-[var(--primary)]
+                  "
+                >
+                  <ArrowRight size={19} />
+                </button>
+
+                {/* =================================================
+                    VEHICLE NAME / TYPE
+                ================================================= */}
 
                 <div
                   className="
-                    flex
-                    items-center
-                    gap-2
-                  "
-                >
-                  <Briefcase
-                    size={18}
-                    className="
-                      shrink-0
-                      text-[var(--primary)]
-                    "
-                  />
-
-                  <span>
-                    {vehicle.luggage} Bags
-                  </span>
-                </div>
-              </div>
-
-              {/* =================================================
-                  PRICE
-              ================================================== */}
-
-              <div className="mt-5">
-                <p
-                  className="
-                    font-[var(--font-jakarta)]
-                    text-sm
+                    mt-5
+                    text-center
                     text-[var(--text-secondary)]
                   "
                 >
-                  Starting From
-                </p>
+                  <span
+                    className="
+                      inline-flex
+                      rounded-full
+                      bg-[var(--primary)]
+                      px-5
+                      py-2
+                      text-xs
+                      font-bold
+                      uppercase
+                      tracking-[0.12em]
+                      text-[var(--text-primary)]
+                    "
+                  >
+                    {selectedVehicle.name}
+                  </span>
 
-                <h3
+                  <h3
+                    className="
+                      mt-3
+                      font-[family-name:var(--font-instrument)]
+                      text-3xl
+                      font-normal
+                      leading-tight
+                      text-[var(--text-secondary)]
+                      sm:text-4xl
+                    "
+                  >
+                    {selectedVehicle.type}
+                  </h3>
+
+                  {/* =================================================
+                      SEATS + BAGS
+                  ================================================= */}
+
+                  <div
+                    className="
+                      mt-2
+                      flex
+                      items-center
+                      justify-center
+                      gap-2
+                      text-sm
+                      text-[var(--text-secondary)]
+                    "
+                  >
+                    <span>
+                      {selectedVehicle.seats} Seats
+                    </span>
+
+                    <span>•</span>
+
+                    <span>
+                      {selectedVehicle.luggage} Bags
+                    </span>
+                  </div>
+                </div>
+
+                {/* =================================================
+                    SLIDER DOTS
+                ================================================= */}
+
+                <div
                   className="
-                    mt-1
-                    font-[family-name:var(--font-instrument)]
-                    text-3xl
-                    font-normal
-                    text-[var(--primary)]
+                    mt-6
+                    flex
+                    items-center
+                    justify-center
+                    gap-2
                   "
                 >
-                  {vehicle.rate}
-                </h3>
+                  {vehicles.map((vehicle, index) => (
+                    <button
+                      key={vehicle.name}
+                      type="button"
+                      onClick={() => setActiveIndex(index)}
+                      aria-label={`Select ${vehicle.name}`}
+                      aria-pressed={activeIndex === index}
+                      className={`
+                        h-2
+                        rounded-full
+                        transition-all
+                        duration-300
+                        ${
+                          activeIndex === index
+                            ? "w-8 bg-[var(--primary)]"
+                            : "w-2 bg-[var(--primary)]/20 hover:bg-[var(--primary)]/50"
+                        }
+                      `}
+                    />
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* =================================================
+                RIGHT SIDE
+            ================================================= */}
+
+            <div
+              className="
+                flex
+                min-h-[700px]
+                flex-col
+                p-6
+                text-[var(--text-secondary)]
+                sm:min-h-[720px]
+                sm:p-10
+                lg:min-h-[760px]
+                lg:p-12
+              "
+            >
+              {/* =================================================
+                  RIGHT CONTENT
+              ================================================= */}
+
+              <div className="flex flex-1 flex-col">
+
+                {/* =================================================
+                    FLEET BASED PRICING
+                ================================================= */}
+
+                <span
+                  className="
+                    inline-flex
+                    w-fit
+                    rounded-full
+                    bg-[var(--primary)]
+                    px-5
+                    py-2
+                    text-[11px]
+                    font-bold
+                    uppercase
+                    tracking-[0.16em]
+                    text-[var(--text-primary)]
+                  "
+                >
+                  FLEET BASED PRICING
+                </span>
+
+                {/* =================================================
+                    VEHICLE TYPE
+                ================================================= */}
+
+                <h2
+                  className="
+                    mt-6
+                    font-[family-name:var(--font-instrument)]
+                    text-4xl
+                    font-normal
+                    leading-tight
+                    text-[var(--text-secondary)]
+                    sm:text-5xl
+                  "
+                >
+                  {selectedVehicle.type}
+                </h2>
+
+                {/* =================================================
+                    VEHICLE NAME
+                ================================================= */}
+
+                <p
+                  className="
+                    mt-2
+                    text-sm
+                    font-semibold
+                    text-[var(--text-secondary)]
+                  "
+                >
+                  {selectedVehicle.name}
+                </p>
+
+                {/* =================================================
+                    DESCRIPTION
+                ================================================= */}
+
+                <p
+                  className="
+                    mt-4
+                    max-w-xl
+                    text-sm
+                    leading-7
+                    text-[var(--text-secondary)]
+                    sm:text-base
+                  "
+                >
+                  {selectedVehicle.description}
+                </p>
+
+                {/* =================================================
+                    SEATS + BAGS
+                ================================================= */}
+
+                <div className="mt-7 grid grid-cols-2 gap-4">
+
+                  {/* Seats */}
+
+                  <div
+                    className="
+                      rounded-2xl
+                      border
+                      border-[var(--border)]
+                      bg-[var(--background)]
+                      p-4
+                      text-[var(--text-secondary)]
+                    "
+                  >
+                    <Users
+                      size={21}
+                      className="text-[var(--text-secondary)]"
+                    />
+
+                    <p
+                      className="
+                        mt-3
+                        text-xs
+                        text-[var(--text-secondary)]
+                      "
+                    >
+                      Passenger Capacity
+                    </p>
+
+                    <p
+                      className="
+                        mt-1
+                        text-sm
+                        font-semibold
+                        text-[var(--text-secondary)]
+                      "
+                    >
+                      {selectedVehicle.seats} Seats
+                    </p>
+                  </div>
+
+                  {/* Bags */}
+
+                  <div
+                    className="
+                      rounded-2xl
+                      border
+                      border-[var(--border)]
+                      bg-[var(--background)]
+                      p-4
+                      text-[var(--text-secondary)]
+                    "
+                  >
+                    <Briefcase
+                      size={21}
+                      className="text-[var(--text-secondary)]"
+                    />
+
+                    <p
+                      className="
+                        mt-3
+                        text-xs
+                        text-[var(--text-secondary)]
+                      "
+                    >
+                      Luggage
+                    </p>
+
+                    <p
+                      className="
+                        mt-1
+                        text-sm
+                        font-semibold
+                        text-[var(--text-secondary)]
+                      "
+                    >
+                      {selectedVehicle.luggage} Bags
+                    </p>
+                  </div>
+                </div>
+
+                {/* =================================================
+                    PRICE
+                ================================================= */}
+
+                <div
+                  className="
+                    mt-7
+                    border-t
+                    border-[var(--border)]
+                    pt-6
+                  "
+                >
+                  <p
+                    className="
+                      text-sm
+                      text-[var(--text-secondary)]
+                    "
+                  >
+                    Starting From
+                  </p>
+
+                  <div className="mt-1 flex items-end gap-2">
+                    <h3
+                      className="
+                        font-[family-name:var(--font-instrument)]
+                        text-4xl
+                        font-normal
+                        text-[var(--text-secondary)]
+                        sm:text-5xl
+                      "
+                    >
+                      {selectedVehicle.rate}
+                    </h3>
+
+                    <span
+                      className="
+                        mb-1
+                        text-sm
+                        text-[var(--text-secondary)]
+                      "
+                    >
+                      / km
+                    </span>
+                  </div>
+                </div>
               </div>
 
               {/* =================================================
                   BOOK BUTTON
-              ================================================== */}
+              ================================================= */}
 
               <Link
-                href={`/booking?vehicle=${encodeURIComponent(
-                  vehicle.name
-                )}`}
+                href={bookingUrl}
                 className="
-                  mt-5
+                  mt-8
                   flex
                   w-full
                   items-center
                   justify-center
                   gap-2
-                  rounded-lg
-                  bg-[var(--primary)]
-                  px-5
-                  py-3
+                  rounded-xl
+                  bg-[var(--secondary)]
+                  px-6
+                  py-3.5
                   font-[var(--font-jakarta)]
                   text-sm
                   font-semibold
-                  !text-[var(--text-primary)]
+                  text-[var(--text-secondary)]
                   transition-all
                   duration-300
                   hover:-translate-y-0.5
-                  hover:bg-[var(--primary-dark)]
+                  hover:bg-[var(--secondary-dark)]
                   hover:gap-3
-                  hover:shadow-md
+                  hover:shadow-lg
                 "
               >
                 Book a Ride
 
-                <ArrowRight
-                  size={18}
-                  className="
-                    transition-transform
-                    duration-300
-                    group-hover:translate-x-1
-                  "
-                />
+                <ArrowRight size={18} />
               </Link>
             </div>
-          ))}
-        </div>
+          </div>
 
-        {/* =====================================================
-            NOTE
-        ====================================================== */}
+          {/* =====================================================
+              NOTE - BELOW BOTH COLUMNS
+          ===================================================== */}
 
-        <div
-          className="
-            mt-8
-            rounded-xl
-            border
-            border-[var(--secondary)]
-            bg-[var(--secondary)]
-            p-4
-            text-center
-            font-[var(--font-jakarta)]
-            text-sm
-            leading-6
-            text-[var(--text-secondary)]
-            sm:mt-10
-          "
-        >
-          <strong className="text-[#D62828] !mr:2">
-            Note  : 
-          </strong>{" "}
-          Prices mentioned are starting rates per kilometer.
-          Applicable for local and outstation trips. Toll,
-          parking, permit and state taxes (if applicable) are
-          extra.
+          <div
+            className="
+              w-full
+              border-t
+              border-[var(--border)]
+              bg-[#D71920]
+              px-4
+              py-3
+              text-center
+              text-xs
+              leading-5
+              text-[var(--text-primary)]
+              sm:px-6
+              sm:text-sm
+            "
+          >
+            <strong
+              className="
+                mr-1
+                font-semibold
+                text-[var(--text-primary)]
+              "
+            >
+              Note:
+            </strong>
+
+            Prices mentioned are starting rates per kilometer.
+            Applicable for local and outstation trips. Toll,
+            parking, permit and state taxes (if applicable) are
+            extra.
+          </div>
         </div>
       </div>
     </section>

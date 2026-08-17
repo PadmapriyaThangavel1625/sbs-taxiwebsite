@@ -16,13 +16,13 @@ export default function ContactInfo() {
       {/* =========================================================
           HEADING
       ========================================================== */}
-      <div className="mb-8">
+      <div className="mb-9">
         <span
           className="
-            text-xs
+            text-sm
             font-bold
             uppercase
-            tracking-[0.25em]
+            tracking-[0.22em]
             text-[var(--secondary)]
           "
         >
@@ -33,11 +33,14 @@ export default function ContactInfo() {
           className="
             mt-3
             font-[family-name:var(--font-instrument)]
-            text-3xl
+            text-4xl
             font-normal
+            leading-tight
             tracking-tight
             text-[var(--text)]
-            sm:text-4xl
+
+            sm:text-[42px]
+            lg:text-[46px]
           "
         >
           We’re Here to Help
@@ -45,12 +48,14 @@ export default function ContactInfo() {
 
         <p
           className="
-            mt-3
+            mt-4
             max-w-xl
-            text-sm
-            leading-6
+            text-base
+            leading-7
             text-[var(--muted)]
-            sm:text-base
+
+            sm:text-[17px]
+            sm:leading-7
           "
         >
           Have a question, need a ride, or want to know more about our
@@ -61,14 +66,14 @@ export default function ContactInfo() {
       {/* =========================================================
           ADDRESS
       ========================================================== */}
-      <div className="mb-8">
+      <div className="mb-9">
         <p
           className="
             mb-4
-            text-xs
+            text-sm
             font-bold
             uppercase
-            tracking-[0.25em]
+            tracking-[0.2em]
             text-[var(--secondary)]
           "
         >
@@ -79,31 +84,25 @@ export default function ContactInfo() {
           href="https://www.google.com/maps/search/?api=1&query=1%2F166%20Vallalar%20Street%2C%20Municipal%20Colony%20Main%20Road%2C%20Erode%2C%20Tamil%20Nadu%20638004"
           target="_blank"
           rel="noopener noreferrer"
-          className="
-            group
-            flex
-            items-start
-            gap-4
-            transition-colors
-          "
+          className="group flex items-start gap-4"
         >
           <div
             className="
               flex
-              h-10
-              w-10
+              h-11
+              w-11
               shrink-0
               items-center
               justify-center
-              rounded-lg
+              rounded-xl
               border
               border-[var(--border)]
               bg-[var(--primary)]
               text-[var(--secondary)]
               transition-all
               duration-300
-              group-hover:border-[var(--primary-dark)]
               group-hover:scale-105
+              group-hover:border-[var(--primary-dark)]
             "
           >
             <MapPin className="h-5 w-5" />
@@ -112,8 +111,9 @@ export default function ContactInfo() {
           <div>
             <p
               className="
-                text-base
-                font-semibold
+                text-lg
+                font-bold
+                leading-tight
                 text-[var(--text)]
               "
             >
@@ -122,8 +122,8 @@ export default function ContactInfo() {
 
             <p
               className="
-                mt-1
-                text-sm
+                mt-2
+                text-[15px]
                 leading-6
                 text-[var(--muted)]
               "
@@ -137,10 +137,12 @@ export default function ContactInfo() {
 
             <p
               className="
-                mt-2
-                text-xs
+                mt-2.5
+                text-sm
                 font-semibold
                 text-[var(--primary)]
+                transition-colors
+                group-hover:text-[var(--primary-dark)]
               "
             >
               View on Google Maps →
@@ -152,48 +154,43 @@ export default function ContactInfo() {
       {/* =========================================================
           CONTACT
       ========================================================== */}
-      <div className="mb-8">
+      <div className="mb-9">
         <p
           className="
             mb-4
-            text-xs
+            text-sm
             font-bold
             uppercase
-            tracking-[0.25em]
+            tracking-[0.2em]
             text-[var(--secondary)]
           "
         >
           Contact
         </p>
 
-        <div className="space-y-4">
-          {/* ================= PHONE ================= */}
+        <div className="space-y-5">
+          {/* PHONE */}
           <a
             href="tel:+919843544844"
-            className="
-              group
-              flex
-              items-center
-              gap-4
-            "
+            className="group flex items-center gap-4"
           >
             <div
               className="
                 flex
-                h-10
-                w-10
+                h-11
+                w-11
                 shrink-0
                 items-center
                 justify-center
-                rounded-lg
+                rounded-xl
                 border
                 border-[var(--border)]
                 bg-[var(--primary)]
                 text-[var(--secondary)]
                 transition-all
                 duration-300
-                group-hover:border-[var(--primary)]
                 group-hover:scale-105
+                group-hover:border-[var(--primary)]
               "
             >
               <Phone className="h-5 w-5" />
@@ -202,10 +199,10 @@ export default function ContactInfo() {
             <div className="min-w-0">
               <p
                 className="
-                  text-[11px]
+                  text-xs
                   font-semibold
                   uppercase
-                  tracking-wider
+                  tracking-[0.12em]
                   text-[var(--muted)]
                 "
               >
@@ -214,9 +211,10 @@ export default function ContactInfo() {
 
               <p
                 className="
-                  mt-0.5
-                  text-base
+                  mt-1
+                  text-lg
                   font-bold
+                  leading-tight
                   text-[var(--primary)]
                 "
               >
@@ -233,43 +231,38 @@ export default function ContactInfo() {
                 opacity-0
                 transition-all
                 duration-300
-                group-hover:translate-x-0.5
                 group-hover:-translate-y-0.5
-                group-hover:text-[var(--primary-dark)]
+                group-hover:translate-x-0.5
+                group-hover:text-[var(--primary)]
                 group-hover:opacity-100
               "
             />
           </a>
 
-          {/* ================= WHATSAPP ================= */}
+          {/* WHATSAPP */}
           <a
             href="https://wa.me/919843544844"
             target="_blank"
             rel="noopener noreferrer"
-            className="
-              group
-              flex
-              items-center
-              gap-4
-            "
+            className="group flex items-center gap-4"
           >
             <div
               className="
                 flex
-                h-10
-                w-10
+                h-11
+                w-11
                 shrink-0
                 items-center
                 justify-center
-                rounded-lg
+                rounded-xl
                 border
                 border-[var(--border)]
                 bg-[var(--primary)]
                 text-[var(--secondary)]
                 transition-all
                 duration-300
-                group-hover:border-[var(--primary-dark)]
                 group-hover:scale-105
+                group-hover:border-[var(--primary)]
               "
             >
               <MessageCircle className="h-5 w-5" />
@@ -278,10 +271,10 @@ export default function ContactInfo() {
             <div className="min-w-0">
               <p
                 className="
-                  text-[11px]
+                  text-xs
                   font-semibold
                   uppercase
-                  tracking-wider
+                  tracking-[0.12em]
                   text-[var(--muted)]
                 "
               >
@@ -290,9 +283,10 @@ export default function ContactInfo() {
 
               <p
                 className="
-                  mt-0.5
-                  text-base
+                  mt-1
+                  text-lg
                   font-bold
+                  leading-tight
                   text-[var(--primary)]
                 "
               >
@@ -309,41 +303,36 @@ export default function ContactInfo() {
                 opacity-0
                 transition-all
                 duration-300
-                group-hover:translate-x-0.5
                 group-hover:-translate-y-0.5
+                group-hover:translate-x-0.5
                 group-hover:text-[var(--primary)]
                 group-hover:opacity-100
               "
             />
           </a>
 
-          {/* ================= EMAIL ================= */}
+          {/* EMAIL */}
           <a
             href="mailto:hr@sbstechnologies.in"
-            className="
-              group
-              flex
-              items-center
-              gap-4
-            "
+            className="group flex items-center gap-4"
           >
             <div
               className="
                 flex
-                h-10
-                w-10
+                h-11
+                w-11
                 shrink-0
                 items-center
                 justify-center
-                rounded-lg
+                rounded-xl
                 border
                 border-[var(--border)]
                 bg-[var(--primary)]
                 text-[var(--secondary)]
                 transition-all
                 duration-300
-                group-hover:border-[var(--primary)]
                 group-hover:scale-105
+                group-hover:border-[var(--primary)]
               "
             >
               <Mail className="h-5 w-5" />
@@ -352,10 +341,10 @@ export default function ContactInfo() {
             <div className="min-w-0">
               <p
                 className="
-                  text-[11px]
+                  text-xs
                   font-semibold
                   uppercase
-                  tracking-wider
+                  tracking-[0.12em]
                   text-[var(--muted)]
                 "
               >
@@ -364,12 +353,14 @@ export default function ContactInfo() {
 
               <p
                 className="
-                  mt-0.5
+                  mt-1
                   break-all
-                  text-sm
+                  text-base
                   font-bold
+                  leading-tight
                   text-[var(--primary)]
-                  sm:text-base
+
+                  sm:text-lg
                 "
               >
                 hr@sbstechnologies.in
@@ -386,8 +377,8 @@ export default function ContactInfo() {
                 opacity-0
                 transition-all
                 duration-300
-                group-hover:translate-x-0.5
                 group-hover:-translate-y-0.5
+                group-hover:translate-x-0.5
                 group-hover:text-[var(--primary)]
                 group-hover:opacity-100
               "
@@ -397,16 +388,16 @@ export default function ContactInfo() {
       </div>
 
       {/* =========================================================
-          SERVICE HOURS
+          SERVICE AVAILABILITY
       ========================================================== */}
-      <div className="mb-8">
+      <div className="mb-9">
         <p
           className="
             mb-4
-            text-xs
+            text-sm
             font-bold
             uppercase
-            tracking-[0.25em]
+            tracking-[0.2em]
             text-[var(--secondary)]
           "
         >
@@ -417,12 +408,12 @@ export default function ContactInfo() {
           <div
             className="
               flex
-              h-10
-              w-10
+              h-11
+              w-11
               shrink-0
               items-center
               justify-center
-              rounded-lg
+              rounded-xl
               border
               border-[var(--border)]
               bg-[var(--primary)]
@@ -432,15 +423,21 @@ export default function ContactInfo() {
             <Clock3 className="h-5 w-5" />
           </div>
 
-          <div>
-            <div className="flex items-center justify-between gap-8">
-              <span className="text-sm text-[var(--muted)]">
+          <div className="w-full max-w-md">
+            <div className="flex items-center justify-between gap-5">
+              <span
+                className="
+                  text-[15px]
+                  font-medium
+                  text-[var(--muted)]
+                "
+              >
                 Customer Support
               </span>
 
               <span
                 className="
-                  text-sm
+                  text-base
                   font-bold
                   text-[var(--primary)]
                 "
@@ -449,14 +446,20 @@ export default function ContactInfo() {
               </span>
             </div>
 
-            <div className="mt-2 flex items-center justify-between gap-8">
-              <span className="text-sm text-[var(--muted)]">
+            <div className="mt-3 flex items-center justify-between gap-5">
+              <span
+                className="
+                  text-[15px]
+                  font-medium
+                  text-[var(--muted)]
+                "
+              >
                 Taxi Booking
               </span>
 
               <span
                 className="
-                  text-sm
+                  text-base
                   font-bold
                   text-[var(--primary)]
                 "
@@ -468,13 +471,13 @@ export default function ContactInfo() {
             <p
               className="
                 mt-4
-                text-sm
+                text-[15px]
                 leading-6
                 text-[var(--muted)]
               "
             >
-              We’re available to assist you with bookings,
-              enquiries and travel support whenever you need us.
+              We’re available to assist you with bookings, enquiries and
+              travel support whenever you need us.
             </p>
           </div>
         </div>
@@ -489,7 +492,7 @@ export default function ContactInfo() {
           flex-wrap
           items-center
           gap-x-5
-          gap-y-2
+          gap-y-3
           border-t
           border-[var(--border)]
           pt-5
@@ -497,7 +500,7 @@ export default function ContactInfo() {
       >
         <span
           className="
-            text-xs
+            text-sm
             font-medium
             text-[var(--muted)]
           "
@@ -508,7 +511,7 @@ export default function ContactInfo() {
         <Link
           href="/booking"
           className="
-            text-xs
+            text-sm
             font-semibold
             text-[var(--text)]
             transition-colors
@@ -521,7 +524,7 @@ export default function ContactInfo() {
         <Link
           href="/services"
           className="
-            text-xs
+            text-sm
             font-semibold
             text-[var(--text)]
             transition-colors
@@ -534,7 +537,7 @@ export default function ContactInfo() {
         <Link
           href="/pricing"
           className="
-            text-xs
+            text-sm
             font-semibold
             text-[var(--text)]
             transition-colors
@@ -547,7 +550,7 @@ export default function ContactInfo() {
         <Link
           href="/fleet"
           className="
-            text-xs
+            text-sm
             font-semibold
             text-[var(--text)]
             transition-colors

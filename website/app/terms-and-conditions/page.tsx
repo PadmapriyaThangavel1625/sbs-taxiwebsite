@@ -188,7 +188,7 @@ export default function TermsAndConditionsPage() {
       {/* =====================================================
           INTRODUCTION
       ====================================================== */}
-      <section className="w-full bg-[var(--primary-light)]">
+      <section className="w-full bg-[var(--primary)]">
         <div className="mx-auto max-w-7xl px-5 py-10 sm:px-8 sm:py-14">
 
           <div
@@ -440,12 +440,12 @@ export default function TermsAndConditionsPage() {
                             rounded-xl
                             border
                             border-[var(--primary)]/5
-                            bg-[var(--primary-light)]
+                            bg-[var(--primary)]
                             px-4
                             py-4
                             text-sm
                             leading-7
-                            text-[var(--primary)]/80
+                            text-[var(--text-primary)]
                             sm:px-5
                             sm:text-base
                             sm:leading-8
@@ -468,7 +468,7 @@ export default function TermsAndConditionsPage() {
       {/* =====================================================
           CONTACT US
       ====================================================== */}
-      <section className="w-full bg-[var(--primary-light)] py-14 sm:py-16">
+      <section className="w-full bg-[var(--primary)] py-14 sm:py-16">
         <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-8">
 
           <div

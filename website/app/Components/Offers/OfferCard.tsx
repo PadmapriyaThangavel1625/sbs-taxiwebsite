@@ -375,7 +375,7 @@ export default function OfferCard({
                 border
                 border-dashed
                 border-[var(--primary)]
-                bg-[var(--primary-light)]
+                bg-[var(--primary)]
                 px-3
                 py-1
 
@@ -383,7 +383,7 @@ export default function OfferCard({
                 text-xs
                 font-bold
                 tracking-wider
-                text-[var(--secondary)]
+                text-[var(--text-primary)]
               "
             >
               {code}
