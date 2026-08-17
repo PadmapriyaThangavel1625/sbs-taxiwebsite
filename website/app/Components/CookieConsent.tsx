@@ -86,6 +86,11 @@ export default function CookieConsent() {
     saveConsent(analytics, marketing);
   };
 
+  // Close popup without saving cookie preference
+  const closeCookieBox = () => {
+    setShow(false);
+  };
+
   if (!show) {
     return null;
   }
@@ -112,6 +117,7 @@ export default function CookieConsent() {
       >
         <div
           className="
+            relative
             rounded-2xl
             border
             border-slate-200
@@ -120,9 +126,34 @@ export default function CookieConsent() {
             shadow-[0_10px_35px_rgba(0,0,0,0.15)]
           "
         >
+          {/* CLOSE BUTTON */}
+
+          <button
+            type="button"
+            onClick={closeCookieBox}
+            className="
+              absolute
+              right-2
+              top-2
+              flex
+              h-7
+              w-7
+              items-center
+              justify-center
+              rounded-full
+              text-slate-400
+              transition
+              hover:bg-slate-100
+              hover:text-slate-700
+            "
+            aria-label="Close cookie notice"
+          >
+            <X className="h-4 w-4" />
+          </button>
+
           {/* HEADER */}
 
-          <div className="flex items-start gap-3">
+          <div className="flex items-start gap-3 pr-6">
 
             <div
               className="
@@ -260,7 +291,7 @@ export default function CookieConsent() {
               sm:p-6
             "
           >
-            {/* CLOSE */}
+            {/* CLOSE SETTINGS */}
 
             <button
               type="button"
@@ -291,6 +322,7 @@ export default function CookieConsent() {
                   text-xl
                   font-bold
                   text-[var(--text-primary)]
+                  !mr-5
                 "
               >
                 Cookie Settings
