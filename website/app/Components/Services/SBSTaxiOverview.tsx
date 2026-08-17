@@ -1,30 +1,52 @@
 "use client";
 
+import { useState } from "react";
+
 import {
   ArrowRight,
   BarChart3,
   Bell,
   BriefcaseBusiness,
   CarFront,
+  CheckCircle2,
   Navigation,
   Route,
   Star,
   UserCheck,
   UserRound,
   WalletCards,
+  X,
 } from "lucide-react";
+
+/* =====================================================
+   TYPES
+===================================================== */
+
+type Service = {
+  number: string;
+  title: string;
+  description: string;
+  icon: React.ElementType;
+  details: string[];
+};
 
 /* =====================================================
    SERVICES
 ===================================================== */
 
-const services = [
+const services: Service[] = [
   {
     number: "01",
     title: "BECOME A BUSINESS PARTNER",
     description:
       "Partner with SBS Taxi to expand your business with dependable transportation solutions, professional service and seamless booking support.",
     icon: BriefcaseBusiness,
+    details: [
+      "Manage business transportation requirements easily.",
+      "Get reliable taxi and travel support for your customers and employees.",
+      "Simplify bookings and transportation operations.",
+      "Access professional support from the SBS Taxi team.",
+    ],
   },
   {
     number: "02",
@@ -32,6 +54,12 @@ const services = [
     description:
       "Register your vehicles with SBS Taxi, increase fleet utilization, earn consistent income and manage your vehicles efficiently.",
     icon: CarFront,
+    details: [
+      "Register and manage multiple vehicles.",
+      "Improve vehicle utilization and trip availability.",
+      "Monitor vehicle activity and trip assignments.",
+      "Manage your fleet more efficiently through one platform.",
+    ],
   },
   {
     number: "03",
@@ -39,6 +67,12 @@ const services = [
     description:
       "Join our growing driver network with flexible working hours, attractive earning opportunities, reliable trip assignments and ongoing support.",
     icon: UserRound,
+    details: [
+      "Receive trip assignments based on availability.",
+      "Work with flexible schedules.",
+      "Track your trips and earnings.",
+      "Get ongoing operational support from SBS Taxi.",
+    ],
   },
   {
     number: "04",
@@ -46,6 +80,12 @@ const services = [
     description:
       "Enjoy priority bookings, dedicated customer support, comfortable rides and convenient corporate travel solutions with SBS Taxi.",
     icon: Star,
+    details: [
+      "Enjoy priority booking support.",
+      "Get comfortable and dependable transportation.",
+      "Access dedicated customer assistance.",
+      "Use convenient travel solutions for personal and business needs.",
+    ],
   },
 ];
 
@@ -109,18 +149,45 @@ const features = [
 ===================================================== */
 
 export default function SBSTaxiOverview() {
+  const [selectedService, setSelectedService] =
+    useState<Service | null>(null);
+
+  /* =====================================================
+     OPEN MODAL
+  ===================================================== */
+
+  const openService = (service: Service) => {
+    setSelectedService(service);
+
+    if (typeof document !== "undefined") {
+      document.body.style.overflow = "hidden";
+    }
+  };
+
+  /* =====================================================
+     CLOSE MODAL
+  ===================================================== */
+
+  const closeService = () => {
+    setSelectedService(null);
+
+    if (typeof document !== "undefined") {
+      document.body.style.overflow = "";
+    }
+  };
+
   return (
     <main className="w-full overflow-hidden bg-white">
-
       {/* =================================================
           SERVICES
       ================================================= */}
 
-      <section className="relative w-full bg-white py-16 sm:py-20 lg:py-24">
-        <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-10">
+      <section className="relative w-full bg-white py-12 sm:py-16 lg:py-20">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
 
-          {/* Section Heading */}
-          <div className="mb-16 sm:mb-20 lg:mb-24">
+          {/* SECTION HEADING */}
+
+          <div className="mb-10 sm:mb-14 lg:mb-16">
             <SectionHeading
               label="OUR SERVICES"
               title="Solutions Designed for Everyone"
@@ -128,8 +195,9 @@ export default function SBSTaxiOverview() {
             />
           </div>
 
-          {/* Services Cards */}
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-4">
+          {/* SERVICES GRID */}
+
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4">
             {services.map((service) => {
               const Icon = service.icon;
 
@@ -140,69 +208,82 @@ export default function SBSTaxiOverview() {
                     group
                     relative
                     flex
-                    min-h-[350px]
+                    min-h-[300px]
                     flex-col
                     overflow-hidden
-                    rounded-[28px]
+                    rounded-3xl
                     border
                     border-[var(--border)]
                     bg-white
-                    p-7
+                    p-6
                     shadow-[0_8px_30px_rgba(0,0,0,0.04)]
                     transition-all
                     duration-300
-                    hover:-translate-y-2
+                    hover:-translate-y-1
                     hover:border-[var(--secondary)]
-                    hover:shadow-[0_20px_45px_rgba(0,0,0,0.08)]
+                    hover:shadow-[0_16px_35px_rgba(0,0,0,0.08)]
+                    sm:min-h-[320px]
+                    lg:p-7
                   "
                 >
-                  {/* Number */}
+                  {/* NUMBER */}
+
                   <span
                     className="
                       absolute
-                      right-6
-                      top-5
+                      right-5
+                      top-4
                       font-[family-name:var(--font-instrument)]
-                      text-5xl
+                      text-4xl
                       font-normal
                       text-[var(--primary)]
                       opacity-[0.06]
+                      sm:text-5xl
                     "
                   >
                     {service.number}
                   </span>
 
-                  {/* Icon */}
+                  {/* ICON */}
+
                   <div
                     className="
                       flex
-                      h-14
-                      w-14
+                      h-12
+                      w-12
+                      shrink-0
                       items-center
                       justify-center
                       rounded-2xl
                       bg-[var(--secondary)]
                       text-[var(--primary)]
                       shadow-sm
-                      transition-all
+                      transition-transform
                       duration-300
                       group-hover:scale-105
+                      sm:h-14
+                      sm:w-14
                     "
                   >
-                    <Icon size={25} strokeWidth={1.8} />
+                    <Icon
+                      size={24}
+                      strokeWidth={1.8}
+                    />
                   </div>
 
-                  {/* Content */}
-                  <div className="mt-8 flex-1">
+                  {/* CONTENT */}
+
+                  <div className="mt-6 flex-1">
                     <h3
                       className="
-                        max-w-[235px]
+                        max-w-[240px]
                         font-[family-name:var(--font-instrument)]
-                        text-xl
+                        text-lg
                         font-normal
                         leading-tight
                         tracking-tight
                         text-[var(--primary)]
+                        sm:text-xl
                       "
                     >
                       {service.title}
@@ -210,7 +291,7 @@ export default function SBSTaxiOverview() {
 
                     <p
                       className="
-                        mt-4
+                        mt-3
                         text-sm
                         leading-6
                         text-[var(--text-secondary)]
@@ -220,35 +301,50 @@ export default function SBSTaxiOverview() {
                     </p>
                   </div>
 
-                  {/* Learn More */}
-                  <div
+                  {/* LEARN MORE */}
+
+                  <button
+                    type="button"
+                    onClick={() => openService(service)}
                     className="
-                      mt-8
+                      mt-6
                       flex
+                      w-fit
+                      cursor-pointer
                       items-center
                       gap-2
+                      border-0
+                      bg-transparent
+                      p-0
                       text-xs
                       font-bold
                       uppercase
                       tracking-[0.08em]
                       text-[var(--primary)]
+                      transition-opacity
+                      hover:opacity-70
                     "
                   >
                     Learn More
 
                     <ArrowRight
                       size={15}
-                      className="transition-transform duration-300 group-hover:translate-x-1"
+                      className="
+                        transition-transform
+                        duration-300
+                        group-hover:translate-x-1
+                      "
                     />
-                  </div>
+                  </button>
 
-                  {/* Bottom Line */}
+                  {/* BOTTOM LINE */}
+
                   <div
                     className="
                       absolute
                       bottom-0
-                      left-8
-                      right-8
+                      left-6
+                      right-6
                       h-[3px]
                       origin-center
                       scale-x-0
@@ -263,9 +359,6 @@ export default function SBSTaxiOverview() {
               );
             })}
           </div>
-
-          {/* EXTRA SPACE BETWEEN OUR SERVICES AND FEATURES */}
-          <div className="h-28 sm:h-32 lg:h-40" />
         </div>
       </section>
 
@@ -273,11 +366,21 @@ export default function SBSTaxiOverview() {
           FEATURES
       ================================================= */}
 
-      <section className="relative w-full bg-[var(--background)] py-16 sm:py-20 lg:py-24">
-        <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-10">
+      <section
+        className="
+          relative
+          w-full
+          bg-[var(--background)]
+          py-12
+          sm:py-16
+          lg:py-20
+        "
+      >
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
 
-          {/* Section Heading */}
-          <div className="mb-16 sm:mb-20 lg:mb-24">
+          {/* SECTION HEADING */}
+
+          <div className="mb-10 sm:mb-14 lg:mb-16">
             <SectionHeading
               label="FEATURES"
               title="Everything You Need in One Platform"
@@ -285,13 +388,14 @@ export default function SBSTaxiOverview() {
             />
           </div>
 
-          {/* Features Grid */}
+          {/* FEATURES GRID */}
+
           <div
             className="
               grid
               grid-cols-1
               overflow-hidden
-              rounded-[28px]
+              rounded-3xl
               border
               border-[var(--border)]
               bg-white
@@ -309,24 +413,27 @@ export default function SBSTaxiOverview() {
                   className="
                     group
                     relative
-                    min-h-[235px]
+                    min-h-[215px]
                     border-b
                     border-[var(--border)]
-                    p-7
+                    p-6
                     transition-all
                     duration-300
                     hover:bg-[var(--secondary)]/[0.06]
-                    lg:min-h-[250px]
+                    sm:min-h-[225px]
+                    lg:min-h-[240px]
                     lg:border-r
                     lg:last:border-r-0
                   "
                 >
-                  {/* Number */}
+                  {/* NUMBER */}
+
                   <span
                     className="
                       absolute
-                      right-6
-                      top-5
+                      right-5
+                      
+                      top-4
                       text-xs
                       font-bold
                       tracking-wider
@@ -337,42 +444,50 @@ export default function SBSTaxiOverview() {
                     {String(index + 1).padStart(2, "0")}
                   </span>
 
-                  {/* Icon */}
+                  {/* ICON */}
+
                   <div
                     className="
                       flex
-                      h-14
-                      w-14
+                      h-12
+                      w-12
+                      !mb-5
                       items-center
                       justify-center
                       rounded-2xl
                       bg-[var(--secondary)]
                       text-[var(--primary)]
                       shadow-sm
-                      transition-all
+                      transition-transform
                       duration-300
                       group-hover:scale-105
                     "
                   >
-                    <Icon size={26} strokeWidth={1.8} />
+                    <Icon
+                      size={24}
+                      strokeWidth={1.8}
+                    />
                   </div>
 
-                  {/* Title */}
+                  {/* TITLE */}
+
                   <h3
                     className="
-                      mt-7
+                      mt-5
                       font-[family-name:var(--font-instrument)]
-                      text-xl
+                      text-lg
                       font-normal
                       leading-tight
                       tracking-tight
                       text-[var(--primary)]
+                      sm:text-xl
                     "
                   >
                     {feature.title}
                   </h3>
 
-                  {/* Description */}
+                  {/* DESCRIPTION */}
+
                   <p
                     className="
                       mt-3
@@ -384,13 +499,14 @@ export default function SBSTaxiOverview() {
                     {feature.description}
                   </p>
 
-                  {/* Bottom Line */}
+                  {/* BOTTOM LINE */}
+
                   <div
                     className="
                       absolute
                       bottom-0
-                      left-7
-                      right-7
+                      left-6
+                      right-6
                       h-[2px]
                       origin-left
                       scale-x-0
@@ -405,11 +521,253 @@ export default function SBSTaxiOverview() {
               );
             })}
           </div>
-
-          {/* Space after Features */}
-          <div className="h-16 sm:h-20 lg:h-24" />
         </div>
       </section>
+
+      {/* =================================================
+          SERVICE MODAL
+      ================================================= */}
+
+      {selectedService && (
+        <div
+          className="
+            fixed
+            inset-0
+            z-[9999]
+            flex
+            items-center
+            justify-center
+            bg-black/50
+            p-4
+            backdrop-blur-sm
+            sm:p-6
+          "
+          onClick={closeService}
+        >
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="service-dialog-title"
+            className="
+              relative
+              flex
+              max-h-[90vh]
+              w-full
+              max-w-lg
+              flex-col
+              overflow-hidden
+              rounded-2xl
+              bg-white
+              shadow-2xl
+              sm:max-h-[85vh]
+              sm:rounded-3xl
+            "
+            onClick={(event) => event.stopPropagation()}
+          >
+            {/* MODAL HEADER */}
+
+            <div
+              className="
+                shrink-0
+                border-b
+                border-[var(--border)]
+                px-5
+                py-5
+                sm:px-7
+                sm:py-6
+              "
+            >
+              <button
+                type="button"
+                onClick={closeService}
+                aria-label="Close"
+                className="
+                  absolute
+                  right-4
+                  top-4
+                  flex
+                  h-9
+                  w-9
+                  items-center
+                  justify-center
+                  rounded-full
+                  bg-[var(--background)]
+                  text-[var(--text-secondary)]
+                  transition
+                  hover:bg-[var(--secondary)]
+                  hover:text-[var(--primary)]
+                  sm:right-5
+                  sm:top-5
+                "
+              >
+                <X size={18} />
+              </button>
+
+              <div
+                className="
+                  flex
+                  h-12
+                  w-12
+                  items-center
+                  justify-center
+                  rounded-2xl
+                  bg-[var(--secondary)]
+                  text-[var(--primary)]
+                "
+              >
+                <selectedService.icon
+                  size={24}
+                  strokeWidth={1.8}
+                />
+              </div>
+
+              <p
+                className="
+                  mt-4
+                  text-[10px]
+                  font-bold
+                  uppercase
+                  tracking-[0.16em]
+                  text-[var(--primary)]
+                  opacity-60
+                "
+              >
+                SERVICE {selectedService.number}
+              </p>
+
+              <h2
+                id="service-dialog-title"
+                className="
+                  mt-2
+                  pr-8
+                  font-[family-name:var(--font-instrument)]
+                  text-2xl
+                  font-normal
+                  leading-tight
+                  text-[var(--primary)]
+                  sm:text-3xl
+                "
+              >
+                {selectedService.title}
+              </h2>
+            </div>
+
+            {/* MODAL CONTENT */}
+
+            <div
+              className="
+                min-h-0
+                flex-1
+                overflow-y-auto
+                px-5
+                py-5
+                sm:px-7
+                sm:py-6
+              "
+            >
+              <p
+                className="
+                  text-sm
+                  leading-6
+                  text-[var(--text-secondary)]
+                  sm:text-base
+                  sm:leading-7
+                "
+              >
+                {selectedService.description}
+              </p>
+
+              <div className="mt-6">
+                <h3
+                  className="
+                    text-sm
+                    font-bold
+                    text-[var(--text-primary)]
+                  "
+                >
+                  What you get
+                </h3>
+
+                <div className="mt-4 space-y-3">
+                  {selectedService.details.map(
+                    (detail) => (
+                      <div
+                        key={detail}
+                        className="
+                          flex
+                          items-start
+                          gap-3
+                          rounded-xl
+                          bg-[var(--background)]
+                          p-3
+                          sm:p-4
+                        "
+                      >
+                        <CheckCircle2
+                          className="
+                            mt-0.5
+                            h-5
+                            w-5
+                            shrink-0
+                            text-[var(--primary)]
+                          "
+                        />
+
+                        <span
+                          className="
+                            text-sm
+                            leading-6
+                            text-[var(--text-secondary)]
+                          "
+                        >
+                          {detail}
+                        </span>
+                      </div>
+                    )
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* MODAL FOOTER */}
+
+            <div
+              className="
+                shrink-0
+                border-t
+                border-[var(--border)]
+                bg-white
+                px-5
+                py-4
+                sm:px-7
+              "
+            >
+              <button
+                type="button"
+                onClick={closeService}
+                className="
+                  flex
+                  w-full
+                  items-center
+                  justify-center
+                  gap-2
+                  rounded-xl
+                  bg-[var(--primary)]
+                  px-5
+                  py-3
+                  text-sm
+                  font-semibold
+                  text-[var(--text-primary)]
+                  transition
+                  hover:opacity-90
+                "
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </main>
   );
 }
@@ -417,7 +775,6 @@ export default function SBSTaxiOverview() {
 /* =====================================================
    SECTION HEADING
 ===================================================== */
-
 function SectionHeading({
   label,
   title,
@@ -428,22 +785,41 @@ function SectionHeading({
   description: string;
 }) {
   return (
-    <div className="mx-auto max-w-4xl text-center">
+    <div className="mx-auto w-full max-w-4xl text-center">
 
-      {/* Label */}
-      <div className="flex items-center gap-4">
-        <span className="hidden h-px flex-1 bg-[var(--primary)]/15 sm:block" />
-
+      {/* LABEL - PERFECTLY CENTERED */}
+      <div className="relative flex w-full items-center justify-center">
+        {/* Left line */}
         <span
           className="
+            absolute
+            left-0
+            hidden
+            h-px
+            w-[calc(50%-110px)]
+            bg-[var(--primary)]/15
+            sm:block
+          "
+        />
+
+        {/* Center label */}
+        <span
+          className="
+            relative
+            z-10
+            inline-flex
+            items-center
+            justify-center
             rounded-full
             bg-[var(--primary)]
+            !mb-5
             px-5
             py-2
-            text-[11px]
+            text-center
+            text-[10px]
             font-bold
-            tracking-[0.16em]
-            text-white
+            tracking-[0.14em]
+            text-[var(--text-primary)]
             sm:px-6
             sm:text-xs
           "
@@ -451,21 +827,32 @@ function SectionHeading({
           {label}
         </span>
 
-        <span className="hidden h-px flex-1 bg-[var(--primary)]/15 sm:block" />
+        {/* Right line */}
+        <span
+          className="
+            absolute
+            right-0
+            hidden
+            h-px
+            w-[calc(50%-110px)]
+            bg-[var(--primary)]/15
+            sm:block
+          "
+        />
       </div>
 
-      {/* SPACE AFTER BOTH LABELS */}
-      <div className="h-12 sm:h-14 lg:h-16" />
-
-      {/* Title */}
+      {/* TITLE */}
       <h2
         className="
+          mt-7
+          text-center
           font-[family-name:var(--font-instrument)]
           text-3xl
           font-normal
           leading-tight
           tracking-tight
           text-[var(--primary)]
+          sm:mt-8
           sm:text-4xl
           lg:text-5xl
         "
@@ -473,21 +860,23 @@ function SectionHeading({
         {title}
       </h2>
 
-      {/* Description */}
+      {/* DESCRIPTION */}
       <p
         className="
           mx-auto
-          mt-6
+          mt-4
           max-w-3xl
+          text-center
           text-sm
-          leading-7
+          leading-6
           text-[var(--text-secondary)]
-          sm:mt-7
+          sm:mt-6
           sm:text-base
+          sm:leading-7
         "
       >
         {description}
       </p>
     </div>
   );
-}
+} 

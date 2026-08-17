@@ -15,6 +15,7 @@ import Footer from "@/app/Components/Footer";
 import LimitedOffer from "@/app/Components/Home/LimitedOffer";
 import BottomBar from "@/app/Components/BottomBar";
 import ChatBox from "@/app/Components/ChatBox";
+import CookieConsent from "@/app/Components/CookieConsent";
 
 /* =========================================================
    FONTS
@@ -62,12 +63,7 @@ export default function RootLayout({
         ==================================================== */}
 
         <div className="sticky top-0 z-[100] w-full">
-          {/* PROMOTIONAL BAR */}
-
           <PromotionalTopBar />
-
-          {/* NAVBAR */}
-
           <Navbar />
         </div>
 
@@ -102,6 +98,12 @@ export default function RootLayout({
         <Footer />
 
         {/* ===================================================
+            COOKIE CONSENT
+        ==================================================== */}
+
+        <CookieConsent />
+
+        {/* ===================================================
             TOAST
         ==================================================== */}
 
@@ -111,7 +113,6 @@ export default function RootLayout({
           gutter={10}
           toastOptions={{
             duration: 3000,
-
             style: {
               background: "#ffffff",
               color: "#111827",
@@ -120,14 +121,12 @@ export default function RootLayout({
               boxShadow:
                 "0 8px 24px rgba(0,0,0,0.12)",
             },
-
             success: {
               iconTheme: {
                 primary: "#22c55e",
                 secondary: "#ffffff",
               },
             },
-
             error: {
               iconTheme: {
                 primary: "#ef4444",

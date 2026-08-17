@@ -4,11 +4,11 @@ import { Gift } from "lucide-react";
 export default function PromoCard() {
   return (
     <div
-      className="flex cursor-pointer items-center justify-between rounded-xl border border-amber-200/60 bg-amber-50/70 p-4 transition-colors hover:bg-amber-100/60"
+      className="flex cursor-pointer items-center justify-between rounded-xl border border-[var(--secondary)] bg-[var(--secondary)] p-4 transition-colors hover:bg-[var(--secondary-dark)]"
       style={{ fontFamily: "var(--font-jakarta)" }}
     >
       <div className="flex items-center space-x-3">
-        <div className="rounded-lg bg-amber-500 p-2.5 text-white shadow-sm">
+        <div className="rounded-lg bg-amber-500 p-2.5 text-[var(--text-primary)] shadow-sm">
           <Gift className="h-5 w-5" />
         </div>
 

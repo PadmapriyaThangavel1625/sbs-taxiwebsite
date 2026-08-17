@@ -96,15 +96,7 @@ const steps = [
 ];
 
 export default function BookingFlow() {
-  /* =====================================================
-     CURRENT STEP
-  ===================================================== */
-
   const [currentStep, setCurrentStep] = useState(1);
-
-  /* =====================================================
-     TRIP DETAILS
-  ===================================================== */
 
   const [tripDetails, setTripDetails] = useState<TripDetails>({
     pickup: "",
@@ -116,16 +108,8 @@ export default function BookingFlow() {
     preferences: [],
   });
 
-  /* =====================================================
-     SELECTED VEHICLE
-  ===================================================== */
-
   const [selectedVehicle, setSelectedVehicle] =
     useState<Vehicle | null>(null);
-
-  /* =====================================================
-     PASSENGER DETAILS
-  ===================================================== */
 
   const [passengerDetails, setPassengerDetails] =
     useState<PassengerDetails>({
@@ -135,26 +119,12 @@ export default function BookingFlow() {
       elderly: 0,
     });
 
-  /* =====================================================
-     PAYMENT
-  ===================================================== */
-
   const [paymentMethod, setPaymentMethod] =
     useState<PaymentMethod | null>(null);
 
-  /* =====================================================
-     CONFIRMATION
-  ===================================================== */
-
   const [isConfirmed, setIsConfirmed] = useState(false);
 
-  /* =====================================================
-     UPDATE TRIP FIELD
-  ===================================================== */
-
-  const updateTripField = <
-    K extends keyof TripDetails
-  >(
+  const updateTripField = <K extends keyof TripDetails>(
     field: K,
     value: TripDetails[K]
   ) => {
@@ -163,10 +133,6 @@ export default function BookingFlow() {
       [field]: value,
     }));
   };
-
-  /* =====================================================
-     UPDATE PASSENGER FIELD
-  ===================================================== */
 
   const updatePassengerField = <
     K extends keyof PassengerDetails
@@ -180,10 +146,6 @@ export default function BookingFlow() {
     }));
   };
 
-  /* =====================================================
-     VALIDATION
-  ===================================================== */
-
   const tripValid =
     tripDetails.pickup.trim() !== "" &&
     tripDetails.drop.trim() !== "" &&
@@ -194,31 +156,17 @@ export default function BookingFlow() {
     passengerDetails.name.trim() !== "" &&
     passengerDetails.people >= 1;
 
-  /* =====================================================
-     NEXT STEP
-  ===================================================== */
-
   const nextStep = () => {
-    if (currentStep === 1 && !tripValid) {
-      return;
-    }
+    if (currentStep === 1 && !tripValid) return;
 
-    if (currentStep === 2 && !selectedVehicle) {
-      return;
-    }
+    if (currentStep === 2 && !selectedVehicle) return;
 
-    if (currentStep === 3 && !passengerValid) {
-      return;
-    }
+    if (currentStep === 3 && !passengerValid) return;
 
     if (currentStep < 4) {
       setCurrentStep((previous) => previous + 1);
     }
   };
-
-  /* =====================================================
-     PREVIOUS STEP
-  ===================================================== */
 
   const previousStep = () => {
     if (currentStep > 1) {
@@ -226,22 +174,12 @@ export default function BookingFlow() {
     }
   };
 
-  /* =====================================================
-     VEHICLE SELECTION
-  ===================================================== */
-
   const handleVehicleSelect = (vehicle: Vehicle) => {
     setSelectedVehicle(vehicle);
   };
 
-  /* =====================================================
-     CONFIRM BOOKING
-  ===================================================== */
-
   const confirmBooking = () => {
-    if (!selectedVehicle || !paymentMethod) {
-      return;
-    }
+    if (!selectedVehicle || !paymentMethod) return;
 
     const bookingDetails = `
 SBS TAXI - BOOKING CONFIRMATION
@@ -291,15 +229,9 @@ ${
         })
       );
 
-      /*
-       * Replace this email address
-       * with your real SBS Taxi email.
-       */
-
       const emailAddress = "your-email@example.com";
 
-      const subject =
-        "SBS Taxi - Booking Confirmation";
+      const subject = "SBS Taxi - Booking Confirmation";
 
       const mailto =
         `mailto:${emailAddress}` +
@@ -313,61 +245,53 @@ ${
   };
 
   return (
-    <div className="w-full">
-      {/* =================================================
-          STEP TRACKER
-      ================================================= */}
+    <div className="w-full max-w-full overflow-hidden">
 
-      <div className="mb-6 overflow-x-auto">
-        <div className="min-w-[600px] flex items-center justify-between">
+      {/* =====================================================
+          STEP TRACKER
+      ===================================================== */}
+
+      <div className="mb-5 w-full">
+
+        {/* DESKTOP */}
+        <div className="hidden sm:flex w-full items-start">
+
           {steps.map((step, index) => {
             const Icon = step.icon;
 
-            const completed =
-              currentStep > step.id;
-
-            const active =
-              currentStep === step.id;
+            const completed = currentStep > step.id;
+            const active = currentStep === step.id;
 
             return (
               <React.Fragment key={step.id}>
-                <div className="flex flex-col items-center">
+
+                <div className="flex min-w-0 flex-1 flex-col items-center">
+
                   <div
                     className={`
-                      w-10
-                      h-10
-                      rounded-full
-                      flex
-                      items-center
-                      justify-center
-                      border-2
-                      transition-all
+                      flex h-10 w-10 shrink-0 items-center justify-center
+                      rounded-full border-2 transition-all
                       ${
-                        completed
-                          ? "bg-[#1A365D] border-[#1A365D] text-white"
-                          : active
-                          ? "bg-[#1A365D] border-[#1A365D] text-white shadow-lg"
-                          : "bg-white border-slate-300 text-slate-400"
+                        completed || active
+                          ? "border-[var(--primary)] bg-[var(--primary)] text-[var(--text-primary)]"
+                          : "border-slate-300 bg-white text-[var(--text-secondary)]"
                       }
                     `}
                   >
                     {completed ? (
-                      <Check className="w-5 h-5" />
+                      <Check className="h-5 w-5" />
                     ) : (
-                      <Icon className="w-5 h-5" />
+                      <Icon className="h-5 w-5" />
                     )}
                   </div>
 
                   <span
                     className={`
-                      mt-2
-                      text-xs
-                      font-semibold
-                      whitespace-nowrap
+                      mt-2 text-center text-xs font-semibold leading-tight
                       ${
                         active || completed
-                          ? "text-[#1A365D]"
-                          : "text-slate-400"
+                          ? "text-[var(--primary)]"
+                          : "text-[var(--text-secondary)]"
                       }
                     `}
                   >
@@ -378,13 +302,10 @@ ${
                 {index < steps.length - 1 && (
                   <div
                     className={`
-                      h-0.5
-                      flex-1
-                      mx-3
-                      transition-colors
+                      mt-5 h-0.5 min-w-3 flex-1
                       ${
                         currentStep > step.id
-                          ? "bg-[#1A365D]"
+                          ? "bg-[var(--primary)]"
                           : "bg-slate-200"
                       }
                     `}
@@ -394,73 +315,155 @@ ${
             );
           })}
         </div>
+
+        {/* MOBILE */}
+        <div className="grid grid-cols-4 gap-1 sm:hidden">
+
+          {steps.map((step) => {
+            const Icon = step.icon;
+
+            const completed = currentStep > step.id;
+            const active = currentStep === step.id;
+
+            return (
+              <div
+                key={step.id}
+                className="flex min-w-0 flex-col items-center"
+              >
+
+                <div
+                  className={`
+                    flex h-9 w-9 shrink-0 items-center justify-center
+                    rounded-full border-2
+                    ${
+                      completed || active
+                        ? "border-[var(--primary)] bg-[var(--primary)] text-[var(--text-primary)]"
+                        : "border-slate-300 bg-white text-[var(--text-secondary)]"
+                    }
+                  `}
+                >
+                  {completed ? (
+                    <Check className="h-4 w-4" />
+                  ) : (
+                    <Icon className="h-4 w-4" />
+                  )}
+                </div>
+
+                <span
+                  className={`
+                    mt-2
+                    w-full
+                    px-0.5
+                    text-center
+                    text-[10px]
+                    font-semibold
+                    leading-tight
+                    ${
+                      active || completed
+                        ? "text-[var(--primary)]"
+                        : "text-[var(--text-secondary)]"
+                    }
+                  `}
+                >
+                  {step.title}
+                </span>
+
+              </div>
+            );
+          })}
+        </div>
+
+        {/* MOBILE PROGRESS */}
+        <div className="mt-4 h-1 w-full overflow-hidden rounded-full bg-slate-200 sm:hidden">
+          <div
+            className="h-full rounded-full bg-[var(--primary)] transition-all duration-300"
+            style={{
+              width: `${(currentStep / steps.length) * 100}%`,
+            }}
+          />
+        </div>
+
       </div>
 
-      {/* =================================================
+      {/* =====================================================
           MAIN CONTAINER
-      ================================================= */}
+      ===================================================== */}
 
-      <div className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
-        <div className="p-5 md:p-7">
+      <div
+        className="
+          w-full
+          overflow-hidden
+          rounded-2xl
+          border
+          border-slate-200
+          bg-white
+          shadow-sm
+        "
+      >
+
+        <div className="w-full p-4 sm:p-5 md:p-7">
 
           {/* =================================================
-              STEP 1 - TRIP DETAILS
+              STEP 1
           ================================================= */}
 
           {currentStep === 1 && (
             <div className="animate-[fadeIn_0.25s_ease-out]">
+
               <TripDetailsForm
                 details={tripDetails}
                 updateField={updateTripField}
               />
 
-              <div className="mt-7 flex justify-end">
+              <div className="mt-6 flex justify-end">
+
                 <button
                   type="button"
                   onClick={nextStep}
                   disabled={!tripValid}
                   className="
-                    flex
-                    items-center
-                    gap-2
-                    px-6
-                    py-3
+                    flex w-full items-center justify-center gap-2
                     rounded-xl
-                    bg-[#1A365D]
-                    text-white
-                    text-sm
-                    font-semibold
-                    hover:bg-[#142b4d]
-                    disabled:bg-slate-300
-                    disabled:cursor-not-allowed
+                    bg-[var(--primary)]
+                    px-6 py-3
+                    text-sm font-semibold
+                    text-[var(--text-primary)]
                     transition
+                    hover:bg-[var(--primary-dark)]
+                    disabled:cursor-not-allowed
+                    disabled:bg-slate-300
+                    sm:w-auto
                   "
                 >
                   Choose Vehicle
-
-                  <ArrowRight className="w-4 h-4" />
+                  <ArrowRight className="h-4 w-4" />
                 </button>
+
               </div>
             </div>
           )}
 
           {/* =================================================
-              STEP 2 - CHOOSE VEHICLE
+              STEP 2
           ================================================= */}
 
           {currentStep === 2 && (
             <div className="animate-[fadeIn_0.25s_ease-out]">
-              <div className="mb-6">
-                <h2 className="text-xl font-bold text-slate-900">
+
+              <div className="mb-5">
+
+                <h2 className="text-lg font-bold text-[var(--text-primary)] sm:text-xl">
                   Choose Your Vehicle
                 </h2>
 
-                <p className="mt-1 text-sm text-slate-500">
+                <p className="mt-1 text-sm text-[var(--text-secondary)]">
                   Select the vehicle that best suits your journey.
                 </p>
+
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4">
+
                 {vehicles.map((vehicle) => {
                   const selected =
                     selectedVehicle?.id === vehicle.id;
@@ -474,139 +477,109 @@ ${
                       }
                       aria-pressed={selected}
                       className={`
-                        w-full
-                        text-left
-                        border-2
-                        rounded-xl
-                        p-5
-                        transition-all
-                        cursor-pointer
+                        w-full min-w-0 rounded-xl border-2 p-4
+                        text-left transition-all
                         ${
                           selected
-                            ? "border-[#1A365D] bg-blue-50 shadow-md"
-                            : "border-slate-200 bg-white hover:border-[#1A365D] hover:bg-slate-50"
+                            ? "border-[var(--primary)] bg-[var(--secondary)] shadow-md"
+                            : "border-slate-200 bg-white hover:border-[var(--primary)]"
                         }
                       `}
                     >
-                      <div className="flex items-start justify-between">
-                        <div className="flex items-center gap-3">
+
+                      <div className="flex min-w-0 items-start justify-between gap-3">
+
+                        <div className="flex min-w-0 items-center gap-3">
+
                           <div
                             className={`
-                              w-12
-                              h-12
-                              rounded-xl
-                              flex
-                              items-center
-                              justify-center
-                              transition
+                              flex h-11 w-11 shrink-0 items-center
+                              justify-center rounded-xl
                               ${
                                 selected
-                                  ? "bg-[#1A365D] text-white"
-                                  : "bg-slate-100 text-slate-500"
+                                  ? "bg-[var(--primary)] text-[var(--text-primary)]"
+                                  : "bg-slate-100 text-[var(--text-secondary)]"
                               }
                             `}
                           >
-                            <Car className="w-6 h-6" />
+                            <Car className="h-5 w-5" />
                           </div>
 
-                          <div>
-                            <h3 className="font-bold text-slate-900">
+                          <div className="min-w-0">
+
+                            <h3 className="truncate font-bold text-[var(--text-primary)]">
                               {vehicle.type}
                             </h3>
 
-                            <p className="mt-1 text-xs text-slate-500">
+                            <p className="mt-1 break-words text-xs text-[var(--text-secondary)]">
                               {vehicle.model}
                             </p>
+
                           </div>
+
                         </div>
 
                         {selected && (
                           <div
                             className="
-                              w-7
-                              h-7
-                              rounded-full
-                              bg-[#1A365D]
-                              text-white
-                              flex
-                              items-center
-                              justify-center
+                              flex h-7 w-7 shrink-0 items-center
+                              justify-center rounded-full
+                              bg-[var(--primary)]
+                              text-[var(--text-primary)]
                             "
                           >
-                            <Check className="w-4 h-4" />
+                            <Check className="h-4 w-4" />
                           </div>
                         )}
+
                       </div>
 
                       <div
                         className="
-                          mt-5
-                          pt-4
-                          border-t
-                          border-slate-200
-                          flex
-                          items-center
-                          justify-between
+                          mt-4 flex items-center justify-between
+                          gap-2 border-t border-slate-200 pt-3
                         "
                       >
-                        <div
-                          className="
-                            flex
-                            items-center
-                            gap-1.5
-                            text-sm
-                            text-slate-600
-                          "
-                        >
-                          <Users className="w-4 h-4" />
 
-                          <span>
-                            {vehicle.seats} Seats
-                          </span>
+                        <div className="flex items-center gap-1.5 text-xs text-[var(--text-secondary)] sm:text-sm">
+                          <Users className="h-4 w-4 shrink-0" />
+                          {vehicle.seats} Seats
                         </div>
 
-                        <span className="font-bold text-[#1A365D]">
+                        <span className="text-sm font-bold text-[var(--primary)]">
                           {vehicle.price}
                         </span>
+
                       </div>
+
                     </button>
                   );
                 })}
+
               </div>
 
               <div
                 className="
-                  mt-7
-                  flex
-                  flex-col-reverse
-                  sm:flex-row
-                  items-stretch
-                  sm:items-center
-                  justify-between
-                  gap-3
+                  mt-6 flex flex-col gap-3
+                  sm:flex-row sm:items-center sm:justify-between
                 "
               >
+
                 <button
                   type="button"
                   onClick={previousStep}
                   className="
-                    flex
-                    items-center
-                    justify-center
-                    gap-2
-                    px-5
-                    py-3
-                    rounded-xl
-                    border
-                    border-slate-200
-                    text-slate-700
-                    text-sm
-                    font-semibold
-                    hover:bg-slate-50
+                    flex w-full items-center justify-center gap-2
+                    rounded-xl border border-slate-200
+                    px-5 py-3
+                    text-sm font-semibold
+                    text-[var(--text-secondary)]
                     transition
+                    hover:bg-[var(--secondary)]
+                    sm:w-auto
                   "
                 >
-                  <ArrowLeft className="w-4 h-4" />
+                  <ArrowLeft className="h-4 w-4" />
                   Back
                 </button>
 
@@ -615,77 +588,65 @@ ${
                   onClick={nextStep}
                   disabled={!selectedVehicle}
                   className="
-                    flex
-                    items-center
-                    justify-center
-                    gap-2
-                    px-6
-                    py-3
+                    flex w-full items-center justify-center gap-2
                     rounded-xl
-                    bg-[#1A365D]
-                    text-white
-                    text-sm
-                    font-semibold
-                    hover:bg-[#142b4d]
-                    disabled:bg-slate-300
-                    disabled:cursor-not-allowed
+                    bg-[var(--primary)]
+                    px-6 py-3
+                    text-sm font-semibold
+                    text-[var(--text-primary)]
                     transition
+                    hover:bg-[var(--primary-dark)]
+                    disabled:cursor-not-allowed
+                    disabled:bg-slate-300
+                    sm:w-auto
                   "
                 >
                   Passenger Details
-
-                  <ArrowRight className="w-4 h-4" />
+                  <ArrowRight className="h-4 w-4" />
                 </button>
+
               </div>
+
             </div>
           )}
 
           {/* =================================================
-              STEP 3 - PASSENGER DETAILS
+              STEP 3
           ================================================= */}
 
           {currentStep === 3 && (
             <div className="animate-[fadeIn_0.25s_ease-out]">
-              <div className="mb-6">
-                <h2 className="text-xl font-bold text-slate-900">
+
+              <div className="mb-5">
+
+                <h2 className="text-lg font-bold text-[var(--text-primary)] sm:text-xl">
                   Passenger Details
                 </h2>
 
-                <p className="mt-1 text-sm text-slate-500">
+                <p className="mt-1 text-sm text-[var(--text-secondary)]">
                   Enter the passenger information for this booking.
                 </p>
+
               </div>
 
-              <div className="space-y-5">
+              <div className="space-y-4">
+
                 {/* NAME */}
 
                 <div>
-                  <label
-                    className="
-                      block
-                      text-sm
-                      font-semibold
-                      text-slate-700
-                      mb-2
-                    "
-                  >
-                    Passenger Name
 
-                    <span className="text-red-500 ml-1">
-                      *
-                    </span>
+                  <label className="mb-2 block text-sm font-semibold text-[var(--text-primary)]">
+                    Passenger Name
+                    <span className="ml-1 text-red-500">*</span>
                   </label>
 
                   <div className="relative">
+
                     <User
                       className="
-                        absolute
-                        left-3
-                        top-1/2
-                        -translate-y-1/2
-                        w-4
-                        h-4
-                        text-slate-400
+                        absolute left-3 top-1/2
+                        h-4 w-4 -translate-y-1/2
+                        text-[var(--text-secondary)]
                       "
                     />
 
@@ -700,62 +661,38 @@ ${
                       }
                       placeholder="Enter passenger name"
                       className="
-                        w-full
-                        pl-10
-                        pr-4
-                        py-3
-                        bg-slate-50
-                        border
-                        border-slate-200
-                        rounded-lg
-                        text-sm
+                        w-full rounded-lg
+                        border border-slate-200
+                        bg-[var(--secondary)]
+                        py-3 pl-10 pr-4
+                        text-sm text-[var(--text-primary)]
+                        placeholder:text-[var(--text-secondary)]
+                        focus:border-[var(--primary)]
                         focus:outline-none
                         focus:ring-2
-                        focus:ring-[#1A365D]
+                        focus:ring-[var(--primary)]/20
                       "
                     />
+
                   </div>
                 </div>
 
-                {/* PASSENGER COUNTS */}
+                {/* COUNTS */}
 
-                <div
-                  className="
-                    grid
-                    grid-cols-1
-                    sm:grid-cols-3
-                    gap-4
-                  "
-                >
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 sm:gap-4">
+
                   {/* PEOPLE */}
 
-                  <div
-                    className="
-                      border
-                      border-slate-200
-                      rounded-xl
-                      p-4
-                    "
-                  >
-                    <div
-                      className="
-                        flex
-                        items-center
-                        gap-2
-                        mb-3
-                      "
-                    >
-                      <Users className="w-5 h-5 text-[#1A365D]" />
+                  <div className="rounded-xl border border-slate-200 p-4">
 
-                      <span
-                        className="
-                          text-sm
-                          font-semibold
-                          text-slate-800
-                        "
-                      >
+                    <div className="mb-3 flex items-center gap-2">
+
+                      <Users className="h-5 w-5 text-[var(--primary)]" />
+
+                      <span className="text-sm font-semibold text-[var(--text-primary)]">
                         Total People
                       </span>
+
                     </div>
 
                     <input
@@ -772,51 +709,33 @@ ${
                         )
                       }
                       className="
-                        w-full
-                        px-3
-                        py-2.5
-                        bg-slate-50
-                        border
-                        border-slate-200
-                        rounded-lg
-                        text-sm
-                        font-semibold
+                        w-full rounded-lg
+                        border border-slate-200
+                        bg-[var(--secondary)]
+                        px-3 py-2.5
+                        text-sm font-semibold
+                        text-[var(--text-primary)]
+                        focus:border-[var(--primary)]
                         focus:outline-none
                         focus:ring-2
-                        focus:ring-[#1A365D]
+                        focus:ring-[var(--primary)]/20
                       "
                     />
+
                   </div>
 
                   {/* BABIES */}
 
-                  <div
-                    className="
-                      border
-                      border-slate-200
-                      rounded-xl
-                      p-4
-                    "
-                  >
-                    <div
-                      className="
-                        flex
-                        items-center
-                        gap-2
-                        mb-3
-                      "
-                    >
-                      <Baby className="w-5 h-5 text-[#1A365D]" />
+                  <div className="rounded-xl border border-slate-200 p-4">
 
-                      <span
-                        className="
-                          text-sm
-                          font-semibold
-                          text-slate-800
-                        "
-                      >
+                    <div className="mb-3 flex items-center gap-2">
+
+                      <Baby className="h-5 w-5 text-[var(--primary)]" />
+
+                      <span className="text-sm font-semibold text-[var(--text-primary)]">
                         Babies
                       </span>
+
                     </div>
 
                     <input
@@ -833,51 +752,33 @@ ${
                         )
                       }
                       className="
-                        w-full
-                        px-3
-                        py-2.5
-                        bg-slate-50
-                        border
-                        border-slate-200
-                        rounded-lg
-                        text-sm
-                        font-semibold
+                        w-full rounded-lg
+                        border border-slate-200
+                        bg-[var(--secondary)]
+                        px-3 py-2.5
+                        text-sm font-semibold
+                        text-[var(--text-primary)]
+                        focus:border-[var(--primary)]
                         focus:outline-none
                         focus:ring-2
-                        focus:ring-[#1A365D]
+                        focus:ring-[var(--primary)]/20
                       "
                     />
+
                   </div>
 
                   {/* ELDERLY */}
 
-                  <div
-                    className="
-                      border
-                      border-slate-200
-                      rounded-xl
-                      p-4
-                    "
-                  >
-                    <div
-                      className="
-                        flex
-                        items-center
-                        gap-2
-                        mb-3
-                      "
-                    >
-                      <UserRound className="w-5 h-5 text-[#1A365D]" />
+                  <div className="rounded-xl border border-slate-200 p-4">
 
-                      <span
-                        className="
-                          text-sm
-                          font-semibold
-                          text-slate-800
-                        "
-                      >
+                    <div className="mb-3 flex items-center gap-2">
+
+                      <UserRound className="h-5 w-5 text-[var(--primary)]" />
+
+                      <span className="text-sm font-semibold text-[var(--text-primary)]">
                         Elderly People
                       </span>
+
                     </div>
 
                     <input
@@ -894,58 +795,47 @@ ${
                         )
                       }
                       className="
-                        w-full
-                        px-3
-                        py-2.5
-                        bg-slate-50
-                        border
-                        border-slate-200
-                        rounded-lg
-                        text-sm
-                        font-semibold
+                        w-full rounded-lg
+                        border border-slate-200
+                        bg-[var(--secondary)]
+                        px-3 py-2.5
+                        text-sm font-semibold
+                        text-[var(--text-primary)]
+                        focus:border-[var(--primary)]
                         focus:outline-none
                         focus:ring-2
-                        focus:ring-[#1A365D]
+                        focus:ring-[var(--primary)]/20
                       "
                     />
+
                   </div>
+
                 </div>
               </div>
 
-              {/* PASSENGER ACTIONS */}
+              {/* ACTIONS */}
 
               <div
                 className="
-                  mt-7
-                  flex
-                  flex-col-reverse
-                  sm:flex-row
-                  items-stretch
-                  sm:items-center
-                  justify-between
-                  gap-3
+                  mt-6 flex flex-col gap-3
+                  sm:flex-row sm:items-center sm:justify-between
                 "
               >
+
                 <button
                   type="button"
                   onClick={previousStep}
                   className="
-                    flex
-                    items-center
-                    justify-center
-                    gap-2
-                    px-5
-                    py-3
-                    rounded-xl
-                    border
-                    border-slate-200
-                    text-slate-700
-                    text-sm
-                    font-semibold
-                    hover:bg-slate-50
+                    flex w-full items-center justify-center gap-2
+                    rounded-xl border border-slate-200
+                    px-5 py-3
+                    text-sm font-semibold
+                    text-[var(--text-secondary)]
+                    hover:bg-[var(--secondary)]
+                    sm:w-auto
                   "
                 >
-                  <ArrowLeft className="w-4 h-4" />
+                  <ArrowLeft className="h-4 w-4" />
                   Back
                 </button>
 
@@ -954,83 +844,69 @@ ${
                   onClick={nextStep}
                   disabled={!passengerValid}
                   className="
-                    flex
-                    items-center
-                    justify-center
-                    gap-2
-                    px-6
-                    py-3
-                    rounded-xl
-                    bg-[#1A365D]
-                    text-white
-                    text-sm
-                    font-semibold
-                    hover:bg-[#142b4d]
-                    disabled:bg-slate-300
+                    flex w-full items-center justify-center gap-2
+                    rounded-xl bg-[var(--primary)]
+                    px-6 py-3
+                    text-sm font-semibold
+                    text-[var(--text-primary)]
                     disabled:cursor-not-allowed
+                    disabled:bg-slate-300
+                    sm:w-auto
                   "
                 >
                   Payment Method
-
-                  <ArrowRight className="w-4 h-4" />
+                  <ArrowRight className="h-4 w-4" />
                 </button>
+
               </div>
+
             </div>
           )}
 
           {/* =================================================
-              STEP 4 - PAYMENT
+              STEP 4
           ================================================= */}
 
           {currentStep === 4 && !isConfirmed && (
             <div className="animate-[fadeIn_0.25s_ease-out]">
-              <div className="mb-6">
-                <h2 className="text-xl font-bold text-slate-900">
+
+              <div className="mb-5">
+
+                <h2 className="text-lg font-bold text-[var(--text-primary)] sm:text-xl">
                   Payment Method
                 </h2>
 
-                <p className="mt-1 text-sm text-slate-500">
+                <p className="mt-1 text-sm text-[var(--text-secondary)]">
                   Choose your preferred payment method.
                 </p>
+
               </div>
 
               {/* PAYMENT OPTIONS */}
 
-              <div
-                className="
-                  grid
-                  grid-cols-1
-                  sm:grid-cols-3
-                  gap-4
-                "
-              >
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 sm:gap-4">
+
                 {/* CASH */}
 
                 <button
                   type="button"
-                  onClick={() =>
-                    setPaymentMethod("Cash")
-                  }
+                  onClick={() => setPaymentMethod("Cash")}
                   className={`
-                    p-5
-                    rounded-xl
-                    border-2
-                    text-left
-                    transition
+                    rounded-xl border-2 p-4 text-left transition
                     ${
                       paymentMethod === "Cash"
-                        ? "border-[#1A365D] bg-blue-50"
-                        : "border-slate-200 hover:border-[#1A365D]"
+                        ? "border-[var(--primary)] bg-[var(--secondary)]"
+                        : "border-slate-200 hover:border-[var(--primary)]"
                     }
                   `}
                 >
-                  <Banknote className="w-7 h-7 text-[#1A365D]" />
+                  <Banknote className="h-7 w-7 text-[var(--primary)]" />
 
-                  <h3 className="mt-3 font-bold text-slate-900">
+                  <h3 className="mt-3 font-bold text-[var(--text-primary)]">
                     Cash
                   </h3>
 
-                  <p className="mt-1 text-xs text-slate-500">
+                  <p className="mt-1 text-xs text-[var(--text-secondary)]">
                     Pay directly to the driver.
                   </p>
                 </button>
@@ -1039,29 +915,23 @@ ${
 
                 <button
                   type="button"
-                  onClick={() =>
-                    setPaymentMethod("UPI")
-                  }
+                  onClick={() => setPaymentMethod("UPI")}
                   className={`
-                    p-5
-                    rounded-xl
-                    border-2
-                    text-left
-                    transition
+                    rounded-xl border-2 p-4 text-left transition
                     ${
                       paymentMethod === "UPI"
-                        ? "border-[#1A365D] bg-blue-50"
-                        : "border-slate-200 hover:border-[#1A365D]"
+                        ? "border-[var(--primary)] bg-[var(--secondary)]"
+                        : "border-slate-200 hover:border-[var(--primary)]"
                     }
                   `}
                 >
-                  <Smartphone className="w-7 h-7 text-[#1A365D]" />
+                  <Smartphone className="h-7 w-7 text-[var(--primary)]" />
 
-                  <h3 className="mt-3 font-bold text-slate-900">
+                  <h3 className="mt-3 font-bold text-[var(--text-primary)]">
                     UPI
                   </h3>
 
-                  <p className="mt-1 text-xs text-slate-500">
+                  <p className="mt-1 text-xs text-[var(--text-secondary)]">
                     Pay using any UPI app.
                   </p>
                 </button>
@@ -1070,239 +940,150 @@ ${
 
                 <button
                   type="button"
-                  onClick={() =>
-                    setPaymentMethod("Card")
-                  }
+                  onClick={() => setPaymentMethod("Card")}
                   className={`
-                    p-5
-                    rounded-xl
-                    border-2
-                    text-left
-                    transition
+                    rounded-xl border-2 p-4 text-left transition
                     ${
                       paymentMethod === "Card"
-                        ? "border-[#1A365D] bg-blue-50"
-                        : "border-slate-200 hover:border-[#1A365D]"
+                        ? "border-[var(--primary)] bg-[var(--secondary)]"
+                        : "border-slate-200 hover:border-[var(--primary)]"
                     }
                   `}
                 >
-                  <WalletCards className="w-7 h-7 text-[#1A365D]" />
+                  <WalletCards className="h-7 w-7 text-[var(--primary)]" />
 
-                  <h3 className="mt-3 font-bold text-slate-900">
+                  <h3 className="mt-3 font-bold text-[var(--text-primary)]">
                     Card
                   </h3>
 
-                  <p className="mt-1 text-xs text-slate-500">
+                  <p className="mt-1 text-xs text-[var(--text-secondary)]">
                     Pay using debit or credit card.
                   </p>
                 </button>
+
               </div>
 
               {/* SUMMARY */}
 
-              <div
-                className="
-                  mt-6
-                  bg-slate-50
-                  border
-                  border-slate-200
-                  rounded-xl
-                  p-5
-                "
-              >
-                <h3
-                  className="
-                    font-bold
-                    text-slate-900
-                    mb-4
-                  "
-                >
+              <div className="mt-5 rounded-xl border border-slate-200 bg-[var(--secondary)] p-4 sm:p-5">
+
+                <h3 className="mb-4 font-bold text-[var(--text-primary)]">
                   Booking Summary
                 </h3>
 
-                <div
-                  className="
-                    grid
-                    grid-cols-1
-                    sm:grid-cols-2
-                    gap-4
-                    text-sm
-                  "
-                >
+                <div className="grid grid-cols-1 gap-4 text-sm sm:grid-cols-2">
+
                   {/* ROUTE */}
 
-                  <div className="flex items-start gap-3">
-                    <MapPin
-                      className="
-                        w-4
-                        h-4
-                        text-[#1A365D]
-                        mt-0.5
-                      "
-                    />
+                  <div className="flex min-w-0 items-start gap-3">
 
-                    <div>
-                      <p className="text-xs text-slate-500">
+                    <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[var(--primary)]" />
+
+                    <div className="min-w-0">
+
+                      <p className="text-xs text-[var(--text-secondary)]">
                         Route
                       </p>
 
-                      <p
-                        className="
-                          font-semibold
-                          text-slate-800
-                        "
-                      >
-                        {tripDetails.pickup} →{" "}
-                        {tripDetails.drop}
+                      <p className="break-words font-semibold text-[var(--text-primary)]">
+                        {tripDetails.pickup} → {tripDetails.drop}
                       </p>
+
                     </div>
                   </div>
 
                   {/* DATE */}
 
                   <div className="flex items-start gap-3">
-                    <Calendar
-                      className="
-                        w-4
-                        h-4
-                        text-[#1A365D]
-                        mt-0.5
-                      "
-                    />
+
+                    <Calendar className="mt-0.5 h-4 w-4 shrink-0 text-[var(--primary)]" />
 
                     <div>
-                      <p className="text-xs text-slate-500">
+
+                      <p className="text-xs text-[var(--text-secondary)]">
                         Date & Time
                       </p>
 
-                      <p
-                        className="
-                          font-semibold
-                          text-slate-800
-                        "
-                      >
-                        {tripDetails.date}{" "}
-                        {tripDetails.time}
+                      <p className="font-semibold text-[var(--text-primary)]">
+                        {tripDetails.date} {tripDetails.time}
                       </p>
+
                     </div>
                   </div>
 
                   {/* VEHICLE */}
 
                   <div className="flex items-start gap-3">
-                    <Car
-                      className="
-                        w-4
-                        h-4
-                        text-[#1A365D]
-                        mt-0.5
-                      "
-                    />
+
+                    <Car className="mt-0.5 h-4 w-4 shrink-0 text-[var(--primary)]" />
 
                     <div>
-                      <p className="text-xs text-slate-500">
+
+                      <p className="text-xs text-[var(--text-secondary)]">
                         Vehicle
                       </p>
 
-                      <p
-                        className="
-                          font-semibold
-                          text-slate-800
-                        "
-                      >
-                        {selectedVehicle?.type} ·{" "}
-                        {selectedVehicle?.seats} Seats
+                      <p className="font-semibold text-[var(--text-primary)]">
+                        {selectedVehicle?.type} · {selectedVehicle?.seats} Seats
                       </p>
 
-                      <p
-                        className="
-                          text-xs
-                          text-[#1A365D]
-                          mt-1
-                          font-semibold
-                        "
-                      >
+                      <p className="mt-1 text-xs font-semibold text-[var(--primary)]">
                         {selectedVehicle?.price}
                       </p>
+
                     </div>
                   </div>
 
                   {/* PASSENGERS */}
 
                   <div className="flex items-start gap-3">
-                    <Users
-                      className="
-                        w-4
-                        h-4
-                        text-[#1A365D]
-                        mt-0.5
-                      "
-                    />
+
+                    <Users className="mt-0.5 h-4 w-4 shrink-0 text-[var(--primary)]" />
 
                     <div>
-                      <p className="text-xs text-slate-500">
+
+                      <p className="text-xs text-[var(--text-secondary)]">
                         Passengers
                       </p>
 
-                      <p
-                        className="
-                          font-semibold
-                          text-slate-800
-                        "
-                      >
+                      <p className="font-semibold text-[var(--text-primary)]">
                         {passengerDetails.people} People
                       </p>
 
-                      <p
-                        className="
-                          text-xs
-                          text-slate-500
-                          mt-1
-                        "
-                      >
-                        Babies: {passengerDetails.babies} ·
-                        Elderly:{" "}
+                      <p className="mt-1 text-xs text-[var(--text-secondary)]">
+                        Babies: {passengerDetails.babies} · Elderly:{" "}
                         {passengerDetails.elderly}
                       </p>
+
                     </div>
                   </div>
+
                 </div>
               </div>
 
-              {/* PAYMENT ACTIONS */}
+              {/* ACTIONS */}
 
               <div
                 className="
-                  mt-7
-                  flex
-                  flex-col-reverse
-                  sm:flex-row
-                  items-stretch
-                  sm:items-center
-                  justify-between
-                  gap-3
+                  mt-6 flex flex-col gap-3
+                  sm:flex-row sm:items-center sm:justify-between
                 "
               >
+
                 <button
                   type="button"
                   onClick={previousStep}
                   className="
-                    flex
-                    items-center
-                    justify-center
-                    gap-2
-                    px-5
-                    py-3
-                    rounded-xl
-                    border
-                    border-slate-200
-                    text-slate-700
-                    text-sm
-                    font-semibold
-                    hover:bg-slate-50
+                    flex w-full items-center justify-center gap-2
+                    rounded-xl border border-slate-200
+                    px-5 py-3
+                    text-sm font-semibold
+                    text-[var(--text-secondary)]
+                    hover:bg-[var(--secondary)]
+                    sm:w-auto
                   "
                 >
-                  <ArrowLeft className="w-4 h-4" />
+                  <ArrowLeft className="h-4 w-4" />
                   Back
                 </button>
 
@@ -1311,27 +1092,22 @@ ${
                   onClick={confirmBooking}
                   disabled={!paymentMethod}
                   className="
-                    flex
-                    items-center
-                    justify-center
-                    gap-2
-                    px-6
-                    py-3
-                    rounded-xl
-                    bg-[#1A365D]
-                    text-white
-                    text-sm
-                    font-semibold
-                    hover:bg-[#142b4d]
-                    disabled:bg-slate-300
+                    flex w-full items-center justify-center gap-2
+                    rounded-xl bg-[var(--primary)]
+                    px-6 py-3
+                    text-sm font-semibold
+                    text-[var(--text-primary)]
                     disabled:cursor-not-allowed
+                    disabled:bg-slate-300
+                    sm:w-auto
                   "
                 >
                   Confirm Booking
-
-                  <CheckCircle2 className="w-4 h-4" />
+                  <CheckCircle2 className="h-4 w-4" />
                 </button>
+
               </div>
+
             </div>
           )}
 
@@ -1340,148 +1116,101 @@ ${
           ================================================= */}
 
           {isConfirmed && (
-            <div className="py-10 text-center">
+            <div className="py-8 text-center sm:py-10">
+
               <div
                 className="
-                  mx-auto
-                  w-16
-                  h-16
-                  rounded-full
-                  bg-green-100
-                  flex
-                  items-center
-                  justify-center
+                  mx-auto flex h-16 w-16
+                  items-center justify-center
+                  rounded-full bg-[var(--secondary)]
                 "
               >
-                <CheckCircle2
-                  className="
-                    w-9
-                    h-9
-                    text-green-600
-                  "
-                />
+                <CheckCircle2 className="h-9 w-9 text-[var(--primary)]" />
               </div>
 
-              <h2
-                className="
-                  mt-5
-                  text-2xl
-                  font-bold
-                  text-slate-900
-                "
-              >
+              <h2 className="mt-5 text-xl font-bold text-[var(--text-primary)] sm:text-2xl">
                 Booking Confirmed!
               </h2>
 
-              <p
-                className="
-                  mt-2
-                  text-sm
-                  text-slate-500
-                  max-w-md
-                  mx-auto
-                "
-              >
+              <p className="mx-auto mt-2 max-w-md text-sm text-[var(--text-secondary)]">
                 Your SBS Taxi booking has been confirmed.
-                Your booking details are ready for email
-                confirmation.
+                Your booking details are ready for email confirmation.
               </p>
 
               <div
                 className="
-                  mt-6
-                  bg-slate-50
-                  border
-                  border-slate-200
-                  rounded-xl
-                  p-5
-                  text-left
-                  max-w-md
-                  mx-auto
+                  mx-auto mt-5 max-w-md
+                  rounded-xl border border-slate-200
+                  bg-[var(--secondary)]
+                  p-4 text-left sm:p-5
                 "
               >
-                <div
-                  className="
-                    flex
-                    justify-between
-                    py-2
-                  "
-                >
-                  <span className="text-xs text-slate-500">
+
+                <div className="flex justify-between gap-4 py-2">
+
+                  <span className="text-xs text-[var(--text-secondary)]">
                     Passenger
                   </span>
 
-                  <span className="text-sm font-semibold">
+                  <span className="break-words text-right text-sm font-semibold text-[var(--text-primary)]">
                     {passengerDetails.name}
                   </span>
+
                 </div>
 
-                <div
-                  className="
-                    flex
-                    justify-between
-                    py-2
-                  "
-                >
-                  <span className="text-xs text-slate-500">
+                <div className="flex justify-between gap-4 py-2">
+
+                  <span className="text-xs text-[var(--text-secondary)]">
                     Vehicle
                   </span>
 
-                  <span className="text-sm font-semibold">
+                  <span className="text-right text-sm font-semibold text-[var(--text-primary)]">
                     {selectedVehicle?.type}
                   </span>
+
                 </div>
 
-                <div
-                  className="
-                    flex
-                    justify-between
-                    py-2
-                  "
-                >
-                  <span className="text-xs text-slate-500">
+                <div className="flex justify-between gap-4 py-2">
+
+                  <span className="text-xs text-[var(--text-secondary)]">
                     Seats
                   </span>
 
-                  <span className="text-sm font-semibold">
+                  <span className="text-right text-sm font-semibold text-[var(--text-primary)]">
                     {selectedVehicle?.seats}
                   </span>
+
                 </div>
 
-                <div
-                  className="
-                    flex
-                    justify-between
-                    py-2
-                  "
-                >
-                  <span className="text-xs text-slate-500">
+                <div className="flex justify-between gap-4 py-2">
+
+                  <span className="text-xs text-[var(--text-secondary)]">
                     People
                   </span>
 
-                  <span className="text-sm font-semibold">
+                  <span className="text-right text-sm font-semibold text-[var(--text-primary)]">
                     {passengerDetails.people}
                   </span>
+
                 </div>
 
-                <div
-                  className="
-                    flex
-                    justify-between
-                    py-2
-                  "
-                >
-                  <span className="text-xs text-slate-500">
+                <div className="flex justify-between gap-4 py-2">
+
+                  <span className="text-xs text-[var(--text-secondary)]">
                     Payment
                   </span>
 
-                  <span className="text-sm font-semibold">
+                  <span className="text-right text-sm font-semibold text-[var(--text-primary)]">
                     {paymentMethod}
                   </span>
+
                 </div>
+
               </div>
+
             </div>
           )}
+
         </div>
       </div>
     </div>

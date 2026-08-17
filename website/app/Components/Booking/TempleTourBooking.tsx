@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useMemo, useState } from "react";
@@ -608,24 +607,31 @@ SBS Taxi`;
         font-jakarta
         overflow-hidden
         rounded-2xl
-        border border-slate-200
+        border border-[var(--secondary-200)]
         bg-white
         shadow-sm
       "
     >
       {/* HEADER */}
-      <div className="bg-gradient-to-r from-orange-500 to-amber-500 px-5 py-5 sm:px-6">
+      <div className="bg-[var(--secondary)] px-5 py-5 sm:px-6">
         <div className="flex items-center gap-3">
-          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white/20 text-2xl">
+          <div
+            className="
+              flex h-11 w-11 shrink-0 items-center justify-center
+              rounded-xl
+              bg-white/20
+              text-2xl
+            "
+          >
             🛕
           </div>
 
           <div>
-            <h2 className="text-lg font-bold tracking-tight text-white sm:text-xl">
+            <h2 className="text-lg font-bold tracking-tight text-[var(--text-primary)] sm:text-xl">
               Temple Tour Booking
             </h2>
 
-            <p className="mt-1 text-xs text-orange-50 sm:text-sm">
+            <p className="mt-1 text-xs text-[var(--text-primary)]/80 sm:text-sm">
               Select multiple temples and create your complete temple tour
             </p>
           </div>
@@ -648,18 +654,25 @@ SBS Taxi`;
 
         {/* SELECTED DESTINATIONS */}
         {selectedDestinations.length > 0 && (
-          <div className="mb-6 rounded-2xl border border-orange-200 bg-orange-50 p-4 sm:p-5">
+          <div
+            className="
+              mb-6 rounded-2xl
+              border border-[var(--secondary-200)]
+              bg-[var(--secondary-50)]
+              p-4 sm:p-5
+            "
+          >
             <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
               <div>
-                <p className="flex items-center gap-2 text-sm font-extrabold text-slate-900">
+                <p className="flex items-center gap-2 text-sm font-extrabold text-[var(--text-secondary)]">
                   <Route
                     size={18}
-                    className="text-orange-600"
+                    className="text-[var(--secondary)]"
                   />
                   Your Temple Tour
                 </p>
 
-                <p className="mt-1 text-xs text-slate-500">
+                <p className="mt-1 text-xs text-[var(--text-secondary)]/70">
                   {selectedDestinations.length} temple
                   {selectedDestinations.length > 1
                     ? "s"
@@ -669,11 +682,11 @@ SBS Taxi`;
               </div>
 
               <div className="rounded-xl bg-white px-4 py-2 text-right shadow-sm">
-                <p className="text-[10px] text-slate-400">
+                <p className="text-[10px] text-[var(--text-secondary)]/50">
                   Estimated Total
                 </p>
 
-                <p className="flex items-center justify-end text-lg font-extrabold text-orange-600">
+                <p className="flex items-center justify-end text-lg font-extrabold text-[var(--text-secondary)]">
                   <IndianRupee size={17} />
                   {calculatedFare.toLocaleString(
                     "en-IN"
@@ -687,18 +700,34 @@ SBS Taxi`;
                 (destination, index) => (
                   <div
                     key={destination.id}
-                    className="flex items-center gap-3 rounded-xl bg-white p-3 shadow-sm"
+                    className="
+                      flex items-center gap-3
+                      rounded-xl
+                      border border-[var(--secondary-200)]
+                      bg-white
+                      p-3
+                      shadow-sm
+                    "
                   >
-                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-orange-500 text-xs font-bold text-white">
+                    <div
+                      className="
+                        flex h-8 w-8 shrink-0
+                        items-center justify-center
+                        rounded-full
+                        bg-[var(--primary)]
+                        text-xs font-bold
+                        text-[var(--text-primary)]
+                      "
+                    >
                       {index + 1}
                     </div>
 
                     <div className="min-w-0 flex-1">
-                      <p className="break-words text-sm font-bold text-slate-900">
+                      <p className="break-words text-sm font-bold text-[var(--text-secondary)]">
                         {destination.name}
                       </p>
 
-                      <p className="mt-0.5 text-xs text-slate-500">
+                      <p className="mt-0.5 text-xs text-[var(--text-secondary)]/60">
                         {destination.location}
                         {" • "}
                         {destination.custom
@@ -708,25 +737,32 @@ SBS Taxi`;
                     </div>
 
                     <div className="shrink-0 text-right">
-                      <p className="text-xs font-bold text-orange-600">
+                      <p className="text-xs font-bold text-[var(--primary)]">
+                        ₹
+                        {destination.fare.toLocaleString(
+                          "en-IN"
+                        )}
                         {destination.custom
-                          ? `₹${destination.fare.toLocaleString(
-                              "en-IN"
-                            )} est.`
-                          : `₹${destination.fare.toLocaleString(
-                              "en-IN"
-                            )}`}
+                          ? " est."
+                          : ""}
                       </p>
                     </div>
 
                     <button
                       type="button"
                       onClick={() =>
-                        removeTemple(
-                          destination.id
-                        )
+                        removeTemple(destination.id)
                       }
-                      className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-red-200 bg-white text-red-500 transition hover:bg-red-50"
+                      className="
+                        flex h-8 w-8 shrink-0
+                        items-center justify-center
+                        rounded-lg
+                        border border-red-200
+                        bg-white
+                        text-red-500
+                        transition
+                        hover:bg-red-50
+                      "
                       aria-label={`Remove ${destination.name}`}
                     >
                       <X size={16} />
@@ -740,29 +776,27 @@ SBS Taxi`;
 
         {/* CATEGORY */}
         <div>
-          <label className="mb-3 block text-sm font-bold text-slate-900">
+          <label className="mb-3 block text-sm font-bold text-[var(--text-secondary)] ">
             Choose Temple Tour
           </label>
 
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-            {(
-              [
-                {
-                  value: "Nearby" as TempleType,
-                  icon: "🙏",
-                  title: "Nearby Temples",
-                  description:
-                    "Erode & nearby destinations",
-                },
-                {
-                  value: "Outstation" as TempleType,
-                  icon: "🚕",
-                  title: "Outstation Tours",
-                  description:
-                    "Long-distance temple trips",
-                },
-              ]
-            ).map((item) => (
+            {[
+              {
+                value: "Nearby" as TempleType,
+                icon: "🙏",
+                title: "Nearby Temples",
+                description:
+                  "Erode & nearby destinations",
+              },
+              {
+                value: "Outstation" as TempleType,
+                icon: "🚕",
+                title: "Outstation Tours",
+                description:
+                  "Long-distance temple trips",
+              },
+            ].map((item) => (
               <button
                 key={item.value}
                 type="button"
@@ -771,21 +805,29 @@ SBS Taxi`;
                 }
                 className={`rounded-xl border p-4 text-left transition ${
                   category === item.value
-                    ? "border-orange-500 bg-orange-50 ring-2 ring-orange-100"
-                    : "border-slate-200 bg-white hover:border-orange-300"
+                    ? "border-[var(--primary)] bg-[var(--secondary-50)] ring-2 ring-[var(--secondary-100)]"
+                    : "border-[var(--secondary-200)] bg-white hover:border-[var(--primary)]"
                 }`}
               >
                 <div className="flex items-center gap-3">
-                  <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-orange-100 text-xl">
+                  <div
+                    className="
+                      flex h-11 w-11
+                      items-center justify-center
+                      rounded-xl
+                      !bg-[var(--secondary-50)]
+                      text-xl
+                    "
+                  >
                     {item.icon}
                   </div>
 
                   <div>
-                    <p className="text-sm font-bold text-slate-900">
+                    <p className="text-sm font-bold text-[var(--text-secondary)]">
                       {item.title}
                     </p>
 
-                    <p className="mt-1 text-xs text-slate-500">
+                    <p className="mt-1 text-xs text-[var(--text-secondary)]/60">
                       {item.description}
                     </p>
                   </div>
@@ -798,11 +840,11 @@ SBS Taxi`;
         {/* TEMPLE LIST */}
         <div className="mt-6">
           <div className="mb-3 flex items-center justify-between">
-            <label className="text-sm font-bold text-slate-900">
+            <label className="text-sm font-bold text-[var(--text-secondary)]">
               Add Temples
             </label>
 
-            <span className="text-xs text-slate-400">
+            <span className="text-xs text-[var(--text-secondary)]/50">
               Click to add
             </span>
           </div>
@@ -818,24 +860,27 @@ SBS Taxi`;
                   type="button"
                   onClick={() =>
                     isSelected
-                      ? removeTemple(
-                          temple.id
-                        )
+                      ? removeTemple(temple.id)
                       : addTemple(temple)
                   }
                   className={`rounded-xl border p-4 text-left transition ${
                     isSelected
-                      ? "border-green-500 bg-green-50"
-                      : "border-slate-200 bg-white hover:border-orange-400 hover:bg-orange-50/50"
+                      ? "border-[var(--primary)] bg-[var(--secondary-50)]"
+                      : "border-[var(--secondary-200)] bg-white hover:border-[var(--primary)] hover:bg-[var(--secondary-50)]"
                   }`}
                 >
                   <div className="flex items-start gap-3">
                     <div
-                      className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full ${
-                        isSelected
-                          ? "bg-green-500 text-white"
-                          : "bg-orange-100 text-orange-600"
-                      }`}
+                      className={`
+                        flex h-10 w-10 shrink-0
+                        items-center justify-center
+                        rounded-full
+                        ${
+                          isSelected
+                            ? "bg-[var(--primary)] text-[var(--text-primary)]"
+                            : "bg-[var(--secondary-50)] text-[var(--primary)]"
+                        }
+                      `}
                     >
                       {isSelected ? (
                         <span className="text-sm font-bold">
@@ -847,11 +892,11 @@ SBS Taxi`;
                     </div>
 
                     <div className="min-w-0 flex-1">
-                      <p className="text-sm font-bold text-slate-900">
+                      <p className="text-sm font-bold text-[var(--text-secondary)]">
                         {temple.name}
                       </p>
 
-                      <p className="mt-1 text-xs text-slate-500">
+                      <p className="mt-1 text-xs text-[var(--text-secondary)]/60">
                         {temple.location}
                         {" • "}
                         {temple.distance}
@@ -859,11 +904,11 @@ SBS Taxi`;
                     </div>
 
                     <div className="shrink-0 text-right">
-                      <p className="text-[10px] text-slate-400">
+                      <p className="text-[10px] text-[var(--text-secondary)]/50">
                         Fare
                       </p>
 
-                      <p className="flex items-center text-sm font-extrabold text-orange-600">
+                      <p className="flex items-center text-sm font-extrabold text-[var(--primary)]">
                         <IndianRupee size={13} />
                         {temple.fare.toLocaleString(
                           "en-IN"
@@ -871,11 +916,14 @@ SBS Taxi`;
                       </p>
 
                       <p
-                        className={`mt-1 text-[10px] font-bold ${
-                          isSelected
-                            ? "text-green-600"
-                            : "text-orange-500"
-                        }`}
+                        className={`
+                          mt-1 text-[10px] font-bold
+                          ${
+                            isSelected
+                              ? "text-[var(--primary)]"
+                              : "text-[var(--secondary)]"
+                          }
+                        `}
                       >
                         {isSelected ? "Added" : "Add"}
                       </p>
@@ -888,8 +936,15 @@ SBS Taxi`;
         </div>
 
         {/* CUSTOM DESTINATION */}
-        <div className="mt-6 rounded-2xl border border-blue-100 bg-blue-50/50 p-4">
-          <label className="mb-2 block text-sm font-bold text-slate-800">
+        <div
+          className="
+            mt-6 rounded-2xl
+            border border-[var(--secondary-200)]
+            bg-[var(--secondary-50)]
+            p-4
+          "
+        >
+          <label className="mb-2 block text-sm font-bold text-[var(--text-secondary)]">
             Add Another Temple / Destination
           </label>
 
@@ -897,7 +952,11 @@ SBS Taxi`;
             <div className="relative flex-1">
               <MapPin
                 size={18}
-                className="absolute left-3 top-1/2 -translate-y-1/2 text-blue-500"
+                className="
+                  absolute left-3 top-1/2
+                  -translate-y-1/2
+                  text-[var(--primary)]
+                "
               />
 
               <input
@@ -908,25 +967,43 @@ SBS Taxi`;
                     event.target.value
                   )
                 }
-                onKeyDown={
-                  handleCustomKeyDown
-                }
+                onKeyDown={handleCustomKeyDown}
                 placeholder="Example: Tiruchendur Murugan Temple"
-                className="h-12 w-full rounded-xl border border-slate-300 bg-white pl-10 pr-4 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                className="
+                  h-12 w-full rounded-xl
+                  border border-[var(--secondary-200)]
+                  bg-white pl-10 pr-4
+                  text-sm text-[var(--text-secondary)]
+                  outline-none transition
+                  placeholder:text-[var(--text-secondary)]/40
+                  focus:border-[var(--primary)]
+                  focus:ring-2
+                  focus:ring-[var(--secondary-100)]
+                "
               />
             </div>
 
             <button
               type="button"
               onClick={addCustomTemple}
-              className="flex h-12 items-center justify-center gap-2 rounded-xl bg-blue-600 px-5 text-sm font-bold text-white transition hover:bg-blue-700"
+              className="
+                flex h-12
+                items-center justify-center gap-2
+                rounded-xl
+                bg-[var(--primary)]
+                px-5
+                text-sm font-bold
+                text-[var(--text-primary)]
+                transition
+                hover:opacity-90
+              "
             >
               <Plus size={18} />
               Add Temple
             </button>
           </div>
 
-          <p className="mt-2 text-xs text-slate-500">
+          <p className="mt-2 text-xs text-[var(--text-secondary)]/60">
             Add multiple custom temples one by one.
           </p>
         </div>
@@ -934,14 +1011,18 @@ SBS Taxi`;
         {/* PICKUP + DATE */}
         <div className="mt-6 grid grid-cols-1 gap-5 md:grid-cols-2">
           <div>
-            <label className="mb-2 block text-sm font-bold text-slate-800">
+            <label className="mb-2 block text-sm font-bold text-[var(--text-secondary)]">
               Pickup Location
             </label>
 
             <div className="relative">
               <MapPin
                 size={18}
-                className="absolute left-3 top-1/2 -translate-y-1/2 text-orange-500"
+                className="
+                  absolute left-3 top-1/2
+                  -translate-y-1/2
+                  text-[var(--primary)]
+                "
               />
 
               <input
@@ -951,20 +1032,34 @@ SBS Taxi`;
                   setPickup(event.target.value)
                 }
                 placeholder="Enter pickup location"
-                className="h-12 w-full rounded-xl border border-slate-300 bg-white pl-10 pr-4 text-sm outline-none transition focus:border-orange-500 focus:ring-2 focus:ring-orange-100"
+                className="
+                  h-12 w-full rounded-xl
+                  border border-[var(--secondary-200)]
+                  bg-white pl-10 pr-4
+                  text-sm text-[var(--text-secondary)]
+                  outline-none transition
+                  placeholder:text-[var(--text-secondary)]/40
+                  focus:border-[var(--primary)]
+                  focus:ring-2
+                  focus:ring-[var(--secondary-100)]
+                "
               />
             </div>
           </div>
 
           <div>
-            <label className="mb-2 block text-sm font-bold text-slate-800">
+            <label className="mb-2 block text-sm font-bold text-[var(--text-secondary)]">
               Travel Date
             </label>
 
             <div className="relative">
               <CalendarDays
                 size={18}
-                className="absolute left-3 top-1/2 -translate-y-1/2 text-orange-500"
+                className="
+                  absolute left-3 top-1/2
+                  -translate-y-1/2
+                  text-[var(--primary)]
+                "
               />
 
               <input
@@ -974,7 +1069,16 @@ SBS Taxi`;
                 onChange={(event) =>
                   setDate(event.target.value)
                 }
-                className="h-12 w-full rounded-xl border border-slate-300 bg-white pl-10 pr-4 text-sm outline-none transition focus:border-orange-500 focus:ring-2 focus:ring-orange-100"
+                className="
+                  h-12 w-full rounded-xl
+                  border border-[var(--secondary-200)]
+                  bg-white pl-10 pr-4
+                  text-sm text-[var(--text-secondary)]
+                  outline-none transition
+                  focus:border-[var(--primary)]
+                  focus:ring-2
+                  focus:ring-[var(--secondary-100)]
+                "
               />
             </div>
           </div>
@@ -982,7 +1086,7 @@ SBS Taxi`;
 
         {/* PACKAGE */}
         <div className="mt-6">
-          <label className="mb-3 block text-sm font-bold text-slate-800">
+          <label className="mb-3 block text-sm font-bold text-[var(--text-secondary)]">
             Trip Package
           </label>
 
@@ -996,15 +1100,15 @@ SBS Taxi`;
                 }
                 className={`rounded-xl border p-4 text-left transition ${
                   tripPackage === item.name
-                    ? "border-orange-500 bg-orange-50 ring-2 ring-orange-100"
-                    : "border-slate-200 bg-white hover:border-orange-300"
+                    ? "border-[var(--primary)] bg-[var(--secondary-50)] ring-2 ring-[var(--secondary-100)]"
+                    : "border-[var(--secondary-200)] bg-white hover:border-[var(--primary)]"
                 }`}
               >
-                <p className="text-sm font-bold text-slate-900">
+                <p className="text-sm font-bold text-[var(--text-secondary)]">
                   {item.name}
                 </p>
 
-                <p className="mt-1 text-xs text-slate-500">
+                <p className="mt-1 text-xs text-[var(--text-secondary)]/60">
                   {item.description}
                 </p>
               </button>
@@ -1014,7 +1118,7 @@ SBS Taxi`;
 
         {/* DAYS */}
         <div className="mt-6">
-          <label className="mb-2 block text-sm font-bold text-slate-800">
+          <label className="mb-2 block text-sm font-bold text-[var(--text-secondary)]">
             How Many Days?
           </label>
 
@@ -1024,7 +1128,19 @@ SBS Taxi`;
               onChange={(event) =>
                 setDays(event.target.value)
               }
-              className="h-12 w-full appearance-none rounded-xl border border-slate-300 bg-white px-4 pr-10 text-sm font-medium outline-none transition focus:border-orange-500 focus:ring-2 focus:ring-orange-100"
+              className="
+                h-12 w-full appearance-none
+                rounded-xl
+                border border-[var(--secondary-200)]
+                bg-white
+                px-4 pr-10
+                text-sm font-medium
+                text-[var(--text-secondary)]
+                outline-none transition
+                focus:border-[var(--primary)]
+                focus:ring-2
+                focus:ring-[var(--secondary-100)]
+              "
             >
               {Array.from(
                 { length: 15 },
@@ -1048,21 +1164,31 @@ SBS Taxi`;
 
             <ChevronDown
               size={18}
-              className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-slate-400"
+              className="
+                pointer-events-none
+                absolute right-3 top-1/2
+                -translate-y-1/2
+                text-[var(--text-secondary)]/50
+              "
             />
           </div>
         </div>
 
         {/* VEHICLE */}
         <div className="mt-6">
-          <label className="mb-2 block text-sm font-bold text-slate-800">
+          <label className="mb-2 block text-sm font-bold text-[var(--text-secondary)]">
             Vehicle Type / Seater
           </label>
 
           <div className="relative">
             <Car
               size={18}
-              className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-orange-500"
+              className="
+                pointer-events-none
+                absolute left-3 top-1/2
+                -translate-y-1/2
+                text-[var(--primary)]
+              "
             />
 
             <select
@@ -1070,7 +1196,19 @@ SBS Taxi`;
               onChange={(event) =>
                 setVehicle(event.target.value)
               }
-              className="h-12 w-full appearance-none rounded-xl border border-slate-300 bg-white pl-10 pr-10 text-sm font-medium outline-none transition focus:border-orange-500 focus:ring-2 focus:ring-orange-100"
+              className="
+                h-12 w-full appearance-none
+                rounded-xl
+                border border-[var(--secondary-200)]
+                bg-white
+                pl-10 pr-10
+                text-sm font-medium
+                text-[var(--text-secondary)]
+                outline-none transition
+                focus:border-[var(--primary)]
+                focus:ring-2
+                focus:ring-[var(--secondary-100)]
+              "
             >
               {VEHICLES.map((item) => (
                 <option
@@ -1084,31 +1222,51 @@ SBS Taxi`;
 
             <ChevronDown
               size={18}
-              className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-slate-400"
+              className="
+                pointer-events-none
+                absolute right-3 top-1/2
+                -translate-y-1/2
+                text-[var(--text-secondary)]/50
+              "
             />
           </div>
         </div>
 
         {/* PASSENGERS */}
         <div className="mt-6">
-          <label className="mb-2 block text-sm font-bold text-slate-800">
+          <label className="mb-2 block text-sm font-bold text-[var(--text-secondary)]">
             Number of Passengers
           </label>
 
           <div className="relative">
             <Users
               size={18}
-              className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-orange-500"
+              className="
+                pointer-events-none
+                absolute left-3 top-1/2
+                -translate-y-1/2
+                text-[var(--primary)]
+              "
             />
 
             <select
               value={passengers}
               onChange={(event) =>
-                setPassengers(
-                  event.target.value
-                )
+                setPassengers(event.target.value)
               }
-              className="h-12 w-full appearance-none rounded-xl border border-slate-300 bg-white pl-10 pr-10 text-sm outline-none transition focus:border-orange-500 focus:ring-2 focus:ring-orange-100"
+              className="
+                h-12 w-full appearance-none
+                rounded-xl
+                border border-[var(--secondary-200)]
+                bg-white
+                pl-10 pr-10
+                text-sm
+                text-[var(--text-secondary)]
+                outline-none transition
+                focus:border-[var(--primary)]
+                focus:ring-2
+                focus:ring-[var(--secondary-100)]
+              "
             >
               {Array.from(
                 { length: 13 },
@@ -1132,20 +1290,32 @@ SBS Taxi`;
 
             <ChevronDown
               size={18}
-              className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-slate-400"
+              className="
+                pointer-events-none
+                absolute right-3 top-1/2
+                -translate-y-1/2
+                text-[var(--text-secondary)]/50
+              "
             />
           </div>
         </div>
 
         {/* FARE BREAKDOWN */}
-        <div className="mt-6 rounded-2xl border border-slate-200 bg-slate-50 p-5">
-          <p className="text-sm font-extrabold text-slate-900">
+        <div
+          className="
+            mt-6 rounded-2xl
+            border border-[var(--secondary-200)]
+            bg-[var(--secondary-50)]
+            p-5
+          "
+        >
+          <p className="text-sm font-extrabold text-[var(--text-secondary)]">
             Fare Calculation
           </p>
 
           <div className="mt-4 space-y-3">
             <div className="flex justify-between gap-4 text-sm">
-              <span className="text-slate-500">
+              <span className="text-[var(--text-secondary)]/60">
                 {selectedDestinations.length} temple
                 {selectedDestinations.length > 1
                   ? "s"
@@ -1153,7 +1323,7 @@ SBS Taxi`;
                 base fare
               </span>
 
-              <span className="font-semibold text-slate-800">
+              <span className="font-semibold text-[var(--text-secondary)]">
                 ₹
                 {baseTempleFare.toLocaleString(
                   "en-IN"
@@ -1162,32 +1332,32 @@ SBS Taxi`;
             </div>
 
             <div className="flex justify-between gap-4 text-sm">
-              <span className="text-slate-500">
+              <span className="text-[var(--text-secondary)]/60">
                 Vehicle
               </span>
 
-              <span className="font-semibold text-slate-800">
+              <span className="font-semibold text-[var(--text-secondary)]">
                 {selectedVehicle?.name} /{" "}
                 {selectedVehicle?.seats}
               </span>
             </div>
 
             <div className="flex justify-between gap-4 text-sm">
-              <span className="text-slate-500">
+              <span className="text-[var(--text-secondary)]/60">
                 Trip package
               </span>
 
-              <span className="font-semibold text-slate-800">
+              <span className="font-semibold text-[var(--text-secondary)]">
                 {tripPackage}
               </span>
             </div>
 
             <div className="flex justify-between gap-4 text-sm">
-              <span className="text-slate-500">
+              <span className="text-[var(--text-secondary)]/60">
                 Duration
               </span>
 
-              <span className="font-semibold text-slate-800">
+              <span className="font-semibold text-[var(--text-secondary)]">
                 {days}{" "}
                 {Number(days) === 1
                   ? "Day"
@@ -1195,13 +1365,13 @@ SBS Taxi`;
               </span>
             </div>
 
-            <div className="border-t border-slate-200 pt-3">
+            <div className="border-t border-[var(--secondary-200)] pt-3">
               <div className="flex items-center justify-between">
-                <span className="font-bold text-slate-900">
+                <span className="font-bold text-[var(--text-secondary)]">
                   Estimated Total Fare
                 </span>
 
-                <span className="flex items-center text-2xl font-extrabold text-orange-600">
+                <span className="flex items-center text-2xl font-extrabold text-[var(--primary)]">
                   <IndianRupee size={21} />
                   {calculatedFare.toLocaleString(
                     "en-IN"
@@ -1217,7 +1387,21 @@ SBS Taxi`;
           type="button"
           onClick={cancelBooking}
           disabled={isSending}
-          className="mt-6 flex h-12 w-full items-center justify-center gap-2 rounded-xl border border-slate-300 bg-white text-sm font-bold text-slate-600 transition hover:border-red-300 hover:bg-red-50 hover:text-red-600 disabled:cursor-not-allowed disabled:opacity-50"
+          className="
+            mt-6 flex h-12 w-full
+            items-center justify-center gap-2
+            rounded-xl
+            border border-[var(--secondary-200)]
+            bg-white
+            text-sm font-bold
+            text-[var(--text-secondary)]
+            transition
+            hover:border-red-300
+            hover:bg-red-50
+            hover:text-red-600
+            disabled:cursor-not-allowed
+            disabled:opacity-50
+          "
         >
           <X size={18} />
           Cancel Booking
@@ -1228,9 +1412,23 @@ SBS Taxi`;
           type="button"
           onClick={bookingNow}
           disabled={isSending}
-          className="mt-3 flex h-13 w-full items-center justify-center gap-2 rounded-xl bg-orange-500 px-5 text-sm font-extrabold text-white shadow-md transition hover:bg-orange-600 disabled:cursor-not-allowed disabled:opacity-60"
+          className="
+            mt-3 flex h-13 w-full
+            items-center justify-center gap-2
+            rounded-xl
+            bg-[var(--primary)]
+            px-5
+            text-sm font-extrabold
+            text-[var(--text-primary)]
+            shadow-md
+            transition
+            hover:opacity-90
+            disabled:cursor-not-allowed
+            disabled:opacity-60
+          "
         >
           <Mail size={19} />
+
           {isSending
             ? "Sending Booking..."
             : "Booking Now"}
@@ -1238,7 +1436,7 @@ SBS Taxi`;
 
         {/* WHATSAPP + SMS */}
         <div className="mt-5">
-          <p className="mb-3 text-center text-xs text-slate-500">
+          <p className="mb-3 text-center text-xs text-[var(--text-secondary)]/60">
             Or send your booking through
           </p>
 
@@ -1246,7 +1444,16 @@ SBS Taxi`;
             <button
               type="button"
               onClick={sendWhatsApp}
-              className="flex h-12 items-center justify-center gap-2 rounded-xl bg-green-600 text-sm font-bold text-white transition hover:bg-green-700"
+              className="
+                flex h-12
+                items-center justify-center gap-2
+                rounded-xl
+                bg-green-600
+                text-sm font-bold
+                text-white
+                transition
+                hover:bg-green-700
+              "
             >
               <MessageCircle size={19} />
               WhatsApp
@@ -1255,7 +1462,16 @@ SBS Taxi`;
             <button
               type="button"
               onClick={sendSMS}
-              className="flex h-12 items-center justify-center gap-2 rounded-xl bg-slate-900 text-sm font-bold text-white transition hover:bg-black"
+              className="
+                flex h-12
+                items-center justify-center gap-2
+                rounded-xl
+                bg-[var(--text-secondary)]
+                text-sm font-bold
+                text-[var(--text-primary)]
+                transition
+                hover:opacity-90
+              "
             >
               <Phone size={19} />
               SMS
@@ -1264,8 +1480,15 @@ SBS Taxi`;
         </div>
 
         {/* NOTE */}
-        <div className="mt-5 rounded-xl bg-slate-50 p-4">
-          <p className="text-center text-xs leading-5 text-slate-500">
+        <div
+          className="
+            mt-5 rounded-xl
+            border border-[var(--secondary-200)]
+            bg-[var(--secondary-50)]
+            p-4
+          "
+        >
+          <p className="text-center text-xs leading-5 text-[var(--text-secondary)]/60">
             Temple fares shown above are estimated
             package fares. Custom destinations use
             an estimated starting fare. Final fare

@@ -46,7 +46,7 @@ export default function MapSection() {
               href="https://maps.app.goo.gl/3bbc4afcb415c5e0"
               target="_blank"
               rel="noopener noreferrer"
-              className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors shadow-sm"
+              className="px-4 py-2 text-sm font-medium !text-[var(--text-primary)] bg-[var(--primary)] rounded-lg hover:bg-[var(--primary-dark)] transition-colors shadow-sm"
             >
               Open in Google Maps
             </a>
