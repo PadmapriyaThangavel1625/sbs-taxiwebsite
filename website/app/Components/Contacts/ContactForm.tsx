@@ -21,7 +21,7 @@ import {
 ============================================================ */
 
 const MAX_MESSAGE_LENGTH = 1000;
-const REQUEST_TIMEOUT = 15000;
+const REQUEST_TIMEOUT = 30000;
 
 /* ============================================================
    INPUT STYLE

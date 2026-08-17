@@ -631,7 +631,7 @@ SBS Taxi`;
               Temple Tour Booking
             </h2>
 
-            <p className="mt-1 text-xs text-[var(--text-primary)]/80 sm:text-sm">
+            <p className="mt-1 text-xs text-[var(--text-secondary)]/80 sm:text-sm">
               Select multiple temples and create your complete temple tour
             </p>
           </div>
