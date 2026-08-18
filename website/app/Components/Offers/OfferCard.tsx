@@ -1,4 +1,12 @@
-import { ArrowRight } from "lucide-react";
+"use client";
+
+import {
+  ArrowRight,
+  BriefcaseBusiness,
+  Gift,
+  Luggage,
+  Percent,
+} from "lucide-react";
 
 interface OfferCardProps {
   tag: string;
@@ -13,6 +21,9 @@ interface OfferCardProps {
   actionText: string;
   isEnquire?: boolean;
   illustrationType: string;
+
+  onBookNow?: () => void;
+  onEnquire?: () => void;
 }
 
 export default function OfferCard({
@@ -28,33 +39,58 @@ export default function OfferCard({
   actionText,
   isEnquire,
   illustrationType,
+  onBookNow,
+  onEnquire,
 }: OfferCardProps) {
   const backgroundStyle =
-    bgGradient || headerBg || "bg-[var(--primary)]";
+    bgGradient ||
+    headerBg ||
+    "bg-[#041e43]";
+
+  const handleAction = () => {
+    if (isEnquire) {
+      onEnquire?.();
+    } else {
+      onBookNow?.();
+    }
+  };
 
   return (
-    <div
+    <article
       className="
         group
+
+        relative
+
         flex
         h-full
+        min-h-[390px]
+
         flex-col
+
         overflow-hidden
-        rounded-xl
+
+        rounded-2xl
+
         border
-        border-gray-100
+        border-slate-200/80
+
         bg-white
-        shadow-sm
+
+        shadow-[0_8px_30px_rgba(4,30,67,0.06)]
 
         transition-all
         duration-300
 
-        hover:-translate-y-1
-        hover:shadow-lg
+        hover:-translate-y-1.5
+
+        hover:border-[#041e43]/10
+
+        hover:shadow-[0_20px_45px_rgba(4,30,67,0.13)]
       "
     >
       {/* =====================================================
-          TOP BANNER
+          OFFER HEADER
       ====================================================== */}
 
       <div
@@ -63,35 +99,81 @@ export default function OfferCard({
           ${textColor}
 
           relative
+
           flex
-          min-h-[175px]
+
+          min-h-[215px]
+
           flex-col
+
           justify-between
+
           overflow-hidden
+
           p-5
 
-          sm:min-h-[185px]
+          sm:p-6
         `}
       >
-        <div>
-          {/* =================================================
-              TAG
-          ================================================== */}
+        {/* Decorative circles */}
 
+        <div
+          className="
+            pointer-events-none
+            absolute
+            -right-12
+            -top-12
+
+            h-32
+            w-32
+
+            rounded-full
+
+            border
+            border-white/10
+          "
+        />
+
+        <div
+          className="
+            pointer-events-none
+            absolute
+            -bottom-16
+            -left-10
+
+            h-32
+            w-32
+
+            rounded-full
+
+            border
+            border-white/10
+          "
+        />
+
+        {/* Content */}
+
+        <div className="relative z-10">
           <span
             className={`
               ${tagBg}
 
-              mb-3
-              inline-block
-              rounded-md
-              px-2.5
-              py-1
+              inline-flex
+
+              rounded-full
+
+              px-3
+              py-1.5
+
+              font-[var(--font-jakarta)]
 
               text-[9px]
+
               font-extrabold
+
               uppercase
-              tracking-wider
+
+              tracking-[0.12em]
 
               shadow-sm
             `}
@@ -99,343 +181,320 @@ export default function OfferCard({
             {tag}
           </span>
 
-          {/* =================================================
-              TITLE
-          ================================================== */}
-
           <h3
             className="
-              mb-1
+              mt-5
+
               font-[var(--font-jakarta)]
-              text-3xl
+
+              text-[34px]
+
               font-extrabold
-              tracking-tight
+
+              leading-none
+
+              tracking-[-0.04em]
+
+              sm:text-[38px]
             "
           >
             {title}
           </h3>
 
-          {/* =================================================
-              DESCRIPTION
-          ================================================== */}
-
           <p
             className="
-              max-w-[75%]
-              whitespace-pre-line
+              mt-3
+
+              max-w-[68%]
+
               font-[var(--font-jakarta)]
+
               text-xs
+
               font-medium
-              leading-relaxed
-              opacity-90
+
+              leading-5
+
+              opacity-80
             "
           >
             {description}
           </p>
         </div>
 
-        {/* ===================================================
-            ILLUSTRATION
-        ==================================================== */}
+        {/* Illustration */}
 
         <div
           className="
             pointer-events-none
+
             absolute
-            bottom-3
-            right-3
-            opacity-90
+
+            bottom-4
+            right-5
+
+            z-10
 
             transition-transform
-            duration-300
+            duration-500
 
-            group-hover:scale-105
+            group-hover:scale-110
+            group-hover:-rotate-2
           "
         >
-          {/* =================================================
-              GIFT
-          ================================================== */}
-
           {illustrationType === "gift" && (
-            <div
+            <Gift
+              size={72}
+              strokeWidth={1.5}
               className="
-                relative
-                flex
-                h-20
-                w-16
-                rotate-3
-                items-center
-                justify-center
-                rounded-lg
-                border
-                border-blue-400
-                bg-blue-600
-                shadow-xl
+                text-[#FFD23F]
+                drop-shadow-lg
               "
-            >
-              <div
-                className="
-                  absolute
-                  top-0
-                  h-full
-                  w-4
-                  bg-[var(--secondary)]
-                "
-              />
-
-              <div
-                className="
-                  absolute
-                  h-4
-                  w-full
-                  bg-[var(--secondary)]
-                "
-              />
-
-              <div
-                className="
-                  absolute
-                  -top-3
-                  h-4
-                  w-6
-                  rounded-full
-                  border-2
-                  border-[var(--secondary)]
-                "
-              />
-            </div>
+            />
           )}
-
-          {/* =================================================
-              COUPON
-          ================================================== */}
 
           {illustrationType === "coupon" && (
             <div
               className="
                 flex
-                h-16
-                w-16
-                rotate-12
+                h-20
+                w-20
+
+                rotate-6
+
                 items-center
                 justify-center
-                rounded-xl
-                border-2
-                border-white
-                bg-blue-600
-                text-xl
-                font-bold
-                text-white
-                shadow-lg
+
+                rounded-2xl
+
+                bg-[#041e43]
+
+                shadow-xl
               "
             >
-              %
+              <Percent
+                size={34}
+                strokeWidth={2.5}
+                className="text-[#FFD23F]"
+              />
             </div>
           )}
-
-          {/* =================================================
-              LUGGAGE
-          ================================================== */}
 
           {illustrationType === "luggage" && (
-            <div className="flex items-end gap-1">
-              <div
-                className="
-                  h-4
-                  w-5
-                  rounded-t-full
-                  bg-[var(--secondary)]
-                "
-              />
-
-              <div
-                className="
-                  relative
-                  h-12
-                  w-10
-                  rounded-lg
-                  border
-                  border-blue-400
-                  bg-blue-600
-                  shadow-md
-                "
-              >
-                <div
-                  className="
-                    absolute
-                    top-2
-                    h-1
-                    w-full
-                    bg-blue-800
-                  "
-                />
-              </div>
-            </div>
+            <Luggage
+              size={76}
+              strokeWidth={1.5}
+              className="text-[#041e43]"
+            />
           )}
 
-          {/* =================================================
-              BRIEFCASE
-          ================================================== */}
-
           {illustrationType === "briefcase" && (
-            <div className="flex items-end gap-1">
-              <div
-                className="
-                  relative
-                  flex
-                  h-8
-                  w-10
-                  flex-col
-                  items-center
-                  justify-center
-                  rounded-md
-                  bg-blue-900
-                  shadow-md
-                "
-              >
-                <div
-                  className="
-                    absolute
-                    -top-2
-                    h-2
-                    w-4
-                    rounded-t-full
-                    border-2
-                    border-blue-900
-                  "
-                />
-
-                <div
-                  className="
-                    flex
-                    h-3
-                    w-3
-                    items-center
-                    justify-center
-                    rounded-full
-                    bg-[var(--secondary)]
-                    text-[8px]
-                    font-bold
-                    text-black
-                  "
-                >
-                  ID
-                </div>
-              </div>
-            </div>
+            <BriefcaseBusiness
+              size={76}
+              strokeWidth={1.5}
+              className="text-[#21613f]"
+            />
           )}
         </div>
       </div>
 
       {/* =====================================================
-          PROMO CODE / BODY
+          PROMO BODY
       ====================================================== */}
 
       <div
         className="
           flex
-          min-h-[62px]
+          min-h-[90px]
+          flex-1
           items-center
-          justify-between
+
+          border-b
+          border-slate-100
+
           bg-white
-          p-4
-          text-xs
+
+          px-5
+          py-4
+
+          sm:px-6
         "
       >
         {isEnquire ? (
-          <p
-            className="
-              whitespace-pre-line
-              py-1
-              font-[var(--font-jakarta)]
-              text-[11px]
-              font-medium
-              leading-snug
-              text-muted
-            "
-          >
-            {customBody}
-          </p>
-        ) : (
-          <div className="flex w-full items-center gap-2">
-            <span
+          <div>
+            <div
               className="
-                font-[var(--font-jakarta)]
-                text-[11px]
-                font-medium
-                text-muted
-              "
-            >
-              Use Code
-            </span>
-
-            <span
-              className="
-                rounded-md
-                border
-                border-dashed
-                border-[var(--primary)]
-                bg-[var(--primary)]
-                px-3
-                py-1
+                mb-2
 
                 font-[var(--font-jakarta)]
-                text-xs
+
+                text-[10px]
+
                 font-bold
-                tracking-wider
-                text-[var(--text-primary)]
+
+                uppercase
+
+                tracking-[0.12em]
+
+                text-[#21613f]
               "
             >
-              {code}
-            </span>
+              Corporate Benefits
+            </div>
+
+            <p
+              className="
+                whitespace-pre-line
+
+                font-[var(--font-jakarta)]
+
+                text-xs
+
+                font-medium
+
+                leading-5
+
+                text-slate-500
+              "
+            >
+              {customBody}
+            </p>
+          </div>
+        ) : (
+          <div className="w-full">
+            <div
+              className="
+                mb-2
+
+                font-[var(--font-jakarta)]
+
+                text-[10px]
+
+                font-bold
+
+                uppercase
+
+                tracking-[0.12em]
+
+                text-slate-400
+              "
+            >
+              Promo Code
+            </div>
+
+            <div
+              className="
+                flex
+                items-center
+                justify-between
+                gap-3
+              "
+            >
+              <span
+                className="
+                  font-[var(--font-jakarta)]
+
+                  text-xs
+
+                  font-medium
+
+                  text-slate-500
+                "
+              >
+                Use this code
+              </span>
+
+              <span
+                className="
+                  rounded-lg
+
+                  border
+                  border-dashed
+                  border-[#041e43]/25
+
+                  bg-[#041e43]/5
+
+                  px-3
+                  py-1.5
+
+                  font-[var(--font-jakarta)]
+
+                  text-[11px]
+
+                  font-extrabold
+
+                  tracking-[0.08em]
+
+                  text-[#041e43]
+                "
+              >
+                {code}
+              </span>
+            </div>
           </div>
         )}
       </div>
 
       {/* =====================================================
-          FOOTER
+          ACTION
       ====================================================== */}
 
-      <div
-        className="
-          border-t
-          border-gray-100
-          bg-white
-          p-3
-          text-center
-        "
-      >
-        <a
-          href="#"
+      <div className="bg-white p-4 sm:p-5">
+        <button
+          type="button"
+          onClick={handleAction}
           className="
+            group/button
+
             flex
+            min-h-[46px]
+            w-full
+
             items-center
             justify-center
-            gap-1.5
+
+            gap-2
+
+            rounded-xl
+
+            bg-[#041e43]
+
+            px-4
 
             font-[var(--font-jakarta)]
+
             text-xs
+
             font-bold
-            text-[var(--primary)]
+
+            text-white
+
+            shadow-sm
 
             transition-all
             duration-300
 
-            hover:gap-2.5
+            hover:bg-[#062958]
+            hover:shadow-md
+
+            focus:outline-none
+            focus:ring-2
+            focus:ring-[#FFD23F]/50
           "
         >
           {actionText}
 
           <ArrowRight
-            size={14}
+            size={15}
             className="
               transition-transform
               duration-300
-              group-hover:translate-x-1
+
+              group-hover/button:translate-x-1
             "
           />
-        </a>
+        </button>
       </div>
-    </div>
+    </article>
   );
 }

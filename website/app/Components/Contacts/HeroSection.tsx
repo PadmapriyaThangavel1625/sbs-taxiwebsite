@@ -50,7 +50,7 @@ const fadeUp: Variants = {
    COMPONENT
 ============================================================ */
 
-export default function HeroSection() {
+export default function ContactHero() {
   return (
     <section
       className="
@@ -61,6 +61,86 @@ export default function HeroSection() {
         font-[var(--font-jakarta)]
       "
     >
+      {/* ======================================================
+          BACKGROUND EFFECT
+      ======================================================= */}
+
+      <div
+        className="
+          pointer-events-none
+          absolute
+          inset-0
+          overflow-hidden
+        "
+      >
+        {/* TOP RIGHT GLOW */}
+
+        <motion.div
+          animate={{
+            scale: [1, 1.08, 1],
+            opacity: [0.7, 1, 0.7],
+          }}
+          transition={{
+            duration: 8,
+            repeat: Infinity,
+            repeatType: "loop",
+            ease: "easeInOut",
+          }}
+          className="
+            absolute
+            right-[-100px]
+            top-[-80px]
+
+            h-[350px]
+            w-[350px]
+
+            rounded-full
+
+            bg-[var(--secondary)]/10
+
+            blur-[100px]
+          "
+        />
+
+        {/* BOTTOM LEFT GLOW */}
+
+        <div
+          className="
+            absolute
+            bottom-[-120px]
+            left-[-100px]
+
+            h-[300px]
+            w-[300px]
+
+            rounded-full
+
+            bg-[var(--secondary)]/5
+
+            blur-[100px]
+          "
+        />
+
+        {/* SUBTLE DOT GRID */}
+
+        <div
+          className="
+            absolute
+            inset-0
+
+            bg-[radial-gradient(
+              circle_at_center,
+              rgba(255,255,255,0.04)_1px,
+              transparent_1px
+            )]
+
+            bg-[length:28px_28px]
+
+            opacity-40
+          "
+        />
+      </div>
+
       {/* ======================================================
           HERO CONTAINER
       ======================================================= */}
@@ -79,24 +159,6 @@ export default function HeroSection() {
         "
       >
         {/* ====================================================
-            SUBTLE BACKGROUND EFFECT
-        ===================================================== */}
-
-        <div
-          className="
-            pointer-events-none
-            absolute
-            right-0
-            top-0
-            h-[350px]
-            w-[350px]
-            rounded-full
-            bg-[var(--secondary)]/10
-            blur-[100px]
-          "
-        />
-
-        {/* ====================================================
             CONTENT
         ===================================================== */}
 
@@ -104,7 +166,11 @@ export default function HeroSection() {
           variants={container}
           initial="hidden"
           animate="show"
-          className="relative z-10"
+          className="
+            relative
+            z-10
+            h-full
+          "
         >
           <div
             className="
@@ -114,6 +180,7 @@ export default function HeroSection() {
               w-full
               max-w-7xl
               items-center
+
               px-4
               py-16
 
@@ -213,6 +280,7 @@ export default function HeroSection() {
                   text-sm
                   font-normal
                   leading-6
+
                   text-white/80
 
                   sm:text-base

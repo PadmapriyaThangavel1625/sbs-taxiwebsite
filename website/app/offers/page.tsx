@@ -1,7 +1,6 @@
 import OffersHero from "@/app/Components/Offers/OffersHero";
 import ExclusiveOffers from "@/app/Components/Offers/ExclusiveOffers";
-import AppDownload from "@/app/Components/Offers/AppDownload";
-import FeaturesBar from "@/app/Components/Offers/FeaturesBar";
+
 import BottomCTA from "@/app/Components/BottomCTA";
 
 export default function OffersPage() {

@@ -42,72 +42,72 @@ type Message = {
 
 const menuItems = [
   {
-    label: "🚖 Book a Taxi",
+    label: " Book a Taxi",
     key: "book",
     icon: Car,
   },
   {
-    label: "💰 Fare Estimate",
+    label: " Fare Estimate",
     key: "fare",
     icon: IndianRupee,
   },
   {
-    label: "📍 Track My Ride",
+    label: " Track My Ride",
     key: "track",
     icon: MapPin,
   },
   {
-    label: "🚗 Our Fleet",
+    label: " Our Fleet",
     key: "fleet",
     icon: Car,
   },
   {
-    label: "🎁 Offers & Discounts",
+    label: " Offers & Discounts",
     key: "offers",
     icon: Star,
   },
   {
-    label: "🛫 Airport Transfer",
+    label: " Airport Transfer",
     key: "airport",
     icon: Plane,
   },
   {
-    label: "🏢 Corporate Booking",
+    label: " Corporate Booking",
     key: "corporate",
     icon: Building2,
   },
   {
-    label: "📦 Parcel Delivery",
+    label: " Parcel Delivery",
     key: "parcel",
     icon: Package,
   },
   {
-    label: "❓ FAQs",
+    label: " FAQs",
     key: "faq",
     icon: HelpCircle,
   },
   {
-    label: "🆘 Emergency Support",
+    label: " Emergency Support",
     key: "emergency",
     icon: AlertCircle,
   },
   {
-    label: "📞 Call Customer Care",
+    label: " Call Customer Care",
     key: "contact",
     icon: Phone,
   },
   {
-    label: "💬 Chat with Executive",
+    label: " Chat with Executive",
     key: "executive",
     icon: UserRound,
   },
   {
-    label: "⭐ Rate Your Ride",
+    label: " Rate Your Ride",
     key: "rate",
     icon: Star,
   },
   {
-    label: "📝 Feedback & Complaints",
+    label: " Feedback & Complaints",
     key: "feedback",
     icon: FileText,
   },

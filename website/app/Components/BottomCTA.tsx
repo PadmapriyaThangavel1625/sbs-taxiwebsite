@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Headphones,
   PhoneCall,
@@ -5,6 +7,17 @@ import {
 } from "lucide-react";
 
 export default function BottomCTA() {
+  const goToFAQ = () => {
+    const faqSection = document.getElementById("faq");
+
+    if (faqSection) {
+      faqSection.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }
+  };
+
   return (
     <section className="bg-[var(--primary)] py-8">
       <div
@@ -22,15 +35,24 @@ export default function BottomCTA() {
           lg:px-8
         "
       >
-        {/* Item 1 */}
-        <div
+        {/* =====================================================
+            HAVE QUESTIONS
+        ====================================================== */}
+
+        <button
+          type="button"
+          onClick={goToFAQ}
           className="
+            group
             flex
+            w-full
             items-center
             space-x-4
             border-b
             border-white/20
             pb-6
+            text-left
+
             lg:border-b-0
             lg:border-r
             lg:pb-0
@@ -48,6 +70,10 @@ export default function BottomCTA() {
               rounded-full
               bg-white/10
               text-[var(--secondary)]
+              transition-all
+              duration-200
+              group-hover:bg-white/15
+              group-hover:scale-105
             "
           >
             <Headphones className="h-6 w-6" />
@@ -60,6 +86,9 @@ export default function BottomCTA() {
                 text-base
                 font-semibold
                 !text-white
+                transition-colors
+                duration-200
+                group-hover:text-[var(--secondary)]
               "
             >
               Have Questions?
@@ -77,9 +106,12 @@ export default function BottomCTA() {
               We're here to help you 24/7
             </p>
           </div>
-        </div>
+        </button>
 
-        {/* Item 2 */}
+        {/* =====================================================
+            PHONE
+        ====================================================== */}
+
         <div
           className="
             flex
@@ -88,6 +120,7 @@ export default function BottomCTA() {
             border-b
             border-white/20
             pb-6
+
             lg:border-b-0
             lg:border-r
             lg:px-6
@@ -112,12 +145,13 @@ export default function BottomCTA() {
 
           <div>
             <a
-              href="tel:98435 44844"
+              href="tel:+919843544844"
               className="
                 font-[family-name:var(--font-jakarta)]
                 text-lg
                 font-bold
                 !text-white
+                hover:text-[var(--secondary)]
                 hover:underline
               "
             >
@@ -138,9 +172,12 @@ export default function BottomCTA() {
           </div>
         </div>
 
-        {/* Item 3 */}
+        {/* =====================================================
+            WHATSAPP
+        ====================================================== */}
+
         <a
-          href="https://wa.me/9843544844"
+          href="https://wa.me/919843544844"
           target="_blank"
           rel="noopener noreferrer"
           className="
@@ -162,8 +199,10 @@ export default function BottomCTA() {
               rounded-full
               bg-white/10
               text-[var(--secondary)]
-              transition-colors
+              transition-all
+              duration-200
               group-hover:bg-white/15
+              group-hover:scale-105
             "
           >
             <MessageCircle className="h-6 w-6" />
@@ -176,6 +215,7 @@ export default function BottomCTA() {
                 text-base
                 font-semibold
                 !text-white
+                group-hover:text-[var(--secondary)]
               "
             >
               Chat on WhatsApp

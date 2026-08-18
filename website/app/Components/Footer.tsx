@@ -571,18 +571,18 @@ export default function Footer() {
           ================================================== */}
 
           <div className="flex items-center gap-2 text-[var(--text-primary)]">
-            <Image
-              src="/flag.jpg"
-              alt="Indian Flag"
-              width={24}
-              height={16}
-              className="h-4 w-6 rounded-sm object-cover"
-            />
+  <Image
+    src="/flag.jpg"
+    alt="Indian Flag"
+    width={24}
+    height={16}
+    className="h-4 w-6 object-cover"
+  />
 
-            <span className="text-xs font-medium sm:text-sm">
-              {footer.madeInIndia}
-            </span>
-          </div>
+  <span className="text-xs font-medium sm:text-sm">
+    {footer.madeInIndia}
+  </span>
+</div>
 
           {/* =================================================
               COPYRIGHT

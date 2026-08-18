@@ -81,66 +81,96 @@ const features = [
 ];
 
 /* ============================================================
-   COMPONENT
+   FLEET HERO
 ============================================================ */
 
 export default function FleetHero() {
   return (
-    <section className="relative w-full overflow-hidden">
+    <section
+      className="
+        relative
+        w-full
+        overflow-hidden
+
+        min-h-0
+
+        lg:min-h-[620px]
+        xl:min-h-[650px]
+      "
+    >
       {/* ======================================================
-          HERO IMAGE
+          BACKGROUND
       ======================================================= */}
 
       <div
         className="
-          relative
-          h-[650px]
-          w-full
-
-          sm:h-[590px]
-
-          md:h-[600px]
-
-          lg:h-[620px]
-
-          xl:h-[630px]
+          pointer-events-none
+          absolute
+          inset-0
+          z-0
+          overflow-hidden
         "
       >
-        {/* ====================================================
-            BACKGROUND IMAGE
-        ===================================================== */}
+        {/* ==================================================
+            BACKGROUND IMAGE + ZOOM
+        =================================================== */}
 
-        <Image
-          src="/images/car3.png"
-          alt="SBS Taxi Fleet"
-          fill
-          priority
-          sizes="100vw"
+        <motion.div
           className="
-            object-cover
-            object-[68%_center]
+            absolute
+            inset-0
+            overflow-hidden
+          "
+          animate={{
+            scale: [1, 1.05, 1],
+          }}
+          transition={{
+            duration: 14,
+            repeat: Infinity,
+            repeatType: "loop",
+            ease: "easeInOut",
+          }}
+        >
+          <Image
+            src="/images/car3.png"
+            alt="SBS Taxi Fleet"
+            fill
+            priority
+            sizes="100vw"
+            className="
+              object-cover
+              object-[68%_center]
 
-            sm:object-[62%_center]
+              sm:object-[62%_center]
 
-            md:object-center
+              md:object-center
+            "
+          />
+        </motion.div>
+
+        {/* ==================================================
+            OVERALL OVERLAY
+        =================================================== */}
+
+        <div
+          className="
+            absolute
+            inset-0
+            z-[1]
+            bg-black/10
           "
         />
 
-        {/* ====================================================
-            OVERALL OVERLAY
-        ===================================================== */}
-
-        <div className="absolute inset-0 bg-black/10" />
-
-        {/* ====================================================
-            LEFT CONTENT GRADIENT
-        ===================================================== */}
+        {/* ==================================================
+            LEFT DARK GRADIENT
+        =================================================== */}
 
         <div
           className="
             absolute
             inset-y-0
             left-0
+            z-[2]
             w-full
 
             bg-gradient-to-r
@@ -148,312 +178,335 @@ export default function FleetHero() {
             via-[#071a35]/75
             to-transparent
 
-            sm:w-[80%]
+            sm:w-[82%]
 
-            md:w-[74%]
+            md:w-[76%]
 
-            lg:w-[70%]
+            lg:w-[72%]
           "
         />
 
-        {/* ====================================================
+        {/* ==================================================
             BOTTOM GRADIENT
-        ===================================================== */}
+        =================================================== */}
 
         <div
           className="
             absolute
             inset-x-0
             bottom-0
-            h-44
+            z-[2]
+            h-40
+
             bg-gradient-to-t
-            from-black/40
+            from-black/45
             to-transparent
           "
         />
+      </div>
 
-        {/* ====================================================
-            CONTENT
-        ===================================================== */}
+      {/* ======================================================
+          MAIN CONTENT
+      ======================================================= */}
 
+      <div
+        className="
+          relative
+          z-10
+          mx-auto
+          w-full
+          max-w-7xl
+
+          px-4
+          py-8
+
+          sm:px-6
+          sm:py-10
+
+          lg:flex
+          lg:min-h-[620px]
+          lg:items-center
+          lg:px-8
+          lg:py-8
+
+          xl:min-h-[650px]
+        "
+      >
         <motion.div
           variants={container}
           initial="hidden"
           animate="show"
-          className="absolute inset-0 z-10"
+          className="
+            flex
+            w-full
+            flex-col
+            items-center
+            text-center
+
+            lg:items-start
+            lg:text-left
+          "
         >
+          {/* ==================================================
+              LEFT CONTENT
+          =================================================== */}
+
           <div
             className="
-              mx-auto
-              flex
-              h-full
               w-full
-              max-w-7xl
-              items-center
-              px-4
-              mt-3
-
-              sm:mt-8
-
-              md:mt-10
-
-              lg:mt-12
-
-              sm:px-6
-
-              lg:px-8
+              max-w-[650px]
             "
           >
-            <div
-              className="
-                w-full
-                max-w-[570px]
-                pt-6
-                font-[var(--font-jakarta)]
+            {/* ==================================================
+                FLEET LABEL
+            =================================================== */}
 
-                sm:pt-0
+            <motion.div
+              variants={fadeLeft}
+              className="
+                mb-4
+                inline-flex
+                items-center
+                gap-2
+
+                font-[var(--font-jakarta)]
+                text-sm
+                font-bold
+                uppercase
+                tracking-[0.16em]
+
+                text-[var(--secondary)]
+
+                sm:text-base
               "
             >
-              {/* =================================================
-                  FLEET LABEL
-              ================================================== */}
-
-              <motion.div
-                variants={fadeLeft}
+              <span
                 className="
-                  mb-4
-                  inline-flex
-                  items-center
-                  gap-2
-
-                  font-[var(--font-jakarta)]
-                  text-sm
-                  font-bold
-                  uppercase
-                  tracking-[0.16em]
-
-                  text-[var(--secondary)]
-
-                  sm:text-base
+                  h-[2px]
+                  w-8
+                  rounded-full
+                  bg-[var(--secondary)]
                 "
-              >
-                <span
-                  className="
-                    h-[2px]
-                    w-8
-                    rounded-full
-                    bg-[var(--secondary)]
-                  "
-                />
+              />
 
-                Our Fleet
-              </motion.div>
+              Our Fleet
+            </motion.div>
 
-              {/* =================================================
-                  MAIN HEADING
-              ================================================== */}
+            {/* ==================================================
+                MAIN HEADING
+            =================================================== */}
 
-              <motion.h1
-                variants={fadeLeft}
-                className="
-                  max-w-[560px]
+            <motion.h1
+              variants={fadeLeft}
+              className="
+                w-full
+                max-w-[650px]
 
-                  font-[family-name:var(--font-instrument)]
+                font-[family-name:var(--font-instrument)]
 
-                  text-4xl
-                  font-normal
-                  leading-[1.05]
-                  tracking-tight
-                  !text-white
+                text-4xl
+                font-normal
+                leading-[1.05]
+                tracking-tight
 
-                  sm:text-5xl
+                !text-white
 
-                  md:text-[52px]
+                sm:text-5xl
 
-                  lg:text-[58px]
-                "
-              >
-                Premium Cars.
-                <br />
+                md:text-[52px]
 
-                <span className="text-[var(--secondary)]">
-                  Every Journey.
-                </span>
-              </motion.h1>
+                lg:text-[58px]
 
-              {/* =================================================
-                  DESCRIPTION
-              ================================================== */}
+                xl:text-[64px]
+              "
+            >
+              Premium Cars.
+              <br />
 
-              <motion.p
-                variants={fadeUp}
-                className="
-                  mt-5
-                  max-w-[520px]
+              <span className="text-[var(--secondary)]">
+                Every Journey.
+              </span>
+            </motion.h1>
 
-                  font-[var(--font-jakarta)]
+            {/* ==================================================
+                DESCRIPTION
+            =================================================== */}
 
-                  text-sm
-                  font-normal
-                  leading-6
-                  text-white/85
+            <motion.p
+              variants={fadeUp}
+              className="
+                mt-5
+                w-full
+                max-w-[560px]
 
-                  sm:text-base
-                  sm:leading-7
-                "
-              >
-                Choose from our wide range of well-maintained vehicles
-                designed to provide safety, comfort and a smooth travel
-                experience for every journey.
-              </motion.p>
+                font-[var(--font-jakarta)]
+                text-sm
+                font-normal
+                leading-6
 
-              {/* =================================================
-                  PREMIUM FEATURES
-              ================================================== */}
+                text-white/85
 
-              <motion.div
-                variants={container}
-                className="
-                  mt-8
+                sm:text-base
+                sm:leading-7
+              "
+            >
+              Choose from our wide range of well-maintained
+              vehicles designed to provide safety, comfort and
+              a smooth travel experience for every journey.
+            </motion.p>
 
-                  grid
-                  grid-cols-2
-                  gap-x-6
-                  gap-y-5
+            {/* ==================================================
+                FEATURES
+            =================================================== */}
 
-                  sm:mt-9
-                  sm:grid-cols-4
-                  sm:gap-x-0
-                  sm:gap-y-0
-                "
-              >
-                {features.map((feature, index) => {
-                  const Icon = feature.icon;
+            <motion.div
+              variants={container}
+              className="
+                mt-8
+                grid
+                w-full
+                max-w-[620px]
 
-                  return (
+                grid-cols-2
+
+                gap-x-6
+                gap-y-5
+
+                sm:mt-9
+                sm:grid-cols-4
+                sm:gap-x-0
+                sm:gap-y-0
+              "
+            >
+              {features.map((feature, index) => {
+                const Icon = feature.icon;
+
+                return (
+                  <motion.div
+                    key={feature.title}
+                    variants={fadeUp}
+                    whileHover={{
+                      y: -3,
+                    }}
+                    className={`
+                      relative
+                      flex
+                      items-center
+                      gap-2.5
+
+                      pr-4
+
+                      sm:px-4
+
+                      ${
+                        index === 0
+                          ? "sm:pl-0"
+                          : ""
+                      }
+
+                      ${
+                        index !== features.length - 1
+                          ? "sm:border-r sm:border-white/20"
+                          : ""
+                      }
+
+                      ${
+                        index === features.length - 1
+                          ? "sm:pr-0"
+                          : ""
+                      }
+                    `}
+                  >
+                    {/* ==================================================
+                        ICON
+                    =================================================== */}
+
                     <motion.div
-                      key={feature.title}
-                      variants={fadeUp}
                       whileHover={{
-                        y: -3,
+                        scale: 1.08,
                       }}
                       transition={{
-                        duration: 0.25,
+                        duration: 0.2,
                       }}
-                      className={`
-                        relative
+                      className="
                         flex
+                        h-9
+                        w-9
+                        shrink-0
                         items-center
-                        gap-2.5
-                        pr-4
+                        justify-center
 
-                        sm:px-5
+                        rounded-full
 
-                        ${
-                          index === 0
-                            ? "sm:pl-0"
-                            : ""
-                        }
+                        border
+                        border-white/25
 
-                        ${
-                          index !== features.length - 1
-                            ? "sm:border-r sm:border-white/20"
-                            : ""
-                        }
-                      `}
+                        bg-white/10
+
+                        text-[var(--secondary)]
+
+                        backdrop-blur-sm
+
+                        sm:h-10
+                        sm:w-10
+                      "
                     >
-                      {/* ICON */}
-
-                      <motion.div
-                        whileHover={{
-                          scale: 1.08,
-                        }}
-                        transition={{
-                          duration: 0.2,
-                        }}
+                      <Icon
+                        aria-hidden="true"
                         className="
-                          flex
-                          h-8
-                          w-8
-                          shrink-0
-                          items-center
-                          justify-center
-                          rounded-full
+                          h-4
+                          w-4
 
-                          border
-                          border-white/25
+                          sm:h-[18px]
+                          sm:w-[18px]
+                        "
+                      />
+                    </motion.div>
 
-                          bg-white/10
+                    {/* ==================================================
+                        TEXT
+                    =================================================== */}
 
-                          text-[var(--secondary)]
+                    <div className="min-w-0 text-left">
+                      <p
+                        className="
+                          whitespace-nowrap
 
-                          backdrop-blur-sm
+                          font-[var(--font-jakarta)]
+                          text-[10px]
+                          font-semibold
+                          leading-4
 
-                          sm:h-9
-                          sm:w-9
+                          text-white
+
+                          sm:text-xs
                         "
                       >
-                        <Icon
-                          aria-hidden="true"
-                          className="
-                            h-4
-                            w-4
+                        {feature.title}
+                      </p>
 
-                            sm:h-[17px]
-                            sm:w-[17px]
-                          "
-                        />
-                      </motion.div>
+                      <p
+                        className="
+                          mt-0.5
+                          whitespace-nowrap
 
-                      {/* TEXT */}
+                          font-[var(--font-jakarta)]
+                          text-[8px]
+                          font-normal
+                          leading-3
 
-                      <div className="min-w-0">
-                        <p
-                          className="
-                            whitespace-nowrap
+                          text-white/60
 
-                            font-[var(--font-jakarta)]
-
-                            text-[10px]
-                            font-semibold
-                            leading-4
-
-                            text-white
-
-                            sm:text-[11px]
-
-                            lg:text-xs
-                          "
-                        >
-                          {feature.title}
-                        </p>
-
-                        <p
-                          className="
-                            mt-0.5
-
-                            whitespace-nowrap
-
-                            font-[var(--font-jakarta)]
-
-                            text-[8px]
-                            font-normal
-                            leading-3
-
-                            text-white/60
-
-                            sm:text-[9px]
-                            sm:leading-3.5
-                          "
-                        >
-                          {feature.description}
-                        </p>
-                      </div>
-                    </motion.div>
-                  );
-                })}
-              </motion.div>
-            </div>
+                          sm:text-[10px]
+                        "
+                      >
+                        {feature.description}
+                      </p>
+                    </div>
+                  </motion.div>
+                );
+              })}
+            </motion.div>
           </div>
         </motion.div>
       </div>

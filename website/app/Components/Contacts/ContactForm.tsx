@@ -1,19 +1,24 @@
 "use client";
 
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import {
   AlertCircle,
   CarFront,
   CheckCircle2,
   ChevronDown,
+  CircleDollarSign,
+  Clock3,
+  CreditCard,
   Loader2,
   Mail,
   MapPin,
   MessageSquare,
+  Navigation,
   Phone,
   Send,
   User,
   Users,
+  X,
 } from "lucide-react";
 
 /* ============================================================
@@ -24,45 +29,136 @@ const MAX_MESSAGE_LENGTH = 1000;
 const REQUEST_TIMEOUT = 30000;
 
 /* ============================================================
-   INPUT STYLE
+   VEHICLES
 ============================================================ */
 
-const inputClassName = `
-  w-full
-  rounded-xl
-  border
-  border-[var(--border)]
-  bg-white
-  px-4
-  py-3
-  text-sm
-  text-[var(--text-secondary)]
-  outline-none
-  placeholder:text-[var(--text-secondary)]
-  transition-all
-  duration-200
-  focus:border-[var(--primary)]
-  focus:ring-4
-  focus:ring-[var(--primary)]/10
-  disabled:cursor-not-allowed
-  disabled:opacity-60
-`;
+const VEHICLES = {
+  "SBS MINI": {
+    rate: 12,
+    capacity: 4,
+  },
+  "SBS SEDAN": {
+    rate: 12.5,
+    capacity: 4,
+  },
+  "SBS VAN": {
+    rate: 14,
+    capacity: 7,
+  },
+  "SBS SUV": {
+    rate: 17,
+    capacity: 6,
+  },
+  "SBS MUV": {
+    rate: 18,
+    capacity: 7,
+  },
+  "SBS MUV+": {
+    rate: 19,
+    capacity: 7,
+  },
+} as const;
+
+type VehicleName = keyof typeof VEHICLES;
 
 /* ============================================================
-   LABEL STYLE
+   LOCATIONS
 ============================================================ */
 
-const labelClassName = `
-  mb-2
-  flex
-  items-center
-  gap-1.5
-  font-[family-name:var(--font-jakarta)]
-  text-xs
-  font-semibold
-  tracking-wide
-  text-[var(--text-secondary)]
-`;
+const LOCATIONS = [
+  {
+    name: "SBS Technologies, Erode",
+    latitude: 11.341,
+    longitude: 77.7172,
+  },
+  {
+    name: "Erode Bus Stand",
+    latitude: 11.341,
+    longitude: 77.7172,
+  },
+  {
+    name: "Erode Railway Station",
+    latitude: 11.339,
+    longitude: 77.7175,
+  },
+  {
+    name: "Erode Junction",
+    latitude: 11.341,
+    longitude: 77.717,
+  },
+  {
+    name: "Perundurai",
+    latitude: 11.275,
+    longitude: 77.583,
+  },
+  {
+    name: "Bhavani",
+    latitude: 11.448,
+    longitude: 77.683,
+  },
+  {
+    name: "Chithode",
+    latitude: 11.384,
+    longitude: 77.706,
+  },
+  {
+    name: "Gobichettipalayam",
+    latitude: 11.454,
+    longitude: 77.442,
+  },
+  {
+    name: "Tiruchengode",
+    latitude: 11.379,
+    longitude: 77.894,
+  },
+  {
+    name: "Salem",
+    latitude: 11.6643,
+    longitude: 78.146,
+  },
+  {
+    name: "Coimbatore",
+    latitude: 11.0168,
+    longitude: 76.9558,
+  },
+  {
+    name: "Tiruppur",
+    latitude: 11.1085,
+    longitude: 77.3411,
+  },
+  {
+    name: "Namakkal",
+    latitude: 11.2194,
+    longitude: 78.1677,
+  },
+  {
+    name: "Karur",
+    latitude: 10.9601,
+    longitude: 78.0766,
+  },
+  {
+    name: "Bengaluru",
+    latitude: 12.9716,
+    longitude: 77.5946,
+  },
+  {
+    name: "Chennai",
+    latitude: 13.0827,
+    longitude: 80.2707,
+  },
+  {
+    name: "Coimbatore Airport",
+    latitude: 11.0304,
+    longitude: 77.0438,
+  },
+  {
+    name: "Salem Airport",
+    latitude: 11.7833,
+    longitude: 78.0656,
+  },
+] as const;
+
+type LocationName = (typeof LOCATIONS)[number]["name"];
 
 /* ============================================================
    TYPES
@@ -81,6 +177,273 @@ interface ApiResponse {
   error?: string;
 }
 
+interface ToastState {
+  type: "success" | "error";
+  message: string;
+}
+
+/* ============================================================
+   INPUT STYLES
+============================================================ */
+
+const inputClassName = `
+  w-full
+  rounded-xl
+  border
+  border-slate-200
+  bg-white
+  px-4
+  py-3
+  text-sm
+  font-medium
+  text-slate-700
+  outline-none
+  placeholder:text-slate-400
+  transition-all
+  duration-200
+  focus:border-[var(--primary)]
+  focus:ring-4
+  focus:ring-[var(--primary)]/10
+  disabled:cursor-not-allowed
+  disabled:bg-slate-50
+  disabled:opacity-60
+`;
+
+const labelClassName = `
+  mb-2
+  flex
+  items-center
+  gap-1.5
+  font-[family-name:var(--font-jakarta)]
+  text-xs
+  font-bold
+  tracking-wide
+  text-[var(--text-secondary)]
+`;
+
+/* ============================================================
+   CUSTOM LOCATION DROPDOWN
+============================================================ */
+
+interface LocationDropdownProps {
+  label: string;
+  value: LocationName | "";
+  placeholder: string;
+  locations: readonly {
+    name: string;
+  }[];
+  icon: React.ReactNode;
+  disabled?: boolean;
+  onChange: (value: LocationName) => void;
+}
+
+function LocationDropdown({
+  label,
+  value,
+  placeholder,
+  locations,
+  icon,
+  disabled,
+  onChange,
+}: LocationDropdownProps) {
+  const [open, setOpen] = useState(false);
+
+  const wrapperRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleOutsideClick(event: MouseEvent) {
+      if (
+        wrapperRef.current &&
+        !wrapperRef.current.contains(
+          event.target as Node
+        )
+      ) {
+        setOpen(false);
+      }
+    }
+
+    document.addEventListener(
+      "mousedown",
+      handleOutsideClick
+    );
+
+    return () => {
+      document.removeEventListener(
+        "mousedown",
+        handleOutsideClick
+      );
+    };
+  }, []);
+
+  return (
+    <div
+      ref={wrapperRef}
+      className="relative"
+    >
+      <label className={labelClassName}>
+        {icon}
+
+        {label}
+
+        <span className="text-[var(--primary)]">
+          *
+        </span>
+      </label>
+
+      {/* BUTTON */}
+
+      <button
+        type="button"
+        disabled={disabled}
+        onClick={() => setOpen((prev) => !prev)}
+        className={`
+          flex
+          w-full
+          items-center
+          justify-between
+          gap-3
+          rounded-xl
+          border
+          border-slate-200
+          bg-white
+          px-4
+          py-3
+          text-left
+          text-sm
+          font-medium
+          outline-none
+          transition-all
+          duration-200
+          ${
+            open
+              ? "border-[var(--primary)] ring-4 ring-[var(--primary)]/10"
+              : "hover:border-slate-300"
+          }
+          disabled:cursor-not-allowed
+          disabled:bg-slate-50
+          disabled:opacity-60
+        `}
+      >
+        <span
+          className={`
+            min-w-0
+            truncate
+            ${
+              value
+                ? "text-slate-700"
+                : "text-slate-400"
+            }
+          `}
+        >
+          {value || placeholder}
+        </span>
+
+        <ChevronDown
+          className={`
+            h-4
+            w-4
+            shrink-0
+            text-slate-400
+            transition-transform
+            duration-200
+            ${open ? "rotate-180" : ""}
+          `}
+        />
+      </button>
+
+      {/* DROPDOWN */}
+
+      {open && (
+        <div
+          className="
+            absolute
+            left-0
+            right-0
+            top-[calc(100%+8px)]
+            z-[100]
+            overflow-hidden
+            rounded-2xl
+            border
+            border-slate-200
+            bg-white
+            p-1.5
+            shadow-[0_18px_45px_rgba(15,23,42,0.14)]
+            animate-in
+            fade-in
+            slide-in-from-top-1
+            duration-150
+          "
+        >
+          <div className="max-h-64 overflow-y-auto">
+            {locations.map((location) => {
+              const selected =
+                location.name === value;
+
+              return (
+                <button
+                  key={location.name}
+                  type="button"
+                  onClick={() => {
+                    onChange(
+                      location.name as LocationName
+                    );
+                    setOpen(false);
+                  }}
+                  className={`
+                    flex
+                    w-full
+                    items-center
+                    gap-3
+                    rounded-xl
+                    px-3
+                    py-3
+                    text-left
+                    text-sm
+                    transition-all
+                    duration-150
+                    ${
+                      selected
+                        ? "bg-[var(--primary)]/10 text-[var(--primary)]"
+                        : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
+                    }
+                  `}
+                >
+                  <span
+                    className={`
+                      flex
+                      h-8
+                      w-8
+                      shrink-0
+                      items-center
+                      justify-center
+                      rounded-lg
+                      ${
+                        selected
+                          ? "bg-[var(--primary)] text-white"
+                          : "bg-slate-100 text-slate-400"
+                      }
+                    `}
+                  >
+                    <MapPin className="h-4 w-4" />
+                  </span>
+
+                  <span className="min-w-0 flex-1 truncate font-medium">
+                    {location.name}
+                  </span>
+
+                  {selected && (
+                    <CheckCircle2 className="h-4 w-4 shrink-0" />
+                  )}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 /* ============================================================
    COMPONENT
 ============================================================ */
@@ -88,12 +451,44 @@ interface ApiResponse {
 export default function ContactForm() {
   const [loading, setLoading] = useState(false);
 
-  const [status, setStatus] = useState<FormStatus>({
-    type: "",
-    message: "",
-  });
+  const [status, setStatus] =
+    useState<FormStatus>({
+      type: "",
+      message: "",
+    });
 
-  const [messageLength, setMessageLength] = useState(0);
+  const [toast, setToast] =
+    useState<ToastState | null>(null);
+
+  const [messageLength, setMessageLength] =
+    useState(0);
+
+  const [vehicle, setVehicle] =
+    useState<VehicleName | "">("");
+
+  const [passengers, setPassengers] =
+    useState("");
+
+  const [pickup, setPickup] =
+    useState<LocationName | "">("");
+
+  const [drop, setDrop] =
+    useState<LocationName | "">("");
+
+  const [tripType, setTripType] =
+    useState("");
+
+  const [paymentMethod, setPaymentMethod] =
+    useState("");
+
+  const [distanceKm, setDistanceKm] =
+    useState<number | null>(null);
+
+  const [estimatedFare, setEstimatedFare] =
+    useState<number | null>(null);
+
+  const [calculatingFare, setCalculatingFare] =
+    useState(false);
 
   /* ==========================================================
      AUTO CLEAR STATUS
@@ -113,14 +508,343 @@ export default function ContactForm() {
   }, [status.message]);
 
   /* ==========================================================
+     AUTO CLEAR TOAST
+  ========================================================== */
+
+  useEffect(() => {
+    if (!toast) return;
+
+    const timer = window.setTimeout(() => {
+      setToast(null);
+    }, 4000);
+
+    return () => window.clearTimeout(timer);
+  }, [toast]);
+
+  /* ==========================================================
+     PASSENGER OPTIONS
+  ========================================================== */
+
+  const passengerOptions = useMemo(() => {
+    if (!vehicle) {
+      return [1, 2, 3, 4, 5, 6];
+    }
+
+    return Array.from(
+      {
+        length: Math.min(
+          VEHICLES[vehicle].capacity,
+          6
+        ),
+      },
+      (_, index) => index + 1
+    );
+  }, [vehicle]);
+
+  /* ==========================================================
+     TOAST
+  ========================================================== */
+
+  function showToast(
+    type: "success" | "error",
+    message: string
+  ) {
+    setToast({
+      type,
+      message,
+    });
+  }
+
+  /* ==========================================================
+     HAVERSINE
+  ========================================================== */
+
+  function calculateDistance(
+    latitude1: number,
+    longitude1: number,
+    latitude2: number,
+    longitude2: number
+  ) {
+    const earthRadius = 6371;
+
+    const lat1 =
+      (latitude1 * Math.PI) / 180;
+
+    const lat2 =
+      (latitude2 * Math.PI) / 180;
+
+    const deltaLat =
+      ((latitude2 - latitude1) * Math.PI) /
+      180;
+
+    const deltaLon =
+      ((longitude2 - longitude1) * Math.PI) /
+      180;
+
+    const a =
+      Math.sin(deltaLat / 2) ** 2 +
+      Math.cos(lat1) *
+        Math.cos(lat2) *
+        Math.sin(deltaLon / 2) ** 2;
+
+    const c =
+      2 *
+      Math.atan2(
+        Math.sqrt(a),
+        Math.sqrt(1 - a)
+      );
+
+    return earthRadius * c;
+  }
+
+  /* ==========================================================
+     FIND LOCATION
+  ========================================================== */
+
+  function getLocation(
+    locationName: string
+  ) {
+    return LOCATIONS.find(
+      (location) =>
+        location.name === locationName
+    );
+  }
+
+  /* ==========================================================
+     RESET FARE
+  ========================================================== */
+
+  useEffect(() => {
+    setEstimatedFare(null);
+    setDistanceKm(null);
+  }, [
+    pickup,
+    drop,
+    vehicle,
+    tripType,
+  ]);
+
+  /* ==========================================================
+     VEHICLE CHANGE
+  ========================================================== */
+
+  useEffect(() => {
+    if (!vehicle) {
+      setPassengers("");
+      return;
+    }
+
+    const capacity =
+      VEHICLES[vehicle].capacity;
+
+    if (
+      passengers &&
+      Number(passengers) > capacity
+    ) {
+      setPassengers("");
+    }
+  }, [vehicle, passengers]);
+
+  /* ==========================================================
+     CALCULATE FARE
+  ========================================================== */
+
+  function calculateFare() {
+    setStatus({
+      type: "",
+      message: "",
+    });
+
+    setToast(null);
+
+    if (!pickup) {
+      const message =
+        "Please select a pickup location.";
+
+      setStatus({
+        type: "error",
+        message,
+      });
+
+      showToast("error", message);
+      return;
+    }
+
+    if (!drop) {
+      const message =
+        "Please select a drop location.";
+
+      setStatus({
+        type: "error",
+        message,
+      });
+
+      showToast("error", message);
+      return;
+    }
+
+    if (pickup === drop) {
+      const message =
+        "Pickup and drop locations cannot be the same.";
+
+      setStatus({
+        type: "error",
+        message,
+      });
+
+      setEstimatedFare(null);
+      setDistanceKm(null);
+
+      showToast("error", message);
+      return;
+    }
+
+    if (!vehicle) {
+      const message =
+        "Please select a vehicle.";
+
+      setStatus({
+        type: "error",
+        message,
+      });
+
+      showToast("error", message);
+      return;
+    }
+
+    if (!passengers) {
+      const message =
+        "Please select the number of passengers.";
+
+      setStatus({
+        type: "error",
+        message,
+      });
+
+      showToast("error", message);
+      return;
+    }
+
+    const pickupLocation =
+      getLocation(pickup);
+
+    const dropLocation =
+      getLocation(drop);
+
+    if (
+      !pickupLocation ||
+      !dropLocation
+    ) {
+      const message =
+        "Unable to find the selected locations.";
+
+      setStatus({
+        type: "error",
+        message,
+      });
+
+      showToast("error", message);
+      return;
+    }
+
+    setCalculatingFare(true);
+
+    window.setTimeout(() => {
+      try {
+        const straightDistance =
+          calculateDistance(
+            pickupLocation.latitude,
+            pickupLocation.longitude,
+            dropLocation.latitude,
+            dropLocation.longitude
+          );
+
+        const roadDistance =
+          straightDistance * 1.2;
+
+        const calculatedDistance =
+          Number(
+            roadDistance.toFixed(1)
+          );
+
+        const rate =
+          VEHICLES[vehicle].rate;
+
+        let fare =
+          calculatedDistance * rate;
+
+        if (
+          tripType === "Round Trip"
+        ) {
+          fare *= 2;
+        }
+
+        const finalFare =
+          Math.round(fare);
+
+        setDistanceKm(
+          calculatedDistance
+        );
+
+        setEstimatedFare(
+          finalFare
+        );
+
+        const successMessage =
+          "Estimated fare calculated successfully.";
+
+        setStatus({
+          type: "success",
+          message: successMessage,
+        });
+
+        showToast(
+          "success",
+          successMessage
+        );
+      } catch (error) {
+        console.error(
+          "Fare calculation error:",
+          error
+        );
+
+        setDistanceKm(null);
+        setEstimatedFare(null);
+
+        const errorMessage =
+          "Unable to calculate the fare. Please try again.";
+
+        setStatus({
+          type: "error",
+          message: errorMessage,
+        });
+
+        showToast(
+          "error",
+          errorMessage
+        );
+      } finally {
+        setCalculatingFare(false);
+      }
+    }, 300);
+  }
+
+  /* ==========================================================
      ERROR
   ========================================================== */
 
-  function showError(message: string) {
+  function showError(
+    message: string
+  ) {
     setStatus({
       type: "error",
       message,
     });
+
+    showToast(
+      "error",
+      message
+    );
 
     setLoading(false);
   }
@@ -129,11 +853,18 @@ export default function ContactForm() {
      SUCCESS
   ========================================================== */
 
-  function showSuccess(message: string) {
+  function showSuccess(
+    message: string
+  ) {
     setStatus({
       type: "success",
       message,
     });
+
+    showToast(
+      "success",
+      message
+    );
   }
 
   /* ==========================================================
@@ -154,13 +885,10 @@ export default function ContactForm() {
       message: "",
     });
 
-    setLoading(true);
+    setToast(null);
 
-    /* ========================================================
-       FORM DATA
-    ======================================================== */
-
-    const formData = new FormData(form);
+    const formData =
+      new FormData(form);
 
     const name = String(
       formData.get("name") || ""
@@ -174,40 +902,16 @@ export default function ContactForm() {
       formData.get("phone") || ""
     ).trim();
 
-    const pickup = String(
-      formData.get("pickup") || ""
-    ).trim();
-
-    const drop = String(
-      formData.get("drop") || ""
-    ).trim();
-
-    const passengers = String(
-      formData.get("passengers") || ""
-    ).trim();
-
-    const vehicleType = String(
-      formData.get("vehicleType") || ""
-    ).trim();
-
-    const subject = String(
-      formData.get("subject") || ""
-    ).trim();
-
     const message = String(
       formData.get("message") || ""
     ).trim();
 
-    /* ========================================================
-       VALIDATION
-    ======================================================== */
-
     if (name.length < 2) {
-      showError("Please enter a valid name.");
+      showError(
+        "Please enter a valid name."
+      );
       return;
     }
-
-    /* EMAIL */
 
     const emailRegex =
       /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -218,8 +922,6 @@ export default function ContactForm() {
       );
       return;
     }
-
-    /* PHONE */
 
     const normalizedPhone =
       phone.replace(/\D/g, "");
@@ -234,63 +936,78 @@ export default function ContactForm() {
       return;
     }
 
-    /* PICKUP */
-
-    if (pickup.length < 2) {
+    if (!pickup) {
       showError(
-        "Please enter a valid pickup location."
+        "Please select a pickup location."
       );
       return;
     }
 
-    /* DROP */
-
-    if (drop.length < 2) {
+    if (!drop) {
       showError(
-        "Please enter a valid drop location."
+        "Please select a drop location."
       );
       return;
     }
 
-    /* PASSENGERS */
+    if (pickup === drop) {
+      showError(
+        "Pickup and drop locations cannot be the same."
+      );
+      return;
+    }
+
+    if (!tripType) {
+      showError(
+        "Please select a trip type."
+      );
+      return;
+    }
+
+    if (!vehicle) {
+      showError(
+        "Please select a vehicle."
+      );
+      return;
+    }
 
     const passengerCount =
       Number(passengers);
 
     if (
       !passengers ||
-      !Number.isInteger(passengerCount) ||
+      !Number.isInteger(
+        passengerCount
+      ) ||
       passengerCount < 1 ||
-      passengerCount > 50
+      passengerCount > 6
     ) {
       showError(
-        "Please select a valid number of passengers."
+        "Please select between 1 and 6 passengers."
       );
       return;
     }
 
-    /* VEHICLE */
-
-    if (!vehicleType) {
+    if (!paymentMethod) {
       showError(
-        "Please select a vehicle type."
+        "Please select a payment method."
       );
       return;
     }
-
-    /* SERVICE */
-
-    if (!subject) {
-      showError(
-        "Please select a service."
-      );
-      return;
-    }
-
-    /* MESSAGE */
 
     if (
-      message.length > MAX_MESSAGE_LENGTH
+      distanceKm === null ||
+      estimatedFare === null
+    ) {
+      showError(
+        "Please calculate the estimated fare before submitting."
+      );
+      return;
+    }
+
+    if (
+      message.length >
+      MAX_MESSAGE_LENGTH
     ) {
       showError(
         `Message cannot exceed ${MAX_MESSAGE_LENGTH} characters.`
@@ -298,30 +1015,24 @@ export default function ContactForm() {
       return;
     }
 
-    /* ========================================================
-       REQUEST DATA
-    ======================================================== */
-
     const data = {
       bookingType: "contact-enquiry",
-
       name,
       email,
       phone,
-
       pickup,
       drop,
-
+      tripType,
       passengers: passengerCount,
-
-      vehicleType,
-      subject,
+      vehicleType: vehicle,
+      distanceKm,
+      estimatedFare,
+      paymentMethod,
+      subject: tripType,
       message,
     };
 
-    /* ========================================================
-       ABORT CONTROLLER
-    ======================================================== */
+    setLoading(true);
 
     const controller =
       new AbortController();
@@ -331,73 +1042,63 @@ export default function ContactForm() {
         controller.abort();
       }, REQUEST_TIMEOUT);
 
-    /* ========================================================
-       SEND
-    ======================================================== */
-
     try {
-      const response = await fetch(
-        "/api/email",
-        {
+      const response =
+        await fetch("/api/email", {
           method: "POST",
-
           headers: {
             "Content-Type":
               "application/json",
+            Accept:
+              "application/json",
           },
-
-          body: JSON.stringify(data),
-
-          signal: controller.signal,
-        }
-      );
+          body:
+            JSON.stringify(data),
+          signal:
+            controller.signal,
+        });
 
       let result: ApiResponse = {};
 
       try {
-        result = await response.json();
+        result =
+          await response.json();
       } catch {
         result = {};
       }
-
-      /* ======================================================
-         SERVER ERROR
-      ====================================================== */
 
       if (!response.ok) {
         throw new Error(
           result.error ||
             result.message ||
-            "Unable to send your message. Please try again."
+            "Unable to send your booking."
         );
       }
 
-      /* ======================================================
-         API SUCCESS
-      ====================================================== */
-
-      if (result.success === false) {
+      if (
+        result.success === false
+      ) {
         throw new Error(
           result.error ||
-            "Unable to send your message. Please try again."
+            "Unable to send your booking."
         );
       }
-
-      /* ======================================================
-         SUCCESS
-      ====================================================== */
 
       showSuccess(
         result.message ||
-          "Your enquiry has been sent successfully. Our SBS Taxi team will contact you shortly."
+          "Your booking request has been sent successfully."
       );
-
-      /* ======================================================
-         RESET
-      ====================================================== */
 
       form.reset();
 
+      setVehicle("");
+      setPassengers("");
+      setPickup("");
+      setDrop("");
+      setTripType("");
+      setPaymentMethod("");
+      setDistanceKm(null);
+      setEstimatedFare(null);
       setMessageLength(0);
 
       window.setTimeout(() => {
@@ -416,25 +1117,20 @@ export default function ContactForm() {
         error
       );
 
-      /* TIMEOUT */
-
       if (
         error instanceof DOMException &&
         error.name === "AbortError"
       ) {
         showError(
-          "The request took too long. Please check your connection and try again."
+          "The request took too long. Please try again."
         );
-
         return;
       }
-
-      /* NORMAL ERROR */
 
       showError(
         error instanceof Error
           ? error.message
-          : "Unable to send your message. Please try again."
+          : "Unable to send your booking. Please try again."
       );
     } finally {
       window.clearTimeout(timeout);
@@ -450,683 +1146,890 @@ export default function ContactForm() {
     <section
       aria-labelledby="contact-form-title"
       className="
+        relative
         w-full
-        overflow-hidden
-        rounded-3xl
+        overflow-visible
+        rounded-[28px]
         border
-        border-[var(--border)]
+        border-slate-200
         bg-white
-        shadow-sm
+        shadow-[0_20px_60px_rgba(15,23,42,0.08)]
       "
     >
+      {/* ======================================================
+          TOAST
+      ======================================================= */}
 
-      {/* =====================================================
-          TOP LINE
-      ====================================================== */}
-
-      <div className="flex h-[3px] w-full">
-  <div className="w-1/2 bg-[var(--primary)]" />
-  <div className="w-1/2 bg-[var(--secondary)]" />
-</div>
-
-      <div className="p-5 sm:p-7 lg:p-8">
-
-        {/* ===================================================
-            HEADER
-        ==================================================== */}
-
-        <div className="mb-7">
-
-          <h2
-            id="contact-form-title"
-            className="
-              font-[family-name:var(--font-instrument)]
-              text-2xl
-              font-normal
-              tracking-tight
-              text-[var(--text-secondary)]
-              sm:text-3xl
-            "
-          >
-            Send Us a Message
-          </h2>
-
-          <p
-            className="
-              mt-2
-              max-w-xl
-              font-[family-name:var(--font-jakarta)]
-              text-sm
-              leading-6
-              text-[var(--text-secondary)]
-            "
-          >
-            Questions about bookings, pricing, or
-            our taxi services? We're here to help.
-          </p>
-
-        </div>
-
-        {/* ===================================================
-            FORM
-        ==================================================== */}
-
-        <form
-          onSubmit={handleSubmit}
-          noValidate
-          className="space-y-5"
+      {toast && (
+        <div
+          className="
+            fixed
+            right-4
+            top-5
+            z-[9999]
+            w-[calc(100%-2rem)]
+            max-w-sm
+            sm:right-6
+            sm:top-6
+          "
+          role="alert"
+          aria-live="assertive"
         >
-
-          {/* =================================================
-              NAME + EMAIL
-          ================================================= */}
-
           <div
-            className="
-              grid
-              grid-cols-1
-              gap-5
-              sm:grid-cols-2
-            "
+            className={`
+              flex
+              items-start
+              gap-3
+              rounded-2xl
+              border
+              bg-white
+              px-4
+              py-4
+              shadow-[0_15px_40px_rgba(15,23,42,0.16)]
+              ${
+                toast.type === "success"
+                  ? "border-green-200"
+                  : "border-red-200"
+              }
+            `}
           >
-
-            {/* NAME */}
-
-            <div>
-
-              <label
-                htmlFor="name"
-                className={labelClassName}
-              >
-
-                <User
-                  className="
-                    h-3.5
-                    w-3.5
-                    text-[var(--primary)]
-                  "
-                />
-
-                Name
-
-                <span className="text-[var(--primary)]">
-                  *
-                </span>
-
-              </label>
-
-              <input
-                id="name"
-                name="name"
-                type="text"
-                placeholder="Your Name"
-                required
-                minLength={2}
-                maxLength={80}
-                autoComplete="name"
-                disabled={loading}
-                className={inputClassName}
-              />
-
+            <div
+              className={`
+                flex
+                h-10
+                w-10
+                shrink-0
+                items-center
+                justify-center
+                rounded-xl
+                ${
+                  toast.type === "success"
+                    ? "bg-green-100 text-green-600"
+                    : "bg-red-100 text-red-600"
+                }
+              `}
+            >
+              {toast.type === "success" ? (
+                <CheckCircle2 className="h-5 w-5" />
+              ) : (
+                <AlertCircle className="h-5 w-5" />
+              )}
             </div>
 
-            {/* EMAIL */}
-
-            <div>
-
-              <label
-                htmlFor="email"
-                className={labelClassName}
+            <div className="min-w-0 flex-1">
+              <p
+                className={`
+                  text-sm
+                  font-bold
+                  ${
+                    toast.type === "success"
+                      ? "text-green-700"
+                      : "text-red-700"
+                  }
+                `}
               >
+                {toast.type === "success"
+                  ? "Success"
+                  : "Attention"}
+              </p>
 
-                <Mail
-                  className="
-                    h-3.5
-                    w-3.5
-                    text-[var(--primary)]
-                  "
-                />
-
-                Email Address
-
-                <span className="text-[var(--primary)]">
-                  *
-                </span>
-
-              </label>
-
-              <input
-                id="email"
-                name="email"
-                type="email"
-                placeholder="Your Email Address"
-                required
-                maxLength={120}
-                autoComplete="email"
-                disabled={loading}
-                className={inputClassName}
-              />
-
+              <p className="mt-0.5 text-xs leading-5 text-slate-500">
+                {toast.message}
+              </p>
             </div>
 
+            <button
+              type="button"
+              onClick={() =>
+                setToast(null)
+              }
+              aria-label="Close notification"
+              className="
+                flex
+                h-7
+                w-7
+                shrink-0
+                items-center
+                justify-center
+                rounded-lg
+                text-slate-400
+                transition-colors
+                hover:bg-slate-100
+                hover:text-slate-700
+              "
+            >
+              <X className="h-4 w-4" />
+            </button>
           </div>
-
-          {/* =================================================
-              PHONE + PICKUP
-          ================================================= */}
-
-          <div
-            className="
-              grid
-              grid-cols-1
-              gap-5
-              sm:grid-cols-2
-            "
-          >
-
-            {/* PHONE */}
-
-            <div>
-
-              <label
-                htmlFor="phone"
-                className={labelClassName}
-              >
-
-                <Phone
-                  className="
-                    h-3.5
-                    w-3.5
-                    text-[var(--primary)]
-                  "
-                />
-
-                Phone Number
-
-                <span className="text-[var(--primary)]">
-                  *
-                </span>
-
-              </label>
-
-              <input
-                id="phone"
-                name="phone"
-                type="tel"
-                placeholder="Your Phone Number"
-                required
-                maxLength={20}
-                inputMode="tel"
-                autoComplete="tel"
-                disabled={loading}
-                className={inputClassName}
-              />
-
-            </div>
-
-            {/* PICKUP */}
-
-            <div>
-
-              <label
-                htmlFor="pickup"
-                className={labelClassName}
-              >
-
-                <MapPin
-                  className="
-                    h-3.5
-                    w-3.5
-                    text-[var(--primary)]
-                  "
-                />
-
-                Pickup Location
-
-                <span className="text-[var(--primary)]">
-                  *
-                </span>
-
-              </label>
-
-              <input
-                id="pickup"
-                name="pickup"
-                type="text"
-                placeholder="Pickup Location"
-                required
-                minLength={2}
-                maxLength={200}
-                disabled={loading}
-                className={inputClassName}
-              />
-
-            </div>
-
-          </div>
-
-          {/* =================================================
-              DROP + PASSENGERS
-          ================================================= */}
-
-          <div
-            className="
-              grid
-              grid-cols-1
-              gap-5
-              sm:grid-cols-2
-            "
-          >
-
-            {/* DROP */}
-
-            <div>
-
-              <label
-                htmlFor="drop"
-                className={labelClassName}
-              >
-
-                <MapPin
-                  className="
-                    h-3.5
-                    w-3.5
-                    text-[var(--primary)]
-                  "
-                />
-
-                Drop Location
-
-                <span className="text-[var(--primary)]">
-                  *
-                </span>
-
-              </label>
-
-              <input
-                id="drop"
-                name="drop"
-                type="text"
-                placeholder="Drop Location"
-                required
-                minLength={2}
-                maxLength={200}
-                disabled={loading}
-                className={inputClassName}
-              />
-
-            </div>
-
-            {/* PASSENGERS */}
-
-            <div>
-
-              <label
-                htmlFor="passengers"
-                className={labelClassName}
-              >
-
-                <Users
-                  className="
-                    h-3.5
-                    w-3.5
-                    text-[var(--primary)]
-                  "
-                />
-
-                Number of Passengers
-
-                <span className="text-[var(--primary)]">
-                  *
-                </span>
-
-              </label>
-
-              <div className="relative">
-
-                <select
-                  id="passengers"
-                  name="passengers"
-                  required
-                  defaultValue=""
-                  disabled={loading}
-                  className={`
-                    ${inputClassName}
-                    appearance-none
-                    pr-11
-                  `}
-                >
-
-                  <option
-                    value=""
-                    disabled
-                  >
-                    Select Passengers
-                  </option>
-
-                  <option value="1">
-                    1 Passenger
-                  </option>
-
-                  <option value="2">
-                    2 Passengers
-                  </option>
-
-                  <option value="3">
-                    3 Passengers
-                  </option>
-
-                  <option value="4">
-                    4 Passengers
-                  </option>
-
-                  <option value="5">
-                    5 Passengers
-                  </option>
-
-                  <option value="6">
-                    6 Passengers
-                  </option>
-
-                  <option value="7">
-                    7 Passengers
-                  </option>
-
-                  <option value="8">
-                    8 Passengers
-                  </option>
-
-                  <option value="9">
-                    9 Passengers
-                  </option>
-
-                  <option value="10">
-                    10 Passengers
-                  </option>
-
-                  <option value="11">
-                    11 Passengers
-                  </option>
-
-                  <option value="12">
-                    12 Passengers
-                  </option>
-
-                  <option value="13">
-                    13 Passengers
-                  </option>
-
-                  <option value="14">
-                    14 Passengers
-                  </option>
-
-                  <option value="15">
-                    15 Passengers
-                  </option>
-
-                  <option value="16">
-                    16 Passengers
-                  </option>
-
-                  <option value="17">
-                    17 Passengers
-                  </option>
-
-                  <option value="18">
-                    18 Passengers
-                  </option>
-
-                  <option value="19">
-                    19 Passengers
-                  </option>
-
-                  <option value="20">
-                    20 Passengers
-                  </option>
-
-                </select>
-
-                <ChevronDown
-                  className="
-                    pointer-events-none
-                    absolute
-                    right-4
-                    top-1/2
-                    h-4
-                    w-4
-                    -translate-y-1/2
-                    text-[var(--text-secondary)]
-                  "
-                />
-
-              </div>
-
-            </div>
-
-          </div>
-
-          {/* =================================================
-              VEHICLE + SERVICE
-          ================================================= */}
-
-          <div
-            className="
-              grid
-              grid-cols-1
-              gap-5
-              sm:grid-cols-2
-            "
-          >
-
-            {/* VEHICLE */}
-
-            <div>
-
-              <label
-                htmlFor="vehicleType"
-                className={labelClassName}
-              >
-
-                <CarFront
-                  className="
-                    h-3.5
-                    w-3.5
-                    text-[var(--primary)]
-                  "
-                />
-
-                Vehicle Type
-
-                <span className="text-[var(--primary)]">
-                  *
-                </span>
-
-              </label>
-
-              <div className="relative">
-
-                <select
-                  id="vehicleType"
-                  name="vehicleType"
-                  required
-                  defaultValue=""
-                  disabled={loading}
-                  className={`
-                    ${inputClassName}
-                    appearance-none
-                    pr-11
-                  `}
-                >
-
-                  <option
-                    value=""
-                    disabled
-                  >
-                    Select Vehicle
-                  </option>
-
-                  <option value="SBS MINI">
-                    SBS MINI
-                  </option>
-
-                  <option value="SBS SEDAN">
-                    SBS SEDAN
-                  </option>
-
-                  <option value="SBS VAN">
-                    SBS VAN
-                  </option>
-
-                  <option value="SBS SUV">
-                    SBS SUV
-                  </option>
-
-                  <option value="SBS MUV">
-                    SBS MUV
-                  </option>
-
-                  <option value="SBS MUV+">
-                    SBS MUV+
-                  </option>
-
-                </select>
-
-                <ChevronDown
-                  className="
-                    pointer-events-none
-                    absolute
-                    right-4
-                    top-1/2
-                    h-4
-                    w-4
-                    -translate-y-1/2
-                    text-[var(--text-secondary)]
-                  "
-                />
-
-              </div>
-
-            </div>
-
-            {/* SERVICE */}
-
-            <div>
-
-              <label
-                htmlFor="subject"
-                className={labelClassName}
-              >
-
-                <MessageSquare
-                  className="
-                    h-3.5
-                    w-3.5
-                    text-[var(--primary)]
-                  "
-                />
-
-                Service Required
-
-                <span className="text-[var(--primary)]">
-                  *
-                </span>
-
-              </label>
-
-              <div className="relative">
-
-                <select
-                  id="subject"
-                  name="subject"
-                  required
-                  defaultValue=""
-                  disabled={loading}
-                  className={`
-                    ${inputClassName}
-                    appearance-none
-                    pr-11
-                  `}
-                >
-
-                  <option
-                    value=""
-                    disabled
-                  >
-                    Select Service
-                  </option>
-
-                  <option value="Local City Rides">
-                    Local City Rides
-                  </option>
-
-                  <option value="Outstation Trips">
-                    Outstation Trips
-                  </option>
-
-                  <option value="Airport Transfers">
-                    Airport Transfers
-                  </option>
-
-                  <option value="One Way Trips">
-                    One Way Trips
-                  </option>
-
-                  <option value="Round Trips">
-                    Round Trips
-                  </option>
-
-                  <option value="Corporate Trips">
-                    Corporate Trips
-                  </option>
-
-                  <option value="Temple Tours">
-                    Temple Tours
-                  </option>
-
-                  <option value="General Enquiry">
-                    General Enquiry
-                  </option>
-
-                  <option value="Customer Support">
-                    Customer Support
-                  </option>
-
-                </select>
-
-                <ChevronDown
-                  className="
-                    pointer-events-none
-                    absolute
-                    right-4
-                    top-1/2
-                    h-4
-                    w-4
-                    -translate-y-1/2
-                    text-[var(--text-secondary)]
-                  "
-                />
-
-              </div>
-
-            </div>
-
-          </div>
-
-          {/* =================================================
-              MESSAGE
-          ================================================= */}
-
+        </div>
+      )}
+
+      {/* ======================================================
+          TOP BRAND LINE
+      ======================================================= */}
+
+      <div
+        className="
+          h-1.5
+          w-full
+          rounded-t-[28px]
+          bg-gradient-to-r
+          from-[var(--primary)]
+          via-[#2563a6]
+          to-[var(--secondary)]
+        "
+      />
+
+      {/* ======================================================
+          HEADER
+      ======================================================= */}
+
+      <div
+        className="
+          border-b
+          border-slate-100
+          bg-gradient-to-br
+          from-white
+          via-white
+          to-slate-50
+          px-5
+          py-7
+          sm:px-8
+          lg:px-10
+        "
+      >
+        <div
+          className="
+            flex
+            flex-col
+            gap-5
+            sm:flex-row
+            sm:items-center
+            sm:justify-between
+          "
+        >
           <div>
-
             <div
               className="
                 mb-2
-                flex
+                inline-flex
                 items-center
-                justify-between
+                gap-2
+                rounded-full
+                bg-[var(--primary)]/10
+                px-3
+                py-1.5
+                text-[10px]
+                font-bold
+                uppercase
+                tracking-[0.16em]
+                text-[var(--primary)]
               "
             >
+              <Navigation className="h-3.5 w-3.5" />
 
+              SBS Taxi Booking
+            </div>
+
+            <h2
+              id="contact-form-title"
+              className="
+                font-[family-name:var(--font-instrument)]
+                text-3xl
+                font-normal
+                tracking-tight
+                text-[var(--text-primary)]
+                sm:text-4xl
+              "
+            >
+              Book Your Ride
+            </h2>
+
+            <p
+              className="
+                mt-2
+                max-w-xl
+                font-[family-name:var(--font-jakarta)]
+                text-sm
+                leading-6
+                text-[var(--text-secondary)]
+              "
+            >
+              Select your trip details and get
+              your fare estimate instantly.
+            </p>
+          </div>
+
+          <div
+            className="
+              flex
+              shrink-0
+              items-center
+              gap-3
+              rounded-2xl
+              border
+              border-slate-200
+              bg-white
+              px-4
+              py-3
+              shadow-sm
+            "
+          >
+            <div
+              className="
+                flex
+                h-10
+                w-10
+                items-center
+                justify-center
+                rounded-xl
+                bg-[var(--primary)]/10
+              "
+            >
+              <Clock3 className="h-5 w-5 text-[var(--primary)]" />
+            </div>
+
+            <div>
+              <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                Support
+              </p>
+
+              <p className="text-sm font-bold text-[var(--text-secondary)]">
+                24/7 Available
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ======================================================
+          FORM
+      ======================================================= */}
+
+      <div className="p-5 sm:p-8 lg:p-10">
+        <form
+          onSubmit={handleSubmit}
+          noValidate
+          className="space-y-7"
+        >
+          {/* ==================================================
+              CUSTOMER DETAILS
+          =================================================== */}
+
+          <div>
+            <div className="mb-4">
+              <h3 className="text-sm font-bold text-[var(--text-secondary)]">
+                Customer Details
+              </h3>
+
+              <p className="mt-1 text-xs text-slate-400">
+                Tell us who will be travelling.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+              {/* NAME */}
+
+              <div>
+                <label
+                  htmlFor="name"
+                  className={labelClassName}
+                >
+                  <User className="h-3.5 w-3.5 text-[var(--primary)]" />
+
+                  Full Name
+
+                  <span className="text-[var(--primary)]">
+                    *
+                  </span>
+                </label>
+
+                <input
+                  id="name"
+                  name="name"
+                  type="text"
+                  placeholder="Your full name"
+                  required
+                  minLength={2}
+                  maxLength={80}
+                  autoComplete="name"
+                  disabled={loading}
+                  className={inputClassName}
+                />
+              </div>
+
+              {/* EMAIL */}
+
+              <div>
+                <label
+                  htmlFor="email"
+                  className={labelClassName}
+                >
+                  <Mail className="h-3.5 w-3.5 text-[var(--primary)]" />
+
+                  Email Address
+
+                  <span className="text-[var(--primary)]">
+                    *
+                  </span>
+                </label>
+
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  placeholder="you@example.com"
+                  required
+                  maxLength={120}
+                  autoComplete="email"
+                  disabled={loading}
+                  className={inputClassName}
+                />
+              </div>
+
+              {/* PHONE */}
+
+              <div>
+                <label
+                  htmlFor="phone"
+                  className={labelClassName}
+                >
+                  <Phone className="h-3.5 w-3.5 text-[var(--primary)]" />
+
+                  Phone Number
+
+                  <span className="text-[var(--primary)]">
+                    *
+                  </span>
+                </label>
+
+                <input
+                  id="phone"
+                  name="phone"
+                  type="tel"
+                  placeholder="+91 00000 00000"
+                  required
+                  maxLength={20}
+                  inputMode="tel"
+                  autoComplete="tel"
+                  disabled={loading}
+                  className={inputClassName}
+                />
+              </div>
+
+              {/* TRIP TYPE — OPPOSITE PHONE */}
+
+              <div>
+                <label
+                  htmlFor="tripType"
+                  className={labelClassName}
+                >
+                  <Navigation className="h-3.5 w-3.5 text-[var(--primary)]" />
+
+                  Trip Type
+
+                  <span className="text-[var(--primary)]">
+                    *
+                  </span>
+                </label>
+
+                <div className="relative">
+                  <select
+                    id="tripType"
+                    name="tripType"
+                    value={tripType}
+                    onChange={(e) =>
+                      setTripType(
+                        e.target.value
+                      )
+                    }
+                    required
+                    disabled={loading}
+                    className={`
+                      ${inputClassName}
+                      appearance-none
+                      pr-11
+                    `}
+                  >
+                    <option value="">
+                      Select trip type
+                    </option>
+
+                    <option value="One Way Trip">
+                      One Way Trip
+                    </option>
+
+                    <option value="Round Trip">
+                      Round Trip
+                    </option>
+
+                    <option value="Local City Ride">
+                      Local City Ride
+                    </option>
+
+                    <option value="Airport Transfer">
+                      Airport Transfer
+                    </option>
+
+                    <option value="Outstation Trip">
+                      Outstation Trip
+                    </option>
+                  </select>
+
+                  <ChevronDown
+                    className="
+                      pointer-events-none
+                      absolute
+                      right-4
+                      top-1/2
+                      h-4
+                      w-4
+                      -translate-y-1/2
+                      text-slate-400
+                    "
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* ==================================================
+              TRIP DETAILS
+          =================================================== */}
+
+          <div>
+            <div className="mb-4">
+              <h3 className="text-sm font-bold text-[var(--text-secondary)]">
+                Trip Details
+              </h3>
+
+              <p className="mt-1 text-xs text-slate-400">
+                Choose your pickup and destination.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+              {/* PICKUP */}
+
+              <LocationDropdown
+                label="Pickup Location"
+                value={pickup}
+                placeholder="Choose pickup location"
+                locations={LOCATIONS}
+                disabled={loading}
+                onChange={setPickup}
+                icon={
+                  <MapPin className="h-3.5 w-3.5 text-emerald-600" />
+                }
+              />
+
+              {/* DROP */}
+
+              <LocationDropdown
+                label="Drop Location"
+                value={drop}
+                placeholder="Choose drop location"
+                locations={LOCATIONS}
+                disabled={loading}
+                onChange={setDrop}
+                icon={
+                  <MapPin className="h-3.5 w-3.5 text-red-500" />
+                }
+              />
+            </div>
+          </div>
+
+          {/* ==================================================
+              VEHICLE
+          =================================================== */}
+
+          <div>
+            <div className="mb-4">
+              <h3 className="text-sm font-bold text-[var(--text-secondary)]">
+                Choose Your Vehicle
+              </h3>
+
+              <p className="mt-1 text-xs text-slate-400">
+                Select a vehicle according to your passenger count.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+              {/* VEHICLE */}
+
+              <div>
+                <label
+                  htmlFor="vehicleType"
+                  className={labelClassName}
+                >
+                  <CarFront className="h-3.5 w-3.5 text-[var(--primary)]" />
+
+                  Vehicle
+
+                  <span className="text-[var(--primary)]">
+                    *
+                  </span>
+                </label>
+
+                <div className="relative">
+                  <select
+                    id="vehicleType"
+                    name="vehicleType"
+                    value={vehicle}
+                    onChange={(e) =>
+                      setVehicle(
+                        e.target.value as VehicleName
+                      )
+                    }
+                    required
+                    disabled={loading}
+                    className={`
+                      ${inputClassName}
+                      appearance-none
+                      pr-11
+                    `}
+                  >
+                    <option value="">
+                      Select vehicle
+                    </option>
+
+                    {Object.entries(
+                      VEHICLES
+                    ).map(
+                      ([name, data]) => (
+                        <option
+                          key={name}
+                          value={name}
+                        >
+                          {name} — ₹
+                          {data.rate}/km
+                        </option>
+                      )
+                    )}
+                  </select>
+
+                  <ChevronDown
+                    className="
+                      pointer-events-none
+                      absolute
+                      right-4
+                      top-1/2
+                      h-4
+                      w-4
+                      -translate-y-1/2
+                      text-slate-400
+                    "
+                  />
+                </div>
+              </div>
+
+              {/* PASSENGERS */}
+
+              <div>
+                <label
+                  htmlFor="passengers"
+                  className={labelClassName}
+                >
+                  <Users className="h-3.5 w-3.5 text-[var(--primary)]" />
+
+                  Passengers
+
+                  <span className="text-[var(--primary)]">
+                    *
+                  </span>
+                </label>
+
+                <div className="relative">
+                  <select
+                    id="passengers"
+                    name="passengers"
+                    value={passengers}
+                    onChange={(e) =>
+                      setPassengers(
+                        e.target.value
+                      )
+                    }
+                    required
+                    disabled={loading}
+                    className={`
+                      ${inputClassName}
+                      appearance-none
+                      pr-11
+                    `}
+                  >
+                    <option value="">
+                      Select passengers
+                    </option>
+
+                    {passengerOptions.map(
+                      (count) => (
+                        <option
+                          key={count}
+                          value={count}
+                        >
+                          {count}{" "}
+                          {count === 1
+                            ? "Passenger"
+                            : "Passengers"}
+                        </option>
+                      )
+                    )}
+                  </select>
+
+                  <ChevronDown
+                    className="
+                      pointer-events-none
+                      absolute
+                      right-4
+                      top-1/2
+                      h-4
+                      w-4
+                      -translate-y-1/2
+                      text-slate-400
+                    "
+                  />
+                </div>
+
+                {vehicle && (
+                  <p className="mt-1.5 text-[10px] text-slate-400">
+                    Maximum{" "}
+                    {Math.min(
+                      VEHICLES[vehicle]
+                        .capacity,
+                      6
+                    )}{" "}
+                    passengers
+                  </p>
+                )}
+              </div>
+
+              {/* PAYMENT */}
+
+              <div>
+                <label
+                  htmlFor="paymentMethod"
+                  className={labelClassName}
+                >
+                  <CreditCard className="h-3.5 w-3.5 text-[var(--primary)]" />
+
+                  Payment Method
+
+                  <span className="text-[var(--primary)]">
+                    *
+                  </span>
+                </label>
+
+                <div className="relative">
+                  <select
+                    id="paymentMethod"
+                    name="paymentMethod"
+                    value={paymentMethod}
+                    onChange={(e) =>
+                      setPaymentMethod(
+                        e.target.value
+                      )
+                    }
+                    required
+                    disabled={loading}
+                    className={`
+                      ${inputClassName}
+                      appearance-none
+                      pr-11
+                    `}
+                  >
+                    <option value="">
+                      Select payment method
+                    </option>
+
+                    <option value="Cash">
+                      Cash
+                    </option>
+
+                    <option value="UPI">
+                      UPI
+                    </option>
+
+                    <option value="Card">
+                      Card
+                    </option>
+
+                    <option value="Online Payment">
+                      Online Payment
+                    </option>
+                  </select>
+
+                  <ChevronDown
+                    className="
+                      pointer-events-none
+                      absolute
+                      right-4
+                      top-1/2
+                      h-4
+                      w-4
+                      -translate-y-1/2
+                      text-slate-400
+                    "
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* ==================================================
+              FARE CALCULATOR
+          =================================================== */}
+
+          <div
+            className="
+              overflow-hidden
+              rounded-2xl
+              border
+              border-slate-200
+              bg-slate-50
+            "
+          >
+            <div
+              className="
+                flex
+                flex-col
+                gap-4
+                p-5
+                sm:flex-row
+                sm:items-center
+                sm:justify-between
+              "
+            >
+              <div className="flex items-center gap-3">
+                <div
+                  className="
+                    flex
+                    h-11
+                    w-11
+                    shrink-0
+                    items-center
+                    justify-center
+                    rounded-xl
+                    bg-[var(--primary)]
+                    text-white
+                  "
+                >
+                  <CircleDollarSign className="h-5 w-5" />
+                </div>
+
+                <div>
+                  <p className="text-xs font-bold uppercase tracking-wider text-slate-400">
+                    Fare Estimate
+                  </p>
+
+                  <p className="mt-0.5 text-sm font-semibold text-[var(--text-secondary)]">
+                    {vehicle
+                      ? `₹${VEHICLES[vehicle].rate}/km · ${vehicle}`
+                      : "Select a vehicle to continue"}
+                  </p>
+                </div>
+              </div>
+
+              <button
+                type="button"
+                onClick={calculateFare}
+                disabled={
+                  loading ||
+                  calculatingFare
+                }
+                className="
+                  inline-flex
+                  items-center
+                  justify-center
+                  gap-2
+                  rounded-xl
+                  bg-[var(--primary)]
+                  px-5
+                  py-3
+                  text-sm
+                  font-bold
+                  text-white
+                  shadow-sm
+                  transition-all
+                  duration-200
+                  hover:-translate-y-0.5
+                  hover:shadow-md
+                  disabled:cursor-not-allowed
+                  disabled:opacity-60
+                "
+              >
+                {calculatingFare ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    Calculating...
+                  </>
+                ) : (
+                  <>
+                    <CircleDollarSign className="h-4 w-4" />
+                    Calculate Estimate
+                  </>
+                )}
+              </button>
+            </div>
+
+            {estimatedFare !== null && (
+              <div
+                className="
+                  border-t
+                  border-slate-200
+                  bg-white
+                  px-5
+                  py-5
+                "
+              >
+                <div className="flex items-center justify-between gap-5">
+                  <div>
+                    <p className="text-xs font-semibold text-slate-400">
+                      Estimated Fare
+                    </p>
+
+                    <p className="mt-1 text-3xl font-extrabold tracking-tight text-[var(--primary)]">
+                      ₹
+                      {estimatedFare.toLocaleString(
+                        "en-IN"
+                      )}
+                    </p>
+
+                    <p className="mt-1 text-[10px] text-slate-400">
+                      Distance: {distanceKm} km
+                    </p>
+
+                    {tripType ===
+                      "Round Trip" && (
+                      <p className="mt-1 text-[10px] font-medium text-slate-400">
+                        Round trip fare included
+                      </p>
+                    )}
+                  </div>
+
+                  <div className="text-right">
+                    <p className="text-xs text-slate-400">
+                      Selected Vehicle
+                    </p>
+
+                    <p className="mt-1 text-sm font-bold text-slate-700">
+                      {vehicle}
+                    </p>
+
+                    <p className="mt-1 max-w-[180px] text-[10px] text-slate-400">
+                      Final fare may vary based on actual route & tolls.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* ==================================================
+              MESSAGE
+          =================================================== */}
+
+          <div>
+            <div className="mb-2 flex items-center justify-between">
               <label
                 htmlFor="message"
                 className={`
@@ -1134,47 +2037,29 @@ export default function ContactForm() {
                   mb-0
                 `}
               >
+                <MessageSquare className="h-3.5 w-3.5 text-[var(--primary)]" />
 
-                <MessageSquare
-                  className="
-                    h-3.5
-                    w-3.5
-                    text-[var(--primary)]
-                  "
-                />
+                Additional Message
 
-                Message
-
-                <span
-                  className="
-                    ml-1
-                    font-normal
-                    normal-case
-                    text-[var(--text-secondary)]
-                  "
-                >
+                <span className="ml-1 font-normal text-slate-400">
                   (Optional)
                 </span>
-
               </label>
 
-              <span
-                className="
-                  text-[10px]
-                  text-[var(--text-secondary)]
-                "
-              >
-                {messageLength}/{MAX_MESSAGE_LENGTH}
+              <span className="text-[10px] text-slate-400">
+                {messageLength}/
+                {MAX_MESSAGE_LENGTH}
               </span>
-
             </div>
 
             <textarea
               id="message"
               name="message"
-              rows={5}
-              placeholder="Tell us about your travel requirements..."
-              maxLength={MAX_MESSAGE_LENGTH}
+              rows={4}
+              placeholder="Any special travel requirements?"
+              maxLength={
+                MAX_MESSAGE_LENGTH
+              }
               disabled={loading}
               onChange={(e) =>
                 setMessageLength(
@@ -1187,12 +2072,11 @@ export default function ContactForm() {
                 leading-6
               `}
             />
-
           </div>
 
-          {/* =================================================
+          {/* ==================================================
               STATUS
-          ================================================= */}
+          =================================================== */}
 
           {status.message && (
             <div
@@ -1209,50 +2093,26 @@ export default function ContactForm() {
                 text-sm
                 ${
                   status.type === "success"
-                    ? `
-                      border-green-200
-                      bg-green-50
-                      text-green-700
-                    `
-                    : `
-                      border-red-200
-                      bg-red-50
-                      text-red-700
-                    `
+                    ? "border-green-200 bg-green-50 text-green-700"
+                    : "border-red-200 bg-red-50 text-red-700"
                 }
               `}
             >
-
               {status.type === "success" ? (
-                <CheckCircle2
-                  className="
-                    mt-0.5
-                    h-5
-                    w-5
-                    shrink-0
-                  "
-                />
+                <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0" />
               ) : (
-                <AlertCircle
-                  className="
-                    mt-0.5
-                    h-5
-                    w-5
-                    shrink-0
-                  "
-                />
+                <AlertCircle className="mt-0.5 h-5 w-5 shrink-0" />
               )}
 
               <p className="leading-5">
                 {status.message}
               </p>
-
             </div>
           )}
 
-          {/* =================================================
+          {/* ==================================================
               SUBMIT
-          ================================================= */}
+          =================================================== */}
 
           <button
             type="submit"
@@ -1267,7 +2127,7 @@ export default function ContactForm() {
               rounded-xl
               bg-[var(--primary)]
               px-5
-              py-3.5
+              py-4
               font-[family-name:var(--font-jakarta)]
               text-sm
               font-bold
@@ -1282,44 +2142,25 @@ export default function ContactForm() {
               focus:ring-4
               focus:ring-[var(--primary)]/20
               disabled:cursor-not-allowed
-              disabled:translate-y-0
               disabled:opacity-60
             "
           >
-
             {loading ? (
               <>
-                <Loader2
-                  className="
-                    h-4
-                    w-4
-                    animate-spin
-                  "
-                />
-
-                Sending...
+                <Loader2 className="h-4 w-4 animate-spin" />
+                Sending Booking...
               </>
             ) : (
               <>
-                <Send
-                  className="
-                    h-4
-                    w-4
-                    transition-transform
-                    duration-300
-                    group-hover:translate-x-0.5
-                  "
-                />
-
-                Send Message
+                <Send className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5" />
+                Confirm Booking Request
               </>
             )}
-
           </button>
 
-          {/* =================================================
+          {/* ==================================================
               PRIVACY
-          ================================================= */}
+          =================================================== */}
 
           <p
             className="
@@ -1327,981 +2168,14 @@ export default function ContactForm() {
               font-[family-name:var(--font-jakarta)]
               text-[11px]
               leading-5
-              text-[var(--text-secondary)]
+              text-slate-400
             "
           >
-            We respect your privacy and will only
-            use your information to respond to your
-            enquiry.
+            Your information is secure and will only be used to
+            process your SBS Taxi booking.
           </p>
-
         </form>
       </div>
     </section>
   );
 }
-
-
-{/*
-  "use client";
-
-import { FormEvent, useEffect, useState } from "react";
-import toast from "react-hot-toast";
-import {
-  CalendarDays,
-  Clock3,
-  MapPin,
-  User,
-  Mail,
-  Phone,
-  Navigation,
-} from "lucide-react";
-
-type LocationSuggestion = {
-  place_id: number;
-  display_name: string;
-  lat: string;
-  lon: string;
-};
-
-type SelectedLocation = {
-  address: string;
-  latitude: number;
-  longitude: number;
-};
-
-type ContactFormProps = {
-  pickupDate?: string;
-  pickupTime?: string;
-  vehicleType?: string;
-  paymentMethod?: string;
-  passengers?: number;
-};
-
-export default function ContactForm({
-  pickupDate = "",
-  pickupTime = "",
-  vehicleType = "",
-  paymentMethod = "",
-  passengers = 1,
-}: ContactFormProps) {
-  /* ============================================================
-     CUSTOMER DETAILS
-  ============================================================ 
-
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
-
-  /* ============================================================
-     PICKUP / DROP INPUT
-  ============================================================ 
-
-  const [pickupInput, setPickupInput] = useState("");
-  const [dropInput, setDropInput] = useState("");
-
-  const [pickupLocation, setPickupLocation] =
-    useState<SelectedLocation | null>(null);
-
-  const [dropLocation, setDropLocation] =
-    useState<SelectedLocation | null>(null);
-
-  /* ============================================================
-     SUGGESTIONS
-  ============================================================ 
-
-  const [pickupSuggestions, setPickupSuggestions] = useState<
-    LocationSuggestion[]
-  >([]);
-
-  const [dropSuggestions, setDropSuggestions] = useState<
-    LocationSuggestion[]
-  >([]);
-
-  const [pickupSearching, setPickupSearching] = useState(false);
-  const [dropSearching, setDropSearching] = useState(false);
-
-  /* ============================================================
-     DISTANCE / FARE
-  ============================================================ 
-
-  const [distanceKm, setDistanceKm] = useState<number | null>(null);
-
-  const [estimatedFare, setEstimatedFare] =
-    useState<number | null>(null);
-
-  const [calculatingRoute, setCalculatingRoute] = useState(false);
-
-  /* ============================================================
-     MESSAGE
-  ============================================================ 
-
-  const [message, setMessage] = useState("");
-  const [messageLength, setMessageLength] = useState(0);
-
-  const [loading, setLoading] = useState(false);
-
-  const MAX_MESSAGE_LENGTH = 1000;
-  const REQUEST_TIMEOUT = 15000;
-
-  /* ============================================================
-     SEARCH LOCATION
-  ============================================================ 
-
-  async function searchLocation(
-    value: string,
-    type: "pickup" | "drop"
-  ) {
-    if (type === "pickup") {
-      setPickupInput(value);
-      setPickupLocation(null);
-    } else {
-      setDropInput(value);
-      setDropLocation(null);
-    }
-
-    if (value.trim().length < 3) {
-      if (type === "pickup") {
-        setPickupSuggestions([]);
-      } else {
-        setDropSuggestions([]);
-      }
-
-      return;
-    }
-
-    try {
-      if (type === "pickup") {
-        setPickupSearching(true);
-      } else {
-        setDropSearching(true);
-      }
-
-      const response = await fetch(
-        `https://nominatim.openstreetmap.org/search?format=json&addressdetails=1&limit=5&countrycodes=in&q=${encodeURIComponent(
-          value
-        )}`,
-        {
-          headers: {
-            Accept: "application/json",
-          },
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error("Unable to search location.");
-      }
-
-      const data: LocationSuggestion[] =
-        await response.json();
-
-      if (type === "pickup") {
-        setPickupSuggestions(data);
-      } else {
-        setDropSuggestions(data);
-      }
-    } catch (error) {
-      console.error("Location search error:", error);
-    } finally {
-      if (type === "pickup") {
-        setPickupSearching(false);
-      } else {
-        setDropSearching(false);
-      }
-    }
-  }
-
-  /* ============================================================
-     SELECT LOCATION
-  ============================================================ 
-
-  function selectLocation(
-    location: LocationSuggestion,
-    type: "pickup" | "drop"
-  ) {
-    const selected: SelectedLocation = {
-      address: location.display_name,
-      latitude: Number(location.lat),
-      longitude: Number(location.lon),
-    };
-
-    if (type === "pickup") {
-      setPickupLocation(selected);
-      setPickupInput(location.display_name);
-      setPickupSuggestions([]);
-    } else {
-      setDropLocation(selected);
-      setDropInput(location.display_name);
-      setDropSuggestions([]);
-    }
-  }
-
-  /* ============================================================
-     CALCULATE ROAD DISTANCE
-     OSRM ROUTING
-  ============================================================ 
-
-  async function calculateRouteDistance(
-    pickup: SelectedLocation,
-    drop: SelectedLocation
-  ) {
-    try {
-      setCalculatingRoute(true);
-
-      const url =
-        `https://router.project-osrm.org/route/v1/driving/` +
-        `${pickup.longitude},${pickup.latitude};` +
-        `${drop.longitude},${drop.latitude}` +
-        `?overview=false`;
-
-      const response = await fetch(url);
-
-      if (!response.ok) {
-        throw new Error("Unable to calculate route.");
-      }
-
-      const data = await response.json();
-
-      if (
-        !data.routes ||
-        !data.routes.length ||
-        typeof data.routes[0].distance !== "number"
-      ) {
-        throw new Error("Route distance was not found.");
-      }
-
-      const distance = data.routes[0].distance / 1000;
-
-      const roundedDistance = Number(
-        distance.toFixed(2)
-      );
-
-      setDistanceKm(roundedDistance);
-
-      /* ======================================================
-         FARE CALCULATION
-
-         Base fare = ₹40
-         Base distance = 2 km
-         Extra per km = ₹15
-
-         Example:
-         4.2 km
-
-         ₹40 + ((4.2 - 2) × ₹15)
-         = ₹73
-
-         Change these values according to your actual
-         SBS Taxi fare rules.
-      ====================================================== 
-
-      const baseFare = 40;
-      const baseDistance = 2;
-      const perKm = 15;
-
-      let fare = baseFare;
-
-      if (roundedDistance > baseDistance) {
-        fare =
-          baseFare +
-          (roundedDistance - baseDistance) * perKm;
-      }
-
-      const finalFare = Math.round(fare);
-
-      setEstimatedFare(finalFare);
-    } catch (error) {
-      console.error("Route calculation error:", error);
-
-      setDistanceKm(null);
-      setEstimatedFare(null);
-
-      toast.error(
-        "Unable to calculate the route distance."
-      );
-    } finally {
-      setCalculatingRoute(false);
-    }
-  }
-
-  /* ============================================================
-     CALCULATE WHEN BOTH LOCATIONS ARE SELECTED
-  ============================================================ 
-
-  useEffect(() => {
-    if (!pickupLocation || !dropLocation) {
-      setDistanceKm(null);
-      setEstimatedFare(null);
-      return;
-    }
-
-    calculateRouteDistance(
-      pickupLocation,
-      dropLocation
-    );
-  }, [pickupLocation, dropLocation]);
-
-  /* ============================================================
-     SUBMIT
-  ============================================================ 
-
-  async function handleSubmit(
-    event: FormEvent<HTMLFormElement>
-  ) {
-    event.preventDefault();
-
-    if (loading) return;
-
-    if (!name.trim()) {
-      toast.error("Please enter your name.");
-      return;
-    }
-
-    if (!email.trim()) {
-      toast.error("Please enter your email.");
-      return;
-    }
-
-    if (!phone.trim()) {
-      toast.error("Please enter your phone number.");
-      return;
-    }
-
-    if (!pickupLocation) {
-      toast.error(
-        "Please select a pickup location from the suggestions."
-      );
-      return;
-    }
-
-    if (!dropLocation) {
-      toast.error(
-        "Please select a drop location from the suggestions."
-      );
-      return;
-    }
-
-    if (distanceKm === null) {
-      toast.error(
-        "Please wait while the distance is calculated."
-      );
-      return;
-    }
-
-    if (estimatedFare === null) {
-      toast.error(
-        "Please wait while the fare is calculated."
-      );
-      return;
-    }
-
-    if (!vehicleType) {
-      toast.error("Please select a vehicle type.");
-      return;
-    }
-
-    if (!paymentMethod) {
-      toast.error("Please select a payment method.");
-      return;
-    }
-
-    setLoading(true);
-
-    const controller = new AbortController();
-
-    const timeout = window.setTimeout(() => {
-      controller.abort();
-    }, REQUEST_TIMEOUT);
-
-    try {
-      const response = await fetch("/api/email", {
-        method: "POST",
-
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-
-        signal: controller.signal,
-
-        body: JSON.stringify({
-          type: "taxi-booking",
-
-          name: name.trim(),
-          email: email.trim(),
-          phone: phone.trim(),
-
-          pickupDate,
-          pickupTime,
-
-          pickupAddress: pickupLocation.address,
-          pickupLatitude: pickupLocation.latitude,
-          pickupLongitude: pickupLocation.longitude,
-
-          dropAddress: dropLocation.address,
-          dropLatitude: dropLocation.latitude,
-          dropLongitude: dropLocation.longitude,
-
-          distanceKm,
-
-          vehicleType,
-
-          passengers,
-
-          estimatedFare,
-
-          paymentMethod,
-
-          message: message.trim(),
-        }),
-      });
-
-      let result: {
-        success?: boolean;
-        message?: string;
-        error?: string;
-        bookingId?: string;
-      } = {};
-
-      try {
-        result = await response.json();
-      } catch {
-        result = {};
-      }
-
-      if (!response.ok || !result.success) {
-        throw new Error(
-          result.error ||
-            result.message ||
-            "Unable to send your booking."
-        );
-      }
-
-      toast.success(
-        result.message ||
-          "Your booking request has been sent successfully."
-      );
-
-      /* RESET 
-
-      setName("");
-      setEmail("");
-      setPhone("");
-
-      setPickupInput("");
-      setDropInput("");
-
-      setPickupLocation(null);
-      setDropLocation(null);
-
-      setPickupSuggestions([]);
-      setDropSuggestions([]);
-
-      setDistanceKm(null);
-      setEstimatedFare(null);
-
-      setMessage("");
-      setMessageLength(0);
-    } catch (error) {
-      console.error(
-        "SBS Taxi Contact Form Error:",
-        error
-      );
-
-      if (
-        error instanceof DOMException &&
-        error.name === "AbortError"
-      ) {
-        toast.error(
-          "The request took too long. Please check your connection."
-        );
-
-        return;
-      }
-
-      toast.error(
-        error instanceof Error
-          ? error.message
-          : "Unable to send your booking."
-      );
-    } finally {
-      window.clearTimeout(timeout);
-      setLoading(false);
-    }
-  }
-
-  /* ============================================================
-     RENDER
-  ============================================================ 
-
-  return (
-    <section
-      aria-labelledby="contact-form-title"
-      className="w-full overflow-hidden rounded-3xl bg-white"
-    >
-      <div className="p-6 sm:p-8">
-        {/* HEADER 
-
-        <div className="mb-7">
-          <h2
-            id="contact-form-title"
-            className="text-2xl font-bold text-gray-900"
-          >
-            Book Your Ride
-          </h2>
-
-          <p className="mt-2 text-sm text-gray-600">
-            Enter your pickup and drop locations to
-            calculate your fare.
-          </p>
-        </div>
-
-        <form
-          onSubmit={handleSubmit}
-          className="space-y-5"
-        >
-          {/* ==================================================
-              NAME
-          ================================================== 
-
-          <div>
-            <label
-              htmlFor="contact-name"
-              className="mb-2 block text-sm font-medium text-gray-700"
-            >
-              Name
-            </label>
-
-            <div className="relative">
-              <User
-                size={18}
-                className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
-              />
-
-              <input
-                id="contact-name"
-                type="text"
-                value={name}
-                onChange={(event) =>
-                  setName(event.target.value)
-                }
-                placeholder="Enter your name"
-                autoComplete="name"
-                className="w-full rounded-xl border border-gray-300 bg-white py-3 pl-11 pr-4 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
-              />
-            </div>
-          </div>
-
-          {/* ==================================================
-              EMAIL
-          ================================================== *
-
-          <div>
-            <label
-              htmlFor="contact-email"
-              className="mb-2 block text-sm font-medium text-gray-700"
-            >
-              Email
-            </label>
-
-            <div className="relative">
-              <Mail
-                size={18}
-                className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
-              />
-
-              <input
-                id="contact-email"
-                type="email"
-                value={email}
-                onChange={(event) =>
-                  setEmail(event.target.value)
-                }
-                placeholder="Enter your email"
-                autoComplete="email"
-                className="w-full rounded-xl border border-gray-300 bg-white py-3 pl-11 pr-4 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
-              />
-            </div>
-          </div>
-
-          {/* ==================================================
-              PHONE
-          ================================================== *
-
-          <div>
-            <label
-              htmlFor="contact-phone"
-              className="mb-2 block text-sm font-medium text-gray-700"
-            >
-              Phone
-            </label>
-
-            <div className="relative">
-              <Phone
-                size={18}
-                className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
-              />
-
-              <input
-                id="contact-phone"
-                type="tel"
-                value={phone}
-                onChange={(event) =>
-                  setPhone(event.target.value)
-                }
-                placeholder="Enter your phone number"
-                autoComplete="tel"
-                className="w-full rounded-xl border border-gray-300 bg-white py-3 pl-11 pr-4 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
-              />
-            </div>
-          </div>
-
-          {/* ==================================================
-              PICKUP LOCATION
-          ================================================== *
-
-          <div className="relative">
-            <label
-              htmlFor="pickup-location"
-              className="mb-2 block text-sm font-medium text-gray-700"
-            >
-              Pickup Location
-            </label>
-
-            <div className="relative">
-              <MapPin
-                size={18}
-                className="absolute left-4 top-1/2 z-10 -translate-y-1/2 text-blue-600"
-              />
-
-              <input
-                id="pickup-location"
-                type="text"
-                value={pickupInput}
-                onChange={(event) =>
-                  searchLocation(
-                    event.target.value,
-                    "pickup"
-                  )
-                }
-                placeholder="Enter pickup location"
-                autoComplete="off"
-                className="w-full rounded-xl border border-gray-300 bg-white py-3 pl-11 pr-10 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
-              />
-
-              {pickupSearching && (
-                <div className="absolute right-4 top-1/2 -translate-y-1/2">
-                  <div className="h-4 w-4 animate-spin rounded-full border-2 border-gray-300 border-t-blue-600" />
-                </div>
-              )}
-            </div>
-
-            {/* PICKUP SUGGESTIONS *
-
-            {pickupSuggestions.length > 0 && (
-              <div className="absolute left-0 right-0 z-50 mt-2 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-xl">
-                {pickupSuggestions.map(
-                  (suggestion) => (
-                    <button
-                      key={suggestion.place_id}
-                      type="button"
-                      onClick={() =>
-                        selectLocation(
-                          suggestion,
-                          "pickup"
-                        )
-                      }
-                      className="flex w-full items-start gap-3 border-b border-gray-100 px-4 py-3 text-left last:border-b-0 hover:bg-gray-50"
-                    >
-                      <MapPin
-                        size={18}
-                        className="mt-0.5 shrink-0 text-blue-600"
-                      />
-
-                      <span className="text-sm text-gray-700">
-                        {suggestion.display_name}
-                      </span>
-                    </button>
-                  )
-                )}
-              </div>
-            )}
-
-            {pickupLocation && (
-              <p className="mt-2 text-xs font-medium text-green-600">
-                ✓ Pickup location selected
-              </p>
-            )}
-          </div>
-
-          {/* ==================================================
-              DROP LOCATION
-          ================================================== *
-
-          <div className="relative">
-            <label
-              htmlFor="drop-location"
-              className="mb-2 block text-sm font-medium text-gray-700"
-            >
-              Drop Location
-            </label>
-
-            <div className="relative">
-              <Navigation
-                size={18}
-                className="absolute left-4 top-1/2 z-10 -translate-y-1/2 text-red-500"
-              />
-
-              <input
-                id="drop-location"
-                type="text"
-                value={dropInput}
-                onChange={(event) =>
-                  searchLocation(
-                    event.target.value,
-                    "drop"
-                  )
-                }
-                placeholder="Enter drop location"
-                autoComplete="off"
-                className="w-full rounded-xl border border-gray-300 bg-white py-3 pl-11 pr-10 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
-              />
-
-              {dropSearching && (
-                <div className="absolute right-4 top-1/2 -translate-y-1/2">
-                  <div className="h-4 w-4 animate-spin rounded-full border-2 border-gray-300 border-t-blue-600" />
-                </div>
-              )}
-            </div>
-
-            {/* DROP SUGGESTIONS *
-
-            {dropSuggestions.length > 0 && (
-              <div className="absolute left-0 right-0 z-50 mt-2 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-xl">
-                {dropSuggestions.map(
-                  (suggestion) => (
-                    <button
-                      key={suggestion.place_id}
-                      type="button"
-                      onClick={() =>
-                        selectLocation(
-                          suggestion,
-                          "drop"
-                        )
-                      }
-                      className="flex w-full items-start gap-3 border-b border-gray-100 px-4 py-3 text-left last:border-b-0 hover:bg-gray-50"
-                    >
-                      <Navigation
-                        size={18}
-                        className="mt-0.5 shrink-0 text-red-500"
-                      />
-
-                      <span className="text-sm text-gray-700">
-                        {suggestion.display_name}
-                      </span>
-                    </button>
-                  )
-                )}
-              </div>
-            )}
-
-            {dropLocation && (
-              <p className="mt-2 text-xs font-medium text-green-600">
-                ✓ Drop location selected
-              </p>
-            )}
-          </div>
-
-          {/* ==================================================
-              DATE
-          ================================================== *
-
-          <div>
-            <label
-              htmlFor="pickup-date"
-              className="mb-2 block text-sm font-medium text-gray-700"
-            >
-              Pickup Date
-            </label>
-
-            <div className="relative">
-              <CalendarDays
-                size={18}
-                className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
-              />
-
-              <input
-                id="pickup-date"
-                type="text"
-                value={pickupDate}
-                readOnly
-                placeholder="Pickup date"
-                className="w-full rounded-xl border border-gray-300 bg-gray-50 py-3 pl-11 pr-4 text-sm outline-none"
-              />
-            </div>
-          </div>
-
-          {/* ==================================================
-              TIME
-          ================================================== *
-
-          <div>
-            <label
-              htmlFor="pickup-time"
-              className="mb-2 block text-sm font-medium text-gray-700"
-            >
-              Pickup Time
-            </label>
-
-            <div className="relative">
-              <Clock3
-                size={18}
-                className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
-              />
-
-              <input
-                id="pickup-time"
-                type="text"
-                value={pickupTime}
-                readOnly
-                placeholder="Pickup time"
-                className="w-full rounded-xl border border-gray-300 bg-gray-50 py-3 pl-11 pr-4 text-sm outline-none"
-              />
-            </div>
-          </div>
-
-          {/* ==================================================
-              BOOKING SUMMARY
-          ================================================== *
-
-          <div className="rounded-2xl border border-gray-200 bg-gray-50 p-5">
-            <h3 className="mb-4 text-lg font-semibold text-gray-900">
-              Fare Details
-            </h3>
-
-            <div className="space-y-3 text-sm">
-              {/* VEHICLE TYPE *
-
-              <div className="flex items-center justify-between gap-4">
-                <span className="text-gray-500">
-                  Vehicle Type
-                </span>
-
-                <span className="font-semibold text-gray-900">
-                  {vehicleType || "Not selected"}
-                </span>
-              </div>
-
-              {/* PASSENGERS *
-
-              <div className="flex items-center justify-between gap-4">
-                <span className="text-gray-500">
-                  Passengers
-                </span>
-
-                <span className="font-semibold text-gray-900">
-                  {passengers}
-                </span>
-              </div>
-
-              {/* DISTANCE *
-
-              <div className="flex items-center justify-between gap-4">
-                <span className="text-gray-500">
-                  Distance
-                </span>
-
-                <span className="font-semibold text-gray-900">
-                  {calculatingRoute
-                    ? "Calculating..."
-                    : distanceKm !== null
-                    ? `${distanceKm.toFixed(2)} km`
-                    : "Select locations"}
-                </span>
-              </div>
-
-              {/* FARE *
-
-              <div className="flex items-center justify-between gap-4 border-t border-gray-200 pt-3">
-                <span className="font-semibold text-gray-700">
-                  Estimated Fare
-                </span>
-
-                <span className="text-lg font-bold text-blue-600">
-                  {calculatingRoute
-                    ? "Calculating..."
-                    : estimatedFare !== null
-                    ? `₹${estimatedFare}`
-                    : "—"}
-                </span>
-              </div>
-
-              {/* PAYMENT *
-
-              <div className="flex items-center justify-between gap-4">
-                <span className="text-gray-500">
-                  Payment Method
-                </span>
-
-                <span className="font-semibold text-gray-900">
-                  {paymentMethod || "Not selected"}
-                </span>
-              </div>
-            </div>
-          </div>
-
-          {/* ==================================================
-              MESSAGE
-          ================================================== *
-
-          <div>
-            <div className="mb-2 flex items-center justify-between">
-              <label
-                htmlFor="contact-message"
-                className="text-sm font-medium text-gray-700"
-              >
-                Additional Message
-              </label>
-
-              <span className="text-xs text-gray-500">
-                {messageLength}/{MAX_MESSAGE_LENGTH}
-              </span>
-            </div>
-
-            <textarea
-              id="contact-message"
-              value={message}
-              maxLength={MAX_MESSAGE_LENGTH}
-              rows={4}
-              onChange={(event) => {
-                setMessage(event.target.value);
-                setMessageLength(
-                  event.target.value.length
-                );
-              }}
-              placeholder="Enter any additional message..."
-              className="w-full resize-none rounded-xl border border-gray-300 bg-white px-4 py-3 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
-            />
-          </div>
-
-          {/* ==================================================
-              SUBMIT
-          ================================================== *
-
-          <button
-            type="submit"
-            disabled={loading || calculatingRoute}
-            className="w-full rounded-xl bg-blue-600 px-5 py-3.5 text-sm font-semibold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
-          >
-            {loading
-              ? "Sending Booking..."
-              : calculatingRoute
-              ? "Calculating Fare..."
-              : "Submit Booking"}
-          </button>
-        </form>
-      </div>
-    </section>
-  );
-}
-  */}

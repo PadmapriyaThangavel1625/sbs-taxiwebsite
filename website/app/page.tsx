@@ -3,6 +3,7 @@ import HeroSection from "@/app/Components/Home/HeroSection";
 import FleetSection from "@/app/Components/Home/FleetSection";
 import TaxiGallery from "@/app/Components/Home/TaxiGallery";
 import BottomCTA from "./Components/BottomCTA";
+import FAQSection from "./Components/FAQSection";
 
 export default function Home() {
   return (
@@ -38,6 +39,7 @@ export default function Home() {
       <section className="relative z-10 w-full">
         <TaxiGallery />
       </section>
+      <FAQSection />
     </main>
   );
 }
