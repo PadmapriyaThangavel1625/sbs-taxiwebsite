@@ -2193,3 +2193,1137 @@ Team SBS Taxi
     );
   }
 }
+
+{/*
+  import { NextResponse } from "next/server";
+import nodemailer from "nodemailer";
+
+/* ============================================================
+   HELPERS
+============================================================ 
+
+function escapeHtml(value: unknown): string {
+  return String(value ?? "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+function formatDate(value: unknown): string {
+  if (!value) return "Not specified";
+
+  const date = new Date(String(value));
+
+  if (Number.isNaN(date.getTime())) {
+    return String(value);
+  }
+
+  return date.toLocaleDateString("en-IN", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  });
+}
+
+function formatMoney(value: unknown): string {
+  if (
+    value === null ||
+    value === undefined ||
+    value === "" ||
+    Number.isNaN(Number(value))
+  ) {
+    return "Not available";
+  }
+
+  return `₹${Math.round(Number(value))}`;
+}
+
+/* ============================================================
+   SMTP
+============================================================ 
+
+const transporter = nodemailer.createTransport({
+  host: process.env.SMTP_HOST,
+
+  port: Number(process.env.SMTP_PORT || 587),
+
+  secure:
+    String(process.env.SMTP_SECURE).toLowerCase() === "true",
+
+  auth: {
+    user: process.env.SMTP_USER,
+    pass: process.env.SMTP_PASSWORD,
+  },
+});
+
+/* ============================================================
+   POST
+============================================================ 
+
+export async function POST(request: Request) {
+  try {
+    const body = await request.json();
+
+    /* ========================================================
+       COMMON
+    ======================================================== 
+
+    const {
+      type,
+
+      name,
+      email,
+      phone,
+
+      subject,
+
+      pickupDate,
+      pickupTime,
+
+      pickupAddress,
+      pickupLatitude,
+      pickupLongitude,
+
+      dropAddress,
+      dropLatitude,
+      dropLongitude,
+
+      distanceKm,
+
+      vehicleType,
+
+      passengers,
+
+      estimatedFare,
+
+      paymentMethod,
+
+      message,
+    } = body;
+
+    /* ========================================================
+       BASIC VALIDATION
+    ======================================================== 
+
+    if (!name?.trim()) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Name is required.",
+        },
+        { status: 400 }
+      );
+    }
+
+    if (!email?.trim()) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Email is required.",
+        },
+        { status: 400 }
+      );
+    }
+
+    if (!phone?.trim()) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Phone number is required.",
+        },
+        { status: 400 }
+      );
+    }
+
+    /* ========================================================
+       TAXI BOOKING
+    ======================================================== 
+
+    if (type === "taxi-booking") {
+      /* ======================================================
+         BOOKING VALIDATION
+      ====================================================== 
+
+      if (!pickupAddress?.trim()) {
+        return NextResponse.json(
+          {
+            success: false,
+            error: "Pickup location is required.",
+          },
+          { status: 400 }
+        );
+      }
+
+      if (!dropAddress?.trim()) {
+        return NextResponse.json(
+          {
+            success: false,
+            error: "Drop location is required.",
+          },
+          { status: 400 }
+        );
+      }
+
+      if (!vehicleType?.trim()) {
+        return NextResponse.json(
+          {
+            success: false,
+            error: "Vehicle type is required.",
+          },
+          { status: 400 }
+        );
+      }
+
+      if (!paymentMethod?.trim()) {
+        return NextResponse.json(
+          {
+            success: false,
+            error: "Payment method is required.",
+          },
+          { status: 400 }
+        );
+      }
+
+      /* ======================================================
+         BOOKING ID
+
+         Format:
+
+         SBS-YYYYMMDD-HHMMSS-RANDOM4
+      ====================================================== 
+
+      const now = new Date();
+
+      const year = now.getFullYear();
+
+      const month = String(
+        now.getMonth() + 1
+      ).padStart(2, "0");
+
+      const day = String(
+        now.getDate()
+      ).padStart(2, "0");
+
+      const hours = String(
+        now.getHours()
+      ).padStart(2, "0");
+
+      const minutes = String(
+        now.getMinutes()
+      ).padStart(2, "0");
+
+      const seconds = String(
+        now.getSeconds()
+      ).padStart(2, "0");
+
+      const random = Math.floor(
+        1000 + Math.random() * 9000
+      );
+
+      const bookingId =
+        `SBS-${year}${month}${day}-` +
+        `${hours}${minutes}${seconds}-` +
+        `${random}`;
+
+      /* ======================================================
+         BOOKING DATE
+      ====================================================== 
+
+      const bookingDate =
+        now.toLocaleDateString("en-IN", {
+          day: "2-digit",
+          month: "short",
+          year: "numeric",
+        });
+
+      /* ======================================================
+         DISTANCE
+      ====================================================== 
+
+      let formattedDistance = "Not available";
+
+      if (
+        distanceKm !== null &&
+        distanceKm !== undefined &&
+        distanceKm !== ""
+      ) {
+        const numericDistance = Number(distanceKm);
+
+        if (!Number.isNaN(numericDistance)) {
+          formattedDistance =
+            `${numericDistance.toFixed(2)} km`;
+        }
+      }
+
+      /* ======================================================
+         FARE
+      ====================================================== 
+
+      const formattedFare =
+        formatMoney(estimatedFare);
+
+      /* ======================================================
+         PASSENGERS
+      ====================================================== 
+
+      const passengerCount =
+        Number(passengers) > 0
+          ? Number(passengers)
+          : 1;
+
+      /* ======================================================
+         EMAIL SUBJECT
+      ====================================================== 
+
+      const emailSubject =
+        `New SBS Taxi Booking - ${bookingId}`;
+
+      /* ======================================================
+         EMAIL HTML
+      ====================================================== 
+
+      const html = `
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1.0"
+>
+
+<title>SBS Taxi Booking</title>
+
+</head>
+
+<body
+  style="
+    margin:0;
+    padding:0;
+    background:#f1f5f9;
+    font-family:Arial,Helvetica,sans-serif;
+  "
+>
+
+<table
+  width="100%"
+  cellpadding="0"
+  cellspacing="0"
+  border="0"
+  style="
+    background:#f1f5f9;
+    padding:30px 10px;
+  "
+>
+
+<tr>
+
+<td align="center">
+
+<table
+  width="700"
+  cellpadding="0"
+  cellspacing="0"
+  border="0"
+  style="
+    width:100%;
+    max-width:700px;
+    background:#ffffff;
+    border-radius:16px;
+    overflow:hidden;
+  "
+>
+
+<!-- ======================================================
+     HEADER
+======================================================= -->
+
+<tr>
+
+<td
+  style="
+    background:#174a91;
+    padding:25px;
+    text-align:center;
+  "
+>
+
+<h1
+  style="
+    margin:0;
+    color:#ffffff;
+    font-size:26px;
+  "
+>
+SBS TAXI
+</h1>
+
+<p
+  style="
+    margin:8px 0 0;
+    color:#ffffff;
+    font-size:14px;
+  "
+>
+New Booking Request
+</p>
+
+</td>
+
+</tr>
+
+<!-- ======================================================
+     CONTENT
+======================================================= -->
+
+<tr>
+
+<td style="padding:30px;">
+
+<h2
+  style="
+    margin:0 0 20px;
+    color:#174a91;
+    font-size:21px;
+  "
+>
+BOOKING DETAILS
+</h2>
+
+<table
+  width="100%"
+  cellpadding="9"
+  cellspacing="0"
+  border="0"
+  style="
+    border-collapse:collapse;
+    font-size:14px;
+  "
+>
+
+<!-- BOOKING ID -->
+
+<tr>
+
+<td
+  style="
+    width:38%;
+    font-weight:bold;
+    border-bottom:1px solid #e5e7eb;
+  "
+>
+Booking ID
+</td>
+
+<td
+  style="
+    border-bottom:1px solid #e5e7eb;
+    font-weight:bold;
+  "
+>
+${escapeHtml(bookingId)}
+</td>
+
+</tr>
+
+<!-- BOOKING DATE -->
+
+<tr>
+
+<td
+  style="
+    font-weight:bold;
+    border-bottom:1px solid #e5e7eb;
+  "
+>
+Booking Date
+</td>
+
+<td
+  style="
+    border-bottom:1px solid #e5e7eb;
+  "
+>
+${escapeHtml(bookingDate)}
+</td>
+
+</tr>
+
+<!-- PICKUP DATE -->
+
+<tr>
+
+<td
+  style="
+    font-weight:bold;
+    border-bottom:1px solid #e5e7eb;
+  "
+>
+Pickup Date
+</td>
+
+<td
+  style="
+    border-bottom:1px solid #e5e7eb;
+  "
+>
+${escapeHtml(
+  formatDate(pickupDate)
+)}
+</td>
+
+</tr>
+
+<!-- PICKUP TIME -->
+
+<tr>
+
+<td
+  style="
+    font-weight:bold;
+    border-bottom:1px solid #e5e7eb;
+  "
+>
+Pickup Time
+</td>
+
+<td
+  style="
+    border-bottom:1px solid #e5e7eb;
+  "
+>
+${escapeHtml(
+  pickupTime || "Not specified"
+)}
+</td>
+
+</tr>
+
+<!-- NAME -->
+
+<tr>
+
+<td
+  style="
+    font-weight:bold;
+    border-bottom:1px solid #e5e7eb;
+  "
+>
+Passenger Name
+</td>
+
+<td
+  style="
+    border-bottom:1px solid #e5e7eb;
+  "
+>
+${escapeHtml(name)}
+</td>
+
+</tr>
+
+<!-- EMAIL -->
+
+<tr>
+
+<td
+  style="
+    font-weight:bold;
+    border-bottom:1px solid #e5e7eb;
+  "
+>
+Email
+</td>
+
+<td
+  style="
+    border-bottom:1px solid #e5e7eb;
+  "
+>
+${escapeHtml(email)}
+</td>
+
+</tr>
+
+<!-- PHONE -->
+
+<tr>
+
+<td
+  style="
+    font-weight:bold;
+    border-bottom:1px solid #e5e7eb;
+  "
+>
+Phone
+</td>
+
+<td
+  style="
+    border-bottom:1px solid #e5e7eb;
+  "
+>
+${escapeHtml(phone)}
+</td>
+
+</tr>
+
+<!-- PICKUP -->
+
+<tr>
+
+<td
+  style="
+    font-weight:bold;
+    border-bottom:1px solid #e5e7eb;
+    vertical-align:top;
+  "
+>
+Pickup Location
+</td>
+
+<td
+  style="
+    border-bottom:1px solid #e5e7eb;
+  "
+>
+${escapeHtml(pickupAddress)}
+</td>
+
+</tr>
+
+<!-- DROP -->
+
+<tr>
+
+<td
+  style="
+    font-weight:bold;
+    border-bottom:1px solid #e5e7eb;
+    vertical-align:top;
+  "
+>
+Drop Location
+</td>
+
+<td
+  style="
+    border-bottom:1px solid #e5e7eb;
+  "
+>
+${escapeHtml(dropAddress)}
+</td>
+
+</tr>
+
+<!-- DISTANCE -->
+
+<tr>
+
+<td
+  style="
+    font-weight:bold;
+    border-bottom:1px solid #e5e7eb;
+  "
+>
+Distance
+</td>
+
+<td
+  style="
+    border-bottom:1px solid #e5e7eb;
+    font-weight:bold;
+  "
+>
+${escapeHtml(formattedDistance)}
+</td>
+
+</tr>
+
+<!-- VEHICLE TYPE -->
+
+<tr>
+
+<td
+  style="
+    font-weight:bold;
+    border-bottom:1px solid #e5e7eb;
+  "
+>
+Vehicle Type
+</td>
+
+<td
+  style="
+    border-bottom:1px solid #e5e7eb;
+  "
+>
+${escapeHtml(vehicleType)}
+</td>
+
+</tr>
+
+<!-- PASSENGERS -->
+
+<tr>
+
+<td
+  style="
+    font-weight:bold;
+    border-bottom:1px solid #e5e7eb;
+  "
+>
+Passengers
+</td>
+
+<td
+  style="
+    border-bottom:1px solid #e5e7eb;
+  "
+>
+${escapeHtml(passengerCount)}
+</td>
+
+</tr>
+
+<!-- ESTIMATED FARE -->
+
+<tr>
+
+<td
+  style="
+    font-weight:bold;
+    border-bottom:1px solid #e5e7eb;
+  "
+>
+Estimated Fare
+</td>
+
+<td
+  style="
+    border-bottom:1px solid #e5e7eb;
+    color:#174a91;
+    font-size:16px;
+    font-weight:bold;
+  "
+>
+${escapeHtml(formattedFare)}
+</td>
+
+</tr>
+
+<!-- PAYMENT -->
+
+<tr>
+
+<td
+  style="
+    font-weight:bold;
+    border-bottom:1px solid #e5e7eb;
+  "
+>
+Payment Method
+</td>
+
+<td
+  style="
+    border-bottom:1px solid #e5e7eb;
+  "
+>
+${escapeHtml(paymentMethod)}
+</td>
+
+</tr>
+
+</table>
+
+<!-- ======================================================
+     ADDITIONAL MESSAGE
+======================================================= -->
+
+<h2
+  style="
+    margin:30px 0 12px;
+    color:#174a91;
+    font-size:18px;
+  "
+>
+Additional Message
+</h2>
+
+<div
+  style="
+    padding:15px;
+    background:#f8fafc;
+    border:1px solid #e2e8f0;
+    border-radius:10px;
+    color:#334155;
+    font-size:14px;
+    line-height:1.6;
+  "
+>
+${escapeHtml(
+  message?.trim() || "None"
+)}
+</div>
+
+<!-- ======================================================
+     LOCATION COORDINATES
+======================================================= -->
+
+<h2
+  style="
+    margin:30px 0 12px;
+    color:#174a91;
+    font-size:18px;
+  "
+>
+Location Coordinates
+</h2>
+
+<table
+  width="100%"
+  cellpadding="8"
+  cellspacing="0"
+  border="0"
+  style="
+    border-collapse:collapse;
+    font-size:13px;
+    color:#475569;
+  "
+>
+
+<tr>
+
+<td style="font-weight:bold;">
+Pickup Latitude
+</td>
+
+<td>
+${escapeHtml(
+  pickupLatitude ?? "Not available"
+)}
+</td>
+
+</tr>
+
+<tr>
+
+<td style="font-weight:bold;">
+Pickup Longitude
+</td>
+
+<td>
+${escapeHtml(
+  pickupLongitude ?? "Not available"
+)}
+</td>
+
+</tr>
+
+<tr>
+
+<td style="font-weight:bold;">
+Drop Latitude
+</td>
+
+<td>
+${escapeHtml(
+  dropLatitude ?? "Not available"
+)}
+</td>
+
+</tr>
+
+<tr>
+
+<td style="font-weight:bold;">
+Drop Longitude
+</td>
+
+<td>
+${escapeHtml(
+  dropLongitude ?? "Not available"
+)}
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+
+<!-- ======================================================
+     FOOTER
+======================================================= -->
+
+<tr>
+
+<td
+  style="
+    background:#f8fafc;
+    padding:20px;
+    text-align:center;
+    border-top:1px solid #e5e7eb;
+  "
+>
+
+<p
+  style="
+    margin:0;
+    color:#64748b;
+    font-size:13px;
+  "
+>
+This booking request was submitted through SBS Taxi.
+</p>
+
+<p
+  style="
+    margin:6px 0 0;
+    color:#64748b;
+    font-size:12px;
+  "
+>
+Powered by SBS Technologies
+</p>
+
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+
+</table>
+
+</body>
+
+</html>
+`;
+
+      /* ======================================================
+         SEND EMAIL
+      ====================================================== 
+
+      await transporter.sendMail({
+        from:
+          process.env.SMTP_FROM ||
+          process.env.SMTP_USER,
+
+        to:
+          process.env.SMTP_TO ||
+          process.env.SMTP_USER,
+
+        replyTo: email,
+
+        subject: emailSubject,
+
+        html,
+      });
+
+      /* ======================================================
+         SUCCESS
+      ====================================================== 
+
+      return NextResponse.json({
+        success: true,
+
+        bookingId,
+
+        message:
+          "Your booking request has been sent successfully.",
+      });
+    }
+
+    /* ========================================================
+       NORMAL CONTACT FORM
+    ======================================================== 
+
+    const contactHtml = `
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<title>SBS Taxi Enquiry</title>
+
+</head>
+
+<body
+  style="
+    margin:0;
+    padding:30px;
+    background:#f1f5f9;
+    font-family:Arial,Helvetica,sans-serif;
+  "
+>
+
+<table
+  width="100%"
+  cellpadding="0"
+  cellspacing="0"
+  border="0"
+>
+
+<tr>
+
+<td align="center">
+
+<table
+  width="650"
+  cellpadding="0"
+  cellspacing="0"
+  border="0"
+  style="
+    max-width:650px;
+    width:100%;
+    background:#ffffff;
+    border-radius:16px;
+    overflow:hidden;
+  "
+>
+
+<tr>
+
+<td
+  style="
+    background:#174a91;
+    padding:25px;
+    text-align:center;
+  "
+>
+
+<h1
+  style="
+    margin:0;
+    color:#ffffff;
+  "
+>
+SBS TAXI
+</h1>
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="padding:30px;">
+
+<h2 style="color:#174a91;">
+Contact Enquiry
+</h2>
+
+<p>
+<strong>Name:</strong>
+${escapeHtml(name)}
+</p>
+
+<p>
+<strong>Email:</strong>
+${escapeHtml(email)}
+</p>
+
+<p>
+<strong>Phone:</strong>
+${escapeHtml(phone)}
+</p>
+
+<p>
+<strong>Service:</strong>
+${escapeHtml(subject)}
+</p>
+
+<h2 style="color:#174a91;">
+Message
+</h2>
+
+<div
+  style="
+    padding:15px;
+    background:#f8fafc;
+    border:1px solid #e2e8f0;
+    border-radius:10px;
+  "
+>
+${escapeHtml(
+  message?.trim() ||
+    "No message provided."
+)}
+</div>
+
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+
+</table>
+
+</body>
+
+</html>
+`;
+
+    await transporter.sendMail({
+      from:
+        process.env.SMTP_FROM ||
+        process.env.SMTP_USER,
+
+      to:
+        process.env.SMTP_TO ||
+        process.env.SMTP_USER,
+
+      replyTo: email,
+
+      subject:
+        subject?.trim() ||
+        "New SBS Taxi Enquiry",
+
+      html: contactHtml,
+    });
+
+    return NextResponse.json({
+      success: true,
+
+      message:
+        "Your enquiry has been sent successfully. Our SBS Taxi team will contact you shortly.",
+    });
+  } catch (error) {
+    console.error(
+      "SBS TAXI EMAIL API ERROR:",
+      error
+    );
+
+    return NextResponse.json(
+      {
+        success: false,
+        error:
+          "Unable to send email. Please try again.",
+      },
+      {
+        status: 500,
+      }
+    );
+  }
+}
+  */}

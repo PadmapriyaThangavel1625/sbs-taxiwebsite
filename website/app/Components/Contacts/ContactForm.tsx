@@ -1340,3 +1340,968 @@ export default function ContactForm() {
     </section>
   );
 }
+
+
+{/*
+  "use client";
+
+import { FormEvent, useEffect, useState } from "react";
+import toast from "react-hot-toast";
+import {
+  CalendarDays,
+  Clock3,
+  MapPin,
+  User,
+  Mail,
+  Phone,
+  Navigation,
+} from "lucide-react";
+
+type LocationSuggestion = {
+  place_id: number;
+  display_name: string;
+  lat: string;
+  lon: string;
+};
+
+type SelectedLocation = {
+  address: string;
+  latitude: number;
+  longitude: number;
+};
+
+type ContactFormProps = {
+  pickupDate?: string;
+  pickupTime?: string;
+  vehicleType?: string;
+  paymentMethod?: string;
+  passengers?: number;
+};
+
+export default function ContactForm({
+  pickupDate = "",
+  pickupTime = "",
+  vehicleType = "",
+  paymentMethod = "",
+  passengers = 1,
+}: ContactFormProps) {
+  /* ============================================================
+     CUSTOMER DETAILS
+  ============================================================ 
+
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+
+  /* ============================================================
+     PICKUP / DROP INPUT
+  ============================================================ 
+
+  const [pickupInput, setPickupInput] = useState("");
+  const [dropInput, setDropInput] = useState("");
+
+  const [pickupLocation, setPickupLocation] =
+    useState<SelectedLocation | null>(null);
+
+  const [dropLocation, setDropLocation] =
+    useState<SelectedLocation | null>(null);
+
+  /* ============================================================
+     SUGGESTIONS
+  ============================================================ 
+
+  const [pickupSuggestions, setPickupSuggestions] = useState<
+    LocationSuggestion[]
+  >([]);
+
+  const [dropSuggestions, setDropSuggestions] = useState<
+    LocationSuggestion[]
+  >([]);
+
+  const [pickupSearching, setPickupSearching] = useState(false);
+  const [dropSearching, setDropSearching] = useState(false);
+
+  /* ============================================================
+     DISTANCE / FARE
+  ============================================================ 
+
+  const [distanceKm, setDistanceKm] = useState<number | null>(null);
+
+  const [estimatedFare, setEstimatedFare] =
+    useState<number | null>(null);
+
+  const [calculatingRoute, setCalculatingRoute] = useState(false);
+
+  /* ============================================================
+     MESSAGE
+  ============================================================ 
+
+  const [message, setMessage] = useState("");
+  const [messageLength, setMessageLength] = useState(0);
+
+  const [loading, setLoading] = useState(false);
+
+  const MAX_MESSAGE_LENGTH = 1000;
+  const REQUEST_TIMEOUT = 15000;
+
+  /* ============================================================
+     SEARCH LOCATION
+  ============================================================ 
+
+  async function searchLocation(
+    value: string,
+    type: "pickup" | "drop"
+  ) {
+    if (type === "pickup") {
+      setPickupInput(value);
+      setPickupLocation(null);
+    } else {
+      setDropInput(value);
+      setDropLocation(null);
+    }
+
+    if (value.trim().length < 3) {
+      if (type === "pickup") {
+        setPickupSuggestions([]);
+      } else {
+        setDropSuggestions([]);
+      }
+
+      return;
+    }
+
+    try {
+      if (type === "pickup") {
+        setPickupSearching(true);
+      } else {
+        setDropSearching(true);
+      }
+
+      const response = await fetch(
+        `https://nominatim.openstreetmap.org/search?format=json&addressdetails=1&limit=5&countrycodes=in&q=${encodeURIComponent(
+          value
+        )}`,
+        {
+          headers: {
+            Accept: "application/json",
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Unable to search location.");
+      }
+
+      const data: LocationSuggestion[] =
+        await response.json();
+
+      if (type === "pickup") {
+        setPickupSuggestions(data);
+      } else {
+        setDropSuggestions(data);
+      }
+    } catch (error) {
+      console.error("Location search error:", error);
+    } finally {
+      if (type === "pickup") {
+        setPickupSearching(false);
+      } else {
+        setDropSearching(false);
+      }
+    }
+  }
+
+  /* ============================================================
+     SELECT LOCATION
+  ============================================================ 
+
+  function selectLocation(
+    location: LocationSuggestion,
+    type: "pickup" | "drop"
+  ) {
+    const selected: SelectedLocation = {
+      address: location.display_name,
+      latitude: Number(location.lat),
+      longitude: Number(location.lon),
+    };
+
+    if (type === "pickup") {
+      setPickupLocation(selected);
+      setPickupInput(location.display_name);
+      setPickupSuggestions([]);
+    } else {
+      setDropLocation(selected);
+      setDropInput(location.display_name);
+      setDropSuggestions([]);
+    }
+  }
+
+  /* ============================================================
+     CALCULATE ROAD DISTANCE
+     OSRM ROUTING
+  ============================================================ 
+
+  async function calculateRouteDistance(
+    pickup: SelectedLocation,
+    drop: SelectedLocation
+  ) {
+    try {
+      setCalculatingRoute(true);
+
+      const url =
+        `https://router.project-osrm.org/route/v1/driving/` +
+        `${pickup.longitude},${pickup.latitude};` +
+        `${drop.longitude},${drop.latitude}` +
+        `?overview=false`;
+
+      const response = await fetch(url);
+
+      if (!response.ok) {
+        throw new Error("Unable to calculate route.");
+      }
+
+      const data = await response.json();
+
+      if (
+        !data.routes ||
+        !data.routes.length ||
+        typeof data.routes[0].distance !== "number"
+      ) {
+        throw new Error("Route distance was not found.");
+      }
+
+      const distance = data.routes[0].distance / 1000;
+
+      const roundedDistance = Number(
+        distance.toFixed(2)
+      );
+
+      setDistanceKm(roundedDistance);
+
+      /* ======================================================
+         FARE CALCULATION
+
+         Base fare = ₹40
+         Base distance = 2 km
+         Extra per km = ₹15
+
+         Example:
+         4.2 km
+
+         ₹40 + ((4.2 - 2) × ₹15)
+         = ₹73
+
+         Change these values according to your actual
+         SBS Taxi fare rules.
+      ====================================================== 
+
+      const baseFare = 40;
+      const baseDistance = 2;
+      const perKm = 15;
+
+      let fare = baseFare;
+
+      if (roundedDistance > baseDistance) {
+        fare =
+          baseFare +
+          (roundedDistance - baseDistance) * perKm;
+      }
+
+      const finalFare = Math.round(fare);
+
+      setEstimatedFare(finalFare);
+    } catch (error) {
+      console.error("Route calculation error:", error);
+
+      setDistanceKm(null);
+      setEstimatedFare(null);
+
+      toast.error(
+        "Unable to calculate the route distance."
+      );
+    } finally {
+      setCalculatingRoute(false);
+    }
+  }
+
+  /* ============================================================
+     CALCULATE WHEN BOTH LOCATIONS ARE SELECTED
+  ============================================================ 
+
+  useEffect(() => {
+    if (!pickupLocation || !dropLocation) {
+      setDistanceKm(null);
+      setEstimatedFare(null);
+      return;
+    }
+
+    calculateRouteDistance(
+      pickupLocation,
+      dropLocation
+    );
+  }, [pickupLocation, dropLocation]);
+
+  /* ============================================================
+     SUBMIT
+  ============================================================ 
+
+  async function handleSubmit(
+    event: FormEvent<HTMLFormElement>
+  ) {
+    event.preventDefault();
+
+    if (loading) return;
+
+    if (!name.trim()) {
+      toast.error("Please enter your name.");
+      return;
+    }
+
+    if (!email.trim()) {
+      toast.error("Please enter your email.");
+      return;
+    }
+
+    if (!phone.trim()) {
+      toast.error("Please enter your phone number.");
+      return;
+    }
+
+    if (!pickupLocation) {
+      toast.error(
+        "Please select a pickup location from the suggestions."
+      );
+      return;
+    }
+
+    if (!dropLocation) {
+      toast.error(
+        "Please select a drop location from the suggestions."
+      );
+      return;
+    }
+
+    if (distanceKm === null) {
+      toast.error(
+        "Please wait while the distance is calculated."
+      );
+      return;
+    }
+
+    if (estimatedFare === null) {
+      toast.error(
+        "Please wait while the fare is calculated."
+      );
+      return;
+    }
+
+    if (!vehicleType) {
+      toast.error("Please select a vehicle type.");
+      return;
+    }
+
+    if (!paymentMethod) {
+      toast.error("Please select a payment method.");
+      return;
+    }
+
+    setLoading(true);
+
+    const controller = new AbortController();
+
+    const timeout = window.setTimeout(() => {
+      controller.abort();
+    }, REQUEST_TIMEOUT);
+
+    try {
+      const response = await fetch("/api/email", {
+        method: "POST",
+
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+
+        signal: controller.signal,
+
+        body: JSON.stringify({
+          type: "taxi-booking",
+
+          name: name.trim(),
+          email: email.trim(),
+          phone: phone.trim(),
+
+          pickupDate,
+          pickupTime,
+
+          pickupAddress: pickupLocation.address,
+          pickupLatitude: pickupLocation.latitude,
+          pickupLongitude: pickupLocation.longitude,
+
+          dropAddress: dropLocation.address,
+          dropLatitude: dropLocation.latitude,
+          dropLongitude: dropLocation.longitude,
+
+          distanceKm,
+
+          vehicleType,
+
+          passengers,
+
+          estimatedFare,
+
+          paymentMethod,
+
+          message: message.trim(),
+        }),
+      });
+
+      let result: {
+        success?: boolean;
+        message?: string;
+        error?: string;
+        bookingId?: string;
+      } = {};
+
+      try {
+        result = await response.json();
+      } catch {
+        result = {};
+      }
+
+      if (!response.ok || !result.success) {
+        throw new Error(
+          result.error ||
+            result.message ||
+            "Unable to send your booking."
+        );
+      }
+
+      toast.success(
+        result.message ||
+          "Your booking request has been sent successfully."
+      );
+
+      /* RESET 
+
+      setName("");
+      setEmail("");
+      setPhone("");
+
+      setPickupInput("");
+      setDropInput("");
+
+      setPickupLocation(null);
+      setDropLocation(null);
+
+      setPickupSuggestions([]);
+      setDropSuggestions([]);
+
+      setDistanceKm(null);
+      setEstimatedFare(null);
+
+      setMessage("");
+      setMessageLength(0);
+    } catch (error) {
+      console.error(
+        "SBS Taxi Contact Form Error:",
+        error
+      );
+
+      if (
+        error instanceof DOMException &&
+        error.name === "AbortError"
+      ) {
+        toast.error(
+          "The request took too long. Please check your connection."
+        );
+
+        return;
+      }
+
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : "Unable to send your booking."
+      );
+    } finally {
+      window.clearTimeout(timeout);
+      setLoading(false);
+    }
+  }
+
+  /* ============================================================
+     RENDER
+  ============================================================ 
+
+  return (
+    <section
+      aria-labelledby="contact-form-title"
+      className="w-full overflow-hidden rounded-3xl bg-white"
+    >
+      <div className="p-6 sm:p-8">
+        {/* HEADER 
+
+        <div className="mb-7">
+          <h2
+            id="contact-form-title"
+            className="text-2xl font-bold text-gray-900"
+          >
+            Book Your Ride
+          </h2>
+
+          <p className="mt-2 text-sm text-gray-600">
+            Enter your pickup and drop locations to
+            calculate your fare.
+          </p>
+        </div>
+
+        <form
+          onSubmit={handleSubmit}
+          className="space-y-5"
+        >
+          {/* ==================================================
+              NAME
+          ================================================== 
+
+          <div>
+            <label
+              htmlFor="contact-name"
+              className="mb-2 block text-sm font-medium text-gray-700"
+            >
+              Name
+            </label>
+
+            <div className="relative">
+              <User
+                size={18}
+                className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
+              />
+
+              <input
+                id="contact-name"
+                type="text"
+                value={name}
+                onChange={(event) =>
+                  setName(event.target.value)
+                }
+                placeholder="Enter your name"
+                autoComplete="name"
+                className="w-full rounded-xl border border-gray-300 bg-white py-3 pl-11 pr-4 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+              />
+            </div>
+          </div>
+
+          {/* ==================================================
+              EMAIL
+          ================================================== *
+
+          <div>
+            <label
+              htmlFor="contact-email"
+              className="mb-2 block text-sm font-medium text-gray-700"
+            >
+              Email
+            </label>
+
+            <div className="relative">
+              <Mail
+                size={18}
+                className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
+              />
+
+              <input
+                id="contact-email"
+                type="email"
+                value={email}
+                onChange={(event) =>
+                  setEmail(event.target.value)
+                }
+                placeholder="Enter your email"
+                autoComplete="email"
+                className="w-full rounded-xl border border-gray-300 bg-white py-3 pl-11 pr-4 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+              />
+            </div>
+          </div>
+
+          {/* ==================================================
+              PHONE
+          ================================================== *
+
+          <div>
+            <label
+              htmlFor="contact-phone"
+              className="mb-2 block text-sm font-medium text-gray-700"
+            >
+              Phone
+            </label>
+
+            <div className="relative">
+              <Phone
+                size={18}
+                className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
+              />
+
+              <input
+                id="contact-phone"
+                type="tel"
+                value={phone}
+                onChange={(event) =>
+                  setPhone(event.target.value)
+                }
+                placeholder="Enter your phone number"
+                autoComplete="tel"
+                className="w-full rounded-xl border border-gray-300 bg-white py-3 pl-11 pr-4 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+              />
+            </div>
+          </div>
+
+          {/* ==================================================
+              PICKUP LOCATION
+          ================================================== *
+
+          <div className="relative">
+            <label
+              htmlFor="pickup-location"
+              className="mb-2 block text-sm font-medium text-gray-700"
+            >
+              Pickup Location
+            </label>
+
+            <div className="relative">
+              <MapPin
+                size={18}
+                className="absolute left-4 top-1/2 z-10 -translate-y-1/2 text-blue-600"
+              />
+
+              <input
+                id="pickup-location"
+                type="text"
+                value={pickupInput}
+                onChange={(event) =>
+                  searchLocation(
+                    event.target.value,
+                    "pickup"
+                  )
+                }
+                placeholder="Enter pickup location"
+                autoComplete="off"
+                className="w-full rounded-xl border border-gray-300 bg-white py-3 pl-11 pr-10 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+              />
+
+              {pickupSearching && (
+                <div className="absolute right-4 top-1/2 -translate-y-1/2">
+                  <div className="h-4 w-4 animate-spin rounded-full border-2 border-gray-300 border-t-blue-600" />
+                </div>
+              )}
+            </div>
+
+            {/* PICKUP SUGGESTIONS *
+
+            {pickupSuggestions.length > 0 && (
+              <div className="absolute left-0 right-0 z-50 mt-2 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-xl">
+                {pickupSuggestions.map(
+                  (suggestion) => (
+                    <button
+                      key={suggestion.place_id}
+                      type="button"
+                      onClick={() =>
+                        selectLocation(
+                          suggestion,
+                          "pickup"
+                        )
+                      }
+                      className="flex w-full items-start gap-3 border-b border-gray-100 px-4 py-3 text-left last:border-b-0 hover:bg-gray-50"
+                    >
+                      <MapPin
+                        size={18}
+                        className="mt-0.5 shrink-0 text-blue-600"
+                      />
+
+                      <span className="text-sm text-gray-700">
+                        {suggestion.display_name}
+                      </span>
+                    </button>
+                  )
+                )}
+              </div>
+            )}
+
+            {pickupLocation && (
+              <p className="mt-2 text-xs font-medium text-green-600">
+                ✓ Pickup location selected
+              </p>
+            )}
+          </div>
+
+          {/* ==================================================
+              DROP LOCATION
+          ================================================== *
+
+          <div className="relative">
+            <label
+              htmlFor="drop-location"
+              className="mb-2 block text-sm font-medium text-gray-700"
+            >
+              Drop Location
+            </label>
+
+            <div className="relative">
+              <Navigation
+                size={18}
+                className="absolute left-4 top-1/2 z-10 -translate-y-1/2 text-red-500"
+              />
+
+              <input
+                id="drop-location"
+                type="text"
+                value={dropInput}
+                onChange={(event) =>
+                  searchLocation(
+                    event.target.value,
+                    "drop"
+                  )
+                }
+                placeholder="Enter drop location"
+                autoComplete="off"
+                className="w-full rounded-xl border border-gray-300 bg-white py-3 pl-11 pr-10 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+              />
+
+              {dropSearching && (
+                <div className="absolute right-4 top-1/2 -translate-y-1/2">
+                  <div className="h-4 w-4 animate-spin rounded-full border-2 border-gray-300 border-t-blue-600" />
+                </div>
+              )}
+            </div>
+
+            {/* DROP SUGGESTIONS *
+
+            {dropSuggestions.length > 0 && (
+              <div className="absolute left-0 right-0 z-50 mt-2 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-xl">
+                {dropSuggestions.map(
+                  (suggestion) => (
+                    <button
+                      key={suggestion.place_id}
+                      type="button"
+                      onClick={() =>
+                        selectLocation(
+                          suggestion,
+                          "drop"
+                        )
+                      }
+                      className="flex w-full items-start gap-3 border-b border-gray-100 px-4 py-3 text-left last:border-b-0 hover:bg-gray-50"
+                    >
+                      <Navigation
+                        size={18}
+                        className="mt-0.5 shrink-0 text-red-500"
+                      />
+
+                      <span className="text-sm text-gray-700">
+                        {suggestion.display_name}
+                      </span>
+                    </button>
+                  )
+                )}
+              </div>
+            )}
+
+            {dropLocation && (
+              <p className="mt-2 text-xs font-medium text-green-600">
+                ✓ Drop location selected
+              </p>
+            )}
+          </div>
+
+          {/* ==================================================
+              DATE
+          ================================================== *
+
+          <div>
+            <label
+              htmlFor="pickup-date"
+              className="mb-2 block text-sm font-medium text-gray-700"
+            >
+              Pickup Date
+            </label>
+
+            <div className="relative">
+              <CalendarDays
+                size={18}
+                className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
+              />
+
+              <input
+                id="pickup-date"
+                type="text"
+                value={pickupDate}
+                readOnly
+                placeholder="Pickup date"
+                className="w-full rounded-xl border border-gray-300 bg-gray-50 py-3 pl-11 pr-4 text-sm outline-none"
+              />
+            </div>
+          </div>
+
+          {/* ==================================================
+              TIME
+          ================================================== *
+
+          <div>
+            <label
+              htmlFor="pickup-time"
+              className="mb-2 block text-sm font-medium text-gray-700"
+            >
+              Pickup Time
+            </label>
+
+            <div className="relative">
+              <Clock3
+                size={18}
+                className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
+              />
+
+              <input
+                id="pickup-time"
+                type="text"
+                value={pickupTime}
+                readOnly
+                placeholder="Pickup time"
+                className="w-full rounded-xl border border-gray-300 bg-gray-50 py-3 pl-11 pr-4 text-sm outline-none"
+              />
+            </div>
+          </div>
+
+          {/* ==================================================
+              BOOKING SUMMARY
+          ================================================== *
+
+          <div className="rounded-2xl border border-gray-200 bg-gray-50 p-5">
+            <h3 className="mb-4 text-lg font-semibold text-gray-900">
+              Fare Details
+            </h3>
+
+            <div className="space-y-3 text-sm">
+              {/* VEHICLE TYPE *
+
+              <div className="flex items-center justify-between gap-4">
+                <span className="text-gray-500">
+                  Vehicle Type
+                </span>
+
+                <span className="font-semibold text-gray-900">
+                  {vehicleType || "Not selected"}
+                </span>
+              </div>
+
+              {/* PASSENGERS *
+
+              <div className="flex items-center justify-between gap-4">
+                <span className="text-gray-500">
+                  Passengers
+                </span>
+
+                <span className="font-semibold text-gray-900">
+                  {passengers}
+                </span>
+              </div>
+
+              {/* DISTANCE *
+
+              <div className="flex items-center justify-between gap-4">
+                <span className="text-gray-500">
+                  Distance
+                </span>
+
+                <span className="font-semibold text-gray-900">
+                  {calculatingRoute
+                    ? "Calculating..."
+                    : distanceKm !== null
+                    ? `${distanceKm.toFixed(2)} km`
+                    : "Select locations"}
+                </span>
+              </div>
+
+              {/* FARE *
+
+              <div className="flex items-center justify-between gap-4 border-t border-gray-200 pt-3">
+                <span className="font-semibold text-gray-700">
+                  Estimated Fare
+                </span>
+
+                <span className="text-lg font-bold text-blue-600">
+                  {calculatingRoute
+                    ? "Calculating..."
+                    : estimatedFare !== null
+                    ? `₹${estimatedFare}`
+                    : "—"}
+                </span>
+              </div>
+
+              {/* PAYMENT *
+
+              <div className="flex items-center justify-between gap-4">
+                <span className="text-gray-500">
+                  Payment Method
+                </span>
+
+                <span className="font-semibold text-gray-900">
+                  {paymentMethod || "Not selected"}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* ==================================================
+              MESSAGE
+          ================================================== *
+
+          <div>
+            <div className="mb-2 flex items-center justify-between">
+              <label
+                htmlFor="contact-message"
+                className="text-sm font-medium text-gray-700"
+              >
+                Additional Message
+              </label>
+
+              <span className="text-xs text-gray-500">
+                {messageLength}/{MAX_MESSAGE_LENGTH}
+              </span>
+            </div>
+
+            <textarea
+              id="contact-message"
+              value={message}
+              maxLength={MAX_MESSAGE_LENGTH}
+              rows={4}
+              onChange={(event) => {
+                setMessage(event.target.value);
+                setMessageLength(
+                  event.target.value.length
+                );
+              }}
+              placeholder="Enter any additional message..."
+              className="w-full resize-none rounded-xl border border-gray-300 bg-white px-4 py-3 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+            />
+          </div>
+
+          {/* ==================================================
+              SUBMIT
+          ================================================== *
+
+          <button
+            type="submit"
+            disabled={loading || calculatingRoute}
+            className="w-full rounded-xl bg-blue-600 px-5 py-3.5 text-sm font-semibold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            {loading
+              ? "Sending Booking..."
+              : calculatingRoute
+              ? "Calculating Fare..."
+              : "Submit Booking"}
+          </button>
+        </form>
+      </div>
+    </section>
+  );
+}
+  */}
