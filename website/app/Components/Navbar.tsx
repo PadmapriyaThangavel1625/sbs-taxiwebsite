@@ -5,15 +5,9 @@ import {
   Menu,
   X,
   User,
-  History,
-  MapPin,
-  Wallet,
-  UserCircle,
   LogOut,
   ChevronDown,
-  LayoutDashboard,
   CarFront,
-  Tag,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
@@ -84,11 +78,10 @@ export default function Navbar() {
   const [profileOpen, setProfileOpen] = useState(false);
 
   /*
-   * IMPORTANT:
-   * Keep mounted=false during the first render.
+   * Prevent hydration mismatch.
    *
-   * This makes the server HTML and the first browser HTML
-   * identical. localStorage is checked only after hydration.
+   * localStorage is only accessed after the component
+   * has mounted in the browser.
    */
   const [mounted, setMounted] = useState(false);
 
@@ -126,16 +119,16 @@ export default function Navbar() {
       }
     };
 
-    /* Initial authentication check */
+    /* Initial check */
     checkUser();
 
-    /* Cross-tab authentication changes */
+    /* Cross-tab authentication */
     window.addEventListener(
       "storage",
       checkUser
     );
 
-    /* Same-tab authentication changes */
+    /* Same-tab authentication */
     window.addEventListener(
       "sbs-auth-change",
       checkUser
@@ -162,13 +155,10 @@ export default function Navbar() {
     if (!open) {
       document.body.style.overflow = "";
       document.body.style.overscrollBehavior = "";
+
       return;
     }
 
-    /*
-     * Prevent the page behind the mobile menu from scrolling.
-     * The menu itself remains scrollable.
-     */
     document.body.style.overflow = "hidden";
     document.body.style.overscrollBehavior = "none";
 
@@ -179,7 +169,7 @@ export default function Navbar() {
   }, [open]);
 
   /* =========================================================
-     CLOSE MENU WHEN ROUTE CHANGES
+     CLOSE MENUS WHEN ROUTE CHANGES
   ========================================================= */
 
   useEffect(() => {
@@ -203,7 +193,7 @@ export default function Navbar() {
   };
 
   /* =========================================================
-     CLOSE MENUS
+     CLOSE MENU
   ========================================================= */
 
   const closeMenu = () => {
@@ -217,10 +207,6 @@ export default function Navbar() {
 
   const handleSignOut = () => {
     try {
-      /* -----------------------------------------------------
-         REMOVE ALL SBS AUTH DATA
-      ----------------------------------------------------- */
-
       const authKeys = [
         "sbs_user",
         "sbs_logged_in",
@@ -235,26 +221,17 @@ export default function Navbar() {
         window.localStorage.removeItem(key);
       });
 
-      /* -----------------------------------------------------
-         CLEAR STATE IMMEDIATELY
-      ----------------------------------------------------- */
-
+      /* Clear state */
       setUser(null);
       setProfileOpen(false);
       setOpen(false);
 
-      /* -----------------------------------------------------
-         NOTIFY OTHER COMPONENTS
-      ----------------------------------------------------- */
-
+      /* Notify application */
       window.dispatchEvent(
         new Event("sbs-auth-change")
       );
 
-      /* -----------------------------------------------------
-         GO TO HOME PAGE
-      ----------------------------------------------------- */
-
+      /* Go home */
       router.replace("/");
     } catch (error) {
       console.error(
@@ -262,9 +239,6 @@ export default function Navbar() {
         error
       );
 
-      /*
-       * Absolute fallback if router navigation fails.
-       */
       window.location.replace("/");
     }
   };
@@ -284,19 +258,6 @@ export default function Navbar() {
      AUTH STATE
   ========================================================= */
 
-  /*
-   * During SSR and the first client render:
-   *
-   * mounted = false
-   *
-   * Therefore user-dependent UI is NOT rendered.
-   *
-   * After hydration:
-   *
-   * mounted = true
-   *
-   * Then localStorage user information appears.
-   */
   const isAuthenticated =
     mounted && !!user;
 
@@ -308,6 +269,10 @@ export default function Navbar() {
     isAuthenticated
       ? passengerLinks
       : navbar.links;
+
+  /* =========================================================
+     RENDER
+  ========================================================= */
 
   return (
     <header
@@ -325,7 +290,7 @@ export default function Navbar() {
       "
     >
       {/* =====================================================
-          NAVBAR MAIN CONTAINER
+          NAVBAR MAIN
       ====================================================== */}
 
       <div
@@ -469,42 +434,12 @@ export default function Navbar() {
           </Link>
 
           {/* =================================================
-              SIGN IN
-          ================================================== */}
-
-          {!isAuthenticated && (
-            <Link
-              href="/signin"
-              className="
-                inline-flex
-                shrink-0
-                items-center
-                justify-center
-                rounded-lg
-                border
-                border-white/20
-                px-4
-                py-2.5
-                font-[family-name:var(--font-jakarta)]
-                text-sm
-                font-semibold
-                !text-[var(--text-primary)]
-                transition-all
-                duration-200
-                hover:border-[var(--secondary)]
-                hover:text-[var(--secondary)]
-              "
-            >
-              Sign In
-            </Link>
-          )}
-
-          {/* =================================================
               LOGGED IN USER
           ================================================== */}
 
           {isAuthenticated && (
             <div className="relative shrink-0">
+
               {/* USER BUTTON */}
 
               <button
@@ -533,6 +468,8 @@ export default function Navbar() {
                 aria-expanded={profileOpen}
                 aria-haspopup="menu"
               >
+                {/* USER ICON */}
+
                 <span
                   className="
                     flex
@@ -549,9 +486,11 @@ export default function Navbar() {
                   <User className="h-4 w-4" />
                 </span>
 
+                {/* FIRST NAME */}
+
                 <span
                   className="
-                    max-w-[100px]
+                    max-w-[110px]
                     truncate
                     font-[family-name:var(--font-jakarta)]
                     text-sm
@@ -560,6 +499,8 @@ export default function Navbar() {
                 >
                   {firstName}
                 </span>
+
+                {/* ARROW */}
 
                 <ChevronDown
                   className={`
@@ -577,7 +518,12 @@ export default function Navbar() {
               </button>
 
               {/* =================================================
-                  PROFILE DROPDOWN
+                  SIMPLE PROFILE DROPDOWN
+                  
+                  ONLY:
+                  - Name
+                  - Email
+                  - Sign Out
               ================================================== */}
 
               {profileOpen && (
@@ -597,23 +543,25 @@ export default function Navbar() {
                     shadow-xl
                   "
                 >
-                  {/* USER INFO */}
+                  {/* =========================================
+                      USER INFORMATION
+                  ========================================== */}
 
                   <div
                     className="
-                      border-b
-                      border-slate-100
-                      bg-slate-50
                       px-4
-                      py-4
+                      py-5
                     "
                   >
                     <div className="flex items-center gap-3">
+
+                      {/* USER ICON */}
+
                       <div
                         className="
                           flex
-                          h-10
-                          w-10
+                          h-11
+                          w-11
                           shrink-0
                           items-center
                           justify-center
@@ -625,7 +573,10 @@ export default function Navbar() {
                         <User className="h-5 w-5" />
                       </div>
 
+                      {/* NAME + EMAIL */}
+
                       <div className="min-w-0">
+
                         <p
                           className="
                             truncate
@@ -650,151 +601,21 @@ export default function Navbar() {
                             {user.email}
                           </p>
                         )}
+
                       </div>
                     </div>
                   </div>
 
-                  {/* DASHBOARD */}
+                  {/* =========================================
+                      SIGN OUT ONLY
+                  ========================================== */}
 
-                  <Link
-                    href="/passenger/dashboard"
-                    onClick={closeMenu}
+                  <div
                     className="
-                      flex
-                      items-center
-                      gap-3
-                      px-4
-                      py-3
-                      text-sm
-                      font-medium
-                      text-slate-700
-                      transition
-                      hover:bg-slate-50
-                      hover:text-[var(--primary)]
+                      border-t
+                      border-slate-100
                     "
                   >
-                    <LayoutDashboard className="h-4 w-4" />
-                    Dashboard
-                  </Link>
-
-                  {/* HISTORY */}
-
-                  <Link
-                    href="/passenger/history"
-                    onClick={closeMenu}
-                    className="
-                      flex
-                      items-center
-                      gap-3
-                      px-4
-                      py-3
-                      text-sm
-                      font-medium
-                      text-slate-700
-                      transition
-                      hover:bg-slate-50
-                      hover:text-[var(--primary)]
-                    "
-                  >
-                    <History className="h-4 w-4" />
-                    My History
-                  </Link>
-
-                  {/* SAVED PLACES */}
-
-                  <Link
-                    href="/passenger/saved-place"
-                    onClick={closeMenu}
-                    className="
-                      flex
-                      items-center
-                      gap-3
-                      px-4
-                      py-3
-                      text-sm
-                      font-medium
-                      text-slate-700
-                      transition
-                      hover:bg-slate-50
-                      hover:text-[var(--primary)]
-                    "
-                  >
-                    <MapPin className="h-4 w-4" />
-                    My Places
-                  </Link>
-
-                  {/* WALLET */}
-
-                  <Link
-                    href="/passenger/wallet"
-                    onClick={closeMenu}
-                    className="
-                      flex
-                      items-center
-                      gap-3
-                      px-4
-                      py-3
-                      text-sm
-                      font-medium
-                      text-slate-700
-                      transition
-                      hover:bg-slate-50
-                      hover:text-[var(--primary)]
-                    "
-                  >
-                    <Wallet className="h-4 w-4" />
-                    Wallet
-                  </Link>
-
-                  {/* PROFILE */}
-
-                  <Link
-                    href="/passenger/profile"
-                    onClick={closeMenu}
-                    className="
-                      flex
-                      items-center
-                      gap-3
-                      px-4
-                      py-3
-                      text-sm
-                      font-medium
-                      text-slate-700
-                      transition
-                      hover:bg-slate-50
-                      hover:text-[var(--primary)]
-                    "
-                  >
-                    <UserCircle className="h-4 w-4" />
-                    Profile
-                  </Link>
-
-                  {/* OFFERS */}
-
-                  <Link
-                    href="/offers"
-                    onClick={closeMenu}
-                    className="
-                      flex
-                      items-center
-                      gap-3
-                      px-4
-                      py-3
-                      text-sm
-                      font-medium
-                      text-slate-700
-                      transition
-                      hover:bg-slate-50
-                      hover:text-[var(--primary)]
-                    "
-                  >
-                    <Tag className="h-4 w-4" />
-                    Offers
-                  </Link>
-
-                  {/* SIGN OUT */}
-
-                  <div className="border-t border-slate-100">
                     <button
                       type="button"
                       onClick={handleSignOut}
@@ -804,7 +625,7 @@ export default function Navbar() {
                         items-center
                         gap-3
                         px-4
-                        py-3
+                        py-3.5
                         text-left
                         text-sm
                         font-semibold
@@ -917,6 +738,8 @@ export default function Navbar() {
         >
           {/* =================================================
               MOBILE USER INFO
+              
+              ONLY NAME + EMAIL
           ================================================== */}
 
           {isAuthenticated && (
@@ -932,6 +755,9 @@ export default function Navbar() {
               "
             >
               <div className="flex items-center gap-3">
+
+                {/* USER ICON */}
+
                 <span
                   className="
                     flex
@@ -948,7 +774,10 @@ export default function Navbar() {
                   <User className="h-5 w-5" />
                 </span>
 
+                {/* NAME + EMAIL */}
+
                 <div className="min-w-0">
+
                   <p
                     className="
                       truncate
@@ -972,6 +801,7 @@ export default function Navbar() {
                       {user.email}
                     </p>
                   )}
+
                 </div>
               </div>
             </div>
@@ -1058,38 +888,6 @@ export default function Navbar() {
             <CarFront className="h-4 w-4" />
             {navbar.booking.name}
           </Link>
-
-          {/* =================================================
-              MOBILE SIGN IN
-          ================================================== */}
-
-          {!isAuthenticated && (
-            <Link
-              href="/signin"
-              onClick={closeMenu}
-              className="
-                mt-2
-                flex
-                w-full
-                items-center
-                justify-center
-                rounded-lg
-                border
-                border-white/20
-                px-5
-                py-3
-                font-[family-name:var(--font-jakarta)]
-                text-sm
-                font-semibold
-                !text-[var(--text-primary)]
-                transition
-                hover:border-[var(--secondary)]
-                hover:text-[var(--secondary)]
-              "
-            >
-              Sign In
-            </Link>
-          )}
 
           {/* =================================================
               MOBILE SIGN OUT
