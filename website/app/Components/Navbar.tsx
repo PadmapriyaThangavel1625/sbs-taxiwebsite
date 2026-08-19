@@ -1,22 +1,191 @@
 "use client";
 
 import Link from "next/link";
-import { Menu, X } from "lucide-react";
-import { useState } from "react";
-import { usePathname } from "next/navigation";
+import {
+  Menu,
+  X,
+  User,
+  History,
+  MapPin,
+  Wallet,
+  UserCircle,
+  LogOut,
+  ChevronDown,
+  LayoutDashboard,
+  CarFront,
+  Tag,
+} from "lucide-react";
+import { useEffect, useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
 
 import Logo from "@/app/Components/Logo";
 import { SBS_TAXI_CONFIG } from "@/config/sbsTaxiConfig";
 
-export default function Navbar() {
-  const [open, setOpen] = useState(false);
-  const pathname = usePathname();
+/* ============================================================
+   TYPES
+============================================================ */
 
-  /* =========================================================
-     CONFIG
-  ========================================================= */
+interface PassengerUser {
+  id?: string | number;
+  name?: string;
+  email?: string;
+  mobile?: string;
+  phone?: string;
+  status?: string;
+}
+
+interface NavigationLink {
+  name: string;
+  href: string;
+}
+
+/* ============================================================
+   PASSENGER NAVIGATION
+============================================================ */
+
+const passengerLinks: NavigationLink[] = [
+  {
+    name: "Dashboard",
+    href: "/passenger/dashboard",
+  },
+  {
+    name: "Wallet",
+    href: "/passenger/wallet",
+  },
+  {
+    name: "My History",
+    href: "/passenger/history",
+  },
+  {
+    name: "My Places",
+    href: "/passenger/saved-place",
+  },
+  {
+    name: "Profile",
+    href: "/passenger/profile",
+  },
+];
+
+/* ============================================================
+   NAVBAR
+============================================================ */
+
+export default function Navbar() {
+  const pathname = usePathname();
+  const router = useRouter();
 
   const navbar = SBS_TAXI_CONFIG.navbar;
+
+  /* =========================================================
+     STATE
+  ========================================================= */
+
+  const [open, setOpen] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
+
+  /*
+   * IMPORTANT:
+   * Keep mounted=false during the first render.
+   *
+   * This makes the server HTML and the first browser HTML
+   * identical. localStorage is checked only after hydration.
+   */
+  const [mounted, setMounted] = useState(false);
+
+  const [user, setUser] =
+    useState<PassengerUser | null>(null);
+
+  /* =========================================================
+     AUTH CHECK
+  ========================================================= */
+
+  useEffect(() => {
+    setMounted(true);
+
+    const checkUser = () => {
+      try {
+        const storedUser =
+          window.localStorage.getItem("sbs_user");
+
+        if (!storedUser) {
+          setUser(null);
+          return;
+        }
+
+        const parsedUser =
+          JSON.parse(storedUser) as PassengerUser;
+
+        setUser(parsedUser);
+      } catch (error) {
+        console.error(
+          "SBS USER CHECK ERROR:",
+          error
+        );
+
+        setUser(null);
+      }
+    };
+
+    /* Initial authentication check */
+    checkUser();
+
+    /* Cross-tab authentication changes */
+    window.addEventListener(
+      "storage",
+      checkUser
+    );
+
+    /* Same-tab authentication changes */
+    window.addEventListener(
+      "sbs-auth-change",
+      checkUser
+    );
+
+    return () => {
+      window.removeEventListener(
+        "storage",
+        checkUser
+      );
+
+      window.removeEventListener(
+        "sbs-auth-change",
+        checkUser
+      );
+    };
+  }, []);
+
+  /* =========================================================
+     MOBILE BODY SCROLL
+  ========================================================= */
+
+  useEffect(() => {
+    if (!open) {
+      document.body.style.overflow = "";
+      document.body.style.overscrollBehavior = "";
+      return;
+    }
+
+    /*
+     * Prevent the page behind the mobile menu from scrolling.
+     * The menu itself remains scrollable.
+     */
+    document.body.style.overflow = "hidden";
+    document.body.style.overscrollBehavior = "none";
+
+    return () => {
+      document.body.style.overflow = "";
+      document.body.style.overscrollBehavior = "";
+    };
+  }, [open]);
+
+  /* =========================================================
+     CLOSE MENU WHEN ROUTE CHANGES
+  ========================================================= */
+
+  useEffect(() => {
+    setOpen(false);
+    setProfileOpen(false);
+  }, [pathname]);
 
   /* =========================================================
      ACTIVE LINK
@@ -27,16 +196,118 @@ export default function Navbar() {
       return pathname === "/";
     }
 
-    return pathname === href || pathname.startsWith(`${href}/`);
+    return (
+      pathname === href ||
+      pathname.startsWith(`${href}/`)
+    );
   };
 
   /* =========================================================
-     CLOSE MOBILE MENU
+     CLOSE MENUS
   ========================================================= */
 
   const closeMenu = () => {
     setOpen(false);
+    setProfileOpen(false);
   };
+
+  /* =========================================================
+     SIGN OUT
+  ========================================================= */
+
+  const handleSignOut = () => {
+    try {
+      /* -----------------------------------------------------
+         REMOVE ALL SBS AUTH DATA
+      ----------------------------------------------------- */
+
+      const authKeys = [
+        "sbs_user",
+        "sbs_logged_in",
+        "sbs_user_id",
+        "sbs_user_name",
+        "sbs_user_mobile",
+        "sbs_user_email",
+        "sbs_user_status",
+      ];
+
+      authKeys.forEach((key) => {
+        window.localStorage.removeItem(key);
+      });
+
+      /* -----------------------------------------------------
+         CLEAR STATE IMMEDIATELY
+      ----------------------------------------------------- */
+
+      setUser(null);
+      setProfileOpen(false);
+      setOpen(false);
+
+      /* -----------------------------------------------------
+         NOTIFY OTHER COMPONENTS
+      ----------------------------------------------------- */
+
+      window.dispatchEvent(
+        new Event("sbs-auth-change")
+      );
+
+      /* -----------------------------------------------------
+         GO TO HOME PAGE
+      ----------------------------------------------------- */
+
+      router.replace("/");
+    } catch (error) {
+      console.error(
+        "SBS SIGN OUT ERROR:",
+        error
+      );
+
+      /*
+       * Absolute fallback if router navigation fails.
+       */
+      window.location.replace("/");
+    }
+  };
+
+  /* =========================================================
+     PASSENGER NAME
+  ========================================================= */
+
+  const passengerName =
+    user?.name || "Passenger";
+
+  const firstName =
+    passengerName.trim().split(/\s+/)[0] ||
+    "Passenger";
+
+  /* =========================================================
+     AUTH STATE
+  ========================================================= */
+
+  /*
+   * During SSR and the first client render:
+   *
+   * mounted = false
+   *
+   * Therefore user-dependent UI is NOT rendered.
+   *
+   * After hydration:
+   *
+   * mounted = true
+   *
+   * Then localStorage user information appears.
+   */
+  const isAuthenticated =
+    mounted && !!user;
+
+  /* =========================================================
+     NAVIGATION LINKS
+  ========================================================= */
+
+  const desktopLinks: NavigationLink[] =
+    isAuthenticated
+      ? passengerLinks
+      : navbar.links;
 
   return (
     <header
@@ -45,6 +316,8 @@ export default function Navbar() {
         top-[var(--promo-bar-height,40px)]
         z-40
         w-full
+        max-w-full
+        overflow-visible
         border-b
         border-white/10
         bg-[var(--primary)]
@@ -52,7 +325,7 @@ export default function Navbar() {
       "
     >
       {/* =====================================================
-          NAVBAR CONTAINER
+          NAVBAR MAIN CONTAINER
       ====================================================== */}
 
       <div
@@ -60,9 +333,12 @@ export default function Navbar() {
           mx-auto
           flex
           h-[72px]
+          w-full
           max-w-7xl
           items-center
           justify-between
+          gap-4
+          overflow-visible
           px-4
           sm:px-6
           lg:px-8
@@ -78,6 +354,7 @@ export default function Navbar() {
           aria-label="SBS Taxi Home"
           className="
             flex
+            min-w-0
             shrink-0
             items-center
           "
@@ -93,20 +370,30 @@ export default function Navbar() {
           aria-label="Main navigation"
           className="
             hidden
+            min-w-0
             items-center
-            gap-6
+            gap-5
             lg:flex
-            xl:gap-8
+            xl:gap-7
           "
         >
-          {navbar.links.map((link) => {
-            const active = isLinkActive(link.href);
+          {/* =================================================
+              NAVIGATION LINKS
+          ================================================== */}
+
+          {desktopLinks.map((link) => {
+            const active =
+              isLinkActive(link.href);
 
             return (
               <Link
                 key={link.href}
                 href={link.href}
-                aria-current={active ? "page" : undefined}
+                aria-current={
+                  active
+                    ? "page"
+                    : undefined
+                }
                 className={`
                   group
                   relative
@@ -120,15 +407,11 @@ export default function Navbar() {
                   ${
                     active
                       ? "!text-[var(--secondary)]"
-                      : "!text-[var(--text-primary)] !hover:text-[var(--secondary)]"
+                      : "!text-[var(--text-primary)] hover:!text-[var(--secondary)]"
                   }
                 `}
               >
                 {link.name}
-
-                {/* =================================================
-                    ACTIVE / HOVER INDICATOR
-                ================================================== */}
 
                 <span
                   className={`
@@ -153,7 +436,7 @@ export default function Navbar() {
           })}
 
           {/* =================================================
-              DESKTOP BOOK A RIDE
+              BOOK A RIDE
           ================================================== */}
 
           <Link
@@ -161,8 +444,10 @@ export default function Navbar() {
             className="
               ml-1
               inline-flex
+              shrink-0
               items-center
               justify-center
+              gap-2
               rounded-lg
               bg-[var(--secondary)]
               px-5
@@ -179,8 +464,363 @@ export default function Navbar() {
               hover:shadow-md
             "
           >
+            <CarFront className="h-4 w-4" />
             {navbar.booking.name}
           </Link>
+
+          {/* =================================================
+              SIGN IN
+          ================================================== */}
+
+          {!isAuthenticated && (
+            <Link
+              href="/signin"
+              className="
+                inline-flex
+                shrink-0
+                items-center
+                justify-center
+                rounded-lg
+                border
+                border-white/20
+                px-4
+                py-2.5
+                font-[family-name:var(--font-jakarta)]
+                text-sm
+                font-semibold
+                !text-[var(--text-primary)]
+                transition-all
+                duration-200
+                hover:border-[var(--secondary)]
+                hover:text-[var(--secondary)]
+              "
+            >
+              Sign In
+            </Link>
+          )}
+
+          {/* =================================================
+              LOGGED IN USER
+          ================================================== */}
+
+          {isAuthenticated && (
+            <div className="relative shrink-0">
+              {/* USER BUTTON */}
+
+              <button
+                type="button"
+                onClick={() =>
+                  setProfileOpen(
+                    (previous) =>
+                      !previous
+                  )
+                }
+                className="
+                  flex
+                  items-center
+                  gap-2
+                  rounded-lg
+                  border
+                  border-white/10
+                  px-3
+                  py-2
+                  text-[var(--text-primary)]
+                  transition-all
+                  duration-200
+                  hover:border-[var(--secondary)]
+                  hover:bg-white/5
+                "
+                aria-expanded={profileOpen}
+                aria-haspopup="menu"
+              >
+                <span
+                  className="
+                    flex
+                    h-8
+                    w-8
+                    shrink-0
+                    items-center
+                    justify-center
+                    rounded-full
+                    bg-[var(--secondary)]
+                    text-black
+                  "
+                >
+                  <User className="h-4 w-4" />
+                </span>
+
+                <span
+                  className="
+                    max-w-[100px]
+                    truncate
+                    font-[family-name:var(--font-jakarta)]
+                    text-sm
+                    font-semibold
+                  "
+                >
+                  {firstName}
+                </span>
+
+                <ChevronDown
+                  className={`
+                    h-4
+                    w-4
+                    transition-transform
+                    duration-200
+                    ${
+                      profileOpen
+                        ? "rotate-180"
+                        : ""
+                    }
+                  `}
+                />
+              </button>
+
+              {/* =================================================
+                  PROFILE DROPDOWN
+              ================================================== */}
+
+              {profileOpen && (
+                <div
+                  className="
+                    absolute
+                    right-0
+                    top-full
+                    z-[100]
+                    mt-3
+                    w-64
+                    overflow-hidden
+                    rounded-2xl
+                    border
+                    border-slate-200
+                    bg-white
+                    shadow-xl
+                  "
+                >
+                  {/* USER INFO */}
+
+                  <div
+                    className="
+                      border-b
+                      border-slate-100
+                      bg-slate-50
+                      px-4
+                      py-4
+                    "
+                  >
+                    <div className="flex items-center gap-3">
+                      <div
+                        className="
+                          flex
+                          h-10
+                          w-10
+                          shrink-0
+                          items-center
+                          justify-center
+                          rounded-full
+                          bg-[var(--secondary)]
+                          text-black
+                        "
+                      >
+                        <User className="h-5 w-5" />
+                      </div>
+
+                      <div className="min-w-0">
+                        <p
+                          className="
+                            truncate
+                            font-[family-name:var(--font-jakarta)]
+                            text-sm
+                            font-bold
+                            text-slate-900
+                          "
+                        >
+                          {passengerName}
+                        </p>
+
+                        {user?.email && (
+                          <p
+                            className="
+                              mt-1
+                              truncate
+                              text-xs
+                              text-slate-500
+                            "
+                          >
+                            {user.email}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* DASHBOARD */}
+
+                  <Link
+                    href="/passenger/dashboard"
+                    onClick={closeMenu}
+                    className="
+                      flex
+                      items-center
+                      gap-3
+                      px-4
+                      py-3
+                      text-sm
+                      font-medium
+                      text-slate-700
+                      transition
+                      hover:bg-slate-50
+                      hover:text-[var(--primary)]
+                    "
+                  >
+                    <LayoutDashboard className="h-4 w-4" />
+                    Dashboard
+                  </Link>
+
+                  {/* HISTORY */}
+
+                  <Link
+                    href="/passenger/history"
+                    onClick={closeMenu}
+                    className="
+                      flex
+                      items-center
+                      gap-3
+                      px-4
+                      py-3
+                      text-sm
+                      font-medium
+                      text-slate-700
+                      transition
+                      hover:bg-slate-50
+                      hover:text-[var(--primary)]
+                    "
+                  >
+                    <History className="h-4 w-4" />
+                    My History
+                  </Link>
+
+                  {/* SAVED PLACES */}
+
+                  <Link
+                    href="/passenger/saved-place"
+                    onClick={closeMenu}
+                    className="
+                      flex
+                      items-center
+                      gap-3
+                      px-4
+                      py-3
+                      text-sm
+                      font-medium
+                      text-slate-700
+                      transition
+                      hover:bg-slate-50
+                      hover:text-[var(--primary)]
+                    "
+                  >
+                    <MapPin className="h-4 w-4" />
+                    My Places
+                  </Link>
+
+                  {/* WALLET */}
+
+                  <Link
+                    href="/passenger/wallet"
+                    onClick={closeMenu}
+                    className="
+                      flex
+                      items-center
+                      gap-3
+                      px-4
+                      py-3
+                      text-sm
+                      font-medium
+                      text-slate-700
+                      transition
+                      hover:bg-slate-50
+                      hover:text-[var(--primary)]
+                    "
+                  >
+                    <Wallet className="h-4 w-4" />
+                    Wallet
+                  </Link>
+
+                  {/* PROFILE */}
+
+                  <Link
+                    href="/passenger/profile"
+                    onClick={closeMenu}
+                    className="
+                      flex
+                      items-center
+                      gap-3
+                      px-4
+                      py-3
+                      text-sm
+                      font-medium
+                      text-slate-700
+                      transition
+                      hover:bg-slate-50
+                      hover:text-[var(--primary)]
+                    "
+                  >
+                    <UserCircle className="h-4 w-4" />
+                    Profile
+                  </Link>
+
+                  {/* OFFERS */}
+
+                  <Link
+                    href="/offers"
+                    onClick={closeMenu}
+                    className="
+                      flex
+                      items-center
+                      gap-3
+                      px-4
+                      py-3
+                      text-sm
+                      font-medium
+                      text-slate-700
+                      transition
+                      hover:bg-slate-50
+                      hover:text-[var(--primary)]
+                    "
+                  >
+                    <Tag className="h-4 w-4" />
+                    Offers
+                  </Link>
+
+                  {/* SIGN OUT */}
+
+                  <div className="border-t border-slate-100">
+                    <button
+                      type="button"
+                      onClick={handleSignOut}
+                      className="
+                        flex
+                        w-full
+                        items-center
+                        gap-3
+                        px-4
+                        py-3
+                        text-left
+                        text-sm
+                        font-semibold
+                        text-red-600
+                        transition
+                        hover:bg-red-50
+                      "
+                    >
+                      <LogOut className="h-4 w-4" />
+                      Sign Out
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
         </nav>
 
         {/* ===================================================
@@ -189,11 +829,16 @@ export default function Navbar() {
 
         <button
           type="button"
-          onClick={() => setOpen((prev) => !prev)}
+          onClick={() =>
+            setOpen(
+              (previous) => !previous
+            )
+          }
           className="
             flex
             h-10
             w-10
+            shrink-0
             items-center
             justify-center
             rounded-lg
@@ -231,48 +876,136 @@ export default function Navbar() {
           left-0
           right-0
           top-full
+          z-[90]
+          w-full
+          max-w-full
           overflow-hidden
           border-t
           border-white/10
-          !bg-[var(--primary)]
+          bg-[var(--primary)]
           shadow-lg
-          transition-all
+          transition-[max-height,opacity,visibility]
           duration-300
           lg:hidden
           ${
             open
-              ? "visible max-h-[700px] opacity-100"
+              ? "visible max-h-[calc(100dvh-var(--promo-bar-height,40px)-72px)] opacity-100"
               : "invisible max-h-0 opacity-0"
           }
         `}
       >
+        {/* ===================================================
+            MOBILE SCROLL AREA
+        ==================================================== */}
+
         <div
           className="
-            mx-auto
-            max-w-7xl
+            max-h-[calc(100dvh-var(--promo-bar-height,40px)-72px)]
+            w-full
+            overflow-x-hidden
+            overflow-y-auto
+            overscroll-contain
             px-4
             py-3
+            pb-5
             sm:px-6
           "
+          style={{
+            scrollbarWidth: "none",
+            msOverflowStyle: "none",
+          }}
         >
+          {/* =================================================
+              MOBILE USER INFO
+          ================================================== */}
+
+          {isAuthenticated && (
+            <div
+              className="
+                mb-3
+                w-full
+                rounded-xl
+                border
+                border-white/10
+                bg-white/5
+                p-4
+              "
+            >
+              <div className="flex items-center gap-3">
+                <span
+                  className="
+                    flex
+                    h-10
+                    w-10
+                    shrink-0
+                    items-center
+                    justify-center
+                    rounded-full
+                    bg-[var(--secondary)]
+                    text-black
+                  "
+                >
+                  <User className="h-5 w-5" />
+                </span>
+
+                <div className="min-w-0">
+                  <p
+                    className="
+                      truncate
+                      text-sm
+                      font-bold
+                      text-[var(--text-primary)]
+                    "
+                  >
+                    {passengerName}
+                  </p>
+
+                  {user?.email && (
+                    <p
+                      className="
+                        mt-0.5
+                        truncate
+                        text-xs
+                        text-white/60
+                      "
+                    >
+                      {user.email}
+                    </p>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* =================================================
               MOBILE LINKS
           ================================================== */}
 
           <nav
             aria-label="Mobile navigation"
-            className="flex flex-col"
+            className="
+              flex
+              w-full
+              flex-col
+            "
           >
-            {navbar.links.map((link) => {
-              const active = isLinkActive(link.href);
+            {desktopLinks.map((link) => {
+              const active =
+                isLinkActive(link.href);
 
               return (
                 <Link
                   key={link.href}
                   href={link.href}
                   onClick={closeMenu}
-                  aria-current={active ? "page" : undefined}
+                  aria-current={
+                    active
+                      ? "page"
+                      : undefined
+                  }
                   className={`
+                    block
+                    w-full
                     border-b
                     border-white/10
                     py-3.5
@@ -283,7 +1016,7 @@ export default function Navbar() {
                     ${
                       active
                         ? "font-bold !text-[var(--secondary)]"
-                        : "font-medium !text-[var(--text-primary)] !hover:text-[var(--secondary)]"
+                        : "font-medium !text-[var(--text-primary)] hover:!text-[var(--secondary)]"
                     }
                   `}
                 >
@@ -306,6 +1039,7 @@ export default function Navbar() {
               w-full
               items-center
               justify-center
+              gap-2
               rounded-lg
               bg-[var(--secondary)]
               px-5
@@ -319,11 +1053,76 @@ export default function Navbar() {
               duration-200
               hover:-translate-y-0.5
               hover:bg-[var(--secondary-dark)]
-              hover:shadow-md
             "
           >
+            <CarFront className="h-4 w-4" />
             {navbar.booking.name}
           </Link>
+
+          {/* =================================================
+              MOBILE SIGN IN
+          ================================================== */}
+
+          {!isAuthenticated && (
+            <Link
+              href="/signin"
+              onClick={closeMenu}
+              className="
+                mt-2
+                flex
+                w-full
+                items-center
+                justify-center
+                rounded-lg
+                border
+                border-white/20
+                px-5
+                py-3
+                font-[family-name:var(--font-jakarta)]
+                text-sm
+                font-semibold
+                !text-[var(--text-primary)]
+                transition
+                hover:border-[var(--secondary)]
+                hover:text-[var(--secondary)]
+              "
+            >
+              Sign In
+            </Link>
+          )}
+
+          {/* =================================================
+              MOBILE SIGN OUT
+          ================================================== */}
+
+          {isAuthenticated && (
+            <button
+              type="button"
+              onClick={handleSignOut}
+              className="
+                mt-2
+                mb-1
+                flex
+                w-full
+                items-center
+                justify-center
+                gap-2
+                rounded-lg
+                border
+                border-red-400/20
+                px-5
+                py-3
+                text-sm
+                font-semibold
+                text-red-300
+                transition
+                hover:bg-red-500/10
+              "
+            >
+              <LogOut className="h-4 w-4" />
+              Sign Out
+            </button>
+          )}
         </div>
       </div>
     </header>

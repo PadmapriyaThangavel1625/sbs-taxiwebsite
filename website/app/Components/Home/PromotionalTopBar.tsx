@@ -1,23 +1,133 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   Tag,
   X,
   Phone,
   UserPlus,
   LogIn,
+  LogOut,
+  User,
 } from "lucide-react";
 
 export default function PromotionalTopBar() {
+  const router = useRouter();
+
   const [open, setOpen] = useState(true);
+  const [loggedIn, setLoggedIn] = useState(false);
+  const [userName, setUserName] = useState("");
+
+  // ============================================================
+  // CHECK LOGIN STATUS
+  // ============================================================
+
+  useEffect(() => {
+    function checkLogin() {
+      if (typeof window === "undefined") return;
+
+      const isLoggedIn =
+        localStorage.getItem("sbs_logged_in") === "true";
+
+      const savedName =
+        localStorage.getItem("sbs_user_name") || "";
+
+      setLoggedIn(isLoggedIn);
+      setUserName(savedName);
+    }
+
+    // Initial check
+    checkLogin();
+
+    // ----------------------------------------------------------
+    // Listen for login/logout changes
+    // ----------------------------------------------------------
+
+    window.addEventListener("storage", checkLogin);
+
+    // Custom event for same-tab login/logout
+    window.addEventListener(
+      "sbs-auth-changed",
+      checkLogin
+    );
+
+    return () => {
+      window.removeEventListener(
+        "storage",
+        checkLogin
+      );
+
+      window.removeEventListener(
+        "sbs-auth-changed",
+        checkLogin
+      );
+    };
+  }, []);
+
+  // ============================================================
+  // SIGN OUT
+  // ============================================================
+
+  function handleSignOut() {
+    // ----------------------------------------------------------
+    // REMOVE LOGIN DATA
+    // ----------------------------------------------------------
+
+    localStorage.removeItem("sbs_user");
+    localStorage.removeItem("sbs_logged_in");
+
+    localStorage.removeItem("sbs_user_id");
+    localStorage.removeItem("sbs_user_name");
+    localStorage.removeItem("sbs_user_mobile");
+    localStorage.removeItem("sbs_user_email");
+    localStorage.removeItem("sbs_user_status");
+
+    // ----------------------------------------------------------
+    // UPDATE TOP BAR IMMEDIATELY
+    // ----------------------------------------------------------
+
+    setLoggedIn(false);
+    setUserName("");
+
+    // ----------------------------------------------------------
+    // INFORM OTHER COMPONENTS
+    // ----------------------------------------------------------
+
+    window.dispatchEvent(
+      new Event("sbs-auth-changed")
+    );
+
+    // ----------------------------------------------------------
+    // GO BACK TO SBS TAXI WEBSITE
+    // ----------------------------------------------------------
+
+    router.push("/");
+  }
+
+  // ============================================================
+  // CLOSE
+  // ============================================================
 
   if (!open) return null;
 
+  // ============================================================
+  // PAGE
+  // ============================================================
+
   return (
     <div className="w-full bg-[var(--secondary)] text-white">
-      <div className="mx-auto w-full max-w-7xl px-2 sm:px-6 lg:px-8">
+      <div
+        className="
+          mx-auto
+          w-full
+          max-w-7xl
+          px-2
+          sm:px-6
+          lg:px-8
+        "
+      >
         <div
           className="
             flex
@@ -176,78 +286,162 @@ export default function PromotionalTopBar() {
             </Link>
 
             {/* =================================================
-                SIGN IN
+                LOGGED IN USER
             ================================================== */}
 
-            <Link
-              href="/booking"
-              onClick={() => setOpen(false)}
-              className="
-                flex
-                h-7
-                shrink-0
-                items-center
-                justify-center
-                gap-1
-                rounded-md
-                border
-                border-[var(--primary)]
-                bg-[var(--primary)]
-                px-2
-                text-[9px]
-                font-bold
-                text-[var(--text-primary)]
-                transition-all
-                duration-200
-                hover:shadow-md
-                sm:h-9
-                sm:gap-1.5
-                sm:rounded-lg
-                sm:px-3
-                sm:text-xs
-              "
-            >
-              <LogIn className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
+            {loggedIn ? (
+              <>
+                {/* USER */}
 
-              <span>Sign In</span>
-            </Link>
+                <Link
+                  href="/user/dashboard"
+                  className="
+                    flex
+                    h-7
+                    max-w-[120px]
+                    shrink-0
+                    items-center
+                    justify-center
+                    gap-1
+                    rounded-md
+                    border
+                    border-[var(--primary)]
+                    bg-[var(--primary)]
+                    px-2
+                    text-[9px]
+                    font-bold
+                    text-[var(--text-primary)]
+                    transition-all
+                    duration-200
+                    hover:-translate-y-0.5
+                    hover:shadow-md
+                    sm:h-9
+                    sm:max-w-[180px]
+                    sm:gap-1.5
+                    sm:rounded-lg
+                    sm:px-3
+                    sm:text-xs
+                  "
+                >
+                  <User className="h-3 w-3 shrink-0 sm:h-3.5 sm:w-3.5" />
 
-            {/* =================================================
-                SIGN UP
-            ================================================== */}
+                  <span className="truncate">
+                    {userName || "My Account"}
+                  </span>
+                </Link>
 
-            <Link
-              href="/booking"
-              onClick={() => setOpen(false)}
-              className="
-                flex
-                h-7
-                shrink-0
-                items-center
-                justify-center
-                gap-1
-                rounded-md
-                bg-[var(--primary)]
-                px-2
-                text-[9px]
-                font-bold
-                text-[var(--secondary)]
-                shadow-sm
-                transition-all
-                duration-200
-                hover:-translate-y-0.5
-                hover:shadow-md
-                sm:h-9
-                sm:gap-1.5
-                sm:rounded-lg
-                sm:px-3
-                sm:text-xs
-              "
-            >
-              <UserPlus className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
+                {/* SIGN OUT */}
 
-              <span>Sign Up</span>
-            </Link>
+                <button
+                  type="button"
+                  onClick={handleSignOut}
+                  className="
+                    flex
+                    h-7
+                    shrink-0
+                    items-center
+                    justify-center
+                    gap-1
+                    rounded-md
+                    border
+                    border-white/30
+                    bg-[var(--primary)]
+                    px-2
+                    text-[9px]
+                    font-bold
+                    text-[var(--text-primary)]
+                    transition-all
+                    duration-200
+                    hover:[var(--primary-dark)]
+                    sm:h-9
+                    sm:gap-1.5
+                    sm:rounded-lg
+                    sm:px-3
+                    sm:text-xs
+                  "
+                >
+                  <LogOut className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
+
+                  <span>Sign Out</span>
+                </button>
+              </>
+            ) : (
+              <>
+                {/* =================================================
+                    SIGN IN
+                ================================================== */}
+
+                <Link
+                  href="/signin"
+                  onClick={() => setOpen(false)}
+                  className="
+                    flex
+                    h-7
+                    shrink-0
+                    items-center
+                    justify-center
+                    gap-1
+                    rounded-md
+                    border
+                    border-[var(--primary)]
+                    bg-[var(--primary)]
+                    px-2
+                    text-[9px]
+                    font-bold
+                    text-[var(--text-primary)]
+                    transition-all
+                    duration-200
+                    hover:shadow-md
+                    sm:h-9
+                    sm:gap-1.5
+                    sm:rounded-lg
+                    sm:px-3
+                    sm:text-xs
+                  "
+                >
+                  <LogIn className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
+
+                  <span>Sign In</span>
+                </Link>
+
+                {/* =================================================
+                    SIGN UP
+                ================================================== */}
+
+                <Link
+                  href="/signup"
+                  onClick={() => setOpen(false)}
+                  className="
+                    flex
+                    h-7
+                    shrink-0
+                    items-center
+                    justify-center
+                    gap-1
+                    rounded-md
+                    bg-[var(--primary)]
+                    px-2
+                    text-[9px]
+                    font-bold
+                    text-[var(--secondary)]
+                    shadow-sm
+                    transition-all
+                    duration-200
+                    hover:-translate-y-0.5
+                    hover:shadow-md
+                    sm:h-9
+                    sm:gap-1.5
+                    sm:rounded-lg
+                    sm:px-3
+                    sm:text-xs
+                  "
+                >
+                  <UserPlus className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
+
+                  <span>Sign Up</span>
+                </Link>
+              </>
+            )}
 
             {/* =================================================
                 CLOSE
