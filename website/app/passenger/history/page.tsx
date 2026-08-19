@@ -732,7 +732,7 @@ export default function PassengerHistoryPage() {
               </div>
 
               <Link
-                href="/booking"
+                href="/passenger/booking-ride"
                 className="
                   inline-flex
                   items-center

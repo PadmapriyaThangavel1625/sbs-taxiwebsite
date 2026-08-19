@@ -254,7 +254,7 @@ export default function PassengerDashboard() {
                 whileTap={{ scale: 0.98 }}
               >
                 <Link
-                  href="/booking"
+                  href="/passenger/booking-ride"
                   className="
                     inline-flex
                     w-full
@@ -387,7 +387,7 @@ export default function PassengerDashboard() {
             "
           >
             <QuickAction
-              href="/booking"
+              href="/passenger/booking-ride"
               icon={<CarFront className="h-6 w-6" />}
               title="Book a Ride"
               description="Get a taxi instantly"

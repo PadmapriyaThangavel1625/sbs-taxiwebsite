@@ -80,8 +80,7 @@ export default function Navbar() {
   /*
    * Prevent hydration mismatch.
    *
-   * localStorage is only accessed after the component
-   * has mounted in the browser.
+   * localStorage is only accessed after mounting.
    */
   const [mounted, setMounted] = useState(false);
 
@@ -119,16 +118,19 @@ export default function Navbar() {
       }
     };
 
-    /* Initial check */
     checkUser();
 
-    /* Cross-tab authentication */
+    /*
+     * Cross-tab authentication changes.
+     */
     window.addEventListener(
       "storage",
       checkUser
     );
 
-    /* Same-tab authentication */
+    /*
+     * Same-tab authentication changes.
+     */
     window.addEventListener(
       "sbs-auth-change",
       checkUser
@@ -221,17 +223,20 @@ export default function Navbar() {
         window.localStorage.removeItem(key);
       });
 
-      /* Clear state */
       setUser(null);
       setProfileOpen(false);
       setOpen(false);
 
-      /* Notify application */
+      /*
+       * Notify other components in the same tab.
+       */
       window.dispatchEvent(
         new Event("sbs-auth-change")
       );
 
-      /* Go home */
+      /*
+       * Return to home.
+       */
       router.replace("/");
     } catch (error) {
       console.error(
@@ -269,6 +274,21 @@ export default function Navbar() {
     isAuthenticated
       ? passengerLinks
       : navbar.links;
+
+  /* =========================================================
+     BOOKING URL
+     
+     SIGNED IN:
+       /passenger/booking-ride
+
+     SIGNED OUT:
+       normal website booking URL
+  ========================================================= */
+
+  const bookingHref =
+    isAuthenticated
+      ? "/passenger/booking-ride"
+      : navbar.booking.href;
 
   /* =========================================================
      RENDER
@@ -402,10 +422,16 @@ export default function Navbar() {
 
           {/* =================================================
               BOOK A RIDE
+              
+              AUTHENTICATED:
+              /passenger/booking-ride
+              
+              NOT AUTHENTICATED:
+              navbar.booking.href
           ================================================== */}
 
           <Link
-            href={navbar.booking.href}
+            href={bookingHref}
             className="
               ml-1
               inline-flex
@@ -430,6 +456,7 @@ export default function Navbar() {
             "
           >
             <CarFront className="h-4 w-4" />
+
             {navbar.booking.name}
           </Link>
 
@@ -518,12 +545,7 @@ export default function Navbar() {
               </button>
 
               {/* =================================================
-                  SIMPLE PROFILE DROPDOWN
-                  
-                  ONLY:
-                  - Name
-                  - Email
-                  - Sign Out
+                  PROFILE DROPDOWN
               ================================================== */}
 
               {profileOpen && (
@@ -543,9 +565,7 @@ export default function Navbar() {
                     shadow-xl
                   "
                 >
-                  {/* =========================================
-                      USER INFORMATION
-                  ========================================== */}
+                  {/* USER INFORMATION */}
 
                   <div
                     className="
@@ -606,9 +626,7 @@ export default function Navbar() {
                     </div>
                   </div>
 
-                  {/* =========================================
-                      SIGN OUT ONLY
-                  ========================================== */}
+                  {/* SIGN OUT */}
 
                   <div
                     className="
@@ -635,6 +653,7 @@ export default function Navbar() {
                       "
                     >
                       <LogOut className="h-4 w-4" />
+
                       Sign Out
                     </button>
                   </div>
@@ -738,8 +757,6 @@ export default function Navbar() {
         >
           {/* =================================================
               MOBILE USER INFO
-              
-              ONLY NAME + EMAIL
           ================================================== */}
 
           {isAuthenticated && (
@@ -858,10 +875,16 @@ export default function Navbar() {
 
           {/* =================================================
               MOBILE BOOK A RIDE
+              
+              AUTHENTICATED:
+              /passenger/booking-ride
+              
+              NOT AUTHENTICATED:
+              navbar.booking.href
           ================================================== */}
 
           <Link
-            href={navbar.booking.href}
+            href={bookingHref}
             onClick={closeMenu}
             className="
               mt-4
@@ -886,6 +909,7 @@ export default function Navbar() {
             "
           >
             <CarFront className="h-4 w-4" />
+
             {navbar.booking.name}
           </Link>
 
@@ -918,6 +942,7 @@ export default function Navbar() {
               "
             >
               <LogOut className="h-4 w-4" />
+
               Sign Out
             </button>
           )}

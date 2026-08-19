@@ -8,13 +8,15 @@ import nodemailer from "nodemailer";
 interface Destination {
   name?: string;
   location?: string;
-  fare?: number;
+  fare?: number | string;
   custom?: boolean;
 }
 
 interface TaxiBookingBody {
   bookingType?: string;
 
+  /* Passenger */
+  user_id?: number | string;
   passengerName?: string;
   name?: string;
   email?: string;
@@ -25,9 +27,30 @@ interface TaxiBookingBody {
   babies?: number | string;
   elderly?: number | string;
 
+  /* Ride */
+  rideId?: number | string;
+  ride_id?: number | string;
+
+  bookingNumber?: string;
+  booking_number?: string;
+
+  rideStatus?: string;
+  status?: string;
+
+  /* Locations */
   pickup?: string;
   drop?: string;
 
+  pickup_address?: string;
+  drop_address?: string;
+
+  pickupLatitude?: number | string;
+  pickupLongitude?: number | string;
+
+  dropLatitude?: number | string;
+  dropLongitude?: number | string;
+
+  /* Trip */
   tripType?: string;
   date?: string;
   pickupDate?: string;
@@ -36,14 +59,25 @@ interface TaxiBookingBody {
 
   isRoundTrip?: boolean;
 
+  /* Vehicle */
   vehicleType?: string;
   vehicle?: string;
+  vehicleModel?: string;
   model?: string;
+  vehicleTypeId?: number | string;
+  vehicle_type_id?: number | string;
+
   seats?: string | number;
 
+  /* Fare */
   price?: string | number;
   estimatedFare?: string | number;
+  estimated_fare?: string | number;
 
+  distanceKm?: number | string;
+  durationMinutes?: number | string;
+
+  /* Payment */
   paymentMethod?: string;
 
   preferences?: string[];
@@ -61,32 +95,39 @@ interface TaxiBookingBody {
 }
 
 /* ============================================================
+   CONSTANTS
+============================================================ */
+
+const BRAND_BLUE = "#123f80";
+const BRAND_YELLOW = "#f2b900";
+
+const TEXT_DARK = "#1e293b";
+const TEXT_MUTED = "#64748b";
+
+const BORDER = "#e2e8f0";
+
+const MAX_NAME_LENGTH = 100;
+const MAX_PHONE_LENGTH = 30;
+const MAX_EMAIL_LENGTH = 150;
+const MAX_LOCATION_LENGTH = 500;
+const MAX_MESSAGE_LENGTH = 3000;
+
+/* ============================================================
    HELPERS
 ============================================================ */
 
-function escapeHtml(value: unknown): string {
-  return String(value ?? "")
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#039;");
-}
-
-/* ============================================================
-   CURRENCY
-============================================================ */
-
-function formatCurrency(value: unknown): string {
-  const number = Number(value || 0);
-
-  if (!Number.isFinite(number) || number <= 0) {
-    return "₹0";
+function stringValue(
+  value: unknown,
+  fallback = ""
+): string {
+  if (
+    typeof value !== "string" &&
+    typeof value !== "number"
+  ) {
+    return fallback;
   }
 
-  return `₹${number.toLocaleString("en-IN", {
-    maximumFractionDigits: 2,
-  })}`;
+  return String(value).trim();
 }
 
 /* ============================================================
@@ -105,7 +146,82 @@ function numberValue(
 }
 
 /* ============================================================
-   SUBJECT CLEANING
+   HTML ESCAPE
+============================================================ */
+
+function escapeHtml(
+  value: unknown
+): string {
+  return String(value ?? "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+/* ============================================================
+   CURRENCY
+============================================================ */
+
+function formatCurrency(
+  value: unknown
+): string {
+  const number = Number(value);
+
+  if (
+    !Number.isFinite(number) ||
+    number <= 0
+  ) {
+    return "₹0";
+  }
+
+  return `₹${number.toLocaleString(
+    "en-IN",
+    {
+      maximumFractionDigits: 2,
+    }
+  )}`;
+}
+
+/* ============================================================
+   EMAIL VALIDATION
+============================================================ */
+
+function isValidEmail(
+  email: string
+): boolean {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(
+    email
+  );
+}
+
+/* ============================================================
+   EMAIL LIST
+============================================================ */
+
+function parseEmailList(
+  value: string | undefined
+): string[] {
+  if (!value) {
+    return [];
+  }
+
+  return value
+    .split(",")
+    .map(
+      (email) =>
+        email.trim()
+    )
+    .filter(
+      (email) =>
+        email.length > 0 &&
+        isValidEmail(email)
+    );
+}
+
+/* ============================================================
+   SUBJECT CLEAN
 ============================================================ */
 
 function cleanEmailSubject(
@@ -118,22 +234,14 @@ function cleanEmailSubject(
 }
 
 /* ============================================================
-   EMAIL LIST
+   LENGTH
 ============================================================ */
 
-function parseEmailList(
-  value: string | undefined
-): string[] {
-  if (!value) return [];
-
-  return value
-    .split(",")
-    .map((email) => email.trim())
-    .filter(
-      (email) =>
-        email.length > 0 &&
-        /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
-    );
+function validateLength(
+  value: string,
+  max: number
+): boolean {
+  return value.length <= max;
 }
 
 /* ============================================================
@@ -143,59 +251,67 @@ function parseEmailList(
 function generateBookingId(): string {
   const now = new Date();
 
-  const year = now.getFullYear();
+  const year =
+    now.getFullYear();
 
-  const month = String(
-    now.getMonth() + 1
-  ).padStart(2, "0");
+  const month =
+    String(
+      now.getMonth() + 1
+    ).padStart(2, "0");
 
-  const day = String(
-    now.getDate()
-  ).padStart(2, "0");
+  const day =
+    String(
+      now.getDate()
+    ).padStart(2, "0");
 
-  const hours = String(
-    now.getHours()
-  ).padStart(2, "0");
+  const hours =
+    String(
+      now.getHours()
+    ).padStart(2, "0");
 
-  const minutes = String(
-    now.getMinutes()
-  ).padStart(2, "0");
+  const minutes =
+    String(
+      now.getMinutes()
+    ).padStart(2, "0");
 
-  const seconds = String(
-    now.getSeconds()
-  ).padStart(2, "0");
+  const seconds =
+    String(
+      now.getSeconds()
+    ).padStart(2, "0");
 
-  const random = Math.floor(
-    1000 + Math.random() * 9000
-  );
+  const random =
+    Math.floor(
+      1000 +
+        Math.random() * 9000
+    );
 
   return `SBS-${year}${month}${day}-${hours}${minutes}${seconds}-${random}`;
 }
 
 /* ============================================================
-   DATE FORMAT
+   DATE
 ============================================================ */
 
 function formatBookingDate(): string {
-  const now = new Date();
-
-  return now.toLocaleDateString("en-IN", {
-    day: "2-digit",
-    month: "short",
-    year: "numeric",
-  });
+  return new Date().toLocaleDateString(
+    "en-IN",
+    {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    }
+  );
 }
 
 /* ============================================================
-   PAYMENT LABEL
+   PAYMENT
 ============================================================ */
 
 function paymentLabel(
   value: unknown
 ): string {
-  const payment = String(
-    value ?? ""
-  ).trim();
+  const payment =
+    stringValue(value);
 
   if (!payment) {
     return "Not selected";
@@ -219,7 +335,13 @@ function detailRow(
   const displayValue =
     options?.currency
       ? formatCurrency(value)
-      : escapeHtml(value || "-");
+      : escapeHtml(
+          value !== undefined &&
+            value !== null &&
+            String(value).trim() !== ""
+            ? value
+            : "-"
+        );
 
   return `
 <tr>
@@ -227,7 +349,7 @@ function detailRow(
 <td
   style="
     padding:12px 16px;
-    border-bottom:1px solid #e5e7eb;
+    border-bottom:1px solid ${BORDER};
     font-size:14px;
     font-weight:600;
     color:#475569;
@@ -241,11 +363,20 @@ function detailRow(
 <td
   style="
     padding:12px 16px;
-    border-bottom:1px solid #e5e7eb;
+    border-bottom:1px solid ${BORDER};
     font-size:14px;
-    font-weight:${options?.highlight ? "700" : "500"};
-    color:${options?.highlight ? "#123f80" : "#1e293b"};
+    font-weight:${
+      options?.highlight
+        ? "700"
+        : "500"
+    };
+    color:${
+      options?.highlight
+        ? BRAND_BLUE
+        : TEXT_DARK
+    };
     vertical-align:top;
+    word-break:break-word;
   "
 >
   ${displayValue}
@@ -256,7 +387,7 @@ function detailRow(
 }
 
 /* ============================================================
-   COMMON EMAIL HEADER
+   EMAIL HEADER
 ============================================================ */
 
 function emailHeader(
@@ -268,7 +399,7 @@ function emailHeader(
 
 <td
   style="
-    background:#123f80;
+    background:${BRAND_BLUE};
     padding:30px 25px;
     text-align:center;
   "
@@ -284,7 +415,11 @@ function emailHeader(
   "
 >
   SBS
-  <span style="color:#f2b900;">
+  <span
+    style="
+      color:${BRAND_YELLOW};
+    "
+  >
     TAXI
   </span>
 </div>
@@ -293,6 +428,7 @@ function emailHeader(
   style="
     margin-top:10px;
     font-size:14px;
+    line-height:1.5;
     color:#dbeafe;
     font-weight:500;
   "
@@ -307,15 +443,13 @@ function emailHeader(
     padding:9px 18px;
     border-radius:30px;
     background:#ffffff;
-    color:#123f80;
+    color:${BRAND_BLUE};
     font-size:13px;
     font-weight:700;
   "
 >
   ${escapeHtml(title)}
 </div>
-
-
 
 </td>
 
@@ -335,22 +469,24 @@ function emailFooter(): string {
   style="
     padding:28px 25px;
     background:#f8fafc;
-    border-top:1px solid #e2e8f0;
+    border-top:1px solid ${BORDER};
     text-align:center;
   "
 >
-
-<!-- SBS TAXI -->
 
 <div
   style="
     font-size:18px;
     font-weight:800;
-    color:#123f80;
+    color:${BRAND_BLUE};
   "
 >
   SBS
-  <span style="color:#f2b900;">
+  <span
+    style="
+      color:${BRAND_YELLOW};
+    "
+  >
     TAXI
   </span>
 </div>
@@ -359,13 +495,11 @@ function emailFooter(): string {
   style="
     margin-top:6px;
     font-size:12px;
-    color:#64748b;
+    color:${TEXT_MUTED};
   "
 >
   One Brand. One Fare. One Trusted Service.
 </div>
-
-<!-- MADE IN INDIA -->
 
 <table
   align="center"
@@ -384,58 +518,59 @@ function emailFooter(): string {
     padding-right:8px;
   "
 >
+
 <div
   style="
     width:24px;
     height:16px;
     display:block;
     overflow:hidden;
-    border:0;
   "
 >
-  <!-- Saffron -->
-  <div
-    style="
-      width:24px;
-      height:5.33px;
-      background:#FF9933;
-    "
-  ></div>
 
-  <!-- White -->
-  <div
-    style="
-      position:relative;
-      width:24px;
-      height:5.33px;
-      !background:#FFFFFF;
-    "
-  >
-    <!-- Ashoka Chakra -->
-    <div
-      style="
-        position:absolute;
-        left:50%;
-        top:50%;
-        width:4px;
-        height:4px;
-        margin-left:-2px;
-        margin-top:-2px;
-        border:0.7px solid #000080;
-        border-radius:50%;
-      "
-    ></div>
-  </div>
+<div
+  style="
+    width:24px;
+    height:5.33px;
+    background:#FF9933;
+  "
+></div>
 
-  <!-- Green -->
-  <div
-    style="
-      width:24px;
-      height:5.34px;
-      background:#138808;
-    "
-  ></div>
+<div
+  style="
+    position:relative;
+    width:24px;
+    height:5.33px;
+    background:#FFFFFF;
+  "
+>
+
+<div
+  style="
+    position:absolute;
+    left:50%;
+    top:50%;
+    width:4px;
+    height:4px;
+    margin-left:-2px;
+    margin-top:-2px;
+    border:0.7px solid #000080;
+    border-radius:50%;
+  "
+></div>
+
 </div>
+
+<div
+  style="
+    width:24px;
+    height:5.34px;
+    background:#138808;
+  "
+></div>
+
+</div>
+
 </td>
 
 <td
@@ -453,8 +588,6 @@ function emailFooter(): string {
 
 </table>
 
-<!-- POWERED BY -->
-
 <div
   style="
     margin-top:12px;
@@ -463,11 +596,13 @@ function emailFooter(): string {
   "
 >
   Powered by
+
   <a
     href="https://sbstechnologies.in"
     target="_blank"
+    rel="noopener noreferrer"
     style="
-      color:#123f80;
+      color:${BRAND_BLUE};
       font-weight:700;
       text-decoration:none;
     "
@@ -480,6 +615,7 @@ function emailFooter(): string {
   style="
     margin-top:12px;
     font-size:11px;
+    line-height:1.5;
     color:#94a3b8;
   "
 >
@@ -493,7 +629,7 @@ function emailFooter(): string {
 }
 
 /* ============================================================
-   BASE EMAIL
+   WRAP EMAIL
 ============================================================ */
 
 function wrapEmail(
@@ -523,7 +659,7 @@ function wrapEmail(
     padding:0;
     background:#eef4f9;
     font-family:Arial,Helvetica,sans-serif;
-    color:#1e293b;
+    color:${TEXT_DARK};
   "
 >
 
@@ -582,8 +718,27 @@ export async function POST(
   request: Request
 ) {
   try {
-    const body: TaxiBookingBody =
-      await request.json();
+    /* ========================================================
+       READ BODY
+    ======================================================== */
+
+    let body: TaxiBookingBody;
+
+    try {
+      body =
+        (await request.json()) as TaxiBookingBody;
+    } catch {
+      return NextResponse.json(
+        {
+          success: false,
+          error:
+            "Invalid JSON request.",
+        },
+        {
+          status: 400,
+        }
+      );
+    }
 
     /* ========================================================
        SMTP
@@ -592,22 +747,20 @@ export async function POST(
     const smtpHost =
       process.env.SMTP_HOST;
 
-    const smtpPort = Number(
-      process.env.SMTP_PORT || 587
-    );
+    const smtpPort =
+      Number(
+        process.env.SMTP_PORT || 587
+      );
 
     const smtpSecure =
-      process.env.SMTP_SECURE === "true";
+      process.env.SMTP_SECURE ===
+      "true";
 
     const smtpUser =
       process.env.SMTP_USER;
 
     const smtpPassword =
       process.env.SMTP_PASSWORD;
-
-    /* ========================================================
-       EMAIL
-    ======================================================== */
 
     const contactEmail =
       process.env.CONTACT_EMAIL;
@@ -616,10 +769,14 @@ export async function POST(
       process.env.CONTACT_CC;
 
     const toEmails =
-      parseEmailList(contactEmail);
+      parseEmailList(
+        contactEmail
+      );
 
     const ccEmails =
-      parseEmailList(contactCC);
+      parseEmailList(
+        contactCC
+      );
 
     /* ========================================================
        SMTP VALIDATION
@@ -630,28 +787,34 @@ export async function POST(
       !smtpUser ||
       !smtpPassword
     ) {
+      console.error(
+        "SMTP configuration missing."
+      );
+
       return NextResponse.json(
         {
           success: false,
           error:
             "SMTP server is not configured correctly.",
         },
-        { status: 500 }
+        {
+          status: 500,
+        }
       );
     }
 
-    /* ========================================================
-       RECIPIENT VALIDATION
-    ======================================================== */
-
-    if (toEmails.length === 0) {
+    if (
+      toEmails.length === 0
+    ) {
       return NextResponse.json(
         {
           success: false,
           error:
             "CONTACT_EMAIL is not configured correctly.",
         },
-        { status: 500 }
+        {
+          status: 500,
+        }
       );
     }
 
@@ -671,18 +834,15 @@ export async function POST(
         },
       });
 
-    /* ========================================================
-       VERIFY SMTP
-    ======================================================== */
-
     await transporter.verify();
 
     /* ========================================================
-       COMMON MAIL OPTIONS
+       COMMON OPTIONS
     ======================================================== */
 
     const commonMailOptions = {
-      from: `"SBS Taxi Website" <${smtpUser}>`,
+      from:
+        `"SBS Taxi Website" <${smtpUser}>`,
 
       to: toEmails,
 
@@ -693,78 +853,361 @@ export async function POST(
     };
 
     /* ========================================================
-       BOOKING ID
+       BOOKING DATA
     ======================================================== */
 
+    const bookingType =
+      stringValue(
+        body.bookingType
+      );
+
+    /*
+      When /api/booking receives a successful
+      create.php response, it sends these values
+      to this endpoint.
+    */
+
+    const rideId =
+      body.rideId ??
+      body.ride_id ??
+      "-";
+
+    const bookingNumber =
+      stringValue(
+        body.bookingNumber ??
+          body.booking_number
+      );
+
+    const rideStatus =
+      stringValue(
+        body.rideStatus ??
+          body.status,
+        "requested"
+      );
+
+    /*
+      If create.php gives booking_number,
+      use it as the main booking reference.
+      Otherwise generate a website email ID.
+    */
+
     const bookingId =
+      bookingNumber ||
       generateBookingId();
 
     const bookingDate =
       formatBookingDate();
 
-    /* ============================================================
-       SIMPLE BOOKING
-    ============================================================ */
+    /* ========================================================
+       PASSENGER
+    ======================================================== */
+
+    const passengerName =
+      stringValue(
+        body.passengerName ??
+          body.name
+      );
+
+    const email =
+      stringValue(
+        body.email
+      );
+
+    const phone =
+      stringValue(
+        body.phone
+      );
+
+    const people =
+      numberValue(
+        body.people ??
+          body.passengers,
+        1
+      );
+
+    const babies =
+      numberValue(
+        body.babies,
+        0
+      );
+
+    const elderly =
+      numberValue(
+        body.elderly,
+        0
+      );
+
+    /* ========================================================
+       LOCATIONS
+    ======================================================== */
+
+    const pickup =
+      stringValue(
+        body.pickup ??
+          body.pickup_address
+      );
+
+    const drop =
+      stringValue(
+        body.drop ??
+          body.drop_address
+      );
+
+    const pickupLatitude =
+      numberValue(
+        body.pickupLatitude
+      );
+
+    const pickupLongitude =
+      numberValue(
+        body.pickupLongitude
+      );
+
+    const dropLatitude =
+      numberValue(
+        body.dropLatitude
+      );
+
+    const dropLongitude =
+      numberValue(
+        body.dropLongitude
+      );
+
+    /* ========================================================
+       DATE / TIME
+    ======================================================== */
+
+    const pickupDate =
+      stringValue(
+        body.pickupDate ??
+          body.date,
+        "-"
+      );
+
+    const pickupTime =
+      stringValue(
+        body.pickupTime ??
+          body.time,
+        "-"
+      );
+
+    const tripType =
+      stringValue(
+        body.tripType,
+        "-"
+      );
+
+    /* ========================================================
+       VEHICLE
+    ======================================================== */
+
+    const vehicleType =
+      stringValue(
+        body.vehicleType,
+        "-"
+      );
+
+    const vehicle =
+      stringValue(
+        body.vehicle ??
+          body.vehicleModel,
+        "-"
+      );
+
+    const model =
+      stringValue(
+        body.model ??
+          body.vehicleModel
+      );
+
+    const vehicleTypeId =
+      numberValue(
+        body.vehicleTypeId ??
+          body.vehicle_type_id
+      );
+
+    const seats =
+      body.seats ??
+      "-";
+
+    /* ========================================================
+       FARE
+    ======================================================== */
+
+    const estimatedFare =
+      numberValue(
+        body.estimatedFare ??
+          body.estimated_fare ??
+          body.price,
+        0
+      );
+
+    const distanceKm =
+      numberValue(
+        body.distanceKm
+      );
+
+    const durationMinutes =
+      numberValue(
+        body.durationMinutes
+      );
+
+    /* ========================================================
+       PAYMENT
+    ======================================================== */
+
+    const paymentMethod =
+      paymentLabel(
+        body.paymentMethod
+      );
+
+    /* ========================================================
+       PREFERENCES
+    ======================================================== */
+
+    const preferenceText =
+      Array.isArray(
+        body.preferences
+      ) &&
+      body.preferences.length > 0
+        ? body.preferences
+            .map(
+              (item) =>
+                escapeHtml(item)
+            )
+            .join(", ")
+        : "None";
+
+    /* ========================================================
+       PASSENGER RIDE CREATED BY create.php
+    ======================================================== */
 
     if (
-      body?.bookingType ===
-      "simple-booking"
+      bookingType ===
+        "passenger-ride" ||
+      bookingType ===
+        "create-ride" ||
+      bookingType ===
+        "taxi-booking"
     ) {
-      const {
-        name,
-        email,
-        pickup,
-        drop,
-        date,
-        time,
-        vehicle,
-        paymentMethod,
-        estimatedFare,
-        price,
-      } = body;
-
-      const selectedPayment =
-        paymentLabel(paymentMethod);
-
-      const finalFare =
-        numberValue(
-          estimatedFare ?? price,
-          0
-        );
+      /* ======================================================
+         VALIDATION
+      ====================================================== */
 
       if (
-        !name ||
-        !email ||
         !pickup ||
-        !drop ||
-        !date ||
-        !time ||
-        !vehicle
+        !drop
       ) {
         return NextResponse.json(
           {
             success: false,
             error:
-              "Please fill all required booking fields.",
+              "Pickup and drop locations are required.",
           },
-          { status: 400 }
+          {
+            status: 400,
+          }
         );
       }
+
+      if (
+        passengerName &&
+        !validateLength(
+          passengerName,
+          MAX_NAME_LENGTH
+        )
+      ) {
+        return NextResponse.json(
+          {
+            success: false,
+            error:
+              "Passenger name is too long.",
+          },
+          {
+            status: 400,
+          }
+        );
+      }
+
+      if (
+        email &&
+        !isValidEmail(email)
+      ) {
+        return NextResponse.json(
+          {
+            success: false,
+            error:
+              "Invalid passenger email address.",
+          },
+          {
+            status: 400,
+          }
+        );
+      }
+
+      if (
+        email &&
+        !validateLength(
+          email,
+          MAX_EMAIL_LENGTH
+        )
+      ) {
+        return NextResponse.json(
+          {
+            success: false,
+            error:
+              "Email address is too long.",
+          },
+          {
+            status: 400,
+          }
+        );
+      }
+
+      if (
+        !validateLength(
+          pickup,
+          MAX_LOCATION_LENGTH
+        ) ||
+        !validateLength(
+          drop,
+          MAX_LOCATION_LENGTH
+        )
+      ) {
+        return NextResponse.json(
+          {
+            success: false,
+            error:
+              "Location information is too long.",
+          },
+          {
+            status: 400,
+          }
+        );
+      }
+
+      /* ======================================================
+         SEND EMAIL
+      ====================================================== */
 
       await transporter.sendMail({
         ...commonMailOptions,
 
-        replyTo: email,
+        ...(email
+          ? {
+              replyTo: email,
+            }
+          : {}),
 
         subject:
-          `New SBS Taxi Booking - ${cleanEmailSubject(
-            name
+          `SBS Taxi Ride Confirmed - ${cleanEmailSubject(
+            bookingId
           )}`,
 
         html: wrapEmail(`
 
 ${emailHeader(
-  "NEW RIDE BOOKING",
+  "RIDE BOOKING CONFIRMED",
   bookingId
 )}
 
@@ -772,11 +1215,13 @@ ${emailHeader(
 
 <td style="padding:30px;">
 
+<!-- STATUS -->
+
 <div
   style="
-    padding:18px;
-    background:#eff6ff;
-    border:1px solid #bfdbfe;
+    padding:20px;
+    background:#f0fdf4;
+    border:1px solid #bbf7d0;
     border-radius:14px;
     margin-bottom:24px;
   "
@@ -784,36 +1229,40 @@ ${emailHeader(
 
 <div
   style="
-    !font-size:9px;
-    font-weight:600;
+    font-size:12px;
+    font-weight:700;
     text-transform:uppercase;
-    color:#64748b;
+    letter-spacing:1px;
+    color:#166534;
   "
 >
-Booking ID
+Ride Status
 </div>
 
 <div
   style="
-    margin-top:5px;
+    margin-top:6px;
     font-size:22px;
     font-weight:800;
-    color:#123f80;
+    color:#166534;
+    text-transform:capitalize;
   "
 >
-${escapeHtml(bookingId)}
+${escapeHtml(rideStatus)}
 </div>
 
 </div>
+
+<!-- BOOKING REFERENCE -->
 
 <h2
   style="
     margin:0 0 12px;
-    color:#123f80;
+    color:${BRAND_BLUE};
     font-size:19px;
   "
 >
-Booking Details
+Booking Reference
 </h2>
 
 <table
@@ -829,9 +1278,20 @@ Booking Details
 >
 
 ${detailRow(
-  "Booking ID",
-  bookingId,
-  { highlight: true }
+  "Booking Number",
+  bookingNumber ||
+    bookingId,
+  {
+    highlight: true,
+  }
+)}
+
+${detailRow(
+  "Ride ID",
+  rideId,
+  {
+    highlight: true,
+  }
 )}
 
 ${detailRow(
@@ -840,49 +1300,294 @@ ${detailRow(
 )}
 
 ${detailRow(
-  "Customer Name",
-  name
+  "Ride Status",
+  rideStatus
 )}
 
-${detailRow(
-  "Email",
-  email
-)}
+${
+  vehicleTypeId > 0
+    ? detailRow(
+        "Vehicle Type ID",
+        vehicleTypeId
+      )
+    : ""
+}
+
+</table>
+
+<!-- TRIP -->
+
+<h2
+  style="
+    margin:28px 0 12px;
+    color:${BRAND_BLUE};
+    font-size:19px;
+  "
+>
+Trip Details
+</h2>
+
+<table
+  width="100%"
+  cellpadding="0"
+  cellspacing="0"
+  style="
+    border:1px solid #e2e8f0;
+    border-radius:14px;
+    border-collapse:separate;
+    overflow:hidden;
+  "
+>
 
 ${detailRow(
   "Pickup Location",
   pickup,
-  { highlight: true }
+  {
+    highlight: true,
+  }
 )}
 
 ${detailRow(
   "Drop Location",
   drop,
-  { highlight: true }
+  {
+    highlight: true,
+  }
 )}
 
 ${detailRow(
   "Pickup Date",
-  date
+  pickupDate
 )}
 
 ${detailRow(
   "Pickup Time",
-  time
+  pickupTime
+)}
+
+${detailRow(
+  "Trip Type",
+  tripType
+)}
+
+${detailRow(
+  "Round Trip",
+  body.isRoundTrip
+    ? "Yes"
+    : "No"
+)}
+
+</table>
+
+<!-- COORDINATES -->
+
+<h2
+  style="
+    margin:28px 0 12px;
+    color:${BRAND_BLUE};
+    font-size:19px;
+  "
+>
+Location Coordinates
+</h2>
+
+<table
+  width="100%"
+  cellpadding="0"
+  cellspacing="0"
+  style="
+    border:1px solid #e2e8f0;
+    border-radius:14px;
+    border-collapse:separate;
+    overflow:hidden;
+  "
+>
+
+${detailRow(
+  "Pickup Latitude",
+  pickupLatitude
+)}
+
+${detailRow(
+  "Pickup Longitude",
+  pickupLongitude
+)}
+
+${detailRow(
+  "Drop Latitude",
+  dropLatitude
+)}
+
+${detailRow(
+  "Drop Longitude",
+  dropLongitude
+)}
+
+</table>
+
+<!-- PASSENGER -->
+
+<h2
+  style="
+    margin:28px 0 12px;
+    color:${BRAND_BLUE};
+    font-size:19px;
+  "
+>
+Passenger Details
+</h2>
+
+<table
+  width="100%"
+  cellpadding="0"
+  cellspacing="0"
+  style="
+    border:1px solid #e2e8f0;
+    border-radius:14px;
+    border-collapse:separate;
+    overflow:hidden;
+  "
+>
+
+${detailRow(
+  "Passenger Name",
+  passengerName ||
+    "-"
+)}
+
+${
+  email
+    ? detailRow(
+        "Email",
+        email
+      )
+    : ""
+}
+
+${
+  phone
+    ? detailRow(
+        "Phone",
+        phone
+      )
+    : ""
+}
+
+${detailRow(
+  "Passengers",
+  people
+)}
+
+${detailRow(
+  "Babies",
+  babies
+)}
+
+${detailRow(
+  "Elderly",
+  elderly
+)}
+
+</table>
+
+<!-- VEHICLE -->
+
+<h2
+  style="
+    margin:28px 0 12px;
+    color:${BRAND_BLUE};
+    font-size:19px;
+  "
+>
+Vehicle Details
+</h2>
+
+<table
+  width="100%"
+  cellpadding="0"
+  cellspacing="0"
+  style="
+    border:1px solid #e2e8f0;
+    border-radius:14px;
+    border-collapse:separate;
+    overflow:hidden;
+  "
+>
+
+${detailRow(
+  "Vehicle Type",
+  vehicleType,
+  {
+    highlight: true,
+  }
 )}
 
 ${detailRow(
   "Vehicle",
   vehicle,
-  { highlight: true }
+  {
+    highlight: true,
+  }
+)}
+
+${detailRow(
+  "Vehicle Model",
+  model || "-"
+)}
+
+${detailRow(
+  "Seats",
+  seats
 )}
 
 </table>
 
+<!-- DISTANCE -->
+
 <h2
   style="
     margin:28px 0 12px;
-    color:#123f80;
+    color:${BRAND_BLUE};
+    font-size:19px;
+  "
+>
+Journey Estimate
+</h2>
+
+<table
+  width="100%"
+  cellpadding="0"
+  cellspacing="0"
+  style="
+    border:1px solid #e2e8f0;
+    border-radius:14px;
+    border-collapse:separate;
+    overflow:hidden;
+  "
+>
+
+${detailRow(
+  "Distance",
+  distanceKm > 0
+    ? `${distanceKm} km`
+    : "-"
+)}
+
+${detailRow(
+  "Duration",
+  durationMinutes > 0
+    ? `${durationMinutes} minutes`
+    : "-"
+)}
+
+</table>
+
+<!-- FARE -->
+
+<h2
+  style="
+    margin:28px 0 12px;
+    color:${BRAND_BLUE};
     font-size:19px;
   "
 >
@@ -913,852 +1618,7 @@ Estimated Fare
     margin-top:5px;
     font-size:30px;
     font-weight:800;
-    color:#123f80;
-  "
->
-${
-  finalFare > 0
-    ? formatCurrency(finalFare)
-    : "To be confirmed"
-}
-</div>
-
-</div>
-
-<h2
-  style="
-    margin:28px 0 12px;
-    color:#123f80;
-    font-size:19px;
-  "
->
-Payment Method
-</h2>
-
-<div
-  style="
-    padding:17px 20px;
-    background:#fff9e8;
-    border:1px solid #f1d56b;
-    border-radius:13px;
-    color:#7c5b08;
-    font-size:16px;
-    font-weight:800;
-  "
->
-${escapeHtml(selectedPayment)}
-</div>
-
-</td>
-
-</tr>
-
-`),
-      });
-
-      return NextResponse.json({
-        success: true,
-        bookingId,
-        estimatedFare:
-          finalFare > 0
-            ? finalFare
-            : null,
-        message:
-          "Booking request sent successfully.",
-      });
-    }
-
-    /* ============================================================
-       TEMPLE TOUR
-    ============================================================ */
-
-    if (
-      body?.bookingType ===
-      "temple-tour"
-    ) {
-      const {
-        pickup,
-        destinations,
-        date,
-        days,
-        passengers,
-        vehicle,
-        seats,
-        tripPackage,
-        baseFare,
-        totalFare,
-        paymentMethod,
-      } = body;
-
-      const selectedPayment =
-        paymentLabel(paymentMethod);
-
-      if (
-        !pickup ||
-        !Array.isArray(destinations) ||
-        destinations.length === 0 ||
-        !date ||
-        !days ||
-        !vehicle
-      ) {
-        return NextResponse.json(
-          {
-            success: false,
-            error:
-              "Please fill all required temple booking fields.",
-          },
-          { status: 400 }
-        );
-      }
-
-      const templeRows =
-        destinations
-          .map(
-            (
-              temple,
-              index
-            ) => `
-<tr>
-
-<td
-  style="
-    padding:10px;
-    border:1px solid #dbeafe;
-    text-align:center;
-  "
->
-${index + 1}
-</td>
-
-<td
-  style="
-    padding:10px;
-    border:1px solid #dbeafe;
-  "
->
-
-${escapeHtml(
-  temple.name || ""
-)}
-
-${
-  temple.location
-    ? ` - ${escapeHtml(
-        temple.location
-      )}`
-    : ""
-}
-
-${
-  temple.custom
-    ? `
-<span
-  style="
-    color:#b45309;
-    font-weight:bold;
-  "
->
-(Custom Destination)
-</span>
-`
-    : ""
-}
-
-</td>
-
-<td
-  style="
-    padding:10px;
-    border:1px solid #dbeafe;
-    text-align:right;
-    font-weight:bold;
-  "
->
-${formatCurrency(
-  temple.fare
-)}
-
-</td>
-
-</tr>
-`
-          )
-          .join("");
-
-      await transporter.sendMail({
-        ...commonMailOptions,
-
-        subject:
-          `New SBS Temple Tour Booking - ${bookingId}`,
-
-        html: wrapEmail(`
-
-${emailHeader(
-  "TEMPLE TOUR BOOKING",
-  bookingId
-)}
-
-<tr>
-
-<td style="padding:30px;">
-
-<table
-  width="100%"
-  cellpadding="0"
-  cellspacing="0"
-  style="
-    border:1px solid #e2e8f0;
-    border-radius:12px;
-    border-collapse:separate;
-  "
->
-
-${detailRow(
-  "Booking ID",
-  bookingId,
-  { highlight: true }
-)}
-
-${detailRow(
-  "Booking Date",
-  bookingDate
-)}
-
-${detailRow(
-  "Pickup Location",
-  pickup
-)}
-
-${detailRow(
-  "Travel Date",
-  date
-)}
-
-${detailRow(
-  "Number of Days",
-  days
-)}
-
-${detailRow(
-  "Passengers",
-  passengers || 1
-)}
-
-${detailRow(
-  "Vehicle",
-  vehicle,
-  { highlight: true }
-)}
-
-${detailRow(
-  "Seater",
-  seats || "-"
-)}
-
-${detailRow(
-  "Trip Package",
-  tripPackage || "-"
-)}
-
-</table>
-
-<h2
-  style="
-    margin:28px 0 12px;
-    color:#123f80;
-    font-size:19px;
-  "
->
-Selected Temples / Destinations
-</h2>
-
-<table
-  width="100%"
-  cellpadding="0"
-  cellspacing="0"
-  style="
-    border-collapse:collapse;
-    font-size:14px;
-  "
->
-
-<thead>
-
-<tr style="background:#eff6ff;">
-
-<th
-  style="
-    padding:10px;
-    border:1px solid #dbeafe;
-  "
->
-#
-</th>
-
-<th
-  style="
-    padding:10px;
-    border:1px solid #dbeafe;
-    text-align:left;
-  "
->
-Temple / Destination
-</th>
-
-<th
-  style="
-    padding:10px;
-    border:1px solid #dbeafe;
-    text-align:right;
-  "
->
-Fare
-</th>
-
-</tr>
-
-</thead>
-
-<tbody>
-
-${templeRows}
-
-</tbody>
-
-</table>
-
-<div
-  style="
-    margin-top:22px;
-    padding:18px;
-    background:#fff9e8;
-    border:1px solid #f3d36a;
-    border-radius:12px;
-  "
->
-
-<div
-  style="
-    font-size:13px;
-    color:#92701a;
-  "
->
-Base Fare
-</div>
-
-<div
-  style="
-    margin-top:4px;
-    font-size:18px;
-    font-weight:bold;
-    color:#7c5b08;
-  "
->
-${formatCurrency(baseFare)}
-</div>
-
-<div
-  style="
-    margin-top:15px;
-    padding-top:15px;
-    border-top:1px solid #ead68d;
-  "
->
-
-<div
-  style="
-    font-size:13px;
-    color:#92701a;
-  "
->
-Estimated Total Fare
-</div>
-
-<div
-  style="
-    margin-top:4px;
-    font-size:25px;
-    font-weight:800;
-    color:#123f80;
-  "
->
-${formatCurrency(totalFare)}
-</div>
-
-</div>
-
-</div>
-
-<h2
-  style="
-    margin:28px 0 12px;
-    color:#123f80;
-    font-size:19px;
-  "
->
-Payment Method
-</h2>
-
-<div
-  style="
-    padding:17px 20px;
-    background:#fff9e8;
-    border:1px solid #f1d56b;
-    border-radius:13px;
-    color:#7c5b08;
-    font-size:16px;
-    font-weight:800;
-  "
->
-${escapeHtml(selectedPayment)}
-</div>
-
-</td>
-
-</tr>
-
-`),
-      });
-
-      return NextResponse.json({
-        success: true,
-        bookingId,
-        message:
-          "Temple tour booking sent successfully.",
-      });
-    }
-
-    /* ============================================================
-       NORMAL TAXI BOOKING
-    ============================================================ */
-
-    if (
-      body?.bookingType ===
-      "taxi-booking"
-    ) {
-      const passengerName =
-        body.passengerName ||
-        body.name;
-
-      const people =
-        numberValue(
-          body.people ??
-            body.passengers,
-          1
-        );
-
-      const babies =
-        numberValue(
-          body.babies,
-          0
-        );
-
-      const elderly =
-        numberValue(
-          body.elderly,
-          0
-        );
-
-      const pickup =
-        String(
-          body.pickup || ""
-        ).trim();
-
-      const drop =
-        String(
-          body.drop || ""
-        ).trim();
-
-      const tripType =
-        body.tripType || "-";
-
-      const pickupDate =
-        body.pickupDate ||
-        body.date ||
-        "-";
-
-      const pickupTime =
-        body.pickupTime ||
-        body.time ||
-        "-";
-
-      const vehicleType =
-        String(
-          body.vehicleType || ""
-        ).trim();
-
-      const vehicle =
-        String(
-          body.vehicle || ""
-        ).trim();
-
-      const model =
-        String(
-          body.model || ""
-        ).trim();
-
-      const seats =
-        body.seats || "-";
-
-      const paymentMethod =
-        paymentLabel(
-          body.paymentMethod
-        );
-
-      /* ========================================================
-         FARE
-      ======================================================== */
-
-      const estimatedFare =
-        numberValue(
-          body.estimatedFare ??
-            body.price,
-          0
-        );
-
-      /* ========================================================
-         VALIDATION
-      ======================================================== */
-
-      if (
-        !passengerName ||
-        !pickup ||
-        !drop ||
-        !pickupDate ||
-        !pickupTime ||
-        !vehicleType ||
-        !vehicle ||
-        paymentMethod ===
-          "Not selected"
-      ) {
-        return NextResponse.json(
-          {
-            success: false,
-            error:
-              "Please fill all required booking fields.",
-          },
-          { status: 400 }
-        );
-      }
-
-      /* ========================================================
-         PASSENGER VALIDATION
-      ======================================================== */
-
-      if (
-        !Number.isInteger(
-          people
-        ) ||
-        people < 1 ||
-        people > 50
-      ) {
-        return NextResponse.json(
-          {
-            success: false,
-            error:
-              "Passengers must be between 1 and 50.",
-          },
-          { status: 400 }
-        );
-      }
-
-      /* ========================================================
-         PREFERENCES
-      ======================================================== */
-
-      const preferenceText =
-        Array.isArray(
-          body.preferences
-        ) &&
-        body.preferences.length > 0
-          ? body.preferences
-              .map(
-                (item) =>
-                  escapeHtml(item)
-              )
-              .join(", ")
-          : "None";
-
-      /* ========================================================
-         SEND TAXI BOOKING EMAIL
-      ======================================================== */
-
-      await transporter.sendMail({
-        ...commonMailOptions,
-
-        subject:
-          `New SBS Taxi Booking - ${bookingId}`,
-
-        html: wrapEmail(`
-
-${emailHeader(
-  "NEW RIDE BOOKING",
-  bookingId
-)}
-
-<tr>
-
-<td
-  style="
-    padding:30px;
-  "
->
-
-<div
-  style="
-    padding:18px;
-    background:#f0f7ff;
-    border:1px solid #bfdbfe;
-    border-radius:14px;
-    margin-bottom:24px;
-  "
->
-
-<div
-  style="
-    !font-size:9px;
-    font-weight:600;
-    text-transform:uppercase;
-    letter-spacing:1px;
-    color:#64748b;
-  "
->
-Booking ID
-</div>
-
-<div
-  style="
-    margin-top:5px;
-    font-size:22px;
-    font-weight:800;
-    color:#123f80;
-    letter-spacing:.5px;
-  "
->
-${escapeHtml(bookingId)}
-</div>
-
-</div>
-
-<h2
-  style="
-    margin:0 0 12px;
-    font-size:19px;
-    color:#123f80;
-  "
->
-📅 Booking Details
-</h2>
-
-<table
-  width="100%"
-  cellpadding="0"
-  cellspacing="0"
-  style="
-    border:1px solid #e2e8f0;
-    border-radius:14px;
-    border-collapse:separate;
-    overflow:hidden;
-  "
->
-
-${detailRow(
-  "Booking ID",
-  bookingId,
-  { highlight: true }
-)}
-
-${detailRow(
-  "Booking Date",
-  bookingDate
-)}
-
-${detailRow(
-  "Pickup Date",
-  pickupDate
-)}
-
-${detailRow(
-  "Pickup Time",
-  pickupTime
-)}
-
-${detailRow(
-  "Trip Type",
-  tripType
-)}
-
-${detailRow(
-  "Round Trip",
-  body.isRoundTrip
-    ? "Yes"
-    : "No"
-)}
-
-</table>
-
-<h2
-  style="
-    margin:28px 0 12px;
-    font-size:19px;
-    color:#123f80;
-  "
->
-📍 Journey Details
-</h2>
-
-<table
-  width="100%"
-  cellpadding="0"
-  cellspacing="0"
-  style="
-    border:1px solid #e2e8f0;
-    border-radius:14px;
-    border-collapse:separate;
-    overflow:hidden;
-  "
->
-
-${detailRow(
-  "Pickup Location",
-  pickup,
-  { highlight: true }
-)}
-
-${detailRow(
-  "Drop Location",
-  drop,
-  { highlight: true }
-)}
-
-</table>
-
-<h2
-  style="
-    margin:28px 0 12px;
-    font-size:19px;
-    color:#123f80;
-  "
->
-👥 Passenger Details
-</h2>
-
-<table
-  width="100%"
-  cellpadding="0"
-  cellspacing="0"
-  style="
-    border:1px solid #e2e8f0;
-    border-radius:14px;
-    border-collapse:separate;
-    overflow:hidden;
-  "
->
-
-${detailRow(
-  "Passenger Name",
-  passengerName,
-  { highlight: true }
-)}
-
-${detailRow(
-  "Total Passengers",
-  people
-)}
-
-${detailRow(
-  "Babies",
-  babies
-)}
-
-${detailRow(
-  "Elderly People",
-  elderly
-)}
-
-</table>
-
-<h2
-  style="
-    margin:28px 0 12px;
-    font-size:19px;
-    color:#123f80;
-  "
->
-🚕 Vehicle Details
-</h2>
-
-<table
-  width="100%"
-  cellpadding="0"
-  cellspacing="0"
-  style="
-    border:1px solid #e2e8f0;
-    border-radius:14px;
-    border-collapse:separate;
-    overflow:hidden;
-  "
->
-
-${detailRow(
-  "Vehicle Type",
-  vehicleType,
-  { highlight: true }
-)}
-
-${detailRow(
-  "Vehicle",
-  vehicle,
-  { highlight: true }
-)}
-
-${detailRow(
-  "Model",
-  model || "-"
-)}
-
-${detailRow(
-  "Seats",
-  seats
-)}
-
-</table>
-
-<h2
-  style="
-    margin:28px 0 12px;
-    font-size:19px;
-    color:#123f80;
-  "
->
-₹ Fare Estimate
-</h2>
-
-<div
-  style="
-    padding:22px;
-    background:#f8fbff;
-    border:1px solid #cbdff4;
-    border-radius:15px;
-  "
->
-
-<div
-  style="
-    font-size:13px;
-    color:#64748b;
-    font-weight:600;
-  "
->
-Estimated Fare
-</div>
-
-<div
-  style="
-    margin-top:5px;
-    font-size:30px;
-    font-weight:800;
-    color:#123f80;
+    color:${BRAND_BLUE};
   "
 >
 ${
@@ -1772,14 +1632,16 @@ ${
 
 </div>
 
+<!-- PAYMENT -->
+
 <h2
   style="
     margin:28px 0 12px;
+    color:${BRAND_BLUE};
     font-size:19px;
-    color:#123f80;
   "
 >
-💳 Payment Method
+Payment Method
 </h2>
 
 <div
@@ -1793,17 +1655,21 @@ ${
     font-weight:800;
   "
 >
-${escapeHtml(paymentMethod)}
+${escapeHtml(
+  paymentMethod
+)}
 </div>
+
+<!-- PREFERENCES -->
 
 <h2
   style="
     margin:28px 0 12px;
+    color:${BRAND_BLUE};
     font-size:19px;
-    color:#123f80;
   "
 >
-⚙ Additional Preferences
+Additional Preferences
 </h2>
 
 <div
@@ -1820,10 +1686,12 @@ ${escapeHtml(paymentMethod)}
 ${preferenceText}
 </div>
 
+<!-- SUCCESS -->
+
 <div
   style="
     margin-top:28px;
-    padding:18px 20px;
+    padding:20px;
     background:#f0fdf4;
     border:1px solid #bbf7d0;
     border-radius:13px;
@@ -1832,25 +1700,260 @@ ${preferenceText}
 
 <div
   style="
-    font-size:16px;
+    font-size:17px;
     font-weight:800;
     color:#166534;
   "
 >
-✓ Booking Request Received
+✓ Ride Request Successfully Created
 </div>
 
 <div
   style="
-    margin-top:6px;
+    margin-top:7px;
     font-size:13px;
-    line-height:1.6;
+    line-height:1.7;
     color:#166534;
   "
 >
-Your booking request has been successfully
-received by SBS Taxi. Our team will review
-the details and contact you shortly.
+Your ride has been successfully created in the
+SBS Taxi booking system.
+</div>
+
+${
+  bookingNumber
+    ? `
+<div
+  style="
+    margin-top:10px;
+    font-size:14px;
+    font-weight:700;
+    color:#166534;
+  "
+>
+Booking Number:
+${escapeHtml(
+  bookingNumber
+)}
+</div>
+`
+    : ""
+}
+
+</div>
+
+</td>
+
+</tr>
+
+`),
+      });
+
+      return NextResponse.json(
+        {
+          success: true,
+
+          message:
+            "Ride booking email sent successfully.",
+
+          data: {
+            ride_id:
+              rideId,
+
+            booking_number:
+              bookingNumber ||
+              null,
+
+            booking_id:
+              bookingId,
+
+            status:
+              rideStatus,
+
+            email_sent:
+              true,
+          },
+        },
+        {
+          status: 200,
+        }
+      );
+    }
+
+    /* ========================================================
+       SIMPLE BOOKING
+    ======================================================== */
+
+    if (
+      bookingType ===
+      "simple-booking"
+    ) {
+      if (
+        !passengerName ||
+        !pickup ||
+        !drop
+      ) {
+        return NextResponse.json(
+          {
+            success: false,
+            error:
+              "Required booking fields are missing.",
+          },
+          {
+            status: 400,
+          }
+        );
+      }
+
+      await transporter.sendMail({
+        ...commonMailOptions,
+
+        ...(email
+          ? {
+              replyTo: email,
+            }
+          : {}),
+
+        subject:
+          `New SBS Taxi Booking - ${cleanEmailSubject(
+            passengerName
+          )}`,
+
+        html: wrapEmail(`
+
+${emailHeader(
+  "NEW RIDE BOOKING",
+  bookingId
+)}
+
+<tr>
+
+<td style="padding:30px;">
+
+<h2
+  style="
+    margin:0 0 12px;
+    color:${BRAND_BLUE};
+    font-size:19px;
+  "
+>
+Booking Details
+</h2>
+
+<table
+  width="100%"
+  cellpadding="0"
+  cellspacing="0"
+  style="
+    border:1px solid #e2e8f0;
+    border-radius:14px;
+    border-collapse:separate;
+    overflow:hidden;
+  "
+>
+
+${detailRow(
+  "Booking ID",
+  bookingId,
+  {
+    highlight: true,
+  }
+)}
+
+${detailRow(
+  "Customer Name",
+  passengerName
+)}
+
+${detailRow(
+  "Email",
+  email || "-"
+)}
+
+${detailRow(
+  "Phone",
+  phone || "-"
+)}
+
+${detailRow(
+  "Pickup",
+  pickup,
+  {
+    highlight: true,
+  }
+)}
+
+${detailRow(
+  "Drop",
+  drop,
+  {
+    highlight: true,
+  }
+)}
+
+${detailRow(
+  "Pickup Date",
+  pickupDate
+)}
+
+${detailRow(
+  "Pickup Time",
+  pickupTime
+)}
+
+${detailRow(
+  "Vehicle",
+  vehicle,
+  {
+    highlight: true,
+  }
+)}
+
+</table>
+
+<h2
+  style="
+    margin:28px 0 12px;
+    color:${BRAND_BLUE};
+    font-size:19px;
+  "
+>
+Fare Estimate
+</h2>
+
+<div
+  style="
+    padding:22px;
+    background:#f8fbff;
+    border:1px solid #cbdff4;
+    border-radius:15px;
+  "
+>
+
+<div
+  style="
+    font-size:13px;
+    color:#64748b;
+  "
+>
+Estimated Fare
+</div>
+
+<div
+  style="
+    margin-top:5px;
+    font-size:30px;
+    font-weight:800;
+    color:${BRAND_BLUE};
+  "
+>
+${
+  estimatedFare > 0
+    ? formatCurrency(
+        estimatedFare
+      )
+    : "To be confirmed"
+}
 </div>
 
 </div>
@@ -1870,123 +1973,82 @@ the details and contact you shortly.
             ? estimatedFare
             : null,
         message:
-          "Booking request sent successfully.",
+          "Booking email sent successfully.",
       });
     }
 
-    /* ============================================================
+    /* ========================================================
        CONTACT ENQUIRY
-    ============================================================ */
+    ======================================================== */
 
     if (
-      body?.bookingType ===
+      bookingType ===
       "contact-enquiry"
     ) {
-      const {
-        name,
-        phone,
-        email,
-        pickup,
-        drop,
-        passengers,
-        vehicleType,
-        subject,
-        message,
-        paymentMethod,
-        estimatedFare,
-      } = body;
+      const name =
+        stringValue(
+          body.name
+        );
 
-      /* ========================================================
-         REQUIRED FIELD VALIDATION
-      ======================================================== */
+      const subject =
+        stringValue(
+          body.subject
+        );
+
+      const message =
+        stringValue(
+          body.message
+        );
 
       if (
         !name ||
-        !phone ||
         !email ||
-        !pickup ||
-        !drop ||
-        !passengers ||
-        !vehicleType ||
         !subject
       ) {
         return NextResponse.json(
           {
             success: false,
             error:
-              "Please fill all required contact fields.",
+              "Required enquiry fields are missing.",
           },
-          { status: 400 }
+          {
+            status: 400,
+          }
         );
       }
 
-      /* ========================================================
-         PASSENGER VALIDATION
-      ======================================================== */
-
-      const passengerCount =
-        Number(passengers);
-
       if (
-        !Number.isInteger(
-          passengerCount
-        ) ||
-        passengerCount < 1 ||
-        passengerCount > 50
+        !isValidEmail(email)
       ) {
         return NextResponse.json(
           {
             success: false,
             error:
-              "Invalid number of passengers.",
+              "Invalid email address.",
           },
-          { status: 400 }
+          {
+            status: 400,
+          }
         );
       }
 
-      /* ========================================================
-         MESSAGE
-         
-         Empty message:
-         → Do NOT show Additional Message section.
-
-         Message with content:
-         → Show Additional Message section.
-      ======================================================== */
-
-      const hasContactMessage =
-        typeof message === "string" &&
-        message.trim().length > 0;
-
-      const contactMessage =
-        hasContactMessage
-          ? escapeHtml(
-              message.trim()
-            )
-          : "";
-
-      /* ========================================================
-         PAYMENT
-      ======================================================== */
-
-      const selectedPayment =
-        paymentLabel(
-          paymentMethod
+      if (
+        !validateLength(
+          message,
+          MAX_MESSAGE_LENGTH
+        )
+      ) {
+        return NextResponse.json(
+          {
+            success: false,
+            error:
+              "Message is too long.",
+          },
+          {
+            status: 400,
+          }
         );
-
-      /* ========================================================
-         FARE
-      ======================================================== */
-
-      const finalFare =
-        numberValue(
-          estimatedFare,
-          0
-        );
-
-      /* ========================================================
-         SEND CONTACT ENQUIRY EMAIL
-      ======================================================== */
+      }
 
       await transporter.sendMail({
         ...commonMailOptions,
@@ -1995,7 +2057,7 @@ the details and contact you shortly.
 
         subject:
           `New SBS Taxi Enquiry - ${cleanEmailSubject(
-            name
+            subject
           )}`,
 
         html: wrapEmail(`
@@ -2007,59 +2069,13 @@ ${emailHeader(
 
 <tr>
 
-<td
-  style="
-    padding:30px;
-  "
->
-
-<!-- ======================================================
-     BOOKING ID
-====================================================== -->
-
-<div
-  style="
-    padding:18px;
-    background:#f0f7ff;
-    border:1px solid #bfdbfe;
-    border-radius:14px;
-    margin-bottom:24px;
-  "
->
-
-<div
-  style="
-    !font-size:9px;
-    font-weight:600;
-    text-transform:uppercase;
-    color:#64748b;
-  "
->
-Booking ID
-</div>
-
-<div
-  style="
-    margin-top:5px;
-    font-size:21px;
-    font-weight:800;
-    color:#123f80;
-  "
->
-${escapeHtml(bookingId)}
-</div>
-
-</div>
-
-<!-- ======================================================
-     CUSTOMER DETAILS
-====================================================== -->
+<td style="padding:30px;">
 
 <h2
   style="
     margin:0 0 12px;
+    color:${BRAND_BLUE};
     font-size:19px;
-    color:#123f80;
   "
 >
 Customer Details
@@ -2078,20 +2094,16 @@ Customer Details
 >
 
 ${detailRow(
-  "Booking ID",
+  "Reference",
   bookingId,
-  { highlight: true }
-)}
-
-${detailRow(
-  "Booking Date",
-  bookingDate
+  {
+    highlight: true,
+  }
 )}
 
 ${detailRow(
   "Name",
-  name,
-  { highlight: true }
+  name
 )}
 
 ${detailRow(
@@ -2101,162 +2113,19 @@ ${detailRow(
 
 ${detailRow(
   "Phone",
-  phone
+  phone || "-"
 )}
 
 </table>
 
-<!-- ======================================================
-     JOURNEY DETAILS
-====================================================== -->
-
 <h2
   style="
     margin:28px 0 12px;
+    color:${BRAND_BLUE};
     font-size:19px;
-    color:#123f80;
   "
 >
-Journey Details
-</h2>
-
-<table
-  width="100%"
-  cellpadding="0"
-  cellspacing="0"
-  style="
-    border:1px solid #e2e8f0;
-    border-radius:14px;
-    border-collapse:separate;
-    overflow:hidden;
-  "
->
-
-${detailRow(
-  "Pickup Location",
-  pickup,
-  { highlight: true }
-)}
-
-${detailRow(
-  "Drop Location",
-  drop,
-  { highlight: true }
-)}
-
-${detailRow(
-  "Passengers",
-  passengerCount
-)}
-
-${detailRow(
-  "Vehicle Type",
-  vehicleType
-)}
-
-${detailRow(
-  "Service Required",
-  subject,
-  { highlight: true }
-)}
-
-</table>
-
-<!-- ======================================================
-     FARE ESTIMATE
-====================================================== -->
-
-<h2
-  style="
-    margin:28px 0 12px;
-    font-size:19px;
-    color:#123f80;
-  "
->
-₹ Fare Estimate
-</h2>
-
-<div
-  style="
-    padding:20px;
-    background:#f8fbff;
-    border:1px solid #cbdff4;
-    border-radius:14px;
-  "
->
-
-<div
-  style="
-    font-size:13px;
-    color:#64748b;
-    font-weight:600;
-  "
->
-Estimated Fare
-</div>
-
-<div
-  style="
-    margin-top:5px;
-    font-size:28px;
-    font-weight:800;
-    color:#123f80;
-  "
->
-${
-  finalFare > 0
-    ? formatCurrency(finalFare)
-    : "To be confirmed"
-}
-</div>
-
-</div>
-
-<!-- ======================================================
-     PAYMENT METHOD
-====================================================== -->
-
-<h2
-  style="
-    margin:28px 0 12px;
-    font-size:19px;
-    color:#123f80;
-  "
->
-💳 Payment Method
-</h2>
-
-<div
-  style="
-    padding:17px 20px;
-    background:#fff9e8;
-    border:1px solid #f1d56b;
-    border-radius:13px;
-    color:#7c5b08;
-    font-size:16px;
-    font-weight:800;
-  "
->
-${escapeHtml(selectedPayment)}
-</div>
-
-<!-- ======================================================
-     ADDITIONAL MESSAGE
-
-     ONLY SHOW WHEN MESSAGE HAS CONTENT
-====================================================== -->
-
-${
-  hasContactMessage
-    ? `
-<h2
-  style="
-    margin:28px 0 12px;
-    font-size:19px;
-    color:#123f80;
-  "
->
-Additional Message
+Enquiry
 </h2>
 
 <div
@@ -2270,48 +2139,9 @@ Additional Message
     color:#475569;
   "
 >
-${contactMessage}
-</div>
-`
-    : ""
-}
-
-<!-- ======================================================
-     STATUS
-====================================================== -->
-
-<div
-  style="
-    margin-top:25px;
-    padding:18px;
-    background:#f0fdf4;
-    border:1px solid #bbf7d0;
-    border-radius:13px;
-  "
->
-
-<div
-  style="
-    font-size:16px;
-    font-weight:800;
-    color:#166534;
-  "
->
-✓ Enquiry Received
-</div>
-
-<div
-  style="
-    margin-top:6px;
-    font-size:13px;
-    line-height:1.6;
-    color:#166534;
-  "
->
-The SBS Taxi team will review this enquiry
-and contact the customer shortly.
-</div>
-
+${escapeHtml(
+  message || "-"
+)}
 </div>
 
 </td>
@@ -2325,13 +2155,13 @@ and contact the customer shortly.
         success: true,
         bookingId,
         message:
-          "Your enquiry has been sent successfully. Our SBS Taxi team will contact you shortly.",
+          "Enquiry sent successfully.",
       });
     }
 
-    /* ============================================================
-       UNKNOWN BOOKING TYPE
-    ============================================================ */
+    /* ========================================================
+       UNKNOWN TYPE
+    ======================================================== */
 
     return NextResponse.json(
       {
@@ -2339,9 +2169,10 @@ and contact the customer shortly.
         error:
           "Invalid booking type.",
       },
-      { status: 400 }
+      {
+        status: 400,
+      }
     );
-
   } catch (error) {
     console.error(
       "SBS TAXI EMAIL API ERROR:",
@@ -2354,7 +2185,9 @@ and contact the customer shortly.
         error:
           "Unable to send email. Please try again.",
       },
-      { status: 500 }
+      {
+        status: 500,
+      }
     );
   }
 }
