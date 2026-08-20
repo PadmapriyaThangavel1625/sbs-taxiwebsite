@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import nodemailer from "nodemailer";
+import path from "path";
 
 /* ============================================================
    TYPES
@@ -12,30 +13,85 @@ interface Destination {
   custom?: boolean;
 }
 
+interface ApiRideData {
+  rideId?: number | string;
+  ride_id?: number | string;
+
+  bookingId?: number | string;
+  booking_id?: number | string;
+
+  bookingNumber?: string;
+  booking_number?: string;
+
+  otp?: string | number;
+
+  bookingOtp?: string | number;
+  booking_otp?: string | number;
+
+  rideOtp?: string | number;
+  ride_otp?: string | number;
+
+  status?: string;
+
+  rideStatus?: string;
+  ride_status?: string;
+
+  estimatedFare?: number | string;
+  estimated_fare?: number | string;
+
+  paymentMethod?: string;
+  payment_method?: string;
+
+  paymentStatus?: string;
+  payment_status?: string;
+}
+
 interface TaxiBookingBody {
   bookingType?: string;
 
   /* Passenger */
   user_id?: number | string;
+
   passengerName?: string;
   name?: string;
+
   email?: string;
   phone?: string;
 
   people?: number | string;
   passengers?: number | string;
+
   babies?: number | string;
+  baby?: number | string;
+  babyCount?: number | string;
+  baby_count?: number | string;
+
   elderly?: number | string;
+  elders?: number | string;
+  elder?: number | string;
+  elderCount?: number | string;
+  elder_count?: number | string;
 
   /* Ride */
   rideId?: number | string;
   ride_id?: number | string;
 
-  bookingNumber?: string;
-  booking_number?: string;
+  bookingId?: number | string;
+  booking_id?: number | string;
+
+  otp?: string | number;
+
+  bookingOtp?: string | number;
+  booking_otp?: string | number;
+
+  rideOtp?: string | number;
+  ride_otp?: string | number;
 
   rideStatus?: string;
   status?: string;
+
+  /* Nested API response */
+  data?: ApiRideData;
 
   /* Locations */
   pickup?: string;
@@ -47,13 +103,21 @@ interface TaxiBookingBody {
   pickupLatitude?: number | string;
   pickupLongitude?: number | string;
 
+  pickup_latitude?: number | string;
+  pickup_longitude?: number | string;
+
   dropLatitude?: number | string;
   dropLongitude?: number | string;
 
+  drop_latitude?: number | string;
+  drop_longitude?: number | string;
+
   /* Trip */
   tripType?: string;
+
   date?: string;
   pickupDate?: string;
+
   time?: string;
   pickupTime?: string;
 
@@ -62,8 +126,10 @@ interface TaxiBookingBody {
   /* Vehicle */
   vehicleType?: string;
   vehicle?: string;
+
   vehicleModel?: string;
   model?: string;
+
   vehicleTypeId?: number | string;
   vehicle_type_id?: number | string;
 
@@ -71,6 +137,7 @@ interface TaxiBookingBody {
 
   /* Fare */
   price?: string | number;
+
   estimatedFare?: string | number;
   estimated_fare?: string | number;
 
@@ -79,13 +146,19 @@ interface TaxiBookingBody {
 
   /* Payment */
   paymentMethod?: string;
+  payment_method?: string;
+
+  paymentStatus?: string;
+  payment_status?: string;
 
   preferences?: string[];
 
-  /* Temple booking */
+  /* Temple */
   destinations?: Destination[];
+
   days?: string | number;
   tripPackage?: string;
+
   baseFare?: string | number;
   totalFare?: string | number;
 
@@ -113,7 +186,7 @@ const MAX_LOCATION_LENGTH = 500;
 const MAX_MESSAGE_LENGTH = 3000;
 
 /* ============================================================
-   HELPERS
+   STRING HELPER
 ============================================================ */
 
 function stringValue(
@@ -131,7 +204,7 @@ function stringValue(
 }
 
 /* ============================================================
-   NUMBER
+   NUMBER HELPER
 ============================================================ */
 
 function numberValue(
@@ -149,9 +222,7 @@ function numberValue(
    HTML ESCAPE
 ============================================================ */
 
-function escapeHtml(
-  value: unknown
-): string {
+function escapeHtml(value: unknown): string {
   return String(value ?? "")
     .replaceAll("&", "&amp;")
     .replaceAll("<", "&lt;")
@@ -164,9 +235,7 @@ function escapeHtml(
    CURRENCY
 ============================================================ */
 
-function formatCurrency(
-  value: unknown
-): string {
+function formatCurrency(value: unknown): string {
   const number = Number(value);
 
   if (
@@ -176,24 +245,17 @@ function formatCurrency(
     return "₹0";
   }
 
-  return `₹${number.toLocaleString(
-    "en-IN",
-    {
-      maximumFractionDigits: 2,
-    }
-  )}`;
+  return `₹${number.toLocaleString("en-IN", {
+    maximumFractionDigits: 2,
+  })}`;
 }
 
 /* ============================================================
    EMAIL VALIDATION
 ============================================================ */
 
-function isValidEmail(
-  email: string
-): boolean {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(
-    email
-  );
+function isValidEmail(email: string): boolean {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
 /* ============================================================
@@ -209,10 +271,7 @@ function parseEmailList(
 
   return value
     .split(",")
-    .map(
-      (email) =>
-        email.trim()
-    )
+    .map((email) => email.trim())
     .filter(
       (email) =>
         email.length > 0 &&
@@ -234,7 +293,7 @@ function cleanEmailSubject(
 }
 
 /* ============================================================
-   LENGTH
+   LENGTH VALIDATION
 ============================================================ */
 
 function validateLength(
@@ -245,51 +304,43 @@ function validateLength(
 }
 
 /* ============================================================
-   BOOKING ID
+   FALLBACK BOOKING ID
 ============================================================ */
 
 function generateBookingId(): string {
   const now = new Date();
 
-  const year =
-    now.getFullYear();
+  const year = now.getFullYear();
 
-  const month =
-    String(
-      now.getMonth() + 1
-    ).padStart(2, "0");
+  const month = String(
+    now.getMonth() + 1
+  ).padStart(2, "0");
 
-  const day =
-    String(
-      now.getDate()
-    ).padStart(2, "0");
+  const day = String(
+    now.getDate()
+  ).padStart(2, "0");
 
-  const hours =
-    String(
-      now.getHours()
-    ).padStart(2, "0");
+  const hours = String(
+    now.getHours()
+  ).padStart(2, "0");
 
-  const minutes =
-    String(
-      now.getMinutes()
-    ).padStart(2, "0");
+  const minutes = String(
+    now.getMinutes()
+  ).padStart(2, "0");
 
-  const seconds =
-    String(
-      now.getSeconds()
-    ).padStart(2, "0");
+  const seconds = String(
+    now.getSeconds()
+  ).padStart(2, "0");
 
-  const random =
-    Math.floor(
-      1000 +
-        Math.random() * 9000
-    );
+  const random = Math.floor(
+    1000 + Math.random() * 9000
+  );
 
   return `SBS-${year}${month}${day}-${hours}${minutes}${seconds}-${random}`;
 }
 
 /* ============================================================
-   DATE
+   BOOKING DATE
 ============================================================ */
 
 function formatBookingDate(): string {
@@ -304,14 +355,13 @@ function formatBookingDate(): string {
 }
 
 /* ============================================================
-   PAYMENT
+   PAYMENT LABEL
 ============================================================ */
 
 function paymentLabel(
   value: unknown
 ): string {
-  const payment =
-    stringValue(value);
+  const payment = stringValue(value);
 
   if (!payment) {
     return "Not selected";
@@ -337,51 +387,47 @@ function detailRow(
       ? formatCurrency(value)
       : escapeHtml(
           value !== undefined &&
-            value !== null &&
-            String(value).trim() !== ""
+          value !== null &&
+          String(value).trim() !== ""
             ? value
             : "-"
         );
 
   return `
 <tr>
+  <td
+    style="
+      padding:12px 16px;
+      border-bottom:1px solid ${BORDER};
+      font-size:14px;
+      font-weight:600;
+      color:#475569;
+      width:38%;
+      vertical-align:top;
+    "
+  >
+    ${escapeHtml(label)}
+  </td>
 
-<td
-  style="
-    padding:12px 16px;
-    border-bottom:1px solid ${BORDER};
-    font-size:14px;
-    font-weight:600;
-    color:#475569;
-    width:38%;
-    vertical-align:top;
-  "
->
-  ${escapeHtml(label)}
-</td>
-
-<td
-  style="
-    padding:12px 16px;
-    border-bottom:1px solid ${BORDER};
-    font-size:14px;
-    font-weight:${
-      options?.highlight
-        ? "700"
-        : "500"
-    };
-    color:${
-      options?.highlight
-        ? BRAND_BLUE
-        : TEXT_DARK
-    };
-    vertical-align:top;
-    word-break:break-word;
-  "
->
-  ${displayValue}
-</td>
-
+  <td
+    style="
+      padding:12px 16px;
+      border-bottom:1px solid ${BORDER};
+      font-size:14px;
+      font-weight:${
+        options?.highlight ? "700" : "500"
+      };
+      color:${
+        options?.highlight
+          ? BRAND_BLUE
+          : TEXT_DARK
+      };
+      vertical-align:top;
+      word-break:break-word;
+    "
+  >
+    ${displayValue}
+  </td>
 </tr>
 `;
 }
@@ -396,63 +442,70 @@ function emailHeader(
 ): string {
   return `
 <tr>
-
-<td
-  style="
-    background:${BRAND_BLUE};
-    padding:30px 25px;
-    text-align:center;
-  "
->
-
-<div
-  style="
-    font-family:Arial,Helvetica,sans-serif;
-    font-size:32px;
-    line-height:1;
-    font-weight:800;
-    color:#ffffff;
-  "
->
-  SBS
-  <span
+  <td
+    class="email-header"
     style="
-      color:${BRAND_YELLOW};
+      background:${BRAND_BLUE};
+      padding:30px 25px;
+      text-align:center;
     "
   >
-    TAXI
-  </span>
-</div>
 
-<div
-  style="
-    margin-top:10px;
-    font-size:14px;
-    line-height:1.5;
-    color:#dbeafe;
-    font-weight:500;
-  "
->
-  One Brand. One Fare. One Trusted Service.
-</div>
+    <div
+      class="email-header-logo"
+      style="
+        font-family:Arial,Helvetica,sans-serif;
+        font-size:32px;
+        line-height:1;
+        font-weight:800;
+        color:#ffffff;
+      "
+    >
+      SBS
+      <span style="color:${BRAND_YELLOW};">
+        TAXI
+      </span>
+    </div>
 
-<div
-  style="
-    display:inline-block;
-    margin-top:18px;
-    padding:9px 18px;
-    border-radius:30px;
-    background:#ffffff;
-    color:${BRAND_BLUE};
-    font-size:13px;
-    font-weight:700;
-  "
->
-  ${escapeHtml(title)}
-</div>
+    <div
+      style="
+        margin-top:10px;
+        font-size:14px;
+        line-height:1.5;
+        color:#dbeafe;
+        font-weight:500;
+      "
+    >
+      One Brand. One Fare. One Trusted Service.
+    </div>
 
-</td>
+    <div
+      style="
+        display:inline-block;
+        margin-top:18px;
+        padding:9px 18px;
+        border-radius:30px;
+        background:#ffffff;
+        color:${BRAND_BLUE};
+        font-size:13px;
+        font-weight:700;
+      "
+    >
+      ${escapeHtml(title)}
+    </div>
 
+    <div
+      style="
+        margin-top:10px;
+        font-size:12px;
+        color:#dbeafe;
+      "
+    >
+      Booking ID:
+      ${escapeHtml(bookingId)}
+    </div>
+
+  </td>
 </tr>
 `;
 }
@@ -464,166 +517,118 @@ function emailHeader(
 function emailFooter(): string {
   return `
 <tr>
-
-<td
-  style="
-    padding:28px 25px;
-    background:#f8fafc;
-    border-top:1px solid ${BORDER};
-    text-align:center;
-  "
->
-
-<div
-  style="
-    font-size:18px;
-    font-weight:800;
-    color:${BRAND_BLUE};
-  "
->
-  SBS
-  <span
+  <td
+    class="email-footer"
     style="
-      color:${BRAND_YELLOW};
+      padding:28px 25px;
+      background:#f8fafc;
+      border-top:1px solid ${BORDER};
+      text-align:center;
     "
   >
-    TAXI
-  </span>
-</div>
 
-<div
-  style="
-    margin-top:6px;
-    font-size:12px;
-    color:${TEXT_MUTED};
-  "
->
-  One Brand. One Fare. One Trusted Service.
-</div>
+    <div
+      style="
+        font-size:18px;
+        font-weight:800;
+        color:${BRAND_BLUE};
+      "
+    >
+      SBS
+      <span style="color:${BRAND_YELLOW};">
+        TAXI
+      </span>
+    </div>
 
-<table
-  align="center"
-  cellpadding="0"
-  cellspacing="0"
-  style="
-    margin:16px auto 0;
-  "
->
+    <div
+      style="
+        margin-top:6px;
+        font-size:12px;
+        color:${TEXT_MUTED};
+      "
+    >
+      One Brand. One Fare. One Trusted Service.
+    </div>
 
-<tr>
+    <table
+      align="center"
+      cellpadding="0"
+      cellspacing="0"
+      style="margin:16px auto 0;"
+    >
+      <tr>
 
-<td
-  style="
-    vertical-align:middle;
-    padding-right:8px;
-  "
->
+        <td
+          style="
+            vertical-align:middle;
+            padding-right:8px;
+          "
+        >
+          <img
+            src="cid:india-flag@sbstaxi"
+            width="24"
+            height="16"
+            alt="India"
+            style="
+              display:block;
+              width:24px;
+              height:16px;
+              border:0;
+              outline:none;
+              text-decoration:none;
+            "
+          />
+        </td>
 
-<div
-  style="
-    width:24px;
-    height:16px;
-    display:block;
-    overflow:hidden;
-  "
->
+        <td
+          style="
+            vertical-align:middle;
+            font-size:13px;
+            font-weight:600;
+            color:#0f172a;
+          "
+        >
+          Made in India
+        </td>
 
-<div
-  style="
-    width:24px;
-    height:5.33px;
-    background:#FF9933;
-  "
-></div>
+      </tr>
+    </table>
 
-<div
-  style="
-    position:relative;
-    width:24px;
-    height:5.33px;
-    background:#FFFFFF;
-  "
->
+    <div
+      style="
+        margin-top:12px;
+        font-size:12px;
+        color:#475569;
+      "
+    >
+      Powered by
 
-<div
-  style="
-    position:absolute;
-    left:50%;
-    top:50%;
-    width:4px;
-    height:4px;
-    margin-left:-2px;
-    margin-top:-2px;
-    border:0.7px solid #000080;
-    border-radius:50%;
-  "
-></div>
+      <a
+        href="https://sbstechnologies.in"
+        target="_blank"
+        rel="noopener noreferrer"
+        style="
+          color:${BRAND_BLUE};
+          font-weight:700;
+          text-decoration:none;
+        "
+      >
+        SBS Technologies
+      </a>
+    </div>
 
-</div>
+    <div
+      style="
+        margin-top:12px;
+        font-size:11px;
+        line-height:1.5;
+        color:#94a3b8;
+      "
+    >
+      This is an automated email from the SBS Taxi website.
+    </div>
 
-<div
-  style="
-    width:24px;
-    height:5.34px;
-    background:#138808;
-  "
-></div>
-
-</div>
-
-</td>
-
-<td
-  style="
-    vertical-align:middle;
-    font-size:13px;
-    font-weight:600;
-    color:#0f172a;
-  "
->
-  Made in India
-</td>
-
-</tr>
-
-</table>
-
-<div
-  style="
-    margin-top:12px;
-    font-size:12px;
-    color:#475569;
-  "
->
-  Powered by
-
-  <a
-    href="https://sbstechnologies.in"
-    target="_blank"
-    rel="noopener noreferrer"
-    style="
-      color:${BRAND_BLUE};
-      font-weight:700;
-      text-decoration:none;
-    "
-  >
-    SBS Technologies
-  </a>
-</div>
-
-<div
-  style="
-    margin-top:12px;
-    font-size:11px;
-    line-height:1.5;
-    color:#94a3b8;
-  "
->
-  This is an automated email from the SBS Taxi website.
-</div>
-
-</td>
-
+  </td>
 </tr>
 `;
 }
@@ -651,6 +656,52 @@ function wrapEmail(
 
 <title>SBS Taxi</title>
 
+<style>
+
+@media only screen and (max-width:600px) {
+
+  .email-outer {
+    padding:10px 6px !important;
+  }
+
+  .email-container {
+    width:100% !important;
+    max-width:100% !important;
+    border-radius:12px !important;
+  }
+
+  .email-content {
+    padding:18px !important;
+  }
+
+  .email-header {
+    padding:22px 15px !important;
+  }
+
+  .email-header-logo {
+    font-size:27px !important;
+  }
+
+  .email-section-title {
+    font-size:17px !important;
+  }
+
+}
+
+@media only screen and (max-width:400px) {
+
+  .email-outer {
+    padding:6px 3px !important;
+  }
+
+  .email-content {
+    padding:14px !important;
+  }
+
+}
+
+</style>
+
 </head>
 
 <body
@@ -667,6 +718,7 @@ function wrapEmail(
   width="100%"
   cellpadding="0"
   cellspacing="0"
+  class="email-outer"
   style="
     width:100%;
     background:#eef4f9;
@@ -682,6 +734,7 @@ function wrapEmail(
   width="100%"
   cellpadding="0"
   cellspacing="0"
+  class="email-container"
   style="
     width:100%;
     max-width:760px;
@@ -711,13 +764,226 @@ ${emailFooter()}
 }
 
 /* ============================================================
+   CANCEL BOOKING SECTION
+============================================================ */
+
+function cancelBookingSection(
+  bookingId: string,
+  rideId: string
+): string {
+
+  const siteUrl = (
+    process.env.NEXT_PUBLIC_SITE_URL ||
+    "http://localhost:3000"
+  ).replace(/\/$/, "");
+
+  const cancelBookingUrl =
+    `${siteUrl}/booking/cancel?booking_id=${encodeURIComponent(
+      bookingId
+    )}${
+      rideId
+        ? `&ride_id=${encodeURIComponent(
+            rideId
+          )}`
+        : ""
+    }`;
+
+  return `
+<div
+  style="
+    margin-top:24px;
+    padding:22px;
+    background:#fff7ed;
+    border:1px solid #fed7aa;
+    border-radius:14px;
+    text-align:center;
+  "
+>
+
+  <div
+    style="
+      font-size:18px;
+      font-weight:800;
+      color:#9a3412;
+    "
+  >
+    Need to cancel your booking?
+  </div>
+
+  <div
+    style="
+      margin-top:8px;
+      font-size:13px;
+      line-height:1.6;
+      color:#7c2d12;
+    "
+  >
+    If you no longer need this ride,
+    you can request cancellation below.
+  </div>
+
+  <div style="margin-top:18px;">
+
+    <a
+      href="${escapeHtml(cancelBookingUrl)}"
+      target="_blank"
+      style="
+        display:inline-block;
+        padding:14px 28px;
+        background:#dc2626;
+        color:#ffffff;
+        text-decoration:none;
+        border-radius:10px;
+        font-family:Arial,Helvetica,sans-serif;
+        font-size:14px;
+        font-weight:800;
+        line-height:1;
+      "
+    >
+      Cancel Booking
+    </a>
+
+  </div>
+
+  <div
+    style="
+      margin-top:12px;
+      font-size:11px;
+      color:#9a3412;
+    "
+  >
+    Booking ID:
+    ${escapeHtml(bookingId)}
+  </div>
+
+  ${
+    rideId
+      ? `
+  <div
+    style="
+      margin-top:4px;
+      font-size:11px;
+      color:#9a3412;
+    "
+  >
+    Ride ID:
+    ${escapeHtml(rideId)}
+  </div>
+  `
+      : ""
+  }
+
+</div>
+`;
+}
+
+/* ============================================================
+   RIDE OTP SECTION
+============================================================ */
+
+function rideOtpSection(
+  bookingOtp: string
+): string {
+
+  if (!bookingOtp) {
+    return `
+<div
+  style="
+    margin-top:28px;
+    padding:20px;
+    background:#f8fafc;
+    border:1px solid #e2e8f0;
+    border-radius:14px;
+    text-align:center;
+  "
+>
+
+  <div
+    style="
+      font-size:13px;
+      color:#64748b;
+      font-weight:600;
+    "
+  >
+    Ride OTP
+  </div>
+
+  <div
+    style="
+      margin-top:6px;
+      font-size:14px;
+      color:#94a3b8;
+    "
+  >
+    OTP not available
+  </div>
+
+</div>
+`;
+  }
+
+  return `
+<div
+  style="
+    margin-top:28px;
+    padding:24px;
+    background:#fff9e8;
+    border:2px solid ${BRAND_YELLOW};
+    border-radius:16px;
+    text-align:center;
+  "
+>
+
+  <div
+    style="
+      font-size:12px;
+      font-weight:800;
+      text-transform:uppercase;
+      letter-spacing:1px;
+      color:#7c5b08;
+    "
+  >
+    Ride OTP
+  </div>
+
+  <div
+    style="
+      margin-top:8px;
+      font-size:36px;
+      letter-spacing:8px;
+      font-weight:900;
+      color:${BRAND_BLUE};
+    "
+  >
+    ${escapeHtml(bookingOtp)}
+  </div>
+
+  <div
+    style="
+      margin-top:8px;
+      font-size:12px;
+      line-height:1.6;
+      color:#7c5b08;
+    "
+  >
+    Please share this OTP with your driver
+    when your ride starts.
+  </div>
+
+</div>
+`;
+}
+
+/* ============================================================
    POST
 ============================================================ */
 
 export async function POST(
   request: Request
 ) {
+
   try {
+
     /* ========================================================
        READ BODY
     ======================================================== */
@@ -725,20 +991,35 @@ export async function POST(
     let body: TaxiBookingBody;
 
     try {
+
       body =
         (await request.json()) as TaxiBookingBody;
+
     } catch {
+
       return NextResponse.json(
         {
           success: false,
-          error:
-            "Invalid JSON request.",
+          error: "Invalid JSON request.",
         },
         {
           status: 400,
         }
       );
     }
+
+    console.log(
+      "================================="
+    );
+
+    console.log(
+      "SBS BOOKING EMAIL REQUEST:",
+      body
+    );
+
+    console.log(
+      "================================="
+    );
 
     /* ========================================================
        SMTP
@@ -747,14 +1028,12 @@ export async function POST(
     const smtpHost =
       process.env.SMTP_HOST;
 
-    const smtpPort =
-      Number(
-        process.env.SMTP_PORT || 587
-      );
+    const smtpPort = Number(
+      process.env.SMTP_PORT || 587
+    );
 
     const smtpSecure =
-      process.env.SMTP_SECURE ===
-      "true";
+      process.env.SMTP_SECURE === "true";
 
     const smtpUser =
       process.env.SMTP_USER;
@@ -769,14 +1048,10 @@ export async function POST(
       process.env.CONTACT_CC;
 
     const toEmails =
-      parseEmailList(
-        contactEmail
-      );
+      parseEmailList(contactEmail);
 
     const ccEmails =
-      parseEmailList(
-        contactCC
-      );
+      parseEmailList(contactCC);
 
     /* ========================================================
        SMTP VALIDATION
@@ -787,6 +1062,7 @@ export async function POST(
       !smtpUser ||
       !smtpPassword
     ) {
+
       console.error(
         "SMTP configuration missing."
       );
@@ -803,9 +1079,8 @@ export async function POST(
       );
     }
 
-    if (
-      toEmails.length === 0
-    ) {
+    if (toEmails.length === 0) {
+
       return NextResponse.json(
         {
           success: false,
@@ -837,10 +1112,22 @@ export async function POST(
     await transporter.verify();
 
     /* ========================================================
-       COMMON OPTIONS
+       INDIA FLAG
+    ======================================================== */
+
+    const indiaFlagPath =
+      path.join(
+        process.cwd(),
+        "public",
+        "flag.jpg"
+      );
+
+    /* ========================================================
+       COMMON MAIL OPTIONS
     ======================================================== */
 
     const commonMailOptions = {
+
       from:
         `"SBS Taxi Website" <${smtpUser}>`,
 
@@ -853,7 +1140,7 @@ export async function POST(
     };
 
     /* ========================================================
-       BOOKING DATA
+       BOOKING TYPE
     ======================================================== */
 
     const bookingType =
@@ -861,42 +1148,125 @@ export async function POST(
         body.bookingType
       );
 
-    /*
-      When /api/booking receives a successful
-      create.php response, it sends these values
-      to this endpoint.
-    */
+    /* ========================================================
+       NESTED API DATA
+    ======================================================== */
+
+    const apiData = body.data;
+
+    /* ========================================================
+       RIDE ID
+    ======================================================== */
 
     const rideId =
-      body.rideId ??
-      body.ride_id ??
-      "-";
-
-    const bookingNumber =
       stringValue(
-        body.bookingNumber ??
-          body.booking_number
+        body.ride_id ??
+          body.rideId ??
+          apiData?.ride_id ??
+          apiData?.rideId
       );
+
+    /* ========================================================
+       BOOKING ID
+    ======================================================== */
+
+    const apiBookingId =
+      stringValue(
+        body.booking_id ??
+          body.bookingId ??
+          apiData?.booking_id ??
+          apiData?.bookingId ??
+          apiData?.booking_number ??
+          apiData?.bookingNumber
+      );
+
+    const bookingId =
+      apiBookingId ||
+      generateBookingId();
+
+    /* ========================================================
+       ⭐ RIDE OTP
+       
+       IMPORTANT:
+       ride_otp is checked FIRST.
+    ======================================================== */
+
+    const bookingOtp =
+      stringValue(
+        body.ride_otp ??
+          body.rideOtp ??
+          body.booking_otp ??
+          body.bookingOtp ??
+          body.otp ??
+          apiData?.ride_otp ??
+          apiData?.rideOtp ??
+          apiData?.booking_otp ??
+          apiData?.bookingOtp ??
+          apiData?.otp
+      );
+
+    console.log(
+      "================================="
+    );
+
+    console.log(
+      "SBS RIDE OTP:",
+      bookingOtp || "NOT AVAILABLE"
+    );
+
+    console.log(
+      "================================="
+    );
+
+    /* ========================================================
+       SITE URL
+    ======================================================== */
+
+    const siteUrl = (
+      process.env.NEXT_PUBLIC_SITE_URL ||
+      "http://localhost:3000"
+    ).replace(/\/$/, "");
+
+    /* ========================================================
+       CANCEL URL
+    ======================================================== */
+
+    const cancelBookingUrl =
+      `${siteUrl}/booking/cancel?booking_id=${encodeURIComponent(
+        bookingId
+      )}${
+        rideId
+          ? `&ride_id=${encodeURIComponent(
+              rideId
+            )}`
+          : ""
+      }`;
+
+    console.log(
+      "SBS CANCEL URL:",
+      cancelBookingUrl
+    );
+
+    /* ========================================================
+       BOOKING DATE
+    ======================================================== */
+
+    const bookingDate =
+      formatBookingDate();
+
+    /* ========================================================
+       RIDE STATUS
+    ======================================================== */
 
     const rideStatus =
       stringValue(
         body.rideStatus ??
-          body.status,
+          body.status ??
+          apiData?.rideStatus ??
+          apiData?.ride_status ??
+          apiData?.status,
         "requested"
       );
-
-    /*
-      If create.php gives booking_number,
-      use it as the main booking reference.
-      Otherwise generate a website email ID.
-    */
-
-    const bookingId =
-      bookingNumber ||
-      generateBookingId();
-
-    const bookingDate =
-      formatBookingDate();
 
     /* ========================================================
        PASSENGER
@@ -909,14 +1279,10 @@ export async function POST(
       );
 
     const email =
-      stringValue(
-        body.email
-      );
+      stringValue(body.email);
 
     const phone =
-      stringValue(
-        body.phone
-      );
+      stringValue(body.phone);
 
     const people =
       numberValue(
@@ -927,13 +1293,20 @@ export async function POST(
 
     const babies =
       numberValue(
-        body.babies,
+        body.babies ??
+          body.baby ??
+          body.babyCount ??
+          body.baby_count,
         0
       );
 
     const elderly =
       numberValue(
-        body.elderly,
+        body.elderly ??
+          body.elders ??
+          body.elder ??
+          body.elderCount ??
+          body.elder_count,
         0
       );
 
@@ -951,26 +1324,6 @@ export async function POST(
       stringValue(
         body.drop ??
           body.drop_address
-      );
-
-    const pickupLatitude =
-      numberValue(
-        body.pickupLatitude
-      );
-
-    const pickupLongitude =
-      numberValue(
-        body.pickupLongitude
-      );
-
-    const dropLatitude =
-      numberValue(
-        body.dropLatitude
-      );
-
-    const dropLongitude =
-      numberValue(
-        body.dropLongitude
       );
 
     /* ========================================================
@@ -1010,14 +1363,8 @@ export async function POST(
     const vehicle =
       stringValue(
         body.vehicle ??
-          body.vehicleModel,
-        "-"
-      );
-
-    const model =
-      stringValue(
-        body.model ??
-          body.vehicleModel
+          body.vehicleModel ??
+          body.model
       );
 
     const vehicleTypeId =
@@ -1027,8 +1374,7 @@ export async function POST(
       );
 
     const seats =
-      body.seats ??
-      "-";
+      body.seats ?? "-";
 
     /* ========================================================
        FARE
@@ -1038,7 +1384,9 @@ export async function POST(
       numberValue(
         body.estimatedFare ??
           body.estimated_fare ??
-          body.price,
+          body.price ??
+          apiData?.estimatedFare ??
+          apiData?.estimated_fare,
         0
       );
 
@@ -1058,7 +1406,19 @@ export async function POST(
 
     const paymentMethod =
       paymentLabel(
-        body.paymentMethod
+        body.paymentMethod ??
+          body.payment_method ??
+          apiData?.paymentMethod ??
+          apiData?.payment_method
+      );
+
+    const paymentStatus =
+      stringValue(
+        body.paymentStatus ??
+          body.payment_status ??
+          apiData?.paymentStatus ??
+          apiData?.payment_status,
+        "pending"
       );
 
     /* ========================================================
@@ -1068,18 +1428,26 @@ export async function POST(
     const preferenceText =
       Array.isArray(
         body.preferences
-      ) &&
-      body.preferences.length > 0
+      )
         ? body.preferences
-            .map(
+            .map((item) =>
+              stringValue(item)
+            )
+            .filter(
               (item) =>
-                escapeHtml(item)
+                item.length > 0
+            )
+            .map((item) =>
+              escapeHtml(item)
             )
             .join(", ")
-        : "None";
+        : "";
+
+    const hasPreferences =
+      preferenceText.length > 0;
 
     /* ========================================================
-       PASSENGER RIDE CREATED BY create.php
+       PASSENGER RIDE
     ======================================================== */
 
     if (
@@ -1090,14 +1458,13 @@ export async function POST(
       bookingType ===
         "taxi-booking"
     ) {
+
       /* ======================================================
          VALIDATION
       ====================================================== */
 
-      if (
-        !pickup ||
-        !drop
-      ) {
+      if (!pickup || !drop) {
+
         return NextResponse.json(
           {
             success: false,
@@ -1117,6 +1484,7 @@ export async function POST(
           MAX_NAME_LENGTH
         )
       ) {
+
         return NextResponse.json(
           {
             success: false,
@@ -1130,9 +1498,30 @@ export async function POST(
       }
 
       if (
+        phone &&
+        !validateLength(
+          phone,
+          MAX_PHONE_LENGTH
+        )
+      ) {
+
+        return NextResponse.json(
+          {
+            success: false,
+            error:
+              "Phone number is too long.",
+          },
+          {
+            status: 400,
+          }
+        );
+      }
+
+      if (
         email &&
         !isValidEmail(email)
       ) {
+
         return NextResponse.json(
           {
             success: false,
@@ -1152,6 +1541,7 @@ export async function POST(
           MAX_EMAIL_LENGTH
         )
       ) {
+
         return NextResponse.json(
           {
             success: false,
@@ -1174,6 +1564,7 @@ export async function POST(
           MAX_LOCATION_LENGTH
         )
       ) {
+
         return NextResponse.json(
           {
             success: false,
@@ -1191,7 +1582,16 @@ export async function POST(
       ====================================================== */
 
       await transporter.sendMail({
+
         ...commonMailOptions,
+
+        attachments: [
+          {
+            filename: "flag.jpg",
+            path: indiaFlagPath,
+            cid: "india-flag@sbstaxi",
+          },
+        ],
 
         ...(email
           ? {
@@ -1200,7 +1600,7 @@ export async function POST(
           : {}),
 
         subject:
-          `SBS Taxi Ride Confirmed - ${cleanEmailSubject(
+          `SBS Taxi Ride Booking - ${cleanEmailSubject(
             bookingId
           )}`,
 
@@ -1213,7 +1613,10 @@ ${emailHeader(
 
 <tr>
 
-<td style="padding:30px;">
+<td
+  class="email-content"
+  style="padding:30px;"
+>
 
 <!-- STATUS -->
 
@@ -1236,7 +1639,7 @@ ${emailHeader(
     color:#166534;
   "
 >
-Ride Status
+  Ride Status
 </div>
 
 <div
@@ -1248,7 +1651,7 @@ Ride Status
     text-transform:capitalize;
   "
 >
-${escapeHtml(rideStatus)}
+  ${escapeHtml(rideStatus)}
 </div>
 
 </div>
@@ -1256,13 +1659,14 @@ ${escapeHtml(rideStatus)}
 <!-- BOOKING REFERENCE -->
 
 <h2
+  class="email-section-title"
   style="
     margin:0 0 12px;
     color:${BRAND_BLUE};
     font-size:19px;
   "
 >
-Booking Reference
+  Booking Reference
 </h2>
 
 <table
@@ -1279,20 +1683,35 @@ Booking Reference
 
 ${detailRow(
   "Booking Number",
-  bookingNumber ||
-    bookingId,
+  bookingId,
   {
     highlight: true,
   }
 )}
 
-${detailRow(
-  "Ride ID",
-  rideId,
-  {
-    highlight: true,
-  }
-)}
+${
+  rideId
+    ? detailRow(
+        "Ride ID",
+        rideId,
+        {
+          highlight: true,
+        }
+      )
+    : ""
+}
+
+${
+  bookingOtp
+    ? detailRow(
+        "Ride OTP",
+        bookingOtp,
+        {
+          highlight: true,
+        }
+      )
+    : ""
+}
 
 ${detailRow(
   "Booking Date",
@@ -1318,13 +1737,14 @@ ${
 <!-- TRIP -->
 
 <h2
+  class="email-section-title"
   style="
     margin:28px 0 12px;
     color:${BRAND_BLUE};
     font-size:19px;
   "
 >
-Trip Details
+  Trip Details
 </h2>
 
 <table
@@ -1379,62 +1799,17 @@ ${detailRow(
 
 </table>
 
-<!-- COORDINATES -->
-
-<h2
-  style="
-    margin:28px 0 12px;
-    color:${BRAND_BLUE};
-    font-size:19px;
-  "
->
-Location Coordinates
-</h2>
-
-<table
-  width="100%"
-  cellpadding="0"
-  cellspacing="0"
-  style="
-    border:1px solid #e2e8f0;
-    border-radius:14px;
-    border-collapse:separate;
-    overflow:hidden;
-  "
->
-
-${detailRow(
-  "Pickup Latitude",
-  pickupLatitude
-)}
-
-${detailRow(
-  "Pickup Longitude",
-  pickupLongitude
-)}
-
-${detailRow(
-  "Drop Latitude",
-  dropLatitude
-)}
-
-${detailRow(
-  "Drop Longitude",
-  dropLongitude
-)}
-
-</table>
-
 <!-- PASSENGER -->
 
 <h2
+  class="email-section-title"
   style="
     margin:28px 0 12px;
     color:${BRAND_BLUE};
     font-size:19px;
   "
 >
-Passenger Details
+  Passenger Details
 </h2>
 
 <table
@@ -1451,8 +1826,7 @@ Passenger Details
 
 ${detailRow(
   "Passenger Name",
-  passengerName ||
-    "-"
+  passengerName || "-"
 )}
 
 ${
@@ -1493,13 +1867,14 @@ ${detailRow(
 <!-- VEHICLE -->
 
 <h2
+  class="email-section-title"
   style="
     margin:28px 0 12px;
     color:${BRAND_BLUE};
     font-size:19px;
   "
 >
-Vehicle Details
+  Vehicle Details
 </h2>
 
 <table
@@ -1522,18 +1897,14 @@ ${detailRow(
   }
 )}
 
-${detailRow(
-  "Vehicle",
-  vehicle,
-  {
-    highlight: true,
-  }
-)}
-
-${detailRow(
-  "Vehicle Model",
-  model || "-"
-)}
+${
+  vehicle
+    ? detailRow(
+        "Vehicle",
+        vehicle
+      )
+    : ""
+}
 
 ${detailRow(
   "Seats",
@@ -1542,16 +1913,17 @@ ${detailRow(
 
 </table>
 
-<!-- DISTANCE -->
+<!-- JOURNEY -->
 
 <h2
+  class="email-section-title"
   style="
     margin:28px 0 12px;
     color:${BRAND_BLUE};
     font-size:19px;
   "
 >
-Journey Estimate
+  Journey Estimate
 </h2>
 
 <table
@@ -1569,7 +1941,7 @@ Journey Estimate
 ${detailRow(
   "Distance",
   distanceKm > 0
-    ? `${distanceKm} km`
+    ? `${distanceKm.toFixed(2)} km`
     : "-"
 )}
 
@@ -1585,13 +1957,14 @@ ${detailRow(
 <!-- FARE -->
 
 <h2
+  class="email-section-title"
   style="
     margin:28px 0 12px;
     color:${BRAND_BLUE};
     font-size:19px;
   "
 >
-Fare Estimate
+  Fare Estimate
 </h2>
 
 <div
@@ -1610,7 +1983,7 @@ Fare Estimate
     font-weight:600;
   "
 >
-Estimated Fare
+  Estimated Fare
 </div>
 
 <div
@@ -1623,9 +1996,7 @@ Estimated Fare
 >
 ${
   estimatedFare > 0
-    ? formatCurrency(
-        estimatedFare
-      )
+    ? formatCurrency(estimatedFare)
     : "To be confirmed"
 }
 </div>
@@ -1635,41 +2006,61 @@ ${
 <!-- PAYMENT -->
 
 <h2
+  class="email-section-title"
   style="
     margin:28px 0 12px;
     color:${BRAND_BLUE};
     font-size:19px;
   "
 >
-Payment Method
+  Payment Details
 </h2>
 
-<div
+<table
+  width="100%"
+  cellpadding="0"
+  cellspacing="0"
   style="
-    padding:17px 20px;
-    background:#fff9e8;
-    border:1px solid #f1d56b;
-    border-radius:13px;
-    color:#7c5b08;
-    font-size:16px;
-    font-weight:800;
+    border:1px solid #e2e8f0;
+    border-radius:14px;
+    border-collapse:separate;
+    overflow:hidden;
   "
 >
-${escapeHtml(
-  paymentMethod
+
+${detailRow(
+  "Payment Method",
+  paymentMethod,
+  {
+    highlight: true,
+  }
 )}
-</div>
+
+${detailRow(
+  "Payment Status",
+  paymentStatus
+)}
+
+</table>
+
+<!-- RIDE OTP -->
+
+${rideOtpSection(bookingOtp)}
 
 <!-- PREFERENCES -->
 
+${
+  hasPreferences
+    ? `
 <h2
+  class="email-section-title"
   style="
     margin:28px 0 12px;
     color:${BRAND_BLUE};
     font-size:19px;
   "
 >
-Additional Preferences
+  Additional Preferences
 </h2>
 
 <div
@@ -1683,8 +2074,11 @@ Additional Preferences
     color:#475569;
   "
 >
-${preferenceText}
+  ${preferenceText}
 </div>
+`
+    : ""
+}
 
 <!-- SUCCESS -->
 
@@ -1705,7 +2099,7 @@ ${preferenceText}
     color:#166534;
   "
 >
-✓ Ride Request Successfully Created
+  ✓ Ride Request Successfully Created
 </div>
 
 <div
@@ -1716,31 +2110,18 @@ ${preferenceText}
     color:#166534;
   "
 >
-Your ride has been successfully created in the
-SBS Taxi booking system.
+  Your ride has been successfully created in the
+  SBS Taxi booking system.
 </div>
 
-${
-  bookingNumber
-    ? `
-<div
-  style="
-    margin-top:10px;
-    font-size:14px;
-    font-weight:700;
-    color:#166534;
-  "
->
-Booking Number:
-${escapeHtml(
-  bookingNumber
+</div>
+
+<!-- CANCEL BOOKING -->
+
+${cancelBookingSection(
+  bookingId,
+  rideId
 )}
-</div>
-`
-    : ""
-}
-
-</div>
 
 </td>
 
@@ -1749,6 +2130,49 @@ ${escapeHtml(
 `),
       });
 
+      /* ======================================================
+         RESPONSE
+      ====================================================== */
+
+      const responseData = {
+
+        ride_id:
+          rideId || null,
+
+        booking_id:
+          bookingId,
+
+        booking_number:
+          bookingId,
+
+        /* ⭐ RIDE OTP */
+        ride_otp:
+          bookingOtp || null,
+
+        otp:
+          bookingOtp || null,
+
+        status:
+          rideStatus,
+
+        payment_method:
+          paymentMethod,
+
+        payment_status:
+          paymentStatus,
+
+        cancel_url:
+          cancelBookingUrl,
+
+        email_sent:
+          true,
+      };
+
+      console.log(
+        "SBS BOOKING EMAIL RESPONSE:",
+        responseData
+      );
+
       return NextResponse.json(
         {
           success: true,
@@ -1756,23 +2180,7 @@ ${escapeHtml(
           message:
             "Ride booking email sent successfully.",
 
-          data: {
-            ride_id:
-              rideId,
-
-            booking_number:
-              bookingNumber ||
-              null,
-
-            booking_id:
-              bookingId,
-
-            status:
-              rideStatus,
-
-            email_sent:
-              true,
-          },
+          data: responseData,
         },
         {
           status: 200,
@@ -1788,11 +2196,13 @@ ${escapeHtml(
       bookingType ===
       "simple-booking"
     ) {
+
       if (
         !passengerName ||
         !pickup ||
         !drop
       ) {
+
         return NextResponse.json(
           {
             success: false,
@@ -1806,7 +2216,16 @@ ${escapeHtml(
       }
 
       await transporter.sendMail({
+
         ...commonMailOptions,
+
+        attachments: [
+          {
+            filename: "flag.jpg",
+            path: indiaFlagPath,
+            cid: "india-flag@sbstaxi",
+          },
+        ],
 
         ...(email
           ? {
@@ -1828,16 +2247,20 @@ ${emailHeader(
 
 <tr>
 
-<td style="padding:30px;">
+<td
+  class="email-content"
+  style="padding:30px;"
+>
 
 <h2
+  class="email-section-title"
   style="
     margin:0 0 12px;
     color:${BRAND_BLUE};
     font-size:19px;
   "
 >
-Booking Details
+  Booking Details
 </h2>
 
 <table
@@ -1902,23 +2325,52 @@ ${detailRow(
 )}
 
 ${detailRow(
-  "Vehicle",
-  vehicle,
+  "Vehicle Type",
+  vehicleType,
   {
     highlight: true,
   }
 )}
 
+${
+  rideId
+    ? detailRow(
+        "Ride ID",
+        rideId,
+        {
+          highlight: true,
+        }
+      )
+    : ""
+}
+
+${
+  bookingOtp
+    ? detailRow(
+        "Ride OTP",
+        bookingOtp,
+        {
+          highlight: true,
+        }
+      )
+    : ""
+}
+
 </table>
 
+<!-- RIDE OTP -->
+
+${rideOtpSection(bookingOtp)}
+
 <h2
+  class="email-section-title"
   style="
     margin:28px 0 12px;
     color:${BRAND_BLUE};
     font-size:19px;
   "
 >
-Fare Estimate
+  Fare Estimate
 </h2>
 
 <div
@@ -1936,7 +2388,7 @@ Fare Estimate
     color:#64748b;
   "
 >
-Estimated Fare
+  Estimated Fare
 </div>
 
 <div
@@ -1949,14 +2401,17 @@ Estimated Fare
 >
 ${
   estimatedFare > 0
-    ? formatCurrency(
-        estimatedFare
-      )
+    ? formatCurrency(estimatedFare)
     : "To be confirmed"
 }
 </div>
 
 </div>
+
+${cancelBookingSection(
+  bookingId,
+  rideId
+)}
 
 </td>
 
@@ -1965,16 +2420,36 @@ ${
 `),
       });
 
-      return NextResponse.json({
-        success: true,
-        bookingId,
-        estimatedFare:
-          estimatedFare > 0
-            ? estimatedFare
-            : null,
-        message:
-          "Booking email sent successfully.",
-      });
+      return NextResponse.json(
+        {
+          success: true,
+
+          bookingId,
+
+          ride_id:
+            rideId || null,
+
+          ride_otp:
+            bookingOtp || null,
+
+          otp:
+            bookingOtp || null,
+
+          cancelUrl:
+            cancelBookingUrl,
+
+          estimatedFare:
+            estimatedFare > 0
+              ? estimatedFare
+              : null,
+
+          message:
+            "Booking email sent successfully.",
+        },
+        {
+          status: 200,
+        }
+      );
     }
 
     /* ========================================================
@@ -1985,26 +2460,22 @@ ${
       bookingType ===
       "contact-enquiry"
     ) {
+
       const name =
-        stringValue(
-          body.name
-        );
+        stringValue(body.name);
 
       const subject =
-        stringValue(
-          body.subject
-        );
+        stringValue(body.subject);
 
       const message =
-        stringValue(
-          body.message
-        );
+        stringValue(body.message);
 
       if (
         !name ||
         !email ||
         !subject
       ) {
+
         return NextResponse.json(
           {
             success: false,
@@ -2020,6 +2491,7 @@ ${
       if (
         !isValidEmail(email)
       ) {
+
         return NextResponse.json(
           {
             success: false,
@@ -2038,6 +2510,7 @@ ${
           MAX_MESSAGE_LENGTH
         )
       ) {
+
         return NextResponse.json(
           {
             success: false,
@@ -2051,7 +2524,16 @@ ${
       }
 
       await transporter.sendMail({
+
         ...commonMailOptions,
+
+        attachments: [
+          {
+            filename: "flag.jpg",
+            path: indiaFlagPath,
+            cid: "india-flag@sbstaxi",
+          },
+        ],
 
         replyTo: email,
 
@@ -2069,16 +2551,20 @@ ${emailHeader(
 
 <tr>
 
-<td style="padding:30px;">
+<td
+  class="email-content"
+  style="padding:30px;"
+>
 
 <h2
+  class="email-section-title"
   style="
     margin:0 0 12px;
     color:${BRAND_BLUE};
     font-size:19px;
   "
 >
-Customer Details
+  Customer Details
 </h2>
 
 <table
@@ -2119,13 +2605,14 @@ ${detailRow(
 </table>
 
 <h2
+  class="email-section-title"
   style="
     margin:28px 0 12px;
     color:${BRAND_BLUE};
     font-size:19px;
   "
 >
-Enquiry
+  Enquiry
 </h2>
 
 <div
@@ -2139,9 +2626,7 @@ Enquiry
     color:#475569;
   "
 >
-${escapeHtml(
-  message || "-"
-)}
+  ${escapeHtml(message || "-")}
 </div>
 
 </td>
@@ -2151,12 +2636,19 @@ ${escapeHtml(
 `),
       });
 
-      return NextResponse.json({
-        success: true,
-        bookingId,
-        message:
-          "Enquiry sent successfully.",
-      });
+      return NextResponse.json(
+        {
+          success: true,
+
+          bookingId,
+
+          message:
+            "Enquiry sent successfully.",
+        },
+        {
+          status: 200,
+        }
+      );
     }
 
     /* ========================================================
@@ -2173,7 +2665,9 @@ ${escapeHtml(
         status: 400,
       }
     );
+
   } catch (error) {
+
     console.error(
       "SBS TAXI EMAIL API ERROR:",
       error

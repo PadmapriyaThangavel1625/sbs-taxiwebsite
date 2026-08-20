@@ -1,276 +1,576 @@
 "use client";
 
+import { useEffect, useMemo, useState } from "react";
+import dynamic from "next/dynamic";
+
 import {
   MapContainer,
   TileLayer,
   Marker,
-  Polyline,
   Popup,
+  Polyline,
   useMap,
-  CircleMarker,
 } from "react-leaflet";
 
-import { useEffect, useState } from "react";
 import L from "leaflet";
+
 import "leaflet/dist/leaflet.css";
 
-import type { PlaceData } from "./PlaceSearch";
+/* ============================================================
+   TYPES
+============================================================ */
 
-// Fix Leaflet marker icons
-delete (L.Icon.Default.prototype as any)._getIconUrl;
+interface LocationData {
+  name?: string;
+  latitude?: number;
+  longitude?: number;
+}
 
-L.Icon.Default.mergeOptions({
-  iconRetinaUrl:
-    "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
-  iconUrl:
-    "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
-  shadowUrl:
-    "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
-});
-
-interface Props {
-  pickup: PlaceData | null;
-  drop: PlaceData | null;
+interface RouteMapProps {
+  pickup: LocationData | null;
+  drop: LocationData | null;
   currentLocation: [number, number] | null;
   setDistanceKm: (distance: number) => void;
 }
 
-// Separate interface for FitBounds
-interface FitBoundsProps {
-  pickup: PlaceData | null;
-  drop: PlaceData | null;
-  currentLocation: [number, number] | null;
+/* ============================================================
+   LEAFLET ICON FIX
+============================================================ */
+
+const pickupIcon = L.divIcon({
+  className: "sbs-map-marker",
+  html: `
+    <div
+      style="
+        width: 38px;
+        height: 38px;
+        border-radius: 50% 50% 50% 0;
+        background: #123f80;
+        border: 4px solid white;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+        transform: rotate(-45deg);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      "
+    >
+      <div
+        style="
+          width: 10px;
+          height: 10px;
+          border-radius: 50%;
+          background: white;
+        "
+      ></div>
+    </div>
+  `,
+  iconSize: [38, 38],
+  iconAnchor: [19, 38],
+  popupAnchor: [0, -38],
+});
+
+const dropIcon = L.divIcon({
+  className: "sbs-map-marker",
+  html: `
+    <div
+      style="
+        width: 38px;
+        height: 38px;
+        border-radius: 50% 50% 50% 0;
+        background: #dc2626;
+        border: 4px solid white;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+        transform: rotate(-45deg);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      "
+    >
+      <div
+        style="
+          width: 10px;
+          height: 10px;
+          border-radius: 50%;
+          background: white;
+        "
+      ></div>
+    </div>
+  `,
+  iconSize: [38, 38],
+  iconAnchor: [19, 38],
+  popupAnchor: [0, -38],
+});
+
+const currentIcon = L.divIcon({
+  className: "sbs-map-marker",
+  html: `
+    <div
+      style="
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        background: #2563eb;
+        border: 4px solid white;
+        box-shadow:
+          0 0 0 7px rgba(37,99,235,0.18),
+          0 4px 12px rgba(0,0,0,0.25);
+      "
+    ></div>
+  `,
+  iconSize: [34, 34],
+  iconAnchor: [17, 17],
+});
+
+/* ============================================================
+   ROUTE DISTANCE
+============================================================ */
+
+function calculateDistance(
+  lat1: number,
+  lon1: number,
+  lat2: number,
+  lon2: number
+) {
+  const earthRadiusKm = 6371;
+
+  const dLat =
+    ((lat2 - lat1) * Math.PI) / 180;
+
+  const dLon =
+    ((lon2 - lon1) * Math.PI) / 180;
+
+  const a =
+    Math.sin(dLat / 2) *
+      Math.sin(dLat / 2) +
+    Math.cos((lat1 * Math.PI) / 180) *
+      Math.cos((lat2 * Math.PI) / 180) *
+      Math.sin(dLon / 2) *
+      Math.sin(dLon / 2);
+
+  const c =
+    2 *
+    Math.atan2(
+      Math.sqrt(a),
+      Math.sqrt(1 - a)
+    );
+
+  return earthRadiusKm * c;
 }
 
-function FitBounds({
+/* ============================================================
+   MAP FITTER
+============================================================ */
+
+function MapController({
   pickup,
   drop,
   currentLocation,
-}: FitBoundsProps) {
+}: {
+  pickup: LocationData | null;
+  drop: LocationData | null;
+  currentLocation: [number, number] | null;
+}) {
   const map = useMap();
 
   useEffect(() => {
     const points: [number, number][] = [];
 
-    if (currentLocation) {
-      points.push(currentLocation);
-    }
-
-    if (pickup) {
+    if (
+      pickup?.latitude != null &&
+      pickup?.longitude != null
+    ) {
       points.push([
         pickup.latitude,
         pickup.longitude,
       ]);
     }
 
-    if (drop) {
+    if (
+      drop?.latitude != null &&
+      drop?.longitude != null
+    ) {
       points.push([
         drop.latitude,
         drop.longitude,
       ]);
     }
 
-    if (points.length > 0) {
-      map.fitBounds(points, {
+    if (points.length === 0 && currentLocation) {
+      map.setView(currentLocation, 14);
+      return;
+    }
+
+    if (points.length === 1) {
+      map.setView(points[0], 14);
+      return;
+    }
+
+    if (points.length >= 2) {
+      const bounds =
+        L.latLngBounds(points);
+
+      map.fitBounds(bounds, {
         padding: [50, 50],
+        maxZoom: 14,
       });
     }
   }, [
-    pickup,
-    drop,
-    currentLocation,
     map,
+    pickup?.latitude,
+    pickup?.longitude,
+    drop?.latitude,
+    drop?.longitude,
+    currentLocation,
   ]);
 
   return null;
 }
 
-export default function RouteMap({
+/* ============================================================
+   MAP RESIZE FIX
+============================================================ */
+
+function MapResizeHandler() {
+  const map = useMap();
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      map.invalidateSize();
+    }, 100);
+
+    return () => {
+      window.clearTimeout(timer);
+    };
+  }, [map]);
+
+  return null;
+}
+
+/* ============================================================
+   MAP CONTENT
+============================================================ */
+
+function RouteMapContent({
   pickup,
   drop,
   currentLocation,
   setDistanceKm,
-}: Props) {
+}: RouteMapProps) {
   const [route, setRoute] = useState<
     [number, number][]
   >([]);
 
-  const [distance, setDistance] =
-    useState("");
+  const pickupPosition = useMemo<
+    [number, number] | null
+  >(() => {
+    if (
+      pickup?.latitude == null ||
+      pickup?.longitude == null
+    ) {
+      return null;
+    }
 
-  const [duration, setDuration] =
-    useState("");
+    return [
+      pickup.latitude,
+      pickup.longitude,
+    ];
+  }, [
+    pickup?.latitude,
+    pickup?.longitude,
+  ]);
+
+  const dropPosition = useMemo<
+    [number, number] | null
+  >(() => {
+    if (
+      drop?.latitude == null ||
+      drop?.longitude == null
+    ) {
+      return null;
+    }
+
+    return [
+      drop.latitude,
+      drop.longitude,
+    ];
+  }, [
+    drop?.latitude,
+    drop?.longitude,
+  ]);
+
+  /* ==========================================================
+     CALCULATE DISTANCE
+  ========================================================== */
 
   useEffect(() => {
-    if (!pickup || !drop) {
-      setRoute([]);
-      setDistance("");
-      setDuration("");
+    if (
+      !pickupPosition ||
+      !dropPosition
+    ) {
       setDistanceKm(0);
       return;
     }
 
-    // TypeScript-safe references
-    const currentPickup = pickup;
-    const currentDrop = drop;
+    const distance = calculateDistance(
+      pickupPosition[0],
+      pickupPosition[1],
+      dropPosition[0],
+      dropPosition[1]
+    );
 
-    async function getRoute() {
-      try {
-        const url = `https://router.project-osrm.org/route/v1/driving/${currentPickup.longitude},${currentPickup.latitude};${currentDrop.longitude},${currentDrop.latitude}?overview=full&geometries=geojson`;
-
-        const response = await fetch(url);
-
-        const data = await response.json();
-
-        if (data.routes?.length) {
-          const routeData = data.routes[0];
-
-          const coords =
-            routeData.geometry.coordinates.map(
-              (item: number[]) =>
-                [
-                  item[1],
-                  item[0],
-                ] as [number, number]
-            );
-
-          setRoute(coords);
-
-          const km = Number(
-            (
-              routeData.distance / 1000
-            ).toFixed(2)
-          );
-
-          setDistance(`${km} km`);
-
-          // Send distance to BookingPage
-          setDistanceKm(km);
-
-          const mins = Math.round(
-            routeData.duration / 60
-          );
-
-          setDuration(`${mins} mins`);
-        }
-      } catch (error) {
-        console.error(error);
-      }
-    }
-
-    getRoute();
+    setDistanceKm(distance);
   }, [
-    pickup,
-    drop,
+    pickupPosition,
+    dropPosition,
     setDistanceKm,
   ]);
-    return (
-    <div className="space-y-4">
-      <div className="h-[500px] overflow-hidden rounded-xl border shadow">
-        <MapContainer
-          center={
-            currentLocation ?? [11.341036, 77.717164]
-          }
-          zoom={13}
-          style={{
-            height: "100%",
-            width: "100%",
-          }}
+
+  /* ==========================================================
+     DRAW ROUTE
+  ========================================================== */
+
+  useEffect(() => {
+    if (
+      !pickupPosition ||
+      !dropPosition
+    ) {
+      setRoute([]);
+      return;
+    }
+
+    /*
+      Simple visual route line.
+
+      This avoids another routing dependency and
+      keeps the map stable.
+
+      The fare distance is calculated separately.
+    */
+
+    setRoute([
+      pickupPosition,
+      dropPosition,
+    ]);
+  }, [
+    pickupPosition,
+    dropPosition,
+  ]);
+
+  /* ==========================================================
+     DEFAULT CENTER
+  ========================================================== */
+
+  const defaultCenter: [
+    number,
+    number
+  ] = pickupPosition ??
+    dropPosition ??
+    currentLocation ?? [
+      11.341,
+      77.7172,
+    ];
+
+  return (
+    <MapContainer
+      center={defaultCenter}
+      zoom={13}
+      scrollWheelZoom={true}
+      zoomControl={true}
+      attributionControl={true}
+      className="h-[420px] w-full sm:h-[500px]"
+    >
+      <TileLayer
+        attribution="&copy; OpenStreetMap contributors"
+        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+      />
+
+      <MapController
+        pickup={pickup}
+        drop={drop}
+        currentLocation={currentLocation}
+      />
+
+      <MapResizeHandler />
+
+      {/* ======================================================
+          CURRENT LOCATION
+      ====================================================== */}
+
+      {currentLocation && (
+        <Marker
+          position={currentLocation}
+          icon={currentIcon}
         >
-          <TileLayer
-            attribution="OpenStreetMap"
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          />
-
-          <FitBounds
-            pickup={pickup}
-            drop={drop}
-            currentLocation={currentLocation}
-          />
-
-          {currentLocation && (
-            <CircleMarker
-              center={currentLocation}
-              radius={10}
-              pathOptions={{
-                color: "#2563eb",
-                fillColor: "#2563eb",
-                fillOpacity: 1,
-              }}
-            >
-              <Popup>Current Location</Popup>
-            </CircleMarker>
-          )}
-
-          {pickup && (
-            <Marker
-              position={[
-                pickup.latitude,
-                pickup.longitude,
-              ]}
-            >
-              <Popup>
-                <b>Pickup</b>
-                <br />
-                {pickup.name}
-              </Popup>
-            </Marker>
-          )}
-
-          {drop && (
-            <Marker
-              position={[
-                drop.latitude,
-                drop.longitude,
-              ]}
-            >
-              <Popup>
-                <b>Drop</b>
-                <br />
-                {drop.name}
-              </Popup>
-            </Marker>
-          )}
-
-          {route.length > 0 && (
-            <Polyline
-              positions={route}
-              pathOptions={{
-                color: "#2563eb",
-                weight: 5,
-              }}
-            />
-          )}
-        </MapContainer>
-      </div>
-
-      {distance && (
-        <div className="rounded-xl border bg-white p-4 shadow">
-          <h2 className="text-lg font-semibold">
-            Trip Details
-          </h2>
-
-          <div className="mt-3 grid grid-cols-2 gap-4">
-            <div>
-              <p className="text-sm text-gray-500">
-                Distance
+          <Popup>
+            <div className="text-sm">
+              <p className="font-bold">
+                Current Location
               </p>
-              <p className="text-lg font-bold">
-                {distance}
+
+              <p className="mt-1 text-xs text-slate-500">
+                Your detected GPS location
               </p>
             </div>
-
-            <div>
-              <p className="text-sm text-gray-500">
-                Estimated Time
-              </p>
-              <p className="text-lg font-bold">
-                {duration}
-              </p>
-            </div>
-          </div>
-        </div>
+          </Popup>
+        </Marker>
       )}
+
+      {/* ======================================================
+          PICKUP
+      ====================================================== */}
+
+      {pickupPosition && (
+        <Marker
+          position={pickupPosition}
+          icon={pickupIcon}
+        >
+          <Popup>
+            <div className="min-w-[180px]">
+              <p className="text-xs font-bold uppercase tracking-wide text-blue-700">
+                Pickup
+              </p>
+
+              <p className="mt-1 text-sm font-semibold text-slate-900">
+                {pickup?.name ||
+                  "Pickup Location"}
+              </p>
+            </div>
+          </Popup>
+        </Marker>
+      )}
+
+      {/* ======================================================
+          DROP
+      ====================================================== */}
+
+      {dropPosition && (
+        <Marker
+          position={dropPosition}
+          icon={dropIcon}
+        >
+          <Popup>
+            <div className="min-w-[180px]">
+              <p className="text-xs font-bold uppercase tracking-wide text-red-600">
+                Destination
+              </p>
+
+              <p className="mt-1 text-sm font-semibold text-slate-900">
+                {drop?.name ||
+                  "Destination"}
+              </p>
+            </div>
+          </Popup>
+        </Marker>
+      )}
+
+      {/* ======================================================
+          ROUTE
+      ====================================================== */}
+
+      {route.length === 2 && (
+        <Polyline
+          positions={route}
+          pathOptions={{
+            color: "#123f80",
+            weight: 5,
+            opacity: 0.85,
+            lineCap: "round",
+            lineJoin: "round",
+          }}
+        />
+      )}
+    </MapContainer>
+  );
+}
+
+/* ============================================================
+   ROUTE MAP
+============================================================ */
+
+function RouteMap({
+  pickup,
+  drop,
+  currentLocation,
+  setDistanceKm,
+}: RouteMapProps) {
+  /*
+    IMPORTANT:
+
+    The key changes only when the actual map locations
+    change.
+
+    This prevents React/Leaflet from attempting to reuse
+    the same Leaflet container after Fast Refresh/remount.
+  */
+
+  const mapKey = useMemo(() => {
+    const pickupKey =
+      pickup?.latitude != null &&
+      pickup?.longitude != null
+        ? `${pickup.latitude}-${pickup.longitude}`
+        : "no-pickup";
+
+    const dropKey =
+      drop?.latitude != null &&
+      drop?.longitude != null
+        ? `${drop.latitude}-${drop.longitude}`
+        : "no-drop";
+
+    const currentKey =
+      currentLocation
+        ? `${currentLocation[0]}-${currentLocation[1]}`
+        : "no-current";
+
+    return `sbs-route-map-${pickupKey}-${dropKey}-${currentKey}`;
+  }, [
+    pickup?.latitude,
+    pickup?.longitude,
+    drop?.latitude,
+    drop?.longitude,
+    currentLocation,
+  ]);
+
+  /*
+    Important CSS cleanup.
+
+    Leaflet stores `_leaflet_id` on the map DOM element.
+    If a development remount happens before React-Leaflet
+    finishes cleaning it, the next map can see the old ID.
+
+    The wrapper below gives Leaflet a fresh DOM node.
+  */
+
+  return (
+    <div
+      key={mapKey}
+      className="relative h-[420px] w-full sm:h-[500px]"
+    >
+      <RouteMapContent
+        key={`content-${mapKey}`}
+        pickup={pickup}
+        drop={drop}
+        currentLocation={currentLocation}
+        setDistanceKm={setDistanceKm}
+      />
     </div>
   );
 }
+
+/* ============================================================
+   DYNAMIC EXPORT
+============================================================ */
+
+export default dynamic(
+  () =>
+    Promise.resolve(RouteMap),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="flex h-[420px] w-full items-center justify-center rounded-3xl bg-slate-100 sm:h-[500px]">
+        <div className="text-sm font-semibold text-slate-500">
+          Loading map...
+        </div>
+      </div>
+    ),
+  }
+);

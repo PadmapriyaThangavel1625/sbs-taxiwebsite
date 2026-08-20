@@ -37,9 +37,7 @@ interface BookingRequest {
    HELPERS
 ============================================================ */
 
-function cleanString(
-  value: unknown
-): string {
+function cleanString(value: unknown): string {
   return String(value ?? "").trim();
 }
 
@@ -58,9 +56,7 @@ function numberValue(
    POST
 ============================================================ */
 
-export async function POST(
-  request: Request
-) {
+export async function POST(request: Request) {
   try {
     const body =
       (await request.json()) as BookingRequest;
@@ -69,8 +65,7 @@ export async function POST(
        USER
     ======================================================== */
 
-    const userId =
-      numberValue(body.user_id);
+    const userId = numberValue(body.user_id);
 
     if (userId <= 0) {
       return NextResponse.json(
@@ -89,65 +84,46 @@ export async function POST(
     ======================================================== */
 
     const pickupAddress =
-      cleanString(
-        body.pickup_address
-      );
+      cleanString(body.pickup_address);
 
     const pickupLatitude =
-      numberValue(
-        body.pickup_latitude
-      );
+      numberValue(body.pickup_latitude);
 
     const pickupLongitude =
-      numberValue(
-        body.pickup_longitude
-      );
+      numberValue(body.pickup_longitude);
 
     /* ========================================================
        DROP
     ======================================================== */
 
     const dropAddress =
-      cleanString(
-        body.drop_address
-      );
+      cleanString(body.drop_address);
 
     const dropLatitude =
-      numberValue(
-        body.drop_latitude
-      );
+      numberValue(body.drop_latitude);
 
     const dropLongitude =
-      numberValue(
-        body.drop_longitude
-      );
+      numberValue(body.drop_longitude);
 
     /* ========================================================
        FARE
     ======================================================== */
 
     const estimatedFare =
-      numberValue(
-        body.estimated_fare
-      );
+      numberValue(body.estimated_fare);
 
     /* ========================================================
        VEHICLE
     ======================================================== */
 
     const vehicleTypeId =
-      numberValue(
-        body.vehicle_type_id
-      );
+      numberValue(body.vehicle_type_id);
 
     /* ========================================================
        VALIDATION
     ======================================================== */
 
-    if (
-      !pickupAddress ||
-      !dropAddress
-    ) {
+    if (!pickupAddress || !dropAddress) {
       return NextResponse.json(
         {
           success: false,
@@ -160,18 +136,10 @@ export async function POST(
     }
 
     if (
-      !Number.isFinite(
-        pickupLatitude
-      ) ||
-      !Number.isFinite(
-        pickupLongitude
-      ) ||
-      !Number.isFinite(
-        dropLatitude
-      ) ||
-      !Number.isFinite(
-        dropLongitude
-      )
+      !Number.isFinite(pickupLatitude) ||
+      !Number.isFinite(pickupLongitude) ||
+      !Number.isFinite(dropLatitude) ||
+      !Number.isFinite(dropLongitude)
     ) {
       return NextResponse.json(
         {
@@ -188,32 +156,18 @@ export async function POST(
        CREATE.PHP PAYLOAD
     ======================================================== */
 
-    const ridePayload: Record<
-      string,
-      unknown
-    > = {
+    const ridePayload: Record<string, unknown> = {
       user_id: userId,
 
-      pickup_address:
-        pickupAddress,
+      pickup_address: pickupAddress,
+      pickup_latitude: pickupLatitude,
+      pickup_longitude: pickupLongitude,
 
-      pickup_latitude:
-        pickupLatitude,
+      drop_address: dropAddress,
+      drop_latitude: dropLatitude,
+      drop_longitude: dropLongitude,
 
-      pickup_longitude:
-        pickupLongitude,
-
-      drop_address:
-        dropAddress,
-
-      drop_latitude:
-        dropLatitude,
-
-      drop_longitude:
-        dropLongitude,
-
-      estimated_fare:
-        estimatedFare,
+      estimated_fare: estimatedFare,
     };
 
     if (vehicleTypeId > 0) {
@@ -241,27 +195,26 @@ export async function POST(
        CALL PHP create.php
     ======================================================== */
 
-    const rideResponse =
-      await fetch(
-        url_path.create_ride,
-        {
-          method: "POST",
+    const rideResponse = await fetch(
+      url_path.create_ride,
+      {
+        method: "POST",
 
-          headers: {
-            "Content-Type":
-              "application/json",
+        headers: {
+          "Content-Type":
+            "application/json",
 
-            Accept:
-              "application/json",
-          },
+          Accept:
+            "application/json",
+        },
 
-          body: JSON.stringify(
-            ridePayload
-          ),
+        body: JSON.stringify(
+          ridePayload
+        ),
 
-          cache: "no-store",
-        }
-      );
+        cache: "no-store",
+      }
+    );
 
     let rideResult: any = null;
 
@@ -327,24 +280,42 @@ export async function POST(
       rideData.status ??
       "requested";
 
+    console.log(
+      "RIDE ID:",
+      rideId
+    );
+
+    console.log(
+      "BOOKING NUMBER:",
+      bookingNumber
+    );
+
     /* ========================================================
        SEND CONFIRMATION EMAIL
        
-       IMPORTANT:
-       This happens ONLY after create.php succeeds.
+       EMAIL IS SENT ONLY AFTER CREATE.PHP SUCCESS.
+       
+       rideId + bookingNumber are passed to /api/email
+       so the email route can create the Cancel Ride button.
     ======================================================== */
 
     let emailSent = false;
 
     try {
       const origin =
-        new URL(
-          request.url
-        ).origin;
+        new URL(request.url).origin;
 
       const emailPayload = {
+        /* ----------------------------------------------------
+           EMAIL TYPE
+        ---------------------------------------------------- */
+
         bookingType:
           "passenger-ride",
+
+        /* ----------------------------------------------------
+           RIDE INFORMATION
+        ---------------------------------------------------- */
 
         rideId,
 
@@ -354,6 +325,10 @@ export async function POST(
 
         user_id:
           userId,
+
+        /* ----------------------------------------------------
+           PASSENGER
+        ---------------------------------------------------- */
 
         passengerName:
           cleanString(
@@ -370,6 +345,10 @@ export async function POST(
             body.phone
           ),
 
+        /* ----------------------------------------------------
+           LOCATION
+        ---------------------------------------------------- */
+
         pickup:
           pickupAddress,
 
@@ -377,12 +356,14 @@ export async function POST(
           dropAddress,
 
         pickupLatitude,
-
         pickupLongitude,
 
         dropLatitude,
-
         dropLongitude,
+
+        /* ----------------------------------------------------
+           VEHICLE
+        ---------------------------------------------------- */
 
         vehicleType:
           cleanString(
@@ -398,6 +379,10 @@ export async function POST(
 
         seats:
           body.seats ?? "-",
+
+        /* ----------------------------------------------------
+           TRIP
+        ---------------------------------------------------- */
 
         distanceKm:
           numberValue(
@@ -419,6 +404,10 @@ export async function POST(
             body.pickupTime
           ),
 
+        /* ----------------------------------------------------
+           PAYMENT
+        ---------------------------------------------------- */
+
         estimatedFare,
 
         paymentMethod:
@@ -428,9 +417,24 @@ export async function POST(
       };
 
       console.log(
-        "SBS BOOKING EMAIL REQUEST:",
+        "================================="
+      );
+
+      console.log(
+        "SBS BOOKING EMAIL REQUEST"
+      );
+
+      console.log(
         emailPayload
       );
+
+      console.log(
+        "================================="
+      );
+
+      /* ======================================================
+         CALL NEXT.JS EMAIL API
+      ====================================================== */
 
       const emailResponse =
         await fetch(
@@ -471,11 +475,17 @@ export async function POST(
       emailSent =
         emailResponse.ok &&
         emailResult?.success === true;
+
     } catch (emailError) {
       console.error(
         "BOOKING EMAIL ERROR:",
         emailError
       );
+
+      /*
+       * Do not fail the booking just because
+       * email sending failed.
+       */
     }
 
     /* ========================================================
@@ -508,6 +518,7 @@ export async function POST(
       },
       { status: 201 }
     );
+
   } catch (error) {
     console.error(
       "SBS BOOKING API ERROR:",
