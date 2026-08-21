@@ -13,6 +13,31 @@ interface Destination {
   custom?: boolean;
 }
 
+interface PassengerDetails {
+  name?: string;
+  passengerName?: string;
+  passenger_name?: string;
+
+  email?: string;
+  phone?: string;
+
+  people?: number | string;
+  passengers?: number | string;
+  passengerCount?: number | string;
+  passenger_count?: number | string;
+
+  babies?: number | string;
+  baby?: number | string;
+  babyCount?: number | string;
+  baby_count?: number | string;
+
+  elderly?: number | string;
+  elders?: number | string;
+  elder?: number | string;
+  elderCount?: number | string;
+  elder_count?: number | string;
+}
+
 interface ApiRideData {
   rideId?: number | string;
   ride_id?: number | string;
@@ -24,15 +49,12 @@ interface ApiRideData {
   booking_number?: string;
 
   otp?: string | number;
-
   bookingOtp?: string | number;
   booking_otp?: string | number;
-
   rideOtp?: string | number;
   ride_otp?: string | number;
 
   status?: string;
-
   rideStatus?: string;
   ride_status?: string;
 
@@ -44,22 +66,17 @@ interface ApiRideData {
 
   paymentStatus?: string;
   payment_status?: string;
-}
-
-interface TaxiBookingBody {
-  bookingType?: string;
-
-  /* Passenger */
-  user_id?: number | string;
 
   passengerName?: string;
+  passenger_name?: string;
   name?: string;
-
   email?: string;
   phone?: string;
 
   people?: number | string;
   passengers?: number | string;
+  passengerCount?: number | string;
+  passenger_count?: number | string;
 
   babies?: number | string;
   baby?: number | string;
@@ -72,62 +89,34 @@ interface TaxiBookingBody {
   elderCount?: number | string;
   elder_count?: number | string;
 
-  /* Ride */
-  rideId?: number | string;
-  ride_id?: number | string;
+  passenger?: PassengerDetails;
+  passenger_details?: PassengerDetails;
+  passengerDetails?: PassengerDetails;
 
-  bookingId?: number | string;
-  booking_id?: number | string;
-
-  otp?: string | number;
-
-  bookingOtp?: string | number;
-  booking_otp?: string | number;
-
-  rideOtp?: string | number;
-  ride_otp?: string | number;
-
-  rideStatus?: string;
-  status?: string;
-
-  /* Nested API response */
-  data?: ApiRideData;
-
-  /* Locations */
   pickup?: string;
-  drop?: string;
-
   pickup_address?: string;
+  drop?: string;
   drop_address?: string;
 
-  pickupLatitude?: number | string;
-  pickupLongitude?: number | string;
-
-  pickup_latitude?: number | string;
-  pickup_longitude?: number | string;
-
-  dropLatitude?: number | string;
-  dropLongitude?: number | string;
-
-  drop_latitude?: number | string;
-  drop_longitude?: number | string;
-
-  /* Trip */
-  tripType?: string;
-
-  date?: string;
   pickupDate?: string;
+  pickup_date?: string;
+  date?: string;
 
-  time?: string;
   pickupTime?: string;
+  pickup_time?: string;
+  time?: string;
+
+  tripType?: string;
+  trip_type?: string;
 
   isRoundTrip?: boolean;
+  is_round_trip?: boolean;
 
-  /* Vehicle */
   vehicleType?: string;
+  vehicle_type?: string;
   vehicle?: string;
-
   vehicleModel?: string;
+  vehicle_model?: string;
   model?: string;
 
   vehicleTypeId?: number | string;
@@ -135,36 +124,22 @@ interface TaxiBookingBody {
 
   seats?: string | number;
 
-  /* Fare */
-  price?: string | number;
-
-  estimatedFare?: string | number;
-  estimated_fare?: string | number;
-
+  price?: number | string;
   distanceKm?: number | string;
+  distance_km?: number | string;
   durationMinutes?: number | string;
-
-  /* Payment */
-  paymentMethod?: string;
-  payment_method?: string;
-
-  paymentStatus?: string;
-  payment_status?: string;
+  duration_minutes?: number | string;
 
   preferences?: string[];
 
-  /* Temple */
-  destinations?: Destination[];
+  data?: ApiRideData;
+}
 
-  days?: string | number;
-  tripPackage?: string;
+interface TaxiBookingBody extends ApiRideData {
+  bookingType?: string;
+  booking_type?: string;
 
-  baseFare?: string | number;
-  totalFare?: string | number;
-
-  /* Contact */
-  subject?: string;
-  message?: string;
+  user_id?: number | string;
 }
 
 /* ============================================================
@@ -176,7 +151,6 @@ const BRAND_YELLOW = "#f2b900";
 
 const TEXT_DARK = "#1e293b";
 const TEXT_MUTED = "#64748b";
-
 const BORDER = "#e2e8f0";
 
 const MAX_NAME_LENGTH = 100;
@@ -211,11 +185,62 @@ function numberValue(
   value: unknown,
   fallback = 0
 ): number {
-  const number = Number(value);
+  if (
+    value === undefined ||
+    value === null ||
+    value === ""
+  ) {
+    return fallback;
+  }
 
-  return Number.isFinite(number)
-    ? number
+  const result = Number(value);
+
+  return Number.isFinite(result)
+    ? result
     : fallback;
+}
+
+/* ============================================================
+   FIRST STRING
+============================================================ */
+
+function firstString(
+  ...values: unknown[]
+): string {
+  for (const value of values) {
+    const result = stringValue(value);
+
+    if (result) {
+      return result;
+    }
+  }
+
+  return "";
+}
+
+/* ============================================================
+   FIRST NUMBER
+============================================================ */
+
+function firstNumber(
+  fallback: number,
+  ...values: unknown[]
+): number {
+  for (const value of values) {
+    if (
+      value !== undefined &&
+      value !== null &&
+      value !== ""
+    ) {
+      const result = Number(value);
+
+      if (Number.isFinite(result)) {
+        return result;
+      }
+    }
+  }
+
+  return fallback;
 }
 
 /* ============================================================
@@ -235,17 +260,19 @@ function escapeHtml(value: unknown): string {
    CURRENCY
 ============================================================ */
 
-function formatCurrency(value: unknown): string {
-  const number = Number(value);
+function formatCurrency(
+  value: unknown
+): string {
+  const amount = Number(value);
 
   if (
-    !Number.isFinite(number) ||
-    number <= 0
+    !Number.isFinite(amount) ||
+    amount <= 0
   ) {
     return "₹0";
   }
 
-  return `₹${number.toLocaleString("en-IN", {
+  return `₹${amount.toLocaleString("en-IN", {
     maximumFractionDigits: 2,
   })}`;
 }
@@ -254,8 +281,12 @@ function formatCurrency(value: unknown): string {
    EMAIL VALIDATION
 ============================================================ */
 
-function isValidEmail(email: string): boolean {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+function isValidEmail(
+  email: string
+): boolean {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(
+    email
+  );
 }
 
 /* ============================================================
@@ -263,7 +294,7 @@ function isValidEmail(email: string): boolean {
 ============================================================ */
 
 function parseEmailList(
-  value: string | undefined
+  value?: string
 ): string[] {
   if (!value) {
     return [];
@@ -293,7 +324,7 @@ function cleanEmailSubject(
 }
 
 /* ============================================================
-   LENGTH VALIDATION
+   LENGTH
 ============================================================ */
 
 function validateLength(
@@ -363,11 +394,7 @@ function paymentLabel(
 ): string {
   const payment = stringValue(value);
 
-  if (!payment) {
-    return "Not selected";
-  }
-
-  return payment;
+  return payment || "Not selected";
 }
 
 /* ============================================================
@@ -387,8 +414,8 @@ function detailRow(
       ? formatCurrency(value)
       : escapeHtml(
           value !== undefined &&
-          value !== null &&
-          String(value).trim() !== ""
+            value !== null &&
+            String(value).trim() !== ""
             ? value
             : "-"
         );
@@ -450,7 +477,6 @@ function emailHeader(
       text-align:center;
     "
   >
-
     <div
       class="email-header-logo"
       style="
@@ -504,7 +530,6 @@ function emailHeader(
       Booking ID:
       ${escapeHtml(bookingId)}
     </div>
-
   </td>
 </tr>
 `;
@@ -526,7 +551,6 @@ function emailFooter(): string {
       text-align:center;
     "
   >
-
     <div
       style="
         font-size:18px;
@@ -557,7 +581,6 @@ function emailFooter(): string {
       style="margin:16px auto 0;"
     >
       <tr>
-
         <td
           style="
             vertical-align:middle;
@@ -574,8 +597,6 @@ function emailFooter(): string {
               width:24px;
               height:16px;
               border:0;
-              outline:none;
-              text-decoration:none;
             "
           />
         </td>
@@ -590,7 +611,6 @@ function emailFooter(): string {
         >
           Made in India
         </td>
-
       </tr>
     </table>
 
@@ -602,7 +622,6 @@ function emailFooter(): string {
       "
     >
       Powered by
-
       <a
         href="https://sbstechnologies.in"
         target="_blank"
@@ -627,7 +646,6 @@ function emailFooter(): string {
     >
       This is an automated email from the SBS Taxi website.
     </div>
-
   </td>
 </tr>
 `;
@@ -642,11 +660,8 @@ function wrapEmail(
 ): string {
   return `
 <!DOCTYPE html>
-
 <html>
-
 <head>
-
 <meta charset="UTF-8" />
 
 <meta
@@ -657,7 +672,6 @@ function wrapEmail(
 <title>SBS Taxi</title>
 
 <style>
-
 @media only screen and (max-width:600px) {
 
   .email-outer {
@@ -685,7 +699,6 @@ function wrapEmail(
   .email-section-title {
     font-size:17px !important;
   }
-
 }
 
 @media only screen and (max-width:400px) {
@@ -697,11 +710,8 @@ function wrapEmail(
   .email-content {
     padding:14px !important;
   }
-
 }
-
 </style>
-
 </head>
 
 <body
@@ -725,9 +735,7 @@ function wrapEmail(
     padding:30px 10px;
   "
 >
-
 <tr>
-
 <td align="center">
 
 <table
@@ -752,26 +760,22 @@ ${emailFooter()}
 </table>
 
 </td>
-
 </tr>
-
 </table>
 
 </body>
-
 </html>
 `;
 }
 
 /* ============================================================
-   CANCEL BOOKING SECTION
+   CANCEL BOOKING
 ============================================================ */
 
 function cancelBookingSection(
   bookingId: string,
   rideId: string
 ): string {
-
   const siteUrl = (
     process.env.NEXT_PUBLIC_SITE_URL ||
     "http://localhost:3000"
@@ -834,10 +838,8 @@ function cancelBookingSection(
         color:#ffffff;
         text-decoration:none;
         border-radius:10px;
-        font-family:Arial,Helvetica,sans-serif;
         font-size:14px;
         font-weight:800;
-        line-height:1;
       "
     >
       Cancel Booking
@@ -878,31 +880,29 @@ function cancelBookingSection(
 }
 
 /* ============================================================
-   RIDE OTP SECTION
+   RIDE OTP
 ============================================================ */
 
 function rideOtpSection(
-  bookingOtp: string
+  rideOtp: string
 ): string {
-
-  if (!bookingOtp) {
+  if (!rideOtp) {
     return `
 <div
   style="
     margin-top:28px;
     padding:20px;
-    background:#f8fafc;
-    border:1px solid #e2e8f0;
+    background:#fff7ed;
+    border:1px solid #fed7aa;
     border-radius:14px;
     text-align:center;
   "
 >
-
   <div
     style="
       font-size:13px;
-      color:#64748b;
-      font-weight:600;
+      color:#9a3412;
+      font-weight:700;
     "
   >
     Ride OTP
@@ -912,12 +912,11 @@ function rideOtpSection(
     style="
       margin-top:6px;
       font-size:14px;
-      color:#94a3b8;
+      color:#c2410c;
     "
   >
     OTP not available
   </div>
-
 </div>
 `;
   }
@@ -955,7 +954,7 @@ function rideOtpSection(
       color:${BRAND_BLUE};
     "
   >
-    ${escapeHtml(bookingOtp)}
+    ${escapeHtml(rideOtp)}
   </div>
 
   <div
@@ -981,9 +980,7 @@ function rideOtpSection(
 export async function POST(
   request: Request
 ) {
-
   try {
-
     /* ========================================================
        READ BODY
     ======================================================== */
@@ -991,12 +988,9 @@ export async function POST(
     let body: TaxiBookingBody;
 
     try {
-
       body =
         (await request.json()) as TaxiBookingBody;
-
     } catch {
-
       return NextResponse.json(
         {
           success: false,
@@ -1009,16 +1003,19 @@ export async function POST(
     }
 
     console.log(
-      "================================="
+      "================================================"
     );
 
     console.log(
-      "SBS BOOKING EMAIL REQUEST:",
-      body
+      "SBS TAXI EMAIL REQUEST"
     );
 
     console.log(
-      "================================="
+      JSON.stringify(body, null, 2)
+    );
+
+    console.log(
+      "================================================"
     );
 
     /* ========================================================
@@ -1053,16 +1050,11 @@ export async function POST(
     const ccEmails =
       parseEmailList(contactCC);
 
-    /* ========================================================
-       SMTP VALIDATION
-    ======================================================== */
-
     if (
       !smtpHost ||
       !smtpUser ||
       !smtpPassword
     ) {
-
       console.error(
         "SMTP configuration missing."
       );
@@ -1080,7 +1072,6 @@ export async function POST(
     }
 
     if (toEmails.length === 0) {
-
       return NextResponse.json(
         {
           success: false,
@@ -1102,7 +1093,6 @@ export async function POST(
         host: smtpHost,
         port: smtpPort,
         secure: smtpSecure,
-
         auth: {
           user: smtpUser,
           pass: smtpPassword,
@@ -1112,7 +1102,7 @@ export async function POST(
     await transporter.verify();
 
     /* ========================================================
-       INDIA FLAG
+       FLAG
     ======================================================== */
 
     const indiaFlagPath =
@@ -1123,16 +1113,12 @@ export async function POST(
       );
 
     /* ========================================================
-       COMMON MAIL OPTIONS
+       COMMON MAIL
     ======================================================== */
 
     const commonMailOptions = {
-
-      from:
-        `"SBS Taxi Website" <${smtpUser}>`,
-
+      from: `"SBS Taxi Website" <${smtpUser}>`,
       to: toEmails,
-
       cc:
         ccEmails.length > 0
           ? ccEmails
@@ -1144,26 +1130,47 @@ export async function POST(
     ======================================================== */
 
     const bookingType =
-      stringValue(
-        body.bookingType
+      firstString(
+        body.bookingType,
+        body.booking_type,
+        "passenger-ride"
       );
 
     /* ========================================================
-       NESTED API DATA
+       NESTED DATA
     ======================================================== */
 
-    const apiData = body.data;
+    const apiData =
+      body.data;
+
+    const deepData =
+      apiData?.data;
+
+    const passengerData =
+      body.passenger ||
+      body.passenger_details ||
+      body.passengerDetails ||
+      apiData?.passenger ||
+      apiData?.passenger_details ||
+      apiData?.passengerDetails ||
+      deepData?.passenger ||
+      deepData?.passenger_details ||
+      deepData?.passengerDetails;
 
     /* ========================================================
        RIDE ID
     ======================================================== */
 
     const rideId =
-      stringValue(
-        body.ride_id ??
-          body.rideId ??
-          apiData?.ride_id ??
-          apiData?.rideId
+      firstString(
+        body.ride_id,
+        body.rideId,
+
+        apiData?.ride_id,
+        apiData?.rideId,
+
+        deepData?.ride_id,
+        deepData?.rideId
       );
 
     /* ========================================================
@@ -1171,13 +1178,21 @@ export async function POST(
     ======================================================== */
 
     const apiBookingId =
-      stringValue(
-        body.booking_id ??
-          body.bookingId ??
-          apiData?.booking_id ??
-          apiData?.bookingId ??
-          apiData?.booking_number ??
-          apiData?.bookingNumber
+      firstString(
+        body.booking_id,
+        body.bookingId,
+        body.booking_number,
+        body.bookingNumber,
+
+        apiData?.booking_id,
+        apiData?.bookingId,
+        apiData?.booking_number,
+        apiData?.bookingNumber,
+
+        deepData?.booking_id,
+        deepData?.bookingId,
+        deepData?.booking_number,
+        deepData?.bookingNumber
       );
 
     const bookingId =
@@ -1186,36 +1201,535 @@ export async function POST(
 
     /* ========================================================
        ⭐ RIDE OTP
-       
-       IMPORTANT:
-       ride_otp is checked FIRST.
     ======================================================== */
 
-    const bookingOtp =
-      stringValue(
-        body.ride_otp ??
-          body.rideOtp ??
-          body.booking_otp ??
-          body.bookingOtp ??
-          body.otp ??
-          apiData?.ride_otp ??
-          apiData?.rideOtp ??
-          apiData?.booking_otp ??
-          apiData?.bookingOtp ??
-          apiData?.otp
+    const rideOtp =
+      firstString(
+        /* Direct body */
+        body.ride_otp,
+        body.rideOtp,
+        body.booking_otp,
+        body.bookingOtp,
+        body.otp,
+
+        /* Nested API */
+        apiData?.ride_otp,
+        apiData?.rideOtp,
+        apiData?.booking_otp,
+        apiData?.bookingOtp,
+        apiData?.otp,
+
+        /* Deep nested */
+        deepData?.ride_otp,
+        deepData?.rideOtp,
+        deepData?.booking_otp,
+        deepData?.bookingOtp,
+        deepData?.otp
       );
 
     console.log(
-      "================================="
+      "================================================"
     );
 
     console.log(
       "SBS RIDE OTP:",
-      bookingOtp || "NOT AVAILABLE"
+      rideOtp || "NOT AVAILABLE"
+    );
+
+    /* ========================================================
+       ⭐ PASSENGER DETAILS
+    ======================================================== */
+
+    const passengerName =
+      firstString(
+        body.passengerName,
+        body.passenger_name,
+        body.name,
+
+        passengerData?.passengerName,
+        passengerData?.passenger_name,
+        passengerData?.name,
+
+        apiData?.passengerName,
+        apiData?.passenger_name,
+        apiData?.name,
+
+        deepData?.passengerName,
+        deepData?.passenger_name,
+        deepData?.name
+      );
+
+    const email =
+      firstString(
+        body.email,
+        passengerData?.email,
+        apiData?.email,
+        deepData?.email
+      );
+
+    const phone =
+      firstString(
+        body.phone,
+        passengerData?.phone,
+        apiData?.phone,
+        deepData?.phone
+      );
+
+    /* ========================================================
+       PASSENGER COUNT
+    ======================================================== */
+
+    const people =
+      firstNumber(
+        1,
+
+        body.people,
+        body.passengers,
+        body.passengerCount,
+        body.passenger_count,
+
+        passengerData?.people,
+        passengerData?.passengers,
+        passengerData?.passengerCount,
+        passengerData?.passenger_count,
+
+        apiData?.people,
+        apiData?.passengers,
+        apiData?.passengerCount,
+        apiData?.passenger_count,
+
+        deepData?.people,
+        deepData?.passengers,
+        deepData?.passengerCount,
+        deepData?.passenger_count
+      );
+
+    /* ========================================================
+       BABIES
+    ======================================================== */
+
+    const babies =
+      firstNumber(
+        0,
+
+        body.babies,
+        body.baby,
+        body.babyCount,
+        body.baby_count,
+
+        passengerData?.babies,
+        passengerData?.baby,
+        passengerData?.babyCount,
+        passengerData?.baby_count,
+
+        apiData?.babies,
+        apiData?.baby,
+        apiData?.babyCount,
+        apiData?.baby_count,
+
+        deepData?.babies,
+        deepData?.baby,
+        deepData?.babyCount,
+        deepData?.baby_count
+      );
+
+    /* ========================================================
+       ELDERLY
+    ======================================================== */
+
+    const elderly =
+      firstNumber(
+        0,
+
+        body.elderly,
+        body.elders,
+        body.elder,
+        body.elderCount,
+        body.elder_count,
+
+        passengerData?.elderly,
+        passengerData?.elders,
+        passengerData?.elder,
+        passengerData?.elderCount,
+        passengerData?.elder_count,
+
+        apiData?.elderly,
+        apiData?.elders,
+        apiData?.elder,
+        apiData?.elderCount,
+        apiData?.elder_count,
+
+        deepData?.elderly,
+        deepData?.elders,
+        deepData?.elder,
+        deepData?.elderCount,
+        deepData?.elder_count
+      );
+
+    console.log(
+      "SBS PASSENGER DETAILS:",
+      {
+        passengerName,
+        email,
+        phone,
+        people,
+        babies,
+        elderly,
+      }
+    );
+
+    /* ========================================================
+       LOCATIONS
+    ======================================================== */
+
+    const pickup =
+      firstString(
+        body.pickup,
+        body.pickup_address,
+
+        apiData?.pickup,
+        apiData?.pickup_address,
+
+        deepData?.pickup,
+        deepData?.pickup_address
+      );
+
+    const drop =
+      firstString(
+        body.drop,
+        body.drop_address,
+
+        apiData?.drop,
+        apiData?.drop_address,
+
+        deepData?.drop,
+        deepData?.drop_address
+      );
+
+    /* ========================================================
+       DATE
+    ======================================================== */
+
+    const pickupDate =
+      firstString(
+        body.pickupDate,
+        body.pickup_date,
+        body.date,
+
+        apiData?.pickupDate,
+        apiData?.pickup_date,
+        apiData?.date,
+
+        deepData?.pickupDate,
+        deepData?.pickup_date,
+        deepData?.date,
+
+        "-"
+      );
+
+    /* ========================================================
+       TIME
+    ======================================================== */
+
+    const pickupTime =
+      firstString(
+        body.pickupTime,
+        body.pickup_time,
+        body.time,
+
+        apiData?.pickupTime,
+        apiData?.pickup_time,
+        apiData?.time,
+
+        deepData?.pickupTime,
+        deepData?.pickup_time,
+        deepData?.time,
+
+        "-"
+      );
+
+    /* ========================================================
+       ⭐ TRIP TYPE
+    ======================================================== */
+
+    const tripType =
+      firstString(
+        body.tripType,
+        body.trip_type,
+
+        apiData?.tripType,
+        apiData?.trip_type,
+
+        deepData?.tripType,
+        deepData?.trip_type,
+
+        body.isRoundTrip === true
+          ? "Round Trip"
+          : "",
+
+        body.isRoundTrip === false
+          ? "One Way"
+          : "",
+
+        "One Way"
+      );
+
+    /* ========================================================
+       ROUND TRIP
+    ======================================================== */
+
+    const isRoundTrip =
+      body.isRoundTrip ??
+      body.is_round_trip ??
+      apiData?.isRoundTrip ??
+      apiData?.is_round_trip ??
+      deepData?.isRoundTrip ??
+      deepData?.is_round_trip ??
+      tripType
+        .toLowerCase()
+        .includes("round");
+
+    /* ========================================================
+       VEHICLE
+    ======================================================== */
+
+    const vehicleType =
+      firstString(
+        body.vehicleType,
+        body.vehicle_type,
+
+        apiData?.vehicleType,
+        apiData?.vehicle_type,
+
+        deepData?.vehicleType,
+        deepData?.vehicle_type,
+
+        "-"
+      );
+
+    const vehicle =
+      firstString(
+        body.vehicle,
+        body.vehicleModel,
+        body.vehicle_model,
+        body.model,
+
+        apiData?.vehicle,
+        apiData?.vehicleModel,
+        apiData?.vehicle_model,
+        apiData?.model,
+
+        deepData?.vehicle,
+        deepData?.vehicleModel,
+        deepData?.vehicle_model,
+        deepData?.model
+      );
+
+    const vehicleTypeId =
+      firstNumber(
+        0,
+
+        body.vehicleTypeId,
+        body.vehicle_type_id,
+
+        apiData?.vehicleTypeId,
+        apiData?.vehicle_type_id,
+
+        deepData?.vehicleTypeId,
+        deepData?.vehicle_type_id
+      );
+
+    const seats =
+      firstString(
+        body.seats,
+        apiData?.seats,
+        deepData?.seats,
+        "-"
+      );
+
+    /* ========================================================
+       FARE
+    ======================================================== */
+
+    const estimatedFare =
+      firstNumber(
+        0,
+
+        body.estimatedFare,
+        body.estimated_fare,
+        body.price,
+
+        apiData?.estimatedFare,
+        apiData?.estimated_fare,
+        apiData?.price,
+
+        deepData?.estimatedFare,
+        deepData?.estimated_fare,
+        deepData?.price
+      );
+
+    const distanceKm =
+      firstNumber(
+        0,
+
+        body.distanceKm,
+        body.distance_km,
+
+        apiData?.distanceKm,
+        apiData?.distance_km,
+
+        deepData?.distanceKm,
+        deepData?.distance_km
+      );
+
+    const durationMinutes =
+      firstNumber(
+        0,
+
+        body.durationMinutes,
+        body.duration_minutes,
+
+        apiData?.durationMinutes,
+        apiData?.duration_minutes,
+
+        deepData?.durationMinutes,
+        deepData?.duration_minutes
+      );
+
+    /* ========================================================
+       PAYMENT
+    ======================================================== */
+
+    const paymentMethod =
+      paymentLabel(
+        firstString(
+          body.paymentMethod,
+          body.payment_method,
+
+          apiData?.paymentMethod,
+          apiData?.payment_method,
+
+          deepData?.paymentMethod,
+          deepData?.payment_method
+        )
+      );
+
+    const paymentStatus =
+      firstString(
+        body.paymentStatus,
+        body.payment_status,
+
+        apiData?.paymentStatus,
+        apiData?.payment_status,
+
+        deepData?.paymentStatus,
+        deepData?.payment_status,
+
+        "pending"
+      );
+
+    /* ========================================================
+       RIDE STATUS
+    ======================================================== */
+
+    const rideStatus =
+      firstString(
+        body.rideStatus,
+        body.ride_status,
+        body.status,
+
+        apiData?.rideStatus,
+        apiData?.ride_status,
+        apiData?.status,
+
+        deepData?.rideStatus,
+        deepData?.ride_status,
+        deepData?.status,
+
+        "requested"
+      );
+
+    /* ========================================================
+       PREFERENCES
+    ======================================================== */
+
+    const preferences =
+      Array.isArray(body.preferences)
+        ? body.preferences
+            .map((item) =>
+              stringValue(item)
+            )
+            .filter(Boolean)
+        : Array.isArray(
+            apiData?.preferences
+          )
+        ? apiData.preferences
+            .map((item) =>
+              stringValue(item)
+            )
+            .filter(Boolean)
+        : [];
+
+    const preferenceText =
+      preferences
+        .map((item) =>
+          escapeHtml(item)
+        )
+        .join(", ");
+
+    const hasPreferences =
+      preferenceText.length > 0;
+
+    /* ========================================================
+       DEBUG SUMMARY
+    ======================================================== */
+
+    console.log(
+      "================================================"
     );
 
     console.log(
-      "================================="
+      "SBS FINAL BOOKING DATA"
+    );
+
+    console.log({
+      bookingType,
+      bookingId,
+      rideId,
+      rideOtp,
+
+      passengerName,
+      email,
+      phone,
+
+      passengers: people,
+      babies,
+      elderly,
+
+      pickup,
+      drop,
+      pickupDate,
+      pickupTime,
+
+      tripType,
+      isRoundTrip,
+
+      vehicleType,
+      vehicle,
+      vehicleTypeId,
+      seats,
+
+      estimatedFare,
+      distanceKm,
+      durationMinutes,
+
+      paymentMethod,
+      paymentStatus,
+      rideStatus,
+    });
+
+    console.log(
+      "================================================"
     );
 
     /* ========================================================
@@ -1242,11 +1756,6 @@ export async function POST(
           : ""
       }`;
 
-    console.log(
-      "SBS CANCEL URL:",
-      cancelBookingUrl
-    );
-
     /* ========================================================
        BOOKING DATE
     ======================================================== */
@@ -1255,364 +1764,150 @@ export async function POST(
       formatBookingDate();
 
     /* ========================================================
-       RIDE STATUS
+       VALIDATION
     ======================================================== */
 
-    const rideStatus =
-      stringValue(
-        body.rideStatus ??
-          body.status ??
-          apiData?.rideStatus ??
-          apiData?.ride_status ??
-          apiData?.status,
-        "requested"
+    if (!pickup || !drop) {
+      return NextResponse.json(
+        {
+          success: false,
+          error:
+            "Pickup and drop locations are required.",
+        },
+        {
+          status: 400,
+        }
       );
-
-    /* ========================================================
-       PASSENGER
-    ======================================================== */
-
-    const passengerName =
-      stringValue(
-        body.passengerName ??
-          body.name
-      );
-
-    const email =
-      stringValue(body.email);
-
-    const phone =
-      stringValue(body.phone);
-
-    const people =
-      numberValue(
-        body.people ??
-          body.passengers,
-        1
-      );
-
-    const babies =
-      numberValue(
-        body.babies ??
-          body.baby ??
-          body.babyCount ??
-          body.baby_count,
-        0
-      );
-
-    const elderly =
-      numberValue(
-        body.elderly ??
-          body.elders ??
-          body.elder ??
-          body.elderCount ??
-          body.elder_count,
-        0
-      );
-
-    /* ========================================================
-       LOCATIONS
-    ======================================================== */
-
-    const pickup =
-      stringValue(
-        body.pickup ??
-          body.pickup_address
-      );
-
-    const drop =
-      stringValue(
-        body.drop ??
-          body.drop_address
-      );
-
-    /* ========================================================
-       DATE / TIME
-    ======================================================== */
-
-    const pickupDate =
-      stringValue(
-        body.pickupDate ??
-          body.date,
-        "-"
-      );
-
-    const pickupTime =
-      stringValue(
-        body.pickupTime ??
-          body.time,
-        "-"
-      );
-
-    const tripType =
-      stringValue(
-        body.tripType,
-        "-"
-      );
-
-    /* ========================================================
-       VEHICLE
-    ======================================================== */
-
-    const vehicleType =
-      stringValue(
-        body.vehicleType,
-        "-"
-      );
-
-    const vehicle =
-      stringValue(
-        body.vehicle ??
-          body.vehicleModel ??
-          body.model
-      );
-
-    const vehicleTypeId =
-      numberValue(
-        body.vehicleTypeId ??
-          body.vehicle_type_id
-      );
-
-    const seats =
-      body.seats ?? "-";
-
-    /* ========================================================
-       FARE
-    ======================================================== */
-
-    const estimatedFare =
-      numberValue(
-        body.estimatedFare ??
-          body.estimated_fare ??
-          body.price ??
-          apiData?.estimatedFare ??
-          apiData?.estimated_fare,
-        0
-      );
-
-    const distanceKm =
-      numberValue(
-        body.distanceKm
-      );
-
-    const durationMinutes =
-      numberValue(
-        body.durationMinutes
-      );
-
-    /* ========================================================
-       PAYMENT
-    ======================================================== */
-
-    const paymentMethod =
-      paymentLabel(
-        body.paymentMethod ??
-          body.payment_method ??
-          apiData?.paymentMethod ??
-          apiData?.payment_method
-      );
-
-    const paymentStatus =
-      stringValue(
-        body.paymentStatus ??
-          body.payment_status ??
-          apiData?.paymentStatus ??
-          apiData?.payment_status,
-        "pending"
-      );
-
-    /* ========================================================
-       PREFERENCES
-    ======================================================== */
-
-    const preferenceText =
-      Array.isArray(
-        body.preferences
-      )
-        ? body.preferences
-            .map((item) =>
-              stringValue(item)
-            )
-            .filter(
-              (item) =>
-                item.length > 0
-            )
-            .map((item) =>
-              escapeHtml(item)
-            )
-            .join(", ")
-        : "";
-
-    const hasPreferences =
-      preferenceText.length > 0;
-
-    /* ========================================================
-       PASSENGER RIDE
-    ======================================================== */
+    }
 
     if (
-      bookingType ===
-        "passenger-ride" ||
-      bookingType ===
-        "create-ride" ||
-      bookingType ===
-        "taxi-booking"
+      passengerName &&
+      !validateLength(
+        passengerName,
+        MAX_NAME_LENGTH
+      )
     ) {
+      return NextResponse.json(
+        {
+          success: false,
+          error:
+            "Passenger name is too long.",
+        },
+        {
+          status: 400,
+        }
+      );
+    }
 
-      /* ======================================================
-         VALIDATION
-      ====================================================== */
+    if (
+      phone &&
+      !validateLength(
+        phone,
+        MAX_PHONE_LENGTH
+      )
+    ) {
+      return NextResponse.json(
+        {
+          success: false,
+          error:
+            "Phone number is too long.",
+        },
+        {
+          status: 400,
+        }
+      );
+    }
 
-      if (!pickup || !drop) {
+    if (
+      email &&
+      !isValidEmail(email)
+    ) {
+      return NextResponse.json(
+        {
+          success: false,
+          error:
+            "Invalid passenger email address.",
+        },
+        {
+          status: 400,
+        }
+      );
+    }
 
-        return NextResponse.json(
-          {
-            success: false,
-            error:
-              "Pickup and drop locations are required.",
-          },
-          {
-            status: 400,
+    if (
+      email &&
+      !validateLength(
+        email,
+        MAX_EMAIL_LENGTH
+      )
+    ) {
+      return NextResponse.json(
+        {
+          success: false,
+          error:
+            "Email address is too long.",
+        },
+        {
+          status: 400,
+        }
+      );
+    }
+
+    if (
+      !validateLength(
+        pickup,
+        MAX_LOCATION_LENGTH
+      ) ||
+      !validateLength(
+        drop,
+        MAX_LOCATION_LENGTH
+      )
+    ) {
+      return NextResponse.json(
+        {
+          success: false,
+          error:
+            "Location information is too long.",
+        },
+        {
+          status: 400,
+        }
+      );
+    }
+
+    /* ========================================================
+       SEND RIDE EMAIL
+    ======================================================== */
+
+    await transporter.sendMail({
+      ...commonMailOptions,
+
+      attachments: [
+        {
+          filename: "flag.jpg",
+          path: indiaFlagPath,
+          cid: "india-flag@sbstaxi",
+        },
+      ],
+
+      ...(email
+        ? {
+            replyTo: email,
           }
-        );
-      }
+        : {}),
 
-      if (
-        passengerName &&
-        !validateLength(
-          passengerName,
-          MAX_NAME_LENGTH
-        )
-      ) {
+      subject:
+        `SBS Taxi Ride Booking - ${cleanEmailSubject(
+          bookingId
+        )}`,
 
-        return NextResponse.json(
-          {
-            success: false,
-            error:
-              "Passenger name is too long.",
-          },
-          {
-            status: 400,
-          }
-        );
-      }
-
-      if (
-        phone &&
-        !validateLength(
-          phone,
-          MAX_PHONE_LENGTH
-        )
-      ) {
-
-        return NextResponse.json(
-          {
-            success: false,
-            error:
-              "Phone number is too long.",
-          },
-          {
-            status: 400,
-          }
-        );
-      }
-
-      if (
-        email &&
-        !isValidEmail(email)
-      ) {
-
-        return NextResponse.json(
-          {
-            success: false,
-            error:
-              "Invalid passenger email address.",
-          },
-          {
-            status: 400,
-          }
-        );
-      }
-
-      if (
-        email &&
-        !validateLength(
-          email,
-          MAX_EMAIL_LENGTH
-        )
-      ) {
-
-        return NextResponse.json(
-          {
-            success: false,
-            error:
-              "Email address is too long.",
-          },
-          {
-            status: 400,
-          }
-        );
-      }
-
-      if (
-        !validateLength(
-          pickup,
-          MAX_LOCATION_LENGTH
-        ) ||
-        !validateLength(
-          drop,
-          MAX_LOCATION_LENGTH
-        )
-      ) {
-
-        return NextResponse.json(
-          {
-            success: false,
-            error:
-              "Location information is too long.",
-          },
-          {
-            status: 400,
-          }
-        );
-      }
-
-      /* ======================================================
-         SEND EMAIL
-      ====================================================== */
-
-      await transporter.sendMail({
-
-        ...commonMailOptions,
-
-        attachments: [
-          {
-            filename: "flag.jpg",
-            path: indiaFlagPath,
-            cid: "india-flag@sbstaxi",
-          },
-        ],
-
-        ...(email
-          ? {
-              replyTo: email,
-            }
-          : {}),
-
-        subject:
-          `SBS Taxi Ride Booking - ${cleanEmailSubject(
-            bookingId
-          )}`,
-
-        html: wrapEmail(`
-
+      html: wrapEmail(`
 ${emailHeader(
   "RIDE BOOKING CONFIRMED",
   bookingId
 )}
 
 <tr>
-
 <td
   class="email-content"
   style="padding:30px;"
@@ -1702,10 +1997,10 @@ ${
 }
 
 ${
-  bookingOtp
+  rideOtp
     ? detailRow(
         "Ride OTP",
-        bookingOtp,
+        rideOtp,
         {
           highlight: true,
         }
@@ -1722,15 +2017,6 @@ ${detailRow(
   "Ride Status",
   rideStatus
 )}
-
-${
-  vehicleTypeId > 0
-    ? detailRow(
-        "Vehicle Type ID",
-        vehicleTypeId
-      )
-    : ""
-}
 
 </table>
 
@@ -1787,12 +2073,15 @@ ${detailRow(
 
 ${detailRow(
   "Trip Type",
-  tripType
+  tripType,
+  {
+    highlight: true,
+  }
 )}
 
 ${detailRow(
   "Round Trip",
-  body.isRoundTrip
+  isRoundTrip
     ? "Yes"
     : "No"
 )}
@@ -1829,23 +2118,15 @@ ${detailRow(
   passengerName || "-"
 )}
 
-${
-  email
-    ? detailRow(
-        "Email",
-        email
-      )
-    : ""
-}
+${detailRow(
+  "Email",
+  email || "-"
+)}
 
-${
-  phone
-    ? detailRow(
-        "Phone",
-        phone
-      )
-    : ""
-}
+${detailRow(
+  "Phone",
+  phone || "-"
+)}
 
 ${detailRow(
   "Passengers",
@@ -1910,6 +2191,15 @@ ${detailRow(
   "Seats",
   seats
 )}
+
+${
+  vehicleTypeId > 0
+    ? detailRow(
+        "Vehicle Type ID",
+        vehicleTypeId
+      )
+    : ""
+}
 
 </table>
 
@@ -1996,7 +2286,9 @@ ${detailRow(
 >
 ${
   estimatedFare > 0
-    ? formatCurrency(estimatedFare)
+    ? formatCurrency(
+        estimatedFare
+      )
     : "To be confirmed"
 }
 </div>
@@ -2045,7 +2337,7 @@ ${detailRow(
 
 <!-- RIDE OTP -->
 
-${rideOtpSection(bookingOtp)}
+${rideOtpSection(rideOtp)}
 
 <!-- PREFERENCES -->
 
@@ -2116,7 +2408,7 @@ ${
 
 </div>
 
-<!-- CANCEL BOOKING -->
+<!-- CANCEL -->
 
 ${cancelBookingSection(
   bookingId,
@@ -2124,553 +2416,138 @@ ${cancelBookingSection(
 )}
 
 </td>
-
 </tr>
-
 `),
-      });
-
-      /* ======================================================
-         RESPONSE
-      ====================================================== */
-
-      const responseData = {
-
-        ride_id:
-          rideId || null,
-
-        booking_id:
-          bookingId,
-
-        booking_number:
-          bookingId,
-
-        /* ⭐ RIDE OTP */
-        ride_otp:
-          bookingOtp || null,
-
-        otp:
-          bookingOtp || null,
-
-        status:
-          rideStatus,
-
-        payment_method:
-          paymentMethod,
-
-        payment_status:
-          paymentStatus,
-
-        cancel_url:
-          cancelBookingUrl,
-
-        email_sent:
-          true,
-      };
-
-      console.log(
-        "SBS BOOKING EMAIL RESPONSE:",
-        responseData
-      );
-
-      return NextResponse.json(
-        {
-          success: true,
-
-          message:
-            "Ride booking email sent successfully.",
-
-          data: responseData,
-        },
-        {
-          status: 200,
-        }
-      );
-    }
+    });
 
     /* ========================================================
-       SIMPLE BOOKING
+       RESPONSE DATA
     ======================================================== */
 
-    if (
-      bookingType ===
-      "simple-booking"
-    ) {
+    const responseData = {
+      ride_id:
+        rideId || null,
 
-      if (
-        !passengerName ||
-        !pickup ||
-        !drop
-      ) {
+      booking_id:
+        bookingId,
 
-        return NextResponse.json(
-          {
-            success: false,
-            error:
-              "Required booking fields are missing.",
-          },
-          {
-            status: 400,
-          }
-        );
-      }
+      booking_number:
+        bookingId,
 
-      await transporter.sendMail({
+      ride_otp:
+        rideOtp || null,
 
-        ...commonMailOptions,
+      otp:
+        rideOtp || null,
 
-        attachments: [
-          {
-            filename: "flag.jpg",
-            path: indiaFlagPath,
-            cid: "india-flag@sbstaxi",
-          },
-        ],
+      status:
+        rideStatus,
 
-        ...(email
-          ? {
-              replyTo: email,
-            }
-          : {}),
+      passenger_name:
+        passengerName || null,
 
-        subject:
-          `New SBS Taxi Booking - ${cleanEmailSubject(
-            passengerName
-          )}`,
+      passenger_email:
+        email || null,
 
-        html: wrapEmail(`
+      passenger_phone:
+        phone || null,
 
-${emailHeader(
-  "NEW RIDE BOOKING",
-  bookingId
-)}
+      passengers:
+        people,
 
-<tr>
+      babies:
+        babies,
 
-<td
-  class="email-content"
-  style="padding:30px;"
->
+      elderly:
+        elderly,
 
-<h2
-  class="email-section-title"
-  style="
-    margin:0 0 12px;
-    color:${BRAND_BLUE};
-    font-size:19px;
-  "
->
-  Booking Details
-</h2>
+      pickup:
+        pickup,
 
-<table
-  width="100%"
-  cellpadding="0"
-  cellspacing="0"
-  style="
-    border:1px solid #e2e8f0;
-    border-radius:14px;
-    border-collapse:separate;
-    overflow:hidden;
-  "
->
+      drop:
+        drop,
 
-${detailRow(
-  "Booking ID",
-  bookingId,
-  {
-    highlight: true,
-  }
-)}
+      pickup_date:
+        pickupDate,
 
-${detailRow(
-  "Customer Name",
-  passengerName
-)}
+      pickup_time:
+        pickupTime,
 
-${detailRow(
-  "Email",
-  email || "-"
-)}
+      trip_type:
+        tripType,
 
-${detailRow(
-  "Phone",
-  phone || "-"
-)}
+      is_round_trip:
+        isRoundTrip,
 
-${detailRow(
-  "Pickup",
-  pickup,
-  {
-    highlight: true,
-  }
-)}
+      vehicle_type:
+        vehicleType,
 
-${detailRow(
-  "Drop",
-  drop,
-  {
-    highlight: true,
-  }
-)}
+      vehicle:
+        vehicle || null,
 
-${detailRow(
-  "Pickup Date",
-  pickupDate
-)}
+      estimated_fare:
+        estimatedFare,
 
-${detailRow(
-  "Pickup Time",
-  pickupTime
-)}
+      payment_method:
+        paymentMethod,
 
-${detailRow(
-  "Vehicle Type",
-  vehicleType,
-  {
-    highlight: true,
-  }
-)}
+      payment_status:
+        paymentStatus,
 
-${
-  rideId
-    ? detailRow(
-        "Ride ID",
-        rideId,
-        {
-          highlight: true,
-        }
+      cancel_url:
+        cancelBookingUrl,
+
+      email_sent:
+        true,
+    };
+
+    console.log(
+      "================================================"
+    );
+
+    console.log(
+      "SBS BOOKING EMAIL RESPONSE"
+    );
+
+    console.log(
+      JSON.stringify(
+        responseData,
+        null,
+        2
       )
-    : ""
-}
+    );
 
-${
-  bookingOtp
-    ? detailRow(
-        "Ride OTP",
-        bookingOtp,
-        {
-          highlight: true,
-        }
-      )
-    : ""
-}
-
-</table>
-
-<!-- RIDE OTP -->
-
-${rideOtpSection(bookingOtp)}
-
-<h2
-  class="email-section-title"
-  style="
-    margin:28px 0 12px;
-    color:${BRAND_BLUE};
-    font-size:19px;
-  "
->
-  Fare Estimate
-</h2>
-
-<div
-  style="
-    padding:22px;
-    background:#f8fbff;
-    border:1px solid #cbdff4;
-    border-radius:15px;
-  "
->
-
-<div
-  style="
-    font-size:13px;
-    color:#64748b;
-  "
->
-  Estimated Fare
-</div>
-
-<div
-  style="
-    margin-top:5px;
-    font-size:30px;
-    font-weight:800;
-    color:${BRAND_BLUE};
-  "
->
-${
-  estimatedFare > 0
-    ? formatCurrency(estimatedFare)
-    : "To be confirmed"
-}
-</div>
-
-</div>
-
-${cancelBookingSection(
-  bookingId,
-  rideId
-)}
-
-</td>
-
-</tr>
-
-`),
-      });
-
-      return NextResponse.json(
-        {
-          success: true,
-
-          bookingId,
-
-          ride_id:
-            rideId || null,
-
-          ride_otp:
-            bookingOtp || null,
-
-          otp:
-            bookingOtp || null,
-
-          cancelUrl:
-            cancelBookingUrl,
-
-          estimatedFare:
-            estimatedFare > 0
-              ? estimatedFare
-              : null,
-
-          message:
-            "Booking email sent successfully.",
-        },
-        {
-          status: 200,
-        }
-      );
-    }
-
-    /* ========================================================
-       CONTACT ENQUIRY
-    ======================================================== */
-
-    if (
-      bookingType ===
-      "contact-enquiry"
-    ) {
-
-      const name =
-        stringValue(body.name);
-
-      const subject =
-        stringValue(body.subject);
-
-      const message =
-        stringValue(body.message);
-
-      if (
-        !name ||
-        !email ||
-        !subject
-      ) {
-
-        return NextResponse.json(
-          {
-            success: false,
-            error:
-              "Required enquiry fields are missing.",
-          },
-          {
-            status: 400,
-          }
-        );
-      }
-
-      if (
-        !isValidEmail(email)
-      ) {
-
-        return NextResponse.json(
-          {
-            success: false,
-            error:
-              "Invalid email address.",
-          },
-          {
-            status: 400,
-          }
-        );
-      }
-
-      if (
-        !validateLength(
-          message,
-          MAX_MESSAGE_LENGTH
-        )
-      ) {
-
-        return NextResponse.json(
-          {
-            success: false,
-            error:
-              "Message is too long.",
-          },
-          {
-            status: 400,
-          }
-        );
-      }
-
-      await transporter.sendMail({
-
-        ...commonMailOptions,
-
-        attachments: [
-          {
-            filename: "flag.jpg",
-            path: indiaFlagPath,
-            cid: "india-flag@sbstaxi",
-          },
-        ],
-
-        replyTo: email,
-
-        subject:
-          `New SBS Taxi Enquiry - ${cleanEmailSubject(
-            subject
-          )}`,
-
-        html: wrapEmail(`
-
-${emailHeader(
-  "NEW CUSTOMER ENQUIRY",
-  bookingId
-)}
-
-<tr>
-
-<td
-  class="email-content"
-  style="padding:30px;"
->
-
-<h2
-  class="email-section-title"
-  style="
-    margin:0 0 12px;
-    color:${BRAND_BLUE};
-    font-size:19px;
-  "
->
-  Customer Details
-</h2>
-
-<table
-  width="100%"
-  cellpadding="0"
-  cellspacing="0"
-  style="
-    border:1px solid #e2e8f0;
-    border-radius:14px;
-    border-collapse:separate;
-    overflow:hidden;
-  "
->
-
-${detailRow(
-  "Reference",
-  bookingId,
-  {
-    highlight: true,
-  }
-)}
-
-${detailRow(
-  "Name",
-  name
-)}
-
-${detailRow(
-  "Email",
-  email
-)}
-
-${detailRow(
-  "Phone",
-  phone || "-"
-)}
-
-</table>
-
-<h2
-  class="email-section-title"
-  style="
-    margin:28px 0 12px;
-    color:${BRAND_BLUE};
-    font-size:19px;
-  "
->
-  Enquiry
-</h2>
-
-<div
-  style="
-    padding:18px;
-    background:#f8fafc;
-    border:1px solid #e2e8f0;
-    border-radius:13px;
-    font-size:14px;
-    line-height:1.7;
-    color:#475569;
-  "
->
-  ${escapeHtml(message || "-")}
-</div>
-
-</td>
-
-</tr>
-
-`),
-      });
-
-      return NextResponse.json(
-        {
-          success: true,
-
-          bookingId,
-
-          message:
-            "Enquiry sent successfully.",
-        },
-        {
-          status: 200,
-        }
-      );
-    }
-
-    /* ========================================================
-       UNKNOWN TYPE
-    ======================================================== */
+    console.log(
+      "================================================"
+    );
 
     return NextResponse.json(
       {
-        success: false,
-        error:
-          "Invalid booking type.",
+        success: true,
+
+        message:
+          "Ride booking email sent successfully.",
+
+        data:
+          responseData,
       },
       {
-        status: 400,
+        status: 200,
       }
     );
 
   } catch (error) {
+    console.error(
+      "================================================"
+    );
 
     console.error(
       "SBS TAXI EMAIL API ERROR:",
       error
+    );
+
+    console.error(
+      "================================================"
     );
 
     return NextResponse.json(

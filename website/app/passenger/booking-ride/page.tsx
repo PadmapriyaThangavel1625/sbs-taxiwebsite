@@ -1,4 +1,3 @@
-
 "use client";
 
 import dynamic from "next/dynamic";
@@ -113,15 +112,23 @@ function money(value: number) {
   return `₹${Math.round(value).toLocaleString("en-IN")}`;
 }
 
-function calculateFare(distanceKm: number, rate: number) {
+function calculateFare(
+  distanceKm: number,
+  rate: number
+) {
   if (distanceKm <= 0) {
     return 0;
   }
 
-  const baseFare = distanceKm * rate;
+  const baseFare =
+    distanceKm * rate;
+
   const minimumFare = 150;
 
-  return Math.max(Math.round(baseFare), minimumFare);
+  return Math.max(
+    Math.round(baseFare),
+    minimumFare
+  );
 }
 
 /* ============================================================
@@ -130,6 +137,7 @@ function calculateFare(distanceKm: number, rate: number) {
 
 interface BookingApiResult {
   success?: boolean;
+
   message?: string;
 
   data?: {
@@ -146,45 +154,87 @@ interface BookingApiResult {
     booking_reference_number?: string;
 
     otp?: number | string;
+
     booking_otp?: number | string;
+
     ride_otp?: number | string;
 
     status?: string;
 
     estimated_distance?: number | string;
+
     estimated_duration?: number | string;
+
     estimated_fare?: number | string;
 
     payment_method?: string;
+
     payment_status?: string;
+
+    passengers?: number | string;
+
+    number_of_passengers?: number | string;
+
+    babies?: number | string;
+
+    elderly?: number | string;
+
+    trip_type?: string;
+
+    tripType?: string;
+
+    pickup_address?: string;
+
+    drop_address?: string;
 
     [key: string]: unknown;
   };
 
   booking_id?: number | string;
+
   bookingId?: number | string;
 
   ride_id?: number | string;
+
   rideId?: number | string;
 
   booking_number?: string;
+
   bookingNumber?: string;
 
   booking_reference?: string;
+
   booking_reference_number?: string;
 
   otp?: number | string;
+
   booking_otp?: number | string;
+
   ride_otp?: number | string;
 
   status?: string;
 
   estimated_distance?: number | string;
+
   estimated_duration?: number | string;
+
   estimated_fare?: number | string;
 
   payment_method?: string;
+
   payment_status?: string;
+
+  passengers?: number | string;
+
+  number_of_passengers?: number | string;
+
+  babies?: number | string;
+
+  elderly?: number | string;
+
+  trip_type?: string;
+
+  tripType?: string;
 
   [key: string]: unknown;
 }
@@ -210,9 +260,8 @@ export default function BookingRidePage() {
      LOCATION
   ========================================================== */
 
-  const [currentLocation, setCurrentLocation] = useState<
-    [number, number] | null
-  >(null);
+  const [currentLocation, setCurrentLocation] =
+    useState<[number, number] | null>(null);
 
   const [pickup, setPickup] =
     useState<PlaceData | null>(null);
@@ -270,7 +319,9 @@ export default function BookingRidePage() {
     if (distanceKm > 0) {
       const estimated = Math.max(
         1,
-        Math.round((distanceKm / 45) * 60)
+        Math.round(
+          (distanceKm / 45) * 60
+        )
       );
 
       setDurationMinutes(estimated);
@@ -321,7 +372,9 @@ export default function BookingRidePage() {
       selectedVehicle.seats
     ) {
       setPassengers(
-        String(selectedVehicle.seats)
+        String(
+          selectedVehicle.seats
+        )
       );
     }
 
@@ -348,6 +401,10 @@ export default function BookingRidePage() {
     setAdditionalPreferences,
   ] = useState("");
 
+  /* ==========================================================
+     PAYMENT
+  ========================================================== */
+
   const [paymentMethod, setPaymentMethod] =
     useState("Cash");
 
@@ -365,6 +422,9 @@ export default function BookingRidePage() {
     useState("");
 
   const [bookingNumber, setBookingNumber] =
+    useState("");
+
+  const [bookingId, setBookingId] =
     useState("");
 
   const [rideId, setRideId] =
@@ -404,7 +464,9 @@ export default function BookingRidePage() {
 
       let foundId: number | null = null;
 
-      for (const key of possibleKeys) {
+      for (
+        const key of possibleKeys
+      ) {
         const raw =
           localStorage.getItem(key);
 
@@ -429,7 +491,8 @@ export default function BookingRidePage() {
             break;
           }
         } catch {
-          const id = Number(raw);
+          const id =
+            Number(raw);
 
           if (id > 0) {
             foundId = id;
@@ -442,20 +505,22 @@ export default function BookingRidePage() {
         setUserId(foundId);
 
         console.log(
+          "================================================="
+        );
+
+        console.log(
           "LOGGED IN USER ID:",
           foundId
+        );
+
+        console.log(
+          "================================================="
         );
       } else {
         console.warn(
           "No user_id found in localStorage."
         );
 
-        /*
-         * Development fallback.
-         *
-         * Remove this fallback when authentication
-         * always provides the real user ID.
-         */
         setUserId(1);
       }
     } catch (err) {
@@ -498,31 +563,29 @@ export default function BookingRidePage() {
      FARE
   ========================================================== */
 
-  const estimatedFare = useMemo(() => {
-    return calculateFare(
+  const estimatedFare =
+    useMemo(() => {
+      return calculateFare(
+        distanceKm,
+        selectedVehicle.rate
+      );
+    }, [
       distanceKm,
-      selectedVehicle.rate
-    );
-  }, [
-    distanceKm,
-    selectedVehicle.rate,
-  ]);
+      selectedVehicle.rate,
+    ]);
 
-  /*
-   * After the server creates the ride,
-   * serverFare becomes the source of truth.
-   */
   const displayFare =
     serverFare !== null
       ? serverFare
       : estimatedFare;
 
   /* ==========================================================
-     SAVE SEARCH DRIVER DATA
+     SAVE COMPLETE BOOKING INFORMATION
   ========================================================== */
 
   const saveSearchDriverData = (
     finalRideId: string,
+    finalBookingId: string,
     finalBookingNumber: string,
     finalBookingOtp: string,
     finalStatus: string,
@@ -530,47 +593,156 @@ export default function BookingRidePage() {
     finalDuration: number,
     finalFare: number,
     finalPaymentMethod: string,
-    finalPaymentStatus: string
+    finalPaymentStatus: string,
+    finalPassengers: number,
+    finalBabies: number,
+    finalElderly: number,
+    finalTripType: string,
+    apiResponse: BookingApiResult
   ) => {
-    const searchDriverData = {
+    /*
+     * IMPORTANT
+     *
+     * This is the single complete booking object.
+     *
+     * Search Driver reads:
+     *
+     * localStorage.getItem(
+     *   "sbs_booking_information"
+     * )
+     */
+
+    const bookingInformation = {
+      /* ======================================================
+         COMPLETE API RESPONSE
+      ====================================================== */
+
+      api_response:
+        apiResponse,
+
+      response_data:
+        apiResponse.data ?? null,
+
+      /* ======================================================
+         IDENTIFIERS
+      ====================================================== */
+
+      ride_id:
+        finalRideId,
+
       rideId:
         finalRideId,
 
+      booking_id:
+        finalBookingId,
+
       bookingId:
-        finalRideId,
+        finalBookingId,
+
+      booking_number:
+        finalBookingNumber,
 
       bookingNumber:
         finalBookingNumber,
 
+      /* ======================================================
+         OTP
+      ====================================================== */
+
+      ride_otp:
+        finalBookingOtp,
+
+      rideOtp:
+        finalBookingOtp,
+
+      booking_otp:
+        finalBookingOtp,
+
       bookingOtp:
         finalBookingOtp,
 
+      otp:
+        finalBookingOtp,
+
+      /* ======================================================
+         USER
+      ====================================================== */
+
+      user_id:
+        userId,
+
       userId,
+
+      /* ======================================================
+         STATUS
+      ====================================================== */
 
       status:
         finalStatus,
+
+      /* ======================================================
+         PICKUP
+      ====================================================== */
 
       pickup: {
         name:
           pickup?.name || "",
 
         latitude:
-          pickup?.latitude,
+          pickup?.latitude ?? null,
 
         longitude:
-          pickup?.longitude,
+          pickup?.longitude ?? null,
       },
+
+      pickup_address:
+        pickup?.name || "",
+
+      pickup_latitude:
+        pickup?.latitude ?? null,
+
+      pickup_longitude:
+        pickup?.longitude ?? null,
+
+      /* ======================================================
+         DROP / DESTINATION
+      ====================================================== */
 
       drop: {
         name:
           drop?.name || "",
 
         latitude:
-          drop?.latitude,
+          drop?.latitude ?? null,
 
         longitude:
-          drop?.longitude,
+          drop?.longitude ?? null,
       },
+
+      drop_address:
+        drop?.name || "",
+
+      drop_latitude:
+        drop?.latitude ?? null,
+
+      drop_longitude:
+        drop?.longitude ?? null,
+
+      destination:
+        drop?.name || "",
+
+      destination_address:
+        drop?.name || "",
+
+      destination_latitude:
+        drop?.latitude ?? null,
+
+      destination_longitude:
+        drop?.longitude ?? null,
+
+      /* ======================================================
+         VEHICLE
+      ====================================================== */
 
       vehicle: {
         id:
@@ -589,7 +761,35 @@ export default function BookingRidePage() {
           selectedVehicle.description,
       },
 
+      vehicle_id:
+        selectedVehicle.id,
+
+      vehicle_type_id:
+        selectedVehicle.id,
+
+      vehicleType:
+        selectedVehicle.name,
+
+      vehicle_type:
+        selectedVehicle.name,
+
+      vehicle_name:
+        selectedVehicle.name,
+
+      vehicle_seats:
+        selectedVehicle.seats,
+
+      vehicle_rate:
+        selectedVehicle.rate,
+
+      /* ======================================================
+         PASSENGER
+      ====================================================== */
+
       passengerName:
+        passengerName.trim(),
+
+      passenger_name:
         passengerName.trim(),
 
       email:
@@ -598,89 +798,307 @@ export default function BookingRidePage() {
       phone:
         phone.trim(),
 
+      /* ======================================================
+         PASSENGER COUNTS
+      ====================================================== */
+
       passengers:
-        passengerCount,
+        finalPassengers,
+
+      numberOfPassengers:
+        finalPassengers,
+
+      number_of_passengers:
+        finalPassengers,
 
       babies:
-        Number(babies) || 0,
+        finalBabies,
 
       elderly:
-        Number(elderly) || 0,
+        finalElderly,
 
-      additionalPreferences:
-        additionalPreferences.trim(),
+      /* ======================================================
+         TRIP
+      ====================================================== */
 
-      paymentMethod:
-        finalPaymentMethod,
+      tripType:
+        finalTripType,
 
-      paymentStatus:
-        finalPaymentStatus,
+      trip_type:
+        finalTripType,
+
+      pickupDate,
+
+      pickup_date:
+        pickupDate,
+
+      pickupTime,
+
+      pickup_time:
+        pickupTime,
+
+      /* ======================================================
+         ROUTE
+      ====================================================== */
 
       distanceKm:
+        finalDistance,
+
+      distance_km:
+        finalDistance,
+
+      estimated_distance:
         finalDistance,
 
       durationMinutes:
         finalDuration,
 
-      pickupDate,
+      duration_minutes:
+        finalDuration,
 
-      pickupTime,
+      estimated_duration:
+        finalDuration,
 
-      tripType,
+      /* ======================================================
+         FARE
+      ====================================================== */
 
       estimatedFare:
         finalFare,
 
+      estimated_fare:
+        finalFare,
+
+      fare:
+        finalFare,
+
+      /* ======================================================
+         PAYMENT
+      ====================================================== */
+
+      paymentMethod:
+        finalPaymentMethod,
+
+      payment_method:
+        finalPaymentMethod,
+
+      paymentStatus:
+        finalPaymentStatus,
+
+      payment_status:
+        finalPaymentStatus,
+
+      /* ======================================================
+         PREFERENCES
+      ====================================================== */
+
+      additionalPreferences:
+        additionalPreferences.trim(),
+
+      additional_preferences:
+        additionalPreferences.trim(),
+
+      /* ======================================================
+         SOURCE
+      ====================================================== */
+
+      booking_source:
+        "website",
+
+      project:
+        "SBS TAXI",
+
+      /* ======================================================
+         TIMESTAMP
+      ====================================================== */
+
       createdAt:
+        new Date().toISOString(),
+
+      created_at:
         new Date().toISOString(),
     };
 
-    sessionStorage.setItem(
-      "sbs_search_driver_booking",
+    console.log(
+      "================================================="
+    );
+
+    console.log(
+      "SBS TAXI - COMPLETE BOOKING INFORMATION"
+    );
+
+    console.log(
+      "================================================="
+    );
+
+    console.log(
       JSON.stringify(
-        searchDriverData
+        bookingInformation,
+        null,
+        2
       )
     );
 
-    sessionStorage.setItem(
-      "sbs_ride_id",
-      finalRideId
+    console.log(
+      "================================================="
     );
 
-    sessionStorage.setItem(
-      "sbs_booking_id",
-      finalRideId
-    );
+    try {
+      /* ======================================================
+         PRIMARY STORAGE
+      ====================================================== */
 
-    sessionStorage.setItem(
-      "sbs_booking_number",
-      finalBookingNumber
-    );
+      localStorage.setItem(
+        "sbs_booking_information",
+        JSON.stringify(
+          bookingInformation
+        )
+      );
 
-    sessionStorage.setItem(
-      "sbs_booking_otp",
-      finalBookingOtp
-    );
+      /* ======================================================
+         EXISTING SESSION STORAGE
+      ====================================================== */
 
-    sessionStorage.setItem(
-      "sbs_ride_status",
-      finalStatus
-    );
+      sessionStorage.setItem(
+        "sbs_search_driver_booking",
+        JSON.stringify(
+          bookingInformation
+        )
+      );
 
-    sessionStorage.setItem(
-      "sbs_payment_status",
-      finalPaymentStatus
-    );
+      /* ======================================================
+         LOCAL STORAGE IDENTIFIERS
+      ====================================================== */
 
-    window.dispatchEvent(
-      new CustomEvent(
-        "sbs-booking-confirmed",
-        {
-          detail:
-            searchDriverData,
-        }
-      )
-    );
+      localStorage.setItem(
+        "sbs_ride_id",
+        finalRideId
+      );
+
+      localStorage.setItem(
+        "sbs_booking_id",
+        finalBookingId
+      );
+
+      localStorage.setItem(
+        "sbs_booking_number",
+        finalBookingNumber
+      );
+
+      localStorage.setItem(
+        "sbs_booking_otp",
+        finalBookingOtp
+      );
+
+      localStorage.setItem(
+        "sbs_ride_otp",
+        finalBookingOtp
+      );
+
+      localStorage.setItem(
+        "sbs_ride_status",
+        finalStatus
+      );
+
+      /* ======================================================
+         SESSION IDENTIFIERS
+      ====================================================== */
+
+      sessionStorage.setItem(
+        "sbs_ride_id",
+        finalRideId
+      );
+
+      sessionStorage.setItem(
+        "sbs_booking_id",
+        finalBookingId
+      );
+
+      sessionStorage.setItem(
+        "sbs_booking_number",
+        finalBookingNumber
+      );
+
+      sessionStorage.setItem(
+        "sbs_booking_otp",
+        finalBookingOtp
+      );
+
+      sessionStorage.setItem(
+        "sbs_ride_otp",
+        finalBookingOtp
+      );
+
+      sessionStorage.setItem(
+        "sbs_ride_status",
+        finalStatus
+      );
+
+      sessionStorage.setItem(
+        "sbs_payment_status",
+        finalPaymentStatus
+      );
+
+      sessionStorage.setItem(
+        "sbs_passengers",
+        String(
+          finalPassengers
+        )
+      );
+
+      sessionStorage.setItem(
+        "sbs_number_of_passengers",
+        String(
+          finalPassengers
+        )
+      );
+
+      sessionStorage.setItem(
+        "sbs_babies",
+        String(
+          finalBabies
+        )
+      );
+
+      sessionStorage.setItem(
+        "sbs_elderly",
+        String(
+          finalElderly
+        )
+      );
+
+      sessionStorage.setItem(
+        "sbs_trip_type",
+        finalTripType
+      );
+
+      /* ======================================================
+         EVENT
+      ====================================================== */
+
+      window.dispatchEvent(
+        new CustomEvent(
+          "sbs-booking-confirmed",
+          {
+            detail:
+              bookingInformation,
+          }
+        )
+      );
+
+      console.log(
+        "BOOKING INFORMATION SAVED SUCCESSFULLY"
+      );
+    } catch (storageError) {
+      console.error(
+        "BOOKING STORAGE ERROR:",
+        storageError
+      );
+
+      throw new Error(
+        "Booking was created, but the booking information could not be saved."
+      );
+    }
   };
 
   /* ==========================================================
@@ -690,21 +1108,30 @@ export default function BookingRidePage() {
   const handleConfirmBooking =
     async () => {
       setMessage("");
+
       setError("");
+
       setBookingNumber("");
+
+      setBookingId("");
+
       setRideId("");
+
       setBookingOtp("");
+
       setCancelled(false);
+
       setCancelMessage("");
 
-      /* ======================================================
+      /* ========================================================
          VALIDATION
-      ====================================================== */
+      ======================================================== */
 
       if (!pickup) {
         setError(
           "Please select your pickup location."
         );
+
         return;
       }
 
@@ -712,6 +1139,7 @@ export default function BookingRidePage() {
         setError(
           "Please select your destination."
         );
+
         return;
       }
 
@@ -724,6 +1152,7 @@ export default function BookingRidePage() {
         setError(
           "Valid pickup and destination locations are required."
         );
+
         return;
       }
 
@@ -731,6 +1160,7 @@ export default function BookingRidePage() {
         setError(
           "Please wait for the route distance to be calculated."
         );
+
         return;
       }
 
@@ -738,6 +1168,7 @@ export default function BookingRidePage() {
         setError(
           "Please select pickup date."
         );
+
         return;
       }
 
@@ -745,6 +1176,7 @@ export default function BookingRidePage() {
         setError(
           "Please select pickup time."
         );
+
         return;
       }
 
@@ -752,6 +1184,7 @@ export default function BookingRidePage() {
         setError(
           "Please enter passenger name."
         );
+
         return;
       }
 
@@ -759,6 +1192,7 @@ export default function BookingRidePage() {
         setError(
           "Please enter passenger phone number."
         );
+
         return;
       }
 
@@ -770,6 +1204,7 @@ export default function BookingRidePage() {
         setError(
           `This vehicle can accommodate a maximum of ${selectedVehicle.seats} passengers.`
         );
+
         return;
       }
 
@@ -777,22 +1212,65 @@ export default function BookingRidePage() {
         setError(
           "Please sign in before booking."
         );
+
         return;
       }
 
-      /* ======================================================
+      /* ========================================================
          CREATE BOOKING
-      ====================================================== */
+      ======================================================== */
 
       try {
         setLoading(true);
 
+        const finalPassengerCount =
+          Number(passengers) || 1;
+
+        const finalBabies =
+          Number(babies) || 0;
+
+        const finalElderly =
+          Number(elderly) || 0;
+
+        const finalDistance =
+          Number(distanceKm) || 0;
+
+        const finalDuration =
+          Number(durationMinutes) || 0;
+
+        const finalFare =
+          Number(estimatedFare) || 0;
+
+        const finalTripType =
+          tripType.trim() ||
+          "One Way";
+
+        const finalPaymentMethod =
+          paymentMethod.trim() ||
+          "Cash";
+
+        /* ======================================================
+           COMPLETE BOOKING REQUEST
+        ====================================================== */
+
         const requestBody = {
+          /* USER */
+
           user_id:
             userId,
 
+          /* VEHICLE */
+
           vehicle_type_id:
             selectedVehicle.id,
+
+          vehicleType:
+            selectedVehicle.name,
+
+          vehicle_type:
+            selectedVehicle.name,
+
+          /* PICKUP */
 
           pickup_address:
             pickup.name,
@@ -803,6 +1281,8 @@ export default function BookingRidePage() {
           pickup_longitude:
             pickup.longitude,
 
+          /* DROP */
+
           drop_address:
             drop.name,
 
@@ -812,10 +1292,29 @@ export default function BookingRidePage() {
           drop_longitude:
             drop.longitude,
 
+          /* FARE */
+
           estimated_fare:
-            estimatedFare,
+            finalFare,
+
+          distanceKm:
+            finalDistance,
+
+          estimated_distance:
+            finalDistance,
+
+          durationMinutes:
+            finalDuration,
+
+          estimated_duration:
+            finalDuration,
+
+          /* PASSENGER */
 
           passengerName:
+            passengerName.trim(),
+
+          passenger_name:
             passengerName.trim(),
 
           email:
@@ -824,54 +1323,112 @@ export default function BookingRidePage() {
           phone:
             phone.trim(),
 
-          vehicleType:
-            selectedVehicle.name,
+          /* PASSENGERS */
 
           passengers:
-            passengerCount,
+            finalPassengerCount,
+
+          number_of_passengers:
+            finalPassengerCount,
+
+          numberOfPassengers:
+            finalPassengerCount,
+
+          babies:
+            finalBabies,
+
+          elderly:
+            finalElderly,
 
           seats:
             selectedVehicle.seats,
 
-          distanceKm:
-            distanceKm,
+          /* TRIP */
 
-          durationMinutes:
-            durationMinutes,
+          tripType:
+            finalTripType,
+
+          trip_type:
+            finalTripType,
+
+          /* DATE */
 
           pickupDate:
             pickupDate,
 
+          pickup_date:
+            pickupDate,
+
+          /* TIME */
+
           pickupTime:
             pickupTime,
 
-          tripType:
-            tripType,
+          pickup_time:
+            pickupTime,
 
-          babies:
-            Number(babies) || 0,
-
-          elderly:
-            Number(elderly) || 0,
+          /* PREFERENCES */
 
           additionalPreferences:
             additionalPreferences.trim(),
 
+          additional_preferences:
+            additionalPreferences.trim(),
+
+          /* PAYMENT */
+
           paymentMethod:
-            paymentMethod.toLowerCase(),
+            finalPaymentMethod,
+
+          payment_method:
+            finalPaymentMethod,
+
+          /* EXTRA */
+
+          booking_source:
+            "website",
+
+          project:
+            "SBS TAXI",
         };
 
+        /* ======================================================
+           REQUEST LOG
+        ====================================================== */
+
         console.log(
-          "CREATE BOOKING REQUEST:",
-          requestBody
+          "================================================="
         );
+
+        console.log(
+          "SBS TAXI - CREATE BOOKING REQUEST"
+        );
+
+        console.log(
+          "================================================="
+        );
+
+        console.log(
+          JSON.stringify(
+            requestBody,
+            null,
+            2
+          )
+        );
+
+        console.log(
+          "================================================="
+        );
+
+        /* ======================================================
+           API
+        ====================================================== */
 
         const response =
           await fetch(
             "/api/passenger/booking",
             {
-              method:
-                "POST",
+              method: "POST",
 
               headers: {
                 "Content-Type":
@@ -899,14 +1456,33 @@ export default function BookingRidePage() {
           );
         }
 
+        /* ======================================================
+           API RESPONSE LOG
+        ====================================================== */
+
         console.log(
-          "CREATE BOOKING RESPONSE:",
-          data
+          "================================================="
         );
 
-        /* ====================================================
-           API SUCCESS CHECK
-        ==================================================== */
+        console.log(
+          "SBS TAXI - BOOKING API RESPONSE"
+        );
+
+        console.log(
+          "================================================="
+        );
+
+        console.log(
+          JSON.stringify(
+            data,
+            null,
+            2
+          )
+        );
+
+        console.log(
+          "================================================="
+        );
 
         if (
           !response.ok ||
@@ -918,9 +1494,9 @@ export default function BookingRidePage() {
           );
         }
 
-        /* ====================================================
+        /* ======================================================
            GET RIDE ID
-        ==================================================== */
+        ====================================================== */
 
         const returnedRideId =
           data.data?.ride_id ??
@@ -929,9 +1505,20 @@ export default function BookingRidePage() {
           data.rideId ??
           "";
 
-        /* ====================================================
+        /* ======================================================
+           GET BOOKING ID
+        ====================================================== */
+
+        const returnedBookingId =
+          data.data?.booking_id ??
+          data.data?.bookingId ??
+          data.booking_id ??
+          data.bookingId ??
+          "";
+
+        /* ======================================================
            GET BOOKING NUMBER
-        ==================================================== */
+        ====================================================== */
 
         const returnedBookingNumber =
           data.data?.booking_number ??
@@ -945,9 +1532,9 @@ export default function BookingRidePage() {
           data.booking_reference_number ??
           "";
 
-        /* ====================================================
-           GET RIDE OTP
-        ==================================================== */
+        /* ======================================================
+           GET OTP
+        ====================================================== */
 
         const returnedOtp =
           data.data?.ride_otp ??
@@ -958,79 +1545,137 @@ export default function BookingRidePage() {
           data.otp ??
           "";
 
-        /* ====================================================
+        /* ======================================================
            GET STATUS
-        ==================================================== */
+        ====================================================== */
 
         const returnedStatus =
           data.data?.status ??
           data.status ??
           "searching";
 
-        /* ====================================================
-           GET SERVER DISTANCE
-        ==================================================== */
+        /* ======================================================
+           GET DISTANCE
+        ====================================================== */
 
         const returnedDistance =
           Number(
-            data.data?.estimated_distance ??
+            data.data
+              ?.estimated_distance ??
               data.estimated_distance ??
-              0
+              distanceKm
           );
 
-        /* ====================================================
-           GET SERVER DURATION
-        ==================================================== */
+        /* ======================================================
+           GET DURATION
+        ====================================================== */
 
         const returnedDuration =
           Number(
-            data.data?.estimated_duration ??
+            data.data
+              ?.estimated_duration ??
               data.estimated_duration ??
-              0
+              durationMinutes
           );
 
-        /* ====================================================
-           GET SERVER FARE
-        ==================================================== */
+        /* ======================================================
+           GET FARE
+        ====================================================== */
 
         const returnedFare =
           Number(
-            data.data?.estimated_fare ??
+            data.data
+              ?.estimated_fare ??
               data.estimated_fare ??
               estimatedFare
           );
 
-        /* ====================================================
+        /* ======================================================
            GET PAYMENT METHOD
-        ==================================================== */
+        ====================================================== */
 
         const returnedPaymentMethod =
-          data.data?.payment_method ??
+          data.data
+            ?.payment_method ??
           data.payment_method ??
           paymentMethod.toLowerCase();
 
-        /* ====================================================
+        /* ======================================================
            GET PAYMENT STATUS
-        ==================================================== */
+        ====================================================== */
 
         const returnedPaymentStatus =
-          data.data?.payment_status ??
+          data.data
+            ?.payment_status ??
           data.payment_status ??
           "pending";
 
-        /* ====================================================
+        /* ======================================================
+           GET PASSENGERS
+        ====================================================== */
+
+        const returnedPassengers =
+          Number(
+            data.data?.passengers ??
+              data.data
+                ?.number_of_passengers ??
+              data.passengers ??
+              data.number_of_passengers ??
+              finalPassengerCount
+          );
+
+        /* ======================================================
+           GET BABIES
+        ====================================================== */
+
+        const returnedBabies =
+          Number(
+            data.data?.babies ??
+              data.babies ??
+              finalBabies
+          );
+
+        /* ======================================================
+           GET ELDERLY
+        ====================================================== */
+
+        const returnedElderly =
+          Number(
+            data.data?.elderly ??
+              data.elderly ??
+              finalElderly
+          );
+
+        /* ======================================================
+           GET TRIP TYPE
+        ====================================================== */
+
+        const returnedTripType =
+          String(
+            data.data?.trip_type ??
+              data.data?.tripType ??
+              data.trip_type ??
+              data.tripType ??
+              finalTripType
+          );
+
+        /* ======================================================
            FINAL VALUES
-        ==================================================== */
+        ====================================================== */
 
         const finalRideId =
           String(
             returnedRideId || ""
           );
 
+        const finalBookingId =
+          String(
+            returnedBookingId || ""
+          );
+
         const finalBookingNumber =
           String(
-            returnedBookingNumber ||
-              ""
+            returnedBookingNumber || ""
           );
 
         const finalBookingOtp =
@@ -1044,45 +1689,99 @@ export default function BookingRidePage() {
               "searching"
           );
 
-        /* ====================================================
-           DEBUG
-        ==================================================== */
+        /* ======================================================
+           FINAL BOOKING LOG
+        ====================================================== */
 
         console.log(
-          "FINAL BOOKING DATA:",
-          {
-            ride_id:
-              finalRideId,
-
-            booking_number:
-              finalBookingNumber,
-
-            ride_otp:
-              finalBookingOtp,
-
-            status:
-              finalStatus,
-
-            estimated_distance:
-              returnedDistance,
-
-            estimated_duration:
-              returnedDuration,
-
-            estimated_fare:
-              returnedFare,
-
-            payment_method:
-              returnedPaymentMethod,
-
-            payment_status:
-              returnedPaymentStatus,
-          }
+          "================================================="
         );
 
-        /* ====================================================
+        console.log(
+          "SBS TAXI - FINAL BOOKING INFORMATION"
+        );
+
+        console.log(
+          "================================================="
+        );
+
+        console.log(
+          "ride_id:",
+          finalRideId
+        );
+
+        console.log(
+          "booking_id:",
+          finalBookingId
+        );
+
+        console.log(
+          "booking_number:",
+          finalBookingNumber
+        );
+
+        console.log(
+          "ride_otp:",
+          finalBookingOtp
+        );
+
+        console.log(
+          "status:",
+          finalStatus
+        );
+
+        console.log(
+          "passengers:",
+          returnedPassengers
+        );
+
+        console.log(
+          "babies:",
+          returnedBabies
+        );
+
+        console.log(
+          "elderly:",
+          returnedElderly
+        );
+
+        console.log(
+          "trip_type:",
+          returnedTripType
+        );
+
+        console.log(
+          "payment_method:",
+          returnedPaymentMethod
+        );
+
+        console.log(
+          "payment_status:",
+          returnedPaymentStatus
+        );
+
+        console.log(
+          "estimated_fare:",
+          returnedFare
+        );
+
+        console.log(
+          "estimated_distance:",
+          returnedDistance
+        );
+
+        console.log(
+          "estimated_duration:",
+          returnedDuration
+        );
+
+        console.log(
+          "================================================="
+        );
+
+        /* ======================================================
            RIDE ID REQUIRED
-        ==================================================== */
+        ====================================================== */
 
         if (!finalRideId) {
           throw new Error(
@@ -1090,12 +1789,36 @@ export default function BookingRidePage() {
           );
         }
 
-        /* ====================================================
+        /* ======================================================
+           BOOKING ID WARNING
+        ====================================================== */
+
+        if (!finalBookingId) {
+          console.warn(
+            "Booking created but booking_id was not returned by the server."
+          );
+        }
+
+        /* ======================================================
+           OTP WARNING
+        ====================================================== */
+
+        if (!finalBookingOtp) {
+          console.warn(
+            "Booking created but ride OTP was not returned by the server."
+          );
+        }
+
+        /* ======================================================
            UPDATE STATE
-        ==================================================== */
+        ====================================================== */
 
         setRideId(
           finalRideId
+        );
+
+        setBookingId(
+          finalBookingId
         );
 
         setBookingNumber(
@@ -1135,12 +1858,13 @@ export default function BookingRidePage() {
             "Ride created successfully. Searching for driver..."
         );
 
-        /* ====================================================
-           SAVE SEARCH DRIVER DATA
-        ==================================================== */
+        /* ======================================================
+           SAVE COMPLETE BOOKING INFORMATION
+        ====================================================== */
 
         saveSearchDriverData(
           finalRideId,
+          finalBookingId,
           finalBookingNumber,
           finalBookingOtp,
           finalStatus,
@@ -1152,100 +1876,88 @@ export default function BookingRidePage() {
           ),
           String(
             returnedPaymentStatus
-          )
+          ),
+          returnedPassengers,
+          returnedBabies,
+          returnedElderly,
+          returnedTripType,
+          data
         );
 
-        /* ====================================================
+        /* ======================================================
            SEARCH DRIVER QUERY
-        ==================================================== */
+           
+           IMPORTANT:
+           Only IDs are sent through the URL.
+           Complete booking information is in localStorage.
+        ====================================================== */
 
         const query =
-          new URLSearchParams({
-            ride_id:
-              finalRideId,
+          new URLSearchParams();
 
-            booking_number:
-              finalBookingNumber,
+        query.set(
+          "ride_id",
+          finalRideId
+        );
 
-            ride_otp:
-              finalBookingOtp,
+        if (finalBookingId) {
+          query.set(
+            "booking_id",
+            finalBookingId
+          );
+        }
 
-            status:
-              finalStatus,
-
-            vehicle:
-              selectedVehicle.name,
-
-            fare:
-              String(
-                returnedFare
-              ),
-
-            distance:
-              String(
-                returnedDistance
-              ),
-
-            duration:
-              String(
-                returnedDuration
-              ),
-
-            payment_method:
-              String(
-                returnedPaymentMethod
-              ),
-
-            payment_status:
-              String(
-                returnedPaymentStatus
-              ),
-
-            pickup:
-              pickup.name,
-
-            drop:
-              drop.name,
-
-            pickupLat:
-              String(
-                pickup.latitude
-              ),
-
-            pickupLng:
-              String(
-                pickup.longitude
-              ),
-
-            dropLat:
-              String(
-                drop.latitude
-              ),
-
-            dropLng:
-              String(
-                drop.longitude
-              ),
-          });
+        if (finalBookingNumber) {
+          query.set(
+            "booking_number",
+            finalBookingNumber
+          );
+        }
 
         console.log(
-          "SEARCH DRIVER QUERY:",
+          "================================================="
+        );
+
+        console.log(
+          "SEARCH DRIVER REDIRECT"
+        );
+
+        console.log(
+          "================================================="
+        );
+
+        console.log(
           Object.fromEntries(
             query.entries()
           )
         );
 
-        /* ====================================================
+        console.log(
+          "================================================="
+        );
+
+        /* ======================================================
            REDIRECT
-        ==================================================== */
+        ====================================================== */
 
         router.push(
           `/passenger/search-driver?${query.toString()}`
         );
       } catch (err) {
         console.error(
-          "CREATE BOOKING ERROR:",
+          "================================================="
+        );
+
+        console.error(
+          "CREATE BOOKING ERROR"
+        );
+
+        console.error(
           err
+        );
+
+        console.error(
+          "================================================="
         );
 
         setError(
@@ -1265,6 +1977,7 @@ export default function BookingRidePage() {
   const handleCancelBooking =
     async () => {
       setError("");
+
       setCancelMessage("");
 
       const finalRideId =
@@ -1297,8 +2010,7 @@ export default function BookingRidePage() {
           await fetch(
             "/api/passenger/cancel",
             {
-              method:
-                "POST",
+              method: "POST",
 
               headers: {
                 "Content-Type":
@@ -1352,6 +2064,47 @@ export default function BookingRidePage() {
         setMessage("");
 
         /* ====================================================
+           UPDATE LOCAL STORAGE
+        ==================================================== */
+
+        try {
+          const raw =
+            localStorage.getItem(
+              "sbs_booking_information"
+            );
+
+          if (raw) {
+            const existing =
+              JSON.parse(raw);
+
+            const updated = {
+              ...existing,
+
+              status:
+                "cancelled",
+
+              cancelledAt:
+                new Date().toISOString(),
+
+              cancelled_at:
+                new Date().toISOString(),
+            };
+
+            localStorage.setItem(
+              "sbs_booking_information",
+              JSON.stringify(
+                updated
+              )
+            );
+          }
+        } catch (storageError) {
+          console.warn(
+            "Unable to update local booking storage.",
+            storageError
+          );
+        }
+
+        /* ====================================================
            UPDATE SESSION
         ==================================================== */
 
@@ -1375,15 +2128,24 @@ export default function BookingRidePage() {
                     finalRideId
                   ),
 
-                bookingId:
+                ride_id:
                   String(
                     finalRideId
                   ),
+
+                bookingId:
+                  bookingId,
+
+                booking_id:
+                  bookingId,
 
                 status:
                   "cancelled",
 
                 cancelledAt:
+                  new Date().toISOString(),
+
+                cancelled_at:
                   new Date().toISOString(),
               })
             );
@@ -1461,13 +2223,14 @@ export default function BookingRidePage() {
 
           <section className="relative z-0 space-y-5 lg:sticky lg:top-24">
 
-            {/* =================================================
+            {/* ==================================================
                 RIDE DETAILS
-            ================================================= */}
+            ================================================== */}
 
             <div className="relative z-0 rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
 
               <div className="mb-5 flex items-center gap-3">
+
                 <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-blue-50 text-[#123f80]">
                   <Route className="h-5 w-5" />
                 </div>
@@ -1481,9 +2244,8 @@ export default function BookingRidePage() {
                     Select your pickup and destination
                   </p>
                 </div>
-              </div>
 
-              {/* CURRENT LOCATION */}
+              </div>
 
               <CurrentLocation
                 setLocation={
@@ -1494,8 +2256,6 @@ export default function BookingRidePage() {
                 }
               />
 
-              {/* PICKUP */}
-
               <PlaceSearch
                 label="Pickup Location"
                 placeholder="Search pickup location"
@@ -1504,8 +2264,6 @@ export default function BookingRidePage() {
                   setPickup
                 }
               />
-
-              {/* DROP */}
 
               <div className="mt-5">
                 <PlaceSearch
@@ -1518,7 +2276,7 @@ export default function BookingRidePage() {
                 />
               </div>
 
-              {/* DATE + TIME */}
+              {/* DATE / TIME */}
 
               <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2">
 
@@ -1528,12 +2286,17 @@ export default function BookingRidePage() {
                   </label>
 
                   <div className="relative">
+
                     <CalendarDays className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
 
                     <input
                       type="date"
-                      value={pickupDate}
-                      min={pickupDate}
+                      value={
+                        pickupDate
+                      }
+                      min={
+                        pickupDate
+                      }
                       onChange={(e) =>
                         setPickupDate(
                           e.target.value
@@ -1541,6 +2304,7 @@ export default function BookingRidePage() {
                       }
                       className="w-full rounded-xl border border-slate-200 bg-white py-3 pl-10 pr-3 text-sm outline-none focus:border-[#123f80] focus:ring-2 focus:ring-blue-100"
                     />
+
                   </div>
                 </div>
 
@@ -1550,11 +2314,14 @@ export default function BookingRidePage() {
                   </label>
 
                   <div className="relative">
+
                     <Timer className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
 
                     <input
                       type="time"
-                      value={pickupTime}
+                      value={
+                        pickupTime
+                      }
                       onChange={(e) =>
                         setPickupTime(
                           e.target.value
@@ -1562,19 +2329,24 @@ export default function BookingRidePage() {
                       }
                       className="w-full rounded-xl border border-slate-200 bg-white py-3 pl-10 pr-3 text-sm outline-none focus:border-[#123f80] focus:ring-2 focus:ring-blue-100"
                     />
+
                   </div>
                 </div>
+
               </div>
 
               {/* TRIP TYPE */}
 
               <div className="mt-5">
+
                 <label className="mb-2 block text-xs font-bold text-slate-700">
                   Trip Type
                 </label>
 
                 <select
-                  value={tripType}
+                  value={
+                    tripType
+                  }
                   onChange={(e) =>
                     setTripType(
                       e.target.value
@@ -1594,13 +2366,21 @@ export default function BookingRidePage() {
                     Multi Day
                   </option>
                 </select>
+
+                <p className="mt-2 text-[11px] font-semibold text-[#123f80]">
+                  Selected Trip Type:{" "}
+                  {tripType}
+                </p>
+
               </div>
 
               {/* CURRENT LOCATION */}
 
               {currentLocation && (
                 <div className="mt-4 rounded-2xl border border-blue-100 bg-blue-50 p-4">
+
                   <div className="flex gap-3">
+
                     <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-blue-600 text-white">
                       <Navigation className="h-4 w-4" />
                     </div>
@@ -1614,18 +2394,23 @@ export default function BookingRidePage() {
                         GPS location detected
                       </p>
                     </div>
+
                   </div>
+
                 </div>
               )}
 
-              {/* PICKUP SUMMARY */}
+              {/* PICKUP PREVIEW */}
 
               {pickup && (
                 <div className="mt-4 rounded-2xl border border-emerald-200 bg-emerald-50 p-4">
+
                   <div className="flex gap-3">
+
                     <MapPin className="mt-0.5 h-5 w-5 shrink-0 text-emerald-600" />
 
                     <div className="min-w-0">
+
                       <p className="text-xs font-bold uppercase tracking-wide text-emerald-700">
                         Pickup
                       </p>
@@ -1633,19 +2418,25 @@ export default function BookingRidePage() {
                       <p className="mt-1 break-words text-sm font-semibold text-slate-800">
                         {pickup.name}
                       </p>
+
                     </div>
+
                   </div>
+
                 </div>
               )}
 
-              {/* DROP SUMMARY */}
+              {/* DROP PREVIEW */}
 
               {drop && (
                 <div className="mt-4 rounded-2xl border border-red-200 bg-red-50 p-4">
+
                   <div className="flex gap-3">
+
                     <MapPin className="mt-0.5 h-5 w-5 shrink-0 text-red-500" />
 
                     <div className="min-w-0">
+
                       <p className="text-xs font-bold uppercase tracking-wide text-red-600">
                         Destination
                       </p>
@@ -1653,8 +2444,11 @@ export default function BookingRidePage() {
                       <p className="mt-1 break-words text-sm font-semibold text-slate-800">
                         {drop.name}
                       </p>
+
                     </div>
+
                   </div>
+
                 </div>
               )}
 
@@ -1664,25 +2458,36 @@ export default function BookingRidePage() {
                 <div className="mt-4 grid grid-cols-2 gap-3">
 
                   <div className="rounded-2xl bg-slate-50 p-4">
+
                     <p className="text-xs text-slate-500">
                       Trip Distance
                     </p>
 
                     <p className="mt-1 text-xl font-bold text-slate-900">
-                      {distanceKm.toFixed(2)} km
+                      {distanceKm.toFixed(
+                        2
+                      )}{" "}
+                      km
                     </p>
+
                   </div>
 
                   <div className="rounded-2xl bg-slate-50 p-4">
+
                     <p className="text-xs text-slate-500">
                       Estimated Time
                     </p>
 
                     <p className="mt-1 flex items-center gap-1 text-xl font-bold text-slate-900">
+
                       <Clock3 className="h-4 w-4" />
 
-                      {durationMinutes || "-"} mins
+                      {durationMinutes ||
+                        "-"}{" "}
+                      mins
+
                     </p>
+
                   </div>
 
                 </div>
@@ -1690,13 +2495,14 @@ export default function BookingRidePage() {
 
             </div>
 
-            {/* =================================================
-                VEHICLE
-            ================================================= */}
+            {/* ==================================================
+                VEHICLES
+            ================================================== */}
 
             <div className="relative z-0 rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
 
               <div className="mb-4 flex items-center justify-between">
+
                 <div>
                   <h2 className="font-bold text-slate-900">
                     Choose Vehicle
@@ -1708,6 +2514,7 @@ export default function BookingRidePage() {
                 </div>
 
                 <CarFront className="h-5 w-5 text-[#123f80]" />
+
               </div>
 
               <div className="space-y-3">
@@ -1788,6 +2595,7 @@ export default function BookingRidePage() {
                             <div className="mt-2 flex flex-wrap items-center gap-3 text-[11px] text-slate-500">
 
                               <span className="flex items-center gap-1">
+
                                 <Users className="h-3 w-3" />
 
                                 Up to{" "}
@@ -1795,6 +2603,7 @@ export default function BookingRidePage() {
                                   vehicle.seats
                                 }{" "}
                                 passengers
+
                               </span>
 
                               <span>
@@ -1820,6 +2629,7 @@ export default function BookingRidePage() {
               </div>
 
               <div className="mt-4 rounded-2xl border border-blue-100 bg-blue-50 p-4">
+
                 <div className="flex items-center gap-3">
 
                   <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#123f80] text-white">
@@ -1827,6 +2637,7 @@ export default function BookingRidePage() {
                   </div>
 
                   <div>
+
                     <p className="text-xs font-semibold text-blue-600">
                       Selected Vehicle Capacity
                     </p>
@@ -1841,9 +2652,11 @@ export default function BookingRidePage() {
                       }{" "}
                       passengers maximum
                     </p>
+
                   </div>
 
                 </div>
+
               </div>
 
             </div>
@@ -1856,7 +2669,9 @@ export default function BookingRidePage() {
 
           <section className="relative z-0 min-w-0 space-y-5">
 
-            {/* MAP */}
+            {/* ==================================================
+                MAP
+            ================================================== */}
 
             <div className="relative z-0 isolate overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
 
@@ -1873,9 +2688,9 @@ export default function BookingRidePage() {
 
             </div>
 
-            {/* =================================================
+            {/* ==================================================
                 PASSENGER DETAILS
-            ================================================= */}
+            ================================================== */}
 
             <div className="relative z-0 rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
 
@@ -1888,6 +2703,7 @@ export default function BookingRidePage() {
                   </div>
 
                   <div>
+
                     <h2 className="font-bold text-slate-900">
                       Passenger Details
                     </h2>
@@ -1895,6 +2711,7 @@ export default function BookingRidePage() {
                     <p className="text-xs text-slate-500">
                       Enter passenger information
                     </p>
+
                   </div>
 
                 </div>
@@ -1936,7 +2753,9 @@ export default function BookingRidePage() {
 
                   <input
                     type="email"
-                    value={email}
+                    value={
+                      email
+                    }
                     onChange={(e) =>
                       setEmail(
                         e.target.value
@@ -1958,7 +2777,9 @@ export default function BookingRidePage() {
 
                   <input
                     type="tel"
-                    value={phone}
+                    value={
+                      phone
+                    }
                     onChange={(e) =>
                       setPhone(
                         e.target.value
@@ -1975,9 +2796,11 @@ export default function BookingRidePage() {
                 <div>
 
                   <label className="mb-2 flex items-center gap-2 text-xs font-bold text-slate-700">
+
                     <Users className="h-4 w-4 text-slate-500" />
 
                     Number of Passengers
+
                   </label>
 
                   <select
@@ -2018,17 +2841,6 @@ export default function BookingRidePage() {
                     )}
                   </select>
 
-                  <p className="mt-2 text-[11px] text-slate-400">
-                    Maximum{" "}
-                    {
-                      selectedVehicle.seats
-                    }{" "}
-                    passengers for{" "}
-                    {
-                      selectedVehicle.name
-                    }
-                  </p>
-
                 </div>
 
                 {/* BABIES */}
@@ -2036,9 +2848,11 @@ export default function BookingRidePage() {
                 <div>
 
                   <label className="mb-2 flex items-center gap-2 text-xs font-bold text-slate-700">
+
                     <Baby className="h-4 w-4 text-slate-500" />
 
                     Babies
+
                   </label>
 
                   <select
@@ -2080,9 +2894,11 @@ export default function BookingRidePage() {
                 <div>
 
                   <label className="mb-2 flex items-center gap-2 text-xs font-bold text-slate-700">
+
                     <Users className="h-4 w-4 text-slate-500" />
 
                     Elderly
+
                   </label>
 
                   <select
@@ -2121,7 +2937,7 @@ export default function BookingRidePage() {
 
                 {/* PAYMENT */}
 
-                <div className="sm:col-span-2">
+                <div>
 
                   <label className="mb-2 block text-xs font-bold text-slate-700">
                     Payment Method
@@ -2158,11 +2974,13 @@ export default function BookingRidePage() {
                 <div className="sm:col-span-2">
 
                   <label className="mb-2 block text-xs font-bold text-slate-700">
+
                     Additional Preferences
 
                     <span className="ml-1 font-normal text-slate-400">
                       (Optional)
                     </span>
+
                   </label>
 
                   <textarea
@@ -2182,8 +3000,6 @@ export default function BookingRidePage() {
                 </div>
 
               </div>
-
-              {/* INFO */}
 
               <div className="mt-5 rounded-2xl border border-blue-100 bg-blue-50 p-4">
 
@@ -2237,9 +3053,9 @@ export default function BookingRidePage() {
 
             </div>
 
-            {/* =================================================
+            {/* ==================================================
                 FARE
-            ================================================= */}
+            ================================================== */}
 
             <div className="relative z-0 rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
 
@@ -2267,10 +3083,13 @@ export default function BookingRidePage() {
                   </h2>
 
                   <p className="mt-1 text-xs text-slate-500">
+
                     {
                       selectedVehicle.name
                     }
+
                     {" · "}
+
                     {
                       passengerCount
                     }{" "}
@@ -2280,13 +3099,16 @@ export default function BookingRidePage() {
                         ? "passenger"
                         : "passengers"
                     }
+
                     {" · "}
+
                     {distanceKm >
                     0
                       ? `${distanceKm.toFixed(
                           2
                         )} km`
                       : "Distance pending"}
+
                   </p>
 
                 </div>
@@ -2314,6 +3136,7 @@ export default function BookingRidePage() {
               <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
 
                 <div className="rounded-2xl bg-slate-50 p-4">
+
                   <p className="text-xs text-slate-500">
                     Vehicle
                   </p>
@@ -2323,9 +3146,11 @@ export default function BookingRidePage() {
                       selectedVehicle.name
                     }
                   </p>
+
                 </div>
 
                 <div className="rounded-2xl bg-slate-50 p-4">
+
                   <p className="text-xs text-slate-500">
                     Passengers
                   </p>
@@ -2335,9 +3160,11 @@ export default function BookingRidePage() {
                       passengerCount
                     }
                   </p>
+
                 </div>
 
                 <div className="rounded-2xl bg-slate-50 p-4">
+
                   <p className="text-xs text-slate-500">
                     Distance
                   </p>
@@ -2355,18 +3182,21 @@ export default function BookingRidePage() {
                         )} km`
                       : "-"}
                   </p>
+
                 </div>
 
-                <div className="rounded-2xl bg-slate-50 p-4">
-                  <p className="text-xs text-slate-500">
+                <div className="rounded-2xl border border-blue-100 bg-blue-50 p-4">
+
+                  <p className="text-xs text-blue-600">
                     Trip Type
                   </p>
 
-                  <p className="mt-1 font-bold text-slate-900">
+                  <p className="mt-1 font-bold text-blue-900">
                     {
                       tripType
                     }
                   </p>
+
                 </div>
 
               </div>
@@ -2512,24 +3342,6 @@ export default function BookingRidePage() {
 
               </div>
 
-              {/* PREFERENCES */}
-
-              {additionalPreferences.trim() && (
-                <div className="mt-3 rounded-2xl bg-slate-50 p-4">
-
-                  <p className="text-xs text-slate-500">
-                    Additional Preferences
-                  </p>
-
-                  <p className="mt-1 break-words font-bold text-slate-900">
-                    {
-                      additionalPreferences
-                    }
-                  </p>
-
-                </div>
-              )}
-
               {/* ERROR */}
 
               {error && (
@@ -2574,6 +3386,24 @@ export default function BookingRidePage() {
                             <p className="mt-1 text-lg font-black text-slate-900">
                               {
                                 rideId
+                              }
+                            </p>
+
+                          </div>
+                        )}
+
+                        {/* BOOKING ID */}
+
+                        {bookingId && (
+                          <div className="mt-3 rounded-xl border border-emerald-200 bg-white p-3">
+
+                            <p className="text-xs font-semibold text-slate-500">
+                              Booking ID
+                            </p>
+
+                            <p className="mt-1 text-lg font-black text-slate-900">
+                              {
+                                bookingId
                               }
                             </p>
 
@@ -2626,7 +3456,69 @@ export default function BookingRidePage() {
                           </div>
                         )}
 
-                        {/* SERVER STATUS */}
+                        {/* PASSENGERS */}
+
+                        <div className="mt-3 grid gap-3 sm:grid-cols-4">
+
+                          <div className="rounded-xl border border-blue-200 bg-blue-50 p-3">
+
+                            <p className="text-xs font-semibold text-blue-600">
+                              Passengers
+                            </p>
+
+                            <p className="mt-1 text-lg font-black text-blue-900">
+                              {
+                                passengerCount
+                              }
+                            </p>
+
+                          </div>
+
+                          <div className="rounded-xl border border-blue-200 bg-blue-50 p-3">
+
+                            <p className="text-xs font-semibold text-blue-600">
+                              Babies
+                            </p>
+
+                            <p className="mt-1 text-lg font-black text-blue-900">
+                              {
+                                babies
+                              }
+                            </p>
+
+                          </div>
+
+                          <div className="rounded-xl border border-blue-200 bg-blue-50 p-3">
+
+                            <p className="text-xs font-semibold text-blue-600">
+                              Elderly
+                            </p>
+
+                            <p className="mt-1 text-lg font-black text-blue-900">
+                              {
+                                elderly
+                              }
+                            </p>
+
+                          </div>
+
+                          <div className="rounded-xl border border-blue-200 bg-blue-50 p-3">
+
+                            <p className="text-xs font-semibold text-blue-600">
+                              Trip Type
+                            </p>
+
+                            <p className="mt-1 text-sm font-black text-blue-900">
+                              {
+                                tripType
+                              }
+                            </p>
+
+                          </div>
+
+                        </div>
+
+                        {/* STATUS */}
 
                         <div className="mt-3 rounded-xl border border-blue-200 bg-blue-50 p-3">
 
@@ -2636,10 +3528,8 @@ export default function BookingRidePage() {
 
                           <p className="mt-1 font-black uppercase text-blue-900">
                             {
-                              String(
-                                serverPaymentStatus
-                                  ? "SEARCHING"
-                                  : "SEARCHING"
+                              finalStatusText(
+                                "searching"
                               )
                             }
                           </p>
@@ -2680,7 +3570,9 @@ export default function BookingRidePage() {
                         </p>
 
                       </div>
+
                     </div>
+
                   </div>
                 )}
 
@@ -2692,7 +3584,9 @@ export default function BookingRidePage() {
                   <div className="flex gap-3">
 
                     <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-red-100">
+
                       <XCircle className="h-5 w-5 text-red-600" />
+
                     </div>
 
                     <div className="min-w-0 flex-1">
@@ -2718,6 +3612,22 @@ export default function BookingRidePage() {
                           <p className="mt-1 font-black text-slate-900">
                             {
                               rideId
+                            }
+                          </p>
+
+                        </div>
+                      )}
+
+                      {bookingId && (
+                        <div className="mt-3 rounded-xl border border-red-200 bg-white p-3">
+
+                          <p className="text-xs font-semibold text-slate-500">
+                            Booking ID
+                          </p>
+
+                          <p className="mt-1 font-black text-slate-900">
+                            {
+                              bookingId
                             }
                           </p>
 
@@ -2756,7 +3666,7 @@ export default function BookingRidePage() {
                         type="button"
                         onClick={() =>
                           router.push(
-                            "/user/dashboard"
+                            "/passenger/dashboard"
                           )
                         }
                         className="mt-4 w-full rounded-xl bg-[#123f80] px-5 py-3 text-sm font-bold text-white transition hover:bg-[#0d3268]"
@@ -2765,13 +3675,13 @@ export default function BookingRidePage() {
                       </button>
 
                     </div>
+
                   </div>
+
                 </div>
               )}
 
-              {/* =================================================
-                  CONFIRM BUTTON
-              ================================================= */}
+              {/* CONFIRM BUTTON */}
 
               {!cancelled && (
                 <button
@@ -2824,7 +3734,20 @@ export default function BookingRidePage() {
           </section>
 
         </div>
+
       </div>
     </main>
   );
+}
+
+/* ============================================================
+   STATUS TEXT HELPER
+============================================================ */
+
+function finalStatusText(
+  status: string
+) {
+  return String(
+    status || "SEARCHING"
+  ).toUpperCase();
 }
